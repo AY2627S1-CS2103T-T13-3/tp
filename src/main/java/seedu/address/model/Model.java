@@ -68,4 +68,10 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredPersonList(Predicate<Person> predicate);
+
+    /**
+     * Randomly re-orders the underlying person list in the address book.
+     * The visible person list is updated to reflect the new order.
+     */
+    void shuffle();
 }

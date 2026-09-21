@@ -46,6 +46,14 @@ public class AddressBook implements ReadOnlyAddressBook {
         setPersons(newData.getPersonList());
     }
 
+    /**
+     * Shuffles the existing data of this {@code AddressBook} unpredictably
+     */
+    public void shuffle() {
+        this.persons.shuffle();
+    }
+
+
     //// person-level operations
 
     /**

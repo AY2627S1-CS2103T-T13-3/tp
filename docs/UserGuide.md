@@ -93,6 +93,12 @@ Shows a list of all persons in the address book.
 
 Format: `list`
 
+### Shuffle persons: `spin`
+
+Randomly shuffles the order of persons in the address book.
+
+Format: `spin`
+
 ### Editing a person: `edit`
 
 Edits an existing person in the address book.
