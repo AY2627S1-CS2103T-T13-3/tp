@@ -31,12 +31,12 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 ### Pu Yu
 
-<img src="images/johndoe.png" width="200px">
+<img src="images/fireinyu.png" width="200px">
 
-[[github](http://github.com/johndoe)] [[portfolio](team/johndoe.md)]
+[[github](http://github.com/fireinyu)]
 
-* Role: Developer
-* Responsibilities: Data
+* Role: Scheduling IC
+* Responsibilities: Planning todos and meetups, and ensuring deadlines are met
 
 ### Linus
 
