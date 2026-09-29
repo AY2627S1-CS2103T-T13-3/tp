@@ -259,15 +259,21 @@ _{Explain here how the data archiving feature will be implemented}_
 
 ### Product scope
 
-**Target user profile**:
-
+**Target user profile**: Breaking news journalist who is constantly chasing and contacting/contacted by sources for information under deadline pressure.
+* has to manage multiple correspondences and stories simultaneously
 * has a need to manage a significant number of contacts
 * prefers desktop apps over other types of applications
 * can type fast
 * prefers typing to mouse interactions
 * is reasonably comfortable using CLI apps
 
-**Value proposition**: Manage contacts faster than with a typical mouse-driven GUI application.
+**Value proposition**: Centralised deadline-aware contact manager that helps journalists organize sources, track conversations, and never miss a follow-up.
+* PressMemo will manage correspondent contacts and track follow-up actions for journalists.
+* PressMemo simplifies the simultaneous management of multiple correspondences at different stages. 
+* PressMemo serves as a contact command centre: 
+  * Storage of contact contextual information (E.g. Why do I have the contact?, What story are they related to?)
+  * Storage of entity relations: Links between a story and contacts are stored (Role of contact) 
+  * Task List with Contact: PressMemo stores crucial followup information.
 
 
 ### User stories
