@@ -280,16 +280,45 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-| Priority | As a …​                                    | I want to …​                     | So that I can…​                                                        |
-| -------- | ------------------------------------------ | ------------------------------ | ---------------------------------------------------------------------- |
-| `* * *`  | new user                                   | see usage instructions         | refer to instructions when I forget how to use the App                 |
-| `* * *`  | user                                       | add a new person               |                                                                        |
-| `* * *`  | user                                       | delete a person                | remove entries that I no longer need                                   |
-| `* * *`  | user                                       | find a person by name          | locate details of persons without having to go through the entire list |
-| `* *`    | user                                       | hide private contact details   | minimize chance of someone else seeing them by accident                |
-| `*`      | user with many persons in the address book | sort persons by name           | locate a person easily                                                 |
+## User Stories
 
-*{More to be added}*
+| Priority | As a …​ | I want to …​ | So that I can…​ |
+| -------- | ------- | ------------ | ---------------- |
+| `* * *` | investigative journalist | add a new contact with basic details | build a database of sources |
+| `* * *` | investigative journalist | view all active contacts | quickly browse my source network |
+| `* * *` | investigative journalist | edit a contact's details | keep my database accurate without recreating contacts |
+| `* * *` | investigative journalist | delete a contact | remove obsolete contacts from my database |
+| `* * *` | journalist with frequent story assignments | add a story | record a new story assignment |
+| `* * *` | journalist working on several assignments | view all stories | keep track of stories I have worked on |
+| `* * *` | journalist covering a developing story | edit a story's name | keep the story title current and relevant |
+| `* * *` | journalist with obsolete assignments | delete a story | remove cancelled, shelved, or irrelevant stories without deleting their contacts |
+| `* * *` | journalist liaising with several contacts for a story | assign a contact to a story | record the sources involved in that story |
+| `* * *` | journalist correcting a source assignment | unassign a contact from a story | remove an irrelevant or incorrect association while retaining the contact |
+| `* * *` | journalist managing a story | list contacts assigned to a story | know which sources are needed for that story |
+| `* * *` | journalist reviewing a source | view the stories associated with a contact | track the history of stories for which I have liaised with that source |
+| `* *` | investigative journalist covering a breaking story | search contacts using multiple keywords, locations, and tags | retrieve relevant witnesses and sources quickly |
+| `* *` | journalist seeking a particular source | search contacts by role | find relevant witnesses, experts, officials, or other source types |
+| `* *` | journalist managing international correspondence | search contacts by location or region | find people who are directly connected to the relevant area |
+| `* *` | journalist seeking different perspectives | search contacts by profession | find sources with relevant expertise |
+| `* *` | journalist covering stories in various sectors | search contacts by industry | find people with direct knowledge of the relevant industry |
+| `* *` | journalist covering stories involving stakeholders | search contacts by organisation | find people who directly represent the relevant organisation |
+| `* *` | journalist receiving a call | search contacts by phone number | identify whether the caller is an existing contact |
+| `* *` | journalist receiving an email | search contacts by email address | identify whether the sender is an existing contact |
+| `* *` | journalist communicating across regions | search contacts by language | identify people I can communicate with in the required language |
+| `* *` | senior journalist | assign a role to a contact | record the type of liaison or source relationship involved |
+| `* *` | journalist communicating with different contacts | record a contact's preferred contact method | know the best way to reach each source |
+| `* *` | journalist managing sources known by different names | record a contact's alias | identify the same person when a different name is used |
+| `* *` | journalist adding a new source | receive a duplicate-contact warning | avoid creating records with an existing phone number or email address |
+| `* *` | journalist who often contacts certain sources | mark a contact as a favourite | access frequently used contacts more easily |
+| `* *` | journalist with inactive sources | archive and restore contacts | keep inactive records available without cluttering the active list |
+| `* *` | journalist managing multiple stories | assign and update a story priority | identify work that requires attention first |
+| `* *` | reporter speaking to a source | append a timestamped note to a contact | keep a chronological record of statements and interactions |
+| `* *` | busy reporter managing several leads | schedule a follow-up or deadline | avoid missing promised callbacks, interviews, or verification work |
+| `* *` | busy reporter | view pending follow-ups and deadlines | see upcoming work in chronological order and recognise overdue items |
+| `*` | time-pressured reporter using the terminal | use command aliases and tab completion | query and record information without typing full commands or memorising IDs |
+| `*` | investigative journalist sharing a screen or working in public | use a redacted display mode | protect confidential identities and personal details from shoulder-surfing |
+| `*` | journalist handing a story to desk editors | export filtered source dossiers as Markdown or plain text | let editors and fact-checkers verify attribution without access to my command-line setup |
+
 
 ### Use cases
 
