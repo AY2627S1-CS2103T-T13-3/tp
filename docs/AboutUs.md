@@ -15,7 +15,8 @@ You can reach us at the email `seer[at]comp.nus.edu.sg`
 
 [[github](https://github.com/ZYS-37)]
 
-* Role: Project Advisor
+* Role: Code Quality IC
+* Responsibilities: Ensure code quality standards
 
 ### Krithic
 
