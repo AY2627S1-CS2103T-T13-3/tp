@@ -289,30 +289,171 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 (For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
 
-**Use case: Delete a person**
+#### Use Case: UC1 - Add Contact
+
+Actor: User
+
+##### Guarantees:
+
+- At the end of MSS, the contact is added to the ArchiveContactList
+
+##### MSS:
+
+1. User enters contact's details
+2. User adds the contact
+3. System informs the user in the console that the contact has been added successfully
+
+Use case ends.
+
+##### Extensions:
+
+1a. Crucial details are missing
+
+- System will inform the user in the console that details are missing
+- Use case ends.
+
+1b.  Another contact with the same name already existis
+
+- System will inform the user in the console that an invalid name was used
+- Use case ends
+
+#### Use Case: UC2 - List contacts matching a filter
+
+Actor: User
+
+##### Guarantees:
+
+- At the end of MSS and Ext. 2a, the ActiveContactList is updated to include exactly the contacts that match the specified filter
+- The ActiveStoryList and story panel remain unchanged
+
+##### MSS:
+
+1. User specifies the filter
+2. User requests to list all contacts matching the filter
+3. System updates the contact panel to display the matching contacts
+
+Use case ends.
+
+##### Extensions:
+
+1a. User specifies an undefined filter
+
+- System will inform the user in the console that the specified filter is invalid.
+- Use case ends.
+
+2a. There are no contacts matching the filter.
+
+- System will inform the user in the contact panel that there are no matching contacts
+- Use case ends.
+
+#### Use Case: UC3 - List stories matching a filter
+
+Actor: User
+
+Guarantees:
+
+- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the contacts that match the specified filter
+- The ActiveContactList  and contact panel remain unchanged
+
+##### MSS:
+
+1. User specifies the filter
+2. User requests to list all stories matching the filter
+3. System updates the story panel to display the matching stories
+
+Use case ends.
+
+##### Extensions:
+
+1a. User specifies an undefined filter
+
+- System will inform the user in the console that the specified filter is invalid.
+- Use case ends.
+
+2a. There are no stories matching the filter.
+
+- System will inform the user in the story panel that there are no matching stories
+- Use case ends.
+
+#### Use Case: UC4- Assign contact to story
+
+Actor: User
+
+##### MSS:
+
+1. User specifies an existing contact and an existing story
+2. User requests to assign the contact to the story
+3. System checks that the specified contact exists
+4. System check that the specified story exists
+5. System links the contact to the story
+6. System saves the updated information to storage
+7. System informs the user that the contact has been successfully assigned to the story
+
+Use case ends
+
+##### Extensions:
+
+3a. The specified contact does not exist
+
+- System informs the user that no matching contact found.
+- Use case ends
+
+4a. The specified story does not exist
+
+- System informs the user that no matching story was found.
+- Use case ends
+
+5a. The contact is already assigned to the story
+
+- System informs the user that the contact is already assigned to the specified story
+- Use case ends
+
+#### Use Case: UC5 – Add Story
+
+Actor: User
+
+##### MSS:
+
+1. User enters the add story command with the story information.
+2. System parses the command.
+3. System validates the provided story information.
+4. System adds the new story.
+5. System saves the updated data to storage.
+6. System displays a success message.
+
+Use case ends.
+
+##### Extensions:
+
+3a. User provides invalid or missing story information.
+
+- System informs the user that the provided information is invalid.
+- Use case ends.
+
+4a. A story with the same name already exists.
+
+- System informs the user that the story already exists.
+- Use case ends.
+
+#### **Use case:  UC6 – Delete a person**
+
+Actor: User
 
 **MSS**
 
-1.  User requests to list persons
-2.  AddressBook shows a list of persons
-3.  User requests to delete a specific person in the list
-4.  AddressBook deletes the person
-
-    Use case ends.
+1. User requests to list contacts
+2. AddressBook shows a list of contacts
+3. User requests to delete a specific contact in the list
+4. AddressBook deletes the contact
+  Use case ends.
 
 **Extensions**
 
-* 2a. The list is empty.
-
-  Use case ends.
-
-* 3a. The given index is invalid.
-
-    * 3a1. AddressBook shows an error message.
-
-      Use case resumes at step 2.
-
-*{More to be added}*
+- 2a. The list is empty.  
+Use case ends.
+- 3a. The given index is invalid.
+  - 3a1. AddressBook shows an error message.  
+  Use case resumes at step 2.
 
 ### Non-Functional Requirements
 
