@@ -351,11 +351,17 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Non-Functional Requirements
 
-1.  Should work on any _mainstream OS_ as long as it has Java `25` or above installed.
-2.  Should be able to hold up to 1000 persons without noticeable sluggishness in performance for typical usage.
-3.  A user with above average typing speed for regular English text (i.e. not code, not system admin commands) should be able to accomplish most of the tasks faster using commands than using the mouse.
-
-*{More to be added}*
+1. PressMemo should work on Windows, Linux, and macOS/OS-X on a computer with Java 25 installed.
+2. PressMemo should be able to hold up to 1000 contacts and 100 stories without noticeable sluggishness in performance during typical usage.
+3. A user with above-average typing speed for regular English text should be able to accomplish most tasks faster using commands than using the mouse.
+4. PressMemo should take at most 5 seconds to launch when there are up to 1000 saved contacts and 100 saved stories.
+5. PressMemo should support only one user and should not allow multiple users to share the same application data.
+6. PressMemo should store application data locally in human-readable JSON files and should not use a database management system.
+7. PressMemo should work without requiring an installer.
+8. PressMemo should be packaged as a single JAR file.
+9. PressMemo's GUI should work without resolution-related inconveniences at resolutions of 1920x1080 or higher with 100% or 125% display scaling, and all functions should remain usable at resolutions of 1280x720 or higher with 150% display scaling.
+10. PressMemo should not depend on its own remote server for its operation.
+11. The packaged PressMemo JAR/ZIP file should not exceed 100 MB.
 
 ### Glossary
 
