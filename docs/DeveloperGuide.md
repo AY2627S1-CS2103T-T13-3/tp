@@ -506,8 +506,23 @@ Use case ends.
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, or macOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+* **Active Contact List**: The list of contacts currently displayed in the Contact Panel. Contacts in this list can be referenced using their ContactIndex.
+* **Active Story List**: The list of stories currently displayed in the Story Panel. Stories in this list can be referenced using their StoryIndex.
+* **Archive Contact List**: The list containing all contacts stored in PressMemo, including contacts that are not currently displayed in the Active Contact List.
+* **Archive Story List**: The list containing all stories stored in PressMemo, including stories that are not currently displayed in the Active Story List.
+* **Assign**: To create a link between an existing Contact and an existing Story.
+* **Assigned Contact**: A Contact that has been linked to a particular Story.
+* **Command**: A text instruction entered by the user to perform an action in PressMemo. The first String is the command name, followed by any fields or arguments required by that command.
+* **Contact**: A person whose information is stored in PressMemo, including a name, phone number, and optional email address.
+* **ContactIndex**: The 1-based position of a Contact in the Active Contact List, used to identify that Contact in commands.
+* **Contact Panel**: The part of the PressMemo interface that displays the Active Contact List.
+* **Data File**: The local JSON file used by PressMemo to store application data between sessions.
+* **Filter**: A condition used to narrow down the Contacts or Stories displayed to the user.
+* **Story**: A news story or topic managed in PressMemo that may be linked to one or more Contacts.
+* **StoryIndex**: The 1-based position of a Story in the Active Story List, used to identify that Story in commands.
+* **Story Panel**: The part of the PressMemo interface that displays the Active Story List.
+* **String**: A sequence of characters used as input in PressMemo commands. Strings containing spaces should be enclosed in double quotation marks (`"..."`). Use `\"` to represent a double quotation mark inside a quoted String.
+* **Unassign**: To remove the link between a Contact and a Story without deleting either the Contact or the Story.
 
 --------------------------------------------------------------------------------------------------------------------
 
