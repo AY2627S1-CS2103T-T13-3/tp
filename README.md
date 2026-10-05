@@ -1,3 +1,5 @@
+[![CI Status](https://github.com/AY2627S1-CS2103T-T13-3/tp/actions/workflows/gradle.yml/badge.svg)](https://github.com/AY2627S1-CS2103T-T13-3/tp/actions/workflows/gradle.yml)
+
 ![Ui](docs/images/Ui.png)
 
 # PressMemo
