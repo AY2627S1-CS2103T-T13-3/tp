@@ -1,16 +1,20 @@
-[![CI Status](https://github.com/se-edu/addressbook-level3/workflows/Java%20CI/badge.svg)](https://github.com/se-edu/addressbook-level3/actions)
-
 ![Ui](docs/images/Ui.png)
 
-* This is **a sample project for Software Engineering (SE) students**.<br>
-  Example usages:
-  * as a starting point of a course project (as opposed to writing everything from scratch)
-  * as a case study
-* The project simulates an ongoing software project for a desktop application (called _AddressBook_) used for managing contact details.
-  * It is **written in an object-oriented programming (OOP) style** and provides a **reasonably well-written** codebase of about 6 KLoC. It is **larger** than what students typically write in beginner-level software-engineering modules, without being overwhelming.
-  * It comes with a **reasonable level of user and developer documentation**.
-* It is named `AddressBook Level 3` (`AB3` for short) because it was initially created as a part of a series of `AddressBook` projects (`Level 1`, `Level 2`, `Level 3` ...).
-* For the detailed documentation of this project, see the **[Address Book Product Website](https://se-education.org/addressbook-level3)**.
-* This project is a **part of the se-education.org** initiative. If you would like to contribute code to this project, see [se-education.org](https://se-education.org/#contributing-to-se-edu) for more info.
+# PressMemo
 
-* Percentage of code tested: [![codecov](https://codecov.io/gh/CS2103T-T13-3/tp/graph/badge.svg?token=4WJDRRXHAQ)](https://codecov.io/gh/CS2103T-T13-3/tp)
+## Problem Statement
+
+Journalists manage many contacts across several stories, often while working under tight deadlines. It can be difficult to recall who to contact and why they are relevant. PressMemo is a command-line workspace for organizing contacts and managing stories.
+
+## Target Audience
+
+Journalists and reporters who manage multiple sources and stories, and prefer using a command-line interface (CLI).
+
+## Features to Implement
+
+- Add, list, and delete contact records.
+- Create and list stories, and delete stories that are no longer active.
+- Assign contacts to stories and remove those associations.
+- Find contacts associated with a story and view the stories associated with a contact.
+
+This project is based on the AddressBook-Level3 project created by the [SE-EDU initiative](https://se-education.org).
