@@ -1,14 +1,13 @@
 package seedu.address.ui;
 
+import java.util.Comparator;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.story.Story;
-
-import java.util.Comparator;
-
 /**
  * A UI component that displays information of a {@code Story}.
  */
@@ -24,7 +23,7 @@ public class StoryCard extends UiPart<Region> {
      * @see <a href="https://github.com/se-edu/addressbook-level4/issues/336">The issue on AddressBook level 4</a>
      */
 
-    public final Story Story;
+    public final Story story;
 
     @FXML
     private HBox storyCardPane;
@@ -40,7 +39,7 @@ public class StoryCard extends UiPart<Region> {
      */
     public StoryCard(Story Story, int displayedIndex) {
         super(FXML);
-        this.Story = Story;
+        this.story = Story;
         id.setText(displayedIndex + ". ");
         name.setText(Story.getName().fullName);
         Story.getTags().stream()

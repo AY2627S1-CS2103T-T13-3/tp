@@ -23,9 +23,9 @@ public class StoryListPanel extends UiPart<Region> {
     /**
      * Creates a {@code StoryListPanel} with the given {@code ObservableList}.
      */
-    public StoryListPanel(ObservableList<Story> StoryList) {
+    public StoryListPanel(ObservableList<Story> storyList) {
         super(FXML);
-        storyListView.setItems(StoryList);
+        storyListView.setItems(storyList);
         storyListView.setCellFactory(listView -> new StoryListViewCell());
     }
 
