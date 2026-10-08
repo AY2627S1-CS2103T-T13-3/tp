@@ -2,12 +2,14 @@ package seedu.address.storage;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 import seedu.address.commons.exceptions.DataLoadingException;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.story.Story;
 
 /**
  * API of the Storage component
@@ -54,4 +56,26 @@ public interface Storage {
      */
     void saveAddressBook(ReadOnlyAddressBook addressBook) throws IOException;
 
+    /**
+     * Returns the file path of the Story data file.
+     */
+    Path getStoryFilePath();
+
+    /**
+     * Returns stories from storage.
+     * Returns Optional.empty() if the file is not found.
+     *
+     * @throws DataLoadingException if loading fails.
+     */
+    Optional<List<Story>> readStories()
+            throws DataLoadingException;
+
+    /**
+     * Saves stories to storage.
+     *
+     * @param addressBook Cannot be null.
+     * @throws IOException if writing fails.
+     */
+    void saveStories(ReadOnlyAddressBook addressBook)
+            throws IOException;
 }
