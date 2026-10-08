@@ -3,6 +3,7 @@ package seedu.address;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -92,7 +93,21 @@ public class MainApp extends Application {
             initialData = new AddressBook();
         }
 
-        return new ModelManager(initialData, userPrefs);
+        // Load stories from the separate JSON file
+        AddressBook addressBook = new AddressBook(initialData);
+
+        logger.info("Using story data file : " + storage.getStoryFilePath());
+
+        try {
+            addressBook.setStories(storage.readStories().orElseGet(List::of));
+        } catch (DataLoadingException e) {
+            logger.warning("Story data file at " + storage.getStoryFilePath()
+                    + " could not be loaded."
+                    + " Will be starting with an empty story list.");
+            addressBook.setStories(List.of());
+        }
+
+        return new ModelManager(addressBook, userPrefs);
     }
 
     /**
