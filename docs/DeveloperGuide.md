@@ -269,10 +269,10 @@ _{Explain here how the data archiving feature will be implemented}_
 
 **Value proposition**: Centralised deadline-aware contact manager that helps journalists organize sources, track conversations, and never miss a follow-up.
 * PressMemo will manage correspondent contacts and track follow-up actions for journalists.
-* PressMemo simplifies the simultaneous management of multiple correspondences at different stages. 
-* PressMemo serves as a contact command centre: 
+* PressMemo simplifies the simultaneous management of multiple correspondences at different stages.
+* PressMemo serves as a contact command centre:
   * Storage of contact contextual information (E.g. Why do I have the contact?, What story are they related to?)
-  * Storage of entity relations: Links between a story and contacts are stored (Role of contact) 
+  * Storage of entity relations: Links between a story and contacts are stored (Role of contact)
   * Task List with Contact: PressMemo stores crucial followup information.
 
 
@@ -484,10 +484,10 @@ Actor: User
 
 **Extensions**
 
-- 2a. The list is empty.  
+- 2a. The list is empty.
 Use case ends.
 - 3a. The given index is invalid.
-  - 3a1. AddressBook shows an error message.  
+  - 3a1. AddressBook shows an error message.
   Use case resumes at step 2.
 
 ### Non-Functional Requirements
