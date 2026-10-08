@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalPersons.ALICE;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
-import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
@@ -23,65 +22,68 @@ import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.person.Person;
 import seedu.address.model.story.Story;
-import seedu.address.testutil.PersonBuilder;
+import seedu.address.model.story.StoryName;
 
-public class AddCommandTest {
+public class AddStoryCommandTest {
 
     @Test
-    public void constructor_nullPerson_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new AddCommand(null));
+    public void constructor_nullStory_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new AddStoryCommand(null));
     }
 
     @Test
-    public void execute_personAcceptedByModel_addSuccessful() throws Exception {
-        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
-        Person validPerson = new PersonBuilder().build();
+    public void execute_storyAcceptedByModel_addSuccessful() throws Exception {
+        ModelStubAcceptingStoryAdded modelStub = new ModelStubAcceptingStoryAdded();
+        Story validStory = new Story(new StoryName("Election News"), new HashSet<>());
 
-        CommandResult commandResult = new AddCommand(validPerson).execute(modelStub);
+        CommandResult commandResult = new AddStoryCommand(validStory).execute(modelStub);
 
-        assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
+        assertEquals(String.format(AddStoryCommand.MESSAGE_SUCCESS, validStory.getName()),
                 commandResult.getFeedbackToUser());
-        assertEquals(List.of(validPerson), modelStub.personsAdded);
+        assertEquals(List.of(validStory), modelStub.storiesAdded);
     }
 
     @Test
-    public void execute_duplicatePerson_throwsCommandException() {
-        Person validPerson = new PersonBuilder().build();
-        AddCommand addCommand = new AddCommand(validPerson);
-        ModelStub modelStub = new ModelStubWithPerson(validPerson);
+    public void execute_duplicateStory_throwsCommandException() {
+        Story validStory = new Story(new StoryName("Election News"), new HashSet<>());
+        AddStoryCommand addStoryCommand = new AddStoryCommand(validStory);
+        ModelStub modelStub = new ModelStubWithStory(validStory);
 
-        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+        assertThrows(CommandException.class,
+                String.format(AddStoryCommand.MESSAGE_DUPLICATE_STORY, validStory.getName()), () ->
+                addStoryCommand.execute(modelStub));
     }
 
     @Test
     public void equals() {
-        Person alice = new PersonBuilder().withName("Alice").build();
-        Person bob = new PersonBuilder().withName("Bob").build();
-        AddCommand addAliceCommand = new AddCommand(alice);
-        AddCommand addBobCommand = new AddCommand(bob);
+        Story storyA = new Story(new StoryName("Story A"), new HashSet<>());
+        Story storyB = new Story(new StoryName("Story B"), new HashSet<>());
+        AddStoryCommand addStoryACommand = new AddStoryCommand(storyA);
+        AddStoryCommand addStoryBCommand = new AddStoryCommand(storyB);
 
         // same object -> returns true
-        assertTrue(addAliceCommand.equals(addAliceCommand));
+        assertTrue(addStoryACommand.equals(addStoryACommand));
 
         // same values -> returns true
-        AddCommand addAliceCommandCopy = new AddCommand(alice);
-        assertTrue(addAliceCommand.equals(addAliceCommandCopy));
+        AddStoryCommand addStoryACommandCopy = new AddStoryCommand(storyA);
+        assertTrue(addStoryACommand.equals(addStoryACommandCopy));
 
         // different types -> returns false
-        assertFalse(addAliceCommand.equals(1));
+        assertFalse(addStoryACommand.equals(1));
 
         // null -> returns false
-        assertFalse(addAliceCommand.equals(null));
+        assertFalse(addStoryACommand.equals(null));
 
-        // different person -> returns false
-        assertFalse(addAliceCommand.equals(addBobCommand));
+        // different story -> returns false
+        assertFalse(addStoryACommand.equals(addStoryBCommand));
     }
 
     @Test
     public void toStringMethod() {
-        AddCommand addCommand = new AddCommand(ALICE);
-        String expected = AddCommand.class.getCanonicalName() + "{toAdd=" + ALICE + "}";
-        assertEquals(expected, addCommand.toString());
+        Story story = new Story(new StoryName("Story A"), new HashSet<>());
+        AddStoryCommand addStoryCommand = new AddStoryCommand(story);
+        String expected = AddStoryCommand.class.getCanonicalName() + "{toAdd=" + story + "}";
+        assertEquals(expected, addStoryCommand.toString());
     }
 
     /**
@@ -165,39 +167,39 @@ public class AddCommandTest {
     }
 
     /**
-     * A Model stub that contains a single person.
+     * A Model stub that contains a single story.
      */
-    private class ModelStubWithPerson extends ModelStub {
-        private final Person person;
+    private class ModelStubWithStory extends ModelStub {
+        private final Story story;
 
-        ModelStubWithPerson(Person person) {
-            requireNonNull(person);
-            this.person = person;
+        ModelStubWithStory(Story story) {
+            requireNonNull(story);
+            this.story = story;
         }
 
         @Override
-        public boolean hasPerson(Person person) {
-            requireNonNull(person);
-            return this.person.isSamePerson(person);
+        public boolean hasStory(Story story) {
+            requireNonNull(story);
+            return this.story.isSameStory(story);
         }
     }
 
     /**
-     * A Model stub that always accepts the person being added.
+     * A Model stub that always accepts the story being added.
      */
-    private class ModelStubAcceptingPersonAdded extends ModelStub {
-        final ArrayList<Person> personsAdded = new ArrayList<>();
+    private class ModelStubAcceptingStoryAdded extends ModelStub {
+        final ArrayList<Story> storiesAdded = new ArrayList<>();
 
         @Override
-        public boolean hasPerson(Person person) {
-            requireNonNull(person);
-            return personsAdded.stream().anyMatch(person::isSamePerson);
+        public boolean hasStory(Story story) {
+            requireNonNull(story);
+            return storiesAdded.stream().anyMatch(story::isSameStory);
         }
 
         @Override
-        public void addPerson(Person person) {
-            requireNonNull(person);
-            personsAdded.add(person);
+        public void addStory(Story story) {
+            requireNonNull(story);
+            storiesAdded.add(story);
         }
 
         @Override

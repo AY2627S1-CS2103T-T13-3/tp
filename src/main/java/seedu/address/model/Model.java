@@ -62,6 +62,17 @@ public interface Model {
      */
     void setPerson(Person target, Person editedPerson);
 
+    /**
+     * Returns true if a story with the same identity as {@code story} exists in the address book.
+     */
+    boolean hasStory(Story story);
+
+    /**
+     * Adds the given story.
+     * {@code story} must not already exist in the address book.
+     */
+    void addStory(Story story);
+
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
 

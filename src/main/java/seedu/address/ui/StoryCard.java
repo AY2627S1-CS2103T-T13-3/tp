@@ -37,12 +37,12 @@ public class StoryCard extends UiPart<Region> {
     /**
      * Creates a {@code StoryCard} with the given {@code Story} and index to display.
      */
-    public StoryCard(Story Story, int displayedIndex) {
+    public StoryCard(Story story, int displayedIndex) {
         super(FXML);
-        this.story = Story;
+        this.story = story;
         id.setText(displayedIndex + ". ");
-        name.setText(Story.getName().fullName);
-        Story.getTags().stream()
+        name.setText(story.getName().fullName);
+        story.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
     }

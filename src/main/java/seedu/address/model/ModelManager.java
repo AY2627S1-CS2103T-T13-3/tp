@@ -96,6 +96,20 @@ public class ModelManager implements Model {
         addressBook.setPerson(target, editedPerson);
     }
 
+    //=========== Story Operations ===========================================================================
+
+    @Override
+    public boolean hasStory(Story story) {
+        requireNonNull(story);
+        return addressBook.hasStory(story);
+    }
+
+    @Override
+    public void addStory(Story story) {
+        addressBook.addStory(story);
+        updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     /**
