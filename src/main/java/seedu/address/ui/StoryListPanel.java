@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.story.Story;
@@ -19,15 +18,15 @@ public class StoryListPanel extends UiPart<Region> {
     private final Logger logger = LogsCenter.getLogger(StoryListPanel.class);
 
     @FXML
-    private ListView<Story> StoryListView;
+    private ListView<Story> storyListView;
 
     /**
      * Creates a {@code StoryListPanel} with the given {@code ObservableList}.
      */
     public StoryListPanel(ObservableList<Story> StoryList) {
         super(FXML);
-        StoryListView.setItems(StoryList);
-        StoryListView.setCellFactory(listView -> new StoryListViewCell());
+        storyListView.setItems(StoryList);
+        storyListView.setCellFactory(listView -> new StoryListViewCell());
     }
 
     /**
@@ -35,13 +34,13 @@ public class StoryListPanel extends UiPart<Region> {
      */
     class StoryListViewCell extends ListCell<Story> {
         @Override
-        protected void updateItem(Story Story, boolean empty) {
-            super.updateItem(Story, empty);
-            if (empty || Story == null) {
+        protected void updateItem(Story story, boolean empty) {
+            super.updateItem(story, empty);
+            if (empty || story == null) {
                 setGraphic(null);
                 setText(null);
             } else {
-                setGraphic(new Pane()); // placeholder value
+                setGraphic(new StoryCard(story, getIndex() + 1).getRoot());
             }
         }
     }
