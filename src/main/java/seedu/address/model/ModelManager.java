@@ -11,6 +11,7 @@ import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.person.Person;
+import seedu.address.model.story.Story;
 
 /**
  * Represents the in-memory model of the address book data.
@@ -21,6 +22,7 @@ public class ModelManager implements Model {
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
+    private final FilteredList<Story> filteredStories;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -33,6 +35,7 @@ public class ModelManager implements Model {
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
+        filteredStories = new FilteredList<>(this.addressBook.getStoryList());
     }
 
     public ModelManager() {
@@ -123,7 +126,23 @@ public class ModelManager implements Model {
 
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
-                && filteredPersons.equals(otherModelManager.filteredPersons);
+                && filteredPersons.equals(otherModelManager.filteredPersons)
+                && filteredStories.equals(otherModelManager.filteredStories);
     }
 
+    //=========== Filtered Story List Accessors =============================================================
+    /**
+     * Returns an unmodifiable view of the list of {@code Story} backed by the internal list of
+     * {@code addressBook}
+     */
+    @Override
+    public ObservableList<Story> getFilteredStoryList() {
+        return filteredStories;
+    }
+
+    @Override
+    public void updateFilteredStoryList(Predicate<Story> predicate) {
+        requireNonNull(predicate);
+        filteredStories.setPredicate(predicate);
+    }
 }
