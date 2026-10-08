@@ -1,10 +1,8 @@
 package seedu.address.ui;
 
 import java.nio.file.Path;
-import java.util.Set;
 import java.util.logging.Logger;
 
-import javafx.collections.ObservableListBase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
@@ -19,8 +17,6 @@ import seedu.address.logic.Logic;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.story.Story;
-import seedu.address.model.story.StoryName;
 
 /**
  * The Main Window. Provides the basic application layout containing
@@ -125,18 +121,8 @@ public class MainWindow extends UiPart<Stage> {
         personListPanel = new PersonListPanel(logic.getFilteredPersonList());
         personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
 
-         storyListPanel = new StoryListPanel(new ObservableListBase<Story>() {
-             @Override
-             public Story get(int index) {
-                 return new Story(new StoryName("Test" + String.valueOf(index)), Set.of());
-             }
-
-             @Override
-             public int size() {
-                 return 5;
-             }
-         });
-         storyListPanelPlaceholder.getChildren().add(storyListPanel.getRoot());
+        storyListPanel = new StoryListPanel(logic.getFilteredStoryList());
+        storyListPanelPlaceholder.getChildren().add(storyListPanel.getRoot());
 
         resultDisplay = new ResultDisplay();
         resultDisplayPlaceholder.getChildren().add(resultDisplay.getRoot());
