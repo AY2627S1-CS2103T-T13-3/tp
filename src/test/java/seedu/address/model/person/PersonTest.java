@@ -12,8 +12,12 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryName;
 import seedu.address.testutil.PersonBuilder;
 
 public class PersonTest {
@@ -95,5 +99,29 @@ public class PersonTest {
         String expected = Person.class.getCanonicalName() + "{name=" + ALICE.getName() + ", phone=" + ALICE.getPhone()
                 + ", email=" + ALICE.getEmail() + ", address=" + ALICE.getAddress() + ", tags=" + ALICE.getTags() + "}";
         assertEquals(expected, ALICE.toString());
+    }
+
+    @Test
+    public void stories_emptyInitially() {
+        Person p = new PersonBuilder().build();
+        assertEquals(0, p.getStories().size());
+    }
+
+    @Test
+    public void isAssigned_notAssigned_returnsFalse() {
+        Person p = new PersonBuilder().build();
+        Story s = new Story(new StoryName("test"), Set.of());
+        assertFalse(p.isAssigned(s));
+    }
+
+    @Test
+    public void assign_newStory_addsStory() {
+        Person p = new PersonBuilder().build();
+        Story s = new Story(new StoryName("test"), Set.of());
+        p.assign(s);
+        assertTrue(p.isAssigned(s));
+        assertTrue(s.isAssigned(p));
+        assertTrue(p.getStories().contains(s));
+        assertTrue(s.getContacts().contains(p));
     }
 }
