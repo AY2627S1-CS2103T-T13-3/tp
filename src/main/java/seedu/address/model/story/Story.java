@@ -57,6 +57,18 @@ public class Story {
     }
 
     /**
+     * Assign a contact to this Story, and this story to the contact.
+     * Does nothing if the contact has already been assigned.
+     */
+    public void assign(Person contact) {
+        if (isAssigned(contact)) {
+            return;
+        }
+        contacts.add(contact);
+        contact.assign(this);
+    }
+
+    /**
      * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */

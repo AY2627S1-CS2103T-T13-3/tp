@@ -67,6 +67,18 @@ public class Person {
     }
 
     /**
+     * Assigns a story to this Person, and this Person to the story.
+     * Does nothing if the story has already been assigned.
+     */
+    public void assign(Story story) {
+        if (isAssigned(story)) {
+            return;
+        }
+        stories.add(story);
+        story.assign(this);
+    }
+
+    /**
      * Returns an immutable list of stories, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */

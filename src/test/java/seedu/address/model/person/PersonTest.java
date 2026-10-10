@@ -113,4 +113,15 @@ public class PersonTest {
         Story s = new Story(new StoryName("test"), Set.of());
         assertFalse(p.isAssigned(s));
     }
+
+    @Test
+    public void assign_newStory_addsStory() {
+        Person p = new PersonBuilder().build();
+        Story s = new Story(new StoryName("test"), Set.of());
+        p.assign(s);
+        assertTrue(p.isAssigned(s));
+        assertTrue(s.isAssigned(p));
+        assertTrue(p.getStories().contains(s));
+        assertTrue(s.getContacts().contains(p));
+    }
 }

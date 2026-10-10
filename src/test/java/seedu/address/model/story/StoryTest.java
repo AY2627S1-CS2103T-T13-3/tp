@@ -2,6 +2,7 @@ package seedu.address.model.story;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
@@ -23,5 +24,16 @@ public class StoryTest {
         Story s = new Story(new StoryName("test"), Set.of());
         Person p = new PersonBuilder().build();
         assertFalse(s.isAssigned(p));
+    }
+
+    @Test
+    public void assign_newContact_addsContact() {
+        Story s = new Story(new StoryName("test"), Set.of());
+        Person p = new PersonBuilder().build();
+        s.assign(p);
+        assertTrue(p.isAssigned(s));
+        assertTrue(s.isAssigned(p));
+        assertTrue(p.getStories().contains(s));
+        assertTrue(s.getContacts().contains(p));
     }
 }
