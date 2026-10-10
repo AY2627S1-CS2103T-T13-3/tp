@@ -96,4 +96,10 @@ public class PersonTest {
                 + ", email=" + ALICE.getEmail() + ", address=" + ALICE.getAddress() + ", tags=" + ALICE.getTags() + "}";
         assertEquals(expected, ALICE.toString());
     }
+
+    @Test
+    public void stories_emptyInitially() {
+        Person p = new PersonBuilder().build();
+        assertEquals(0, p.getStories().size());
+    }
 }

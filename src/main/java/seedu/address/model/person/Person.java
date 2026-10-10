@@ -2,12 +2,15 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.story.Story;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -24,6 +27,9 @@ public class Person {
     // Data fields
     private final Address address;
     private final Set<Tag> tags = new HashSet<>();
+
+    // Assigned stories
+    private final List<Story> stories = new ArrayList<>();
 
     /**
      * Every field must be present and not null.
@@ -51,6 +57,14 @@ public class Person {
 
     public Address getAddress() {
         return address;
+    }
+
+    /**
+     * Returns an immutable list of stories, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public List<Story> getStories() {
+        return List.copyOf(stories);
     }
 
     /**
