@@ -60,12 +60,20 @@ public class Person {
     }
 
     /**
+     * Returns whether the story has been assigned to this Person
+     */
+    public boolean isAssigned(Story story) {
+        return stories.contains(story);
+    }
+
+    /**
      * Returns an immutable list of stories, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
     public List<Story> getStories() {
         return List.copyOf(stories);
     }
+
 
     /**
      * Returns an immutable tag set, which throws {@code UnsupportedOperationException}

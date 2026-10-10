@@ -50,6 +50,13 @@ public class Story {
     }
 
     /**
+     * Returns whether the contact has been assigned to this Story
+     */
+    public boolean isAssigned(Person contact) {
+        return contacts.contains(contact);
+    }
+
+    /**
      * Returns an immutable tag set, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */

@@ -12,8 +12,12 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryName;
 import seedu.address.testutil.PersonBuilder;
 
 public class PersonTest {
@@ -101,5 +105,12 @@ public class PersonTest {
     public void stories_emptyInitially() {
         Person p = new PersonBuilder().build();
         assertEquals(0, p.getStories().size());
+    }
+
+    @Test
+    public void isAssigned_notAssigned_returnsFalse() {
+        Person p = new PersonBuilder().build();
+        Story s = new Story(new StoryName("test"), Set.of());
+        assertFalse(p.isAssigned(s));
     }
 }
