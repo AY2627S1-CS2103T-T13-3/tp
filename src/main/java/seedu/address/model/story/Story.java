@@ -2,12 +2,15 @@ package seedu.address.model.story;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.person.Person;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -22,6 +25,9 @@ public class Story {
     // Data fields
     private final Set<Tag> tags = new HashSet<>();
 
+    // Assigned contacts
+    private final List<Person> contacts = new ArrayList<>();
+
     /**
      * Every field must be present and not null.
      */
@@ -33,6 +39,33 @@ public class Story {
 
     public StoryName getName() {
         return name;
+    }
+
+    /**
+     * Returns an immutable list of contacts, which throws {@code UnsupportedOperationException}
+     * if modification is attempted.
+     */
+    public List<Person> getContacts() {
+        return List.copyOf(contacts);
+    }
+
+    /**
+     * Returns whether the contact has been assigned to this Story
+     */
+    public boolean isAssigned(Person contact) {
+        return contacts.contains(contact);
+    }
+
+    /**
+     * Assign a contact to this Story, and this story to the contact.
+     * Does nothing if the contact has already been assigned.
+     */
+    public void assign(Person contact) {
+        if (isAssigned(contact)) {
+            return;
+        }
+        contacts.add(contact);
+        contact.assign(this);
     }
 
     /**
