@@ -15,8 +15,8 @@ public class UnassignCommand extends Command {
     public static final String COMMAND_WORD = "unassign";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Unassigns a contact from the story. "
             + "Parameters: "
-            + PREFIX_CONTACTINDEX + " CONTACT's NAME "
-            + PREFIX_STORYINDEX + "STORY's NAME "
+            + PREFIX_CONTACTINDEX + " CONTACT's INDEX "
+            + PREFIX_STORYINDEX + "STORY's INDEX "
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_CONTACTINDEX + "1 "
             + PREFIX_STORYINDEX + "1";

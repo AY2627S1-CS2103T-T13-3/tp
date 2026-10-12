@@ -30,8 +30,8 @@ public class AssignCommandParser implements Parser<AssignCommand> {
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_CONTACTINDEX, PREFIX_STORYINDEX);
-        Index storyIndex = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_CONTACTINDEX).get());
-        Index contactIndex = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_STORYINDEX).get());
+        Index storyIndex = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_STORYINDEX).get());
+        Index contactIndex = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_CONTACTINDEX).get());
 
 
         return new AssignCommand(storyIndex, contactIndex);
