@@ -5,6 +5,7 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STORYINDEX;
 
 import seedu.address.commons.core.index.Index;
+import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.Model;
 
 /**
@@ -42,5 +43,27 @@ public class AssignCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
         return new CommandResult(MESSAGE_SUCCESS);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+
+        if (!(other instanceof AssignCommand otherAssignCommand)) {
+            return false;
+        }
+
+        return storyIndex.equals(otherAssignCommand.storyIndex)
+                && contactIndex.equals(otherAssignCommand.contactIndex);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .add("storyIndex", storyIndex)
+                .add("contactIndex", contactIndex)
+                .toString();
     }
 }
