@@ -109,9 +109,6 @@ public class AddressBook implements ReadOnlyAddressBook {
 
         persons.setPerson(target, assignedPerson);
         stories.setStory(story, assignedStory);
-
-        System.out.println(persons);
-        System.out.println(stories);
     }
 
     /**
@@ -127,9 +124,6 @@ public class AddressBook implements ReadOnlyAddressBook {
 
         persons.setPerson(target, unassignedPerson);
         stories.setStory(story, unassignedStory);
-
-        System.out.println(persons);
-        System.out.println(stories);
     }
 
     /**
