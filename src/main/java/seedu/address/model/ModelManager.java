@@ -110,6 +110,20 @@ public class ModelManager implements Model {
         updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
     }
 
+    @Override
+    public void assignStory(Person target, Story story) {
+        requireAllNonNull(target, story);
+
+        addressBook.assignStory(target, story);
+    }
+
+    @Override
+    public void unassignStory(Person target, Story story) {
+        requireAllNonNull(target, story);
+
+        addressBook.unassignStory(target, story);
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     /**
