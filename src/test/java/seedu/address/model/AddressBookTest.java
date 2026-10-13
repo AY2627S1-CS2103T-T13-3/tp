@@ -7,10 +7,12 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalPersons.BOB;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +20,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
+import seedu.address.model.person.exceptions.PersonNotFoundException;
 import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryName;
+import seedu.address.model.story.exceptions.StoryNotFoundException;
 import seedu.address.testutil.PersonBuilder;
 
 public class AddressBookTest {
@@ -88,6 +93,26 @@ public class AddressBookTest {
         String expected = AddressBook.class.getCanonicalName() + "{persons=" + addressBook.getPersonList()
                 + ", stories=" + addressBook.getStoryList() + "}";
         assertEquals(expected, addressBook.toString());
+    }
+
+    @Test
+    public void removePerson_personNotAdded_throws() {
+        AddressBook newData = new AddressBook();
+        newData.addPerson(ALICE);
+        assertThrows(PersonNotFoundException.class, () -> newData.removePerson(BOB));
+        assertTrue(newData.hasPerson(ALICE));
+        assertFalse(newData.hasPerson(BOB));
+    }
+
+    @Test
+    public void removeStory_storyNotAdded_throws() {
+        AddressBook newData = new AddressBook();
+        Story s = new Story(new StoryName("ant"), Set.of());
+        Story s1 = new Story(new StoryName("bee"), Set.of());
+        newData.addStory(s);
+        assertThrows(StoryNotFoundException.class, () -> newData.removeStory(s1));
+        assertTrue(newData.hasStory(s));
+        assertFalse(newData.hasStory(s1));
     }
 
     /**
