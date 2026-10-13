@@ -30,10 +30,19 @@ public class StoryTest {
     public void assign_newContact_addsContact() {
         Story s = new Story(new StoryName("test"), Set.of());
         Person p = new PersonBuilder().build();
-        s.assign(p);
-        assertTrue(p.isAssigned(s));
-        assertTrue(s.isAssigned(p));
-        assertTrue(p.getStories().contains(s));
-        assertTrue(s.getContacts().contains(p));
+        Story s1 = s.assign(p);
+        assertFalse(p.isAssigned(s));
+        assertTrue(s1.isAssigned(p));
+        assertFalse(s.isAssigned(p));
+    }
+
+    @Test
+    public void unassign_notAssigned_doesNothing() {
+        Story s = new Story(new StoryName("test"), Set.of());
+        Person a = new PersonBuilder().withName("al").build();
+        Person b = new PersonBuilder().withName("bob").build();
+        Story s1 = s.assign(a).unassign(b);
+        assertTrue(s1.isAssigned(a));
+        assertFalse(s1.isAssigned(b));
     }
 }
