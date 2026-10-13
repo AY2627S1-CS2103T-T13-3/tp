@@ -149,6 +149,7 @@ public class Story {
         return new ToStringBuilder(this)
                 .add("name", name)
                 .add("tags", tags)
+                .add("contacts", contacts)
                 .toString();
     }
 

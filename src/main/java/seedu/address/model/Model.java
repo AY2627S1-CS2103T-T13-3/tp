@@ -79,6 +79,20 @@ public interface Model {
      */
     void addStory(Story story);
 
+    /**
+     * Assigns the given contact to the given story
+     * {@code target} must exist in the address book.
+     * {@code story} must exist in the address book.
+     */
+    void assignStory(Person target, Story story);
+
+    /**
+     * Unassigns the given contact from the given story
+     * {@code target} must exist in the address book.
+     * {@code story} must exist in the address book.
+     */
+    void unassignStory(Person target, Story story);
+
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
 
