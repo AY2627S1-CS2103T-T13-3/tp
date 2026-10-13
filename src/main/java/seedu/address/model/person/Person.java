@@ -79,6 +79,18 @@ public class Person {
     }
 
     /**
+     * Unassigns a story from this contact, and this contact from the story.
+     * Does nothing if the story has already been unassigned.
+     */
+    public void unassign(Story story) {
+        if (!isAssigned(story)) {
+            return;
+        }
+        stories.remove(story);
+        story.unassign(this);
+    }
+
+    /**
      * Returns an immutable list of stories, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */

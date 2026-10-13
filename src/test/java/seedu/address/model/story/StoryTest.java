@@ -36,4 +36,15 @@ public class StoryTest {
         assertTrue(p.getStories().contains(s));
         assertTrue(s.getContacts().contains(p));
     }
+
+    @Test
+    public void unassign_notAssigned_doesNothing() {
+        Story s = new Story(new StoryName("test"), Set.of());
+        Person a = new PersonBuilder().withName("al").build();
+        Person b = new PersonBuilder().withName("bob").build();
+        s.assign(a);
+        s.unassign(b);
+        assertTrue(s.isAssigned(a));
+        assertFalse(s.isAssigned(b));
+    }
 }
