@@ -1,20 +1,19 @@
 package seedu.address.logic.parser;
 
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+
 import seedu.address.commons.core.index.Index;
-import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.DeleteStoryCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-
 /**
- * Parses input arguments and creates a new DeleteCommand object
+ * Parses input arguments and creates a new DeleteStoryCommand object
  */
 public class DeleteStoryCommandParser implements Parser<DeleteStoryCommand> {
 
     /**
-     * Parses the given {@code String} of arguments in the context of the DeleteCommand
-     * and returns a DeleteCommand object for execution.
+     * Parses the given {@code String} of arguments in the context of the DeleteStoryCommand
+     * and returns a DeleteStoryCommand object for execution.
      * @throws ParseException if the user input does not conform to the expected format
      */
     public DeleteStoryCommand parse(String args) throws ParseException {

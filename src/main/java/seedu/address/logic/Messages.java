@@ -50,6 +50,9 @@ public class Messages {
         person.getTags().forEach(builder::append);
         return builder.toString();
     }
+    /**
+     * Formats the {@code story} for display to the user.
+     */
     public static String formatStory(Story story) {
         // TODO
         return "Not implemented";
