@@ -2,14 +2,15 @@ package seedu.address.model.story;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.tag.Tag;
 
@@ -26,15 +27,23 @@ public class Story {
     private final Set<Tag> tags = new HashSet<>();
 
     // Assigned contacts
-    private final List<Person> contacts = new ArrayList<>();
+    private final List<Name> contacts;
+
+    /**
+     * Every field except contacts must be present and not null.
+     */
+    public Story(StoryName name, Set<Tag> tags) {
+        this(name, tags, List.of());
+    }
 
     /**
      * Every field must be present and not null.
      */
-    public Story(StoryName name, Set<Tag> tags) {
+    public Story(StoryName name, Set<Tag> tags, List<Name> contacts) {
         requireAllNonNull(name, tags);
         this.name = name;
         this.tags.addAll(tags);
+        this.contacts = contacts;
     }
 
     public StoryName getName() {
@@ -45,7 +54,7 @@ public class Story {
      * Returns an immutable list of contacts, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
-    public List<Person> getContacts() {
+    public List<Name> getContacts() {
         return List.copyOf(contacts);
     }
 
@@ -53,31 +62,40 @@ public class Story {
      * Returns whether the contact has been assigned to this Story
      */
     public boolean isAssigned(Person contact) {
-        return contacts.contains(contact);
+        return contacts.contains(contact.getName());
     }
 
     /**
-     * Assign a contact to this Story, and this story to the contact.
-     * Does nothing if the contact has already been assigned.
+     * Assigns a contact to this story, but does not assign this story to the contact.
+     * Does nothing and if the contact has already been assigned.
+     * @return  An updated Story with the assigned contact
      */
-    public void assign(Person contact) {
+    public Story assign(Person contact) {
         if (isAssigned(contact)) {
-            return;
+            return this;
         }
-        contacts.add(contact);
-        contact.assign(this);
+        List<Name> updatedContacts = IntStream
+                .range(0, contacts.size() + 1)
+                .mapToObj(idx -> idx < contacts.size() ? contacts.get(idx) : contact.getName())
+                .toList();
+        return new Story(name, tags, updatedContacts);
     }
 
     /**
-     * Unassigns a contact from this Story, and this story from the contact.
+     * Unassigns a contact from this story, but does not unassign this story from the contact.
      * Does nothing if the contact has already been unassigned.
+     * @return  An updated Story with the assigned contact
+     *
      */
-    public void unassign(Person contact) {
+    public Story unassign(Person contact) {
         if (!isAssigned(contact)) {
-            return;
+            return this;
         }
-        contacts.remove(contact);
-        contact.unassign(this);
+        Name removedContactName = contact.getName();
+        List<Name> updatedContacts = contacts.stream()
+                .filter(contactName -> !removedContactName.equals(contactName))
+                .toList();
+        return new Story(name, tags, updatedContacts);
     }
 
     /**

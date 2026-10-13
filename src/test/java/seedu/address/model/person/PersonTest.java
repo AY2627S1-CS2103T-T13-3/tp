@@ -118,11 +118,10 @@ public class PersonTest {
     public void assign_newStory_addsStory() {
         Person p = new PersonBuilder().build();
         Story s = new Story(new StoryName("test"), Set.of());
-        p.assign(s);
-        assertTrue(p.isAssigned(s));
-        assertTrue(s.isAssigned(p));
-        assertTrue(p.getStories().contains(s));
-        assertTrue(s.getContacts().contains(p));
+        Person p1 = p.assign(s);
+        assertTrue(p1.isAssigned(s));
+        assertFalse(s.isAssigned(p));
+        assertFalse(p.isAssigned(s));
     }
 
     @Test
@@ -130,9 +129,8 @@ public class PersonTest {
         Story a = new Story(new StoryName("ant"), Set.of());
         Story b = new Story(new StoryName("blu"), Set.of());
         Person p = new PersonBuilder().build();
-        p.assign(a);
-        p.unassign(b);
-        assertTrue(p.isAssigned(a));
-        assertFalse(p.isAssigned(b));
+        Person p1 = p.assign(a).unassign(b);
+        assertTrue(p1.isAssigned(a));
+        assertFalse(p1.isAssigned(b));
     }
 }

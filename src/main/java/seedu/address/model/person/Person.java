@@ -2,15 +2,16 @@ package seedu.address.model.person;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -29,19 +30,30 @@ public class Person {
     private final Set<Tag> tags = new HashSet<>();
 
     // Assigned stories
-    private final List<Story> stories = new ArrayList<>();
+    private final List<StoryName> stories;
+
+    /**
+     * Every field except stories must be present and not null.
+     * Initialises with no assigned stories.
+     */
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
+        this(name, phone, email, address, tags, List.of());
+
+    }
 
     /**
      * Every field must be present and not null.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        requireAllNonNull(name, phone, email, address, tags);
+    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, List<StoryName> stories) {
+        requireAllNonNull(name, phone, email, address, tags, stories);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
         this.tags.addAll(tags);
+        this.stories = stories;
     }
+
 
     public Name getName() {
         return name;
@@ -63,38 +75,47 @@ public class Person {
      * Returns whether the story has been assigned to this Person
      */
     public boolean isAssigned(Story story) {
-        return stories.contains(story);
+        return stories.contains(story.getName());
     }
 
     /**
-     * Assigns a story to this Person, and this Person to the story.
-     * Does nothing if the story has already been assigned.
+     * Assigns a story to this Person, but does not assign this Person to the story.
+     * Does nothing and if the story has already been assigned.
+     * @return  An updated Person with the assigned story
      */
-    public void assign(Story story) {
+    public Person assign(Story story) {
         if (isAssigned(story)) {
-            return;
+            return this;
         }
-        stories.add(story);
-        story.assign(this);
+        List<StoryName> updatedStories = IntStream
+                .range(0, stories.size() + 1)
+                .mapToObj(idx -> idx < stories.size() ? stories.get(idx) : story.getName())
+                .toList();
+        return new Person(name, phone, email, address, tags, updatedStories);
     }
 
     /**
-     * Unassigns a story from this contact, and this contact from the story.
+     * Unassigns a story from this contact, but does not unassign this contact from the story.
      * Does nothing if the story has already been unassigned.
+     * @return  An updated Person with the assigned story
+     *
      */
-    public void unassign(Story story) {
+    public Person unassign(Story story) {
         if (!isAssigned(story)) {
-            return;
+            return this;
         }
-        stories.remove(story);
-        story.unassign(this);
+        StoryName removedStoryName = story.getName();
+        List<StoryName> updatedStories = stories.stream()
+                        .filter(storyName -> !removedStoryName.equals(storyName))
+                        .toList();
+        return new Person(name, phone, email, address, tags, updatedStories);
     }
 
     /**
      * Returns an immutable list of stories, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
-    public List<Story> getStories() {
+    public List<StoryName> getStories() {
         return List.copyOf(stories);
     }
 
