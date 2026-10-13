@@ -50,6 +50,12 @@ public interface Model {
     void deletePerson(Person target);
 
     /**
+     * Deletes the given story.
+     * The story must exist in the address book.
+     */
+    default void deleteStory(Story target) {}
+
+    /**
      * Adds the given person.
      * {@code person} must not already exist in the address book.
      */
