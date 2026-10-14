@@ -27,6 +27,7 @@ public class Person {
 
     // Data fields
     private final Address address;
+    private final Remark remark;
     private final Set<Tag> tags = new HashSet<>();
 
     // Assigned stories
@@ -36,20 +37,21 @@ public class Person {
      * Every field except stories must be present and not null.
      * Initialises with no assigned stories.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags) {
-        this(name, phone, email, address, tags, List.of());
-
+    public Person(Name name, Phone phone, Email email, Address address, Remark remark, Set<Tag> tags) {
+        this(name, phone, email, address, remark, tags, List.of());
     }
 
     /**
      * Every field must be present and not null.
      */
-    public Person(Name name, Phone phone, Email email, Address address, Set<Tag> tags, List<StoryName> stories) {
-        requireAllNonNull(name, phone, email, address, tags, stories);
+    public Person(Name name, Phone phone, Email email, Address address, Remark remark, Set<Tag> tags,
+            List<StoryName> stories) {
+        requireAllNonNull(name, phone, email, address, remark, tags, stories);
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
+        this.remark = remark;
         this.tags.addAll(tags);
         this.stories = stories;
     }
@@ -69,6 +71,10 @@ public class Person {
 
     public Address getAddress() {
         return address;
+    }
+
+    public Remark getRemark() {
+        return remark;
     }
 
     /**
@@ -91,7 +97,7 @@ public class Person {
                 .range(0, stories.size() + 1)
                 .mapToObj(idx -> idx < stories.size() ? stories.get(idx) : story.getName())
                 .toList();
-        return new Person(name, phone, email, address, tags, updatedStories);
+        return new Person(name, phone, email, address, remark, tags, updatedStories);
     }
 
     /**
@@ -108,7 +114,7 @@ public class Person {
         List<StoryName> updatedStories = stories.stream()
                         .filter(storyName -> !removedStoryName.equals(storyName))
                         .toList();
-        return new Person(name, phone, email, address, tags, updatedStories);
+        return new Person(name, phone, email, address, remark, tags, updatedStories);
     }
 
     /**
