@@ -18,6 +18,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
+import seedu.address.model.story.Story;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
 /**
@@ -105,10 +106,12 @@ public class CommandTestUtil {
         // only do so by copying its components.
         AddressBook expectedAddressBook = new AddressBook(actualModel.getAddressBook());
         List<Person> expectedFilteredList = new ArrayList<>(actualModel.getFilteredPersonList());
+        List<Story> expectedFilteredStoryList = new ArrayList<>(actualModel.getFilteredStoryList());
 
         assertThrows(CommandException.class, expectedMessage, () -> command.execute(actualModel));
         assertEquals(expectedAddressBook, actualModel.getAddressBook());
         assertEquals(expectedFilteredList, actualModel.getFilteredPersonList());
+        assertEquals(expectedFilteredStoryList, actualModel.getFilteredStoryList());
     }
     /**
      * Updates {@code model}'s filtered list to show only the person at the given {@code targetIndex} in the
@@ -124,4 +127,18 @@ public class CommandTestUtil {
         assertEquals(1, model.getFilteredPersonList().size());
     }
 
+    /**
+     * Updates {@code model}'s filtered list to show only the story at the given {@code targetIndex} in the
+     * {@code model}'s address book.
+     */
+    public static void showStoryAtIndex(Model model, Index targetIndex) {
+        assertTrue(targetIndex.getZeroBased() < model.getFilteredStoryList().size());
+
+        Story story = model.getFilteredStoryList().get(targetIndex.getZeroBased());
+        model.updateFilteredStoryList(s -> s.equals(story));
+
+        assertEquals(1, model.getFilteredStoryList().size());
+    }
+
 }
+

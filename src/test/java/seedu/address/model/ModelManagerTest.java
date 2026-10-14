@@ -7,13 +7,19 @@ import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BENSON;
+import static seedu.address.testutil.TypicalPersons.BOB;
 
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
+import seedu.address.model.person.exceptions.PersonNotFoundException;
+import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryName;
+import seedu.address.model.story.exceptions.StoryNotFoundException;
 import seedu.address.testutil.AddressBookBuilder;
 
 public class ModelManagerTest {
@@ -66,6 +72,24 @@ public class ModelManagerTest {
     public void hasPerson_personInAddressBook_returnsTrue() {
         modelManager.addPerson(ALICE);
         assertTrue(modelManager.hasPerson(ALICE));
+    }
+
+    @Test
+    public void removePerson_personNotInAddressBook_throws() {
+        modelManager.addPerson(ALICE);
+        assertThrows(PersonNotFoundException.class, () -> modelManager.deletePerson(BOB));
+        assertTrue(modelManager.hasPerson(ALICE));
+        assertFalse(modelManager.hasPerson(BOB));
+    }
+
+    @Test
+    public void removeStory_storyNotInAddressBook_throws() {
+        Story s = new Story(new StoryName("ant"), Set.of());
+        Story s1 = new Story(new StoryName("bee"), Set.of());
+        modelManager.addStory(s);
+        assertThrows(StoryNotFoundException.class, () -> modelManager.deleteStory(s1));
+        assertTrue(modelManager.hasStory(s));
+        assertFalse(modelManager.hasStory(s1));
     }
 
     @Test

@@ -153,6 +153,11 @@ public class AddressBook implements ReadOnlyAddressBook {
      * {@code key} must exist in the address book.
      */
     public void removePerson(Person personKey) {
+        stories.setStories(
+                getStoryList().stream()
+                        .map(story -> story.unassign(personKey))
+                        .toList()
+        );
         persons.remove(personKey);
     }
 
@@ -161,6 +166,11 @@ public class AddressBook implements ReadOnlyAddressBook {
      * {@code key} must exist in the address book.
      */
     public void removeStory(Story storyKey) {
+        persons.setPersons(
+                getPersonList().stream()
+                        .map(contact -> contact.unassign(storyKey))
+                        .toList()
+        );
         stories.remove(storyKey);
     }
 
