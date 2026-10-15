@@ -1,4 +1,3 @@
-
 package seedu.address.storage;
 
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.person.Name;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
@@ -25,16 +25,32 @@ class JsonAdaptedStory {
     private final String name;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
 
+    @JsonProperty("contacts")
+    private final List<JsonAdaptedName> contacts = new ArrayList<>();
+
     /**
      * Constructs a JsonAdaptedStory with the given details.
+     */
+    public JsonAdaptedStory(String name, List<JsonAdaptedTag> tags) {
+        this(name, tags, null);
+    }
+
+    /**
+     * Constructs a JsonAdaptedStory with assigned contacts.
      */
     @JsonCreator
     public JsonAdaptedStory(
             @JsonProperty("name") String name,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags) {
+            @JsonProperty("tags") List<JsonAdaptedTag> tags,
+            @JsonProperty("contacts") List<JsonAdaptedName> contacts) {
         this.name = name;
+
         if (tags != null) {
             this.tags.addAll(tags);
+        }
+
+        if (contacts != null) {
+            this.contacts.addAll(contacts);
         }
     }
 
@@ -43,9 +59,14 @@ class JsonAdaptedStory {
      */
     public JsonAdaptedStory(Story source) {
         name = source.getName().fullName;
+
         source.getTags().stream()
                 .map(JsonAdaptedTag::new)
                 .forEach(tags::add);
+
+        source.getContacts().stream()
+                .map(JsonAdaptedName::new)
+                .forEach(contacts::add);
     }
 
     /**
@@ -72,6 +93,15 @@ class JsonAdaptedStory {
             modelTags.add(tag.toModelType());
         }
 
-        return new Story(new StoryName(name), modelTags);
+        List<Name> modelContacts = new ArrayList<>();
+        for (JsonAdaptedName contact : contacts) {
+            if (contact == null) {
+                throw new IllegalValueException(
+                        "Story contains an invalid contact.");
+            }
+            modelContacts.add(contact.toModelType());
+        }
+
+        return new Story(new StoryName(name), modelTags, modelContacts);
     }
 }
