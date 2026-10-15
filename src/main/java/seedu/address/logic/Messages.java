@@ -38,7 +38,6 @@ public class Messages {
      * Formats the {@code person} for display to the user.
      */
     public static String format(Person person) {
-        // TODO: show stories
         final StringBuilder builder = new StringBuilder();
         builder.append(person.getName())
                 .append("; Phone: ")
@@ -65,13 +64,6 @@ public class Messages {
         builder.append("; Contacts: ");
         story.getContacts().forEach(contact -> builder.append("[").append(contact).append("]"));
         return builder.toString();
-    }
-    /**
-     * Formats the {@code story} for display to the user.
-     */
-    public static String formatStory(Story story) {
-        // TODO
-        return "Not implemented";
     }
 
 }
