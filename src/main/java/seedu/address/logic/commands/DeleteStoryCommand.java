@@ -42,7 +42,7 @@ public class DeleteStoryCommand extends Command {
 
         Story storyToDelete = lastShownList.get(targetIndex.getZeroBased());
         model.deleteStory(storyToDelete);
-        return new CommandResult(String.format(MESSAGE_DELETE_STORY_SUCCESS, Messages.formatStory(storyToDelete)));
+        return new CommandResult(String.format(MESSAGE_DELETE_STORY_SUCCESS, Messages.format(storyToDelete)));
     }
 
     @Override
