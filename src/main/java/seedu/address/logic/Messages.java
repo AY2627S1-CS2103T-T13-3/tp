@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import seedu.address.logic.parser.Prefix;
 import seedu.address.model.person.Person;
+import seedu.address.model.story.Story;
 
 /**
  * Container for user visible messages.
@@ -17,6 +18,7 @@ public class Messages {
     public static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid.";
     public static final String MESSAGE_INVALID_STORY_DISPLAYED_INDEX = "The story index provided is invalid.";
     public static final String MESSAGE_PERSONS_LISTED_OVERVIEW = "%1$d person(s) listed!";
+    public static final String MESSAGE_STORIES_LISTED_OVERVIEW = "%1$d story(ies) listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
                 "Multiple values specified for the following single-valued field(s): ";
 
@@ -46,6 +48,21 @@ public class Messages {
                 .append(person.getAddress())
                 .append("; Tags: ");
         person.getTags().forEach(builder::append);
+        builder.append("; Stories: ");
+        person.getStories().forEach(story -> builder.append("[").append(story).append("]"));
+        return builder.toString();
+    }
+
+    /**
+     * Formats the {@code story} for display to the user.
+     */
+    public static String format(Story story) {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(story.getName())
+                .append("; Tags: ");
+        story.getTags().forEach(builder::append);
+        builder.append("; Contacts: ");
+        story.getContacts().forEach(contact -> builder.append("[").append(contact).append("]"));
         return builder.toString();
     }
 

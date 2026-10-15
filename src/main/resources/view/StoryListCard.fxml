@@ -28,6 +28,8 @@
         <Label fx:id="name" text="\$first" styleClass="cell_big_label" />
       </HBox>
       <FlowPane fx:id="tags" />
+      <Label fx:id="contactCount" styleClass="cell_small_label" text="\$contactCount" />
+      <Label fx:id="contacts" styleClass="cell_small_label" text="\$contacts" />
     </VBox>
   </GridPane>
 </HBox>

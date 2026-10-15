@@ -1,13 +1,16 @@
 package seedu.address.ui;
 
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import seedu.address.model.person.Name;
 import seedu.address.model.story.Story;
+
 /**
  * A UI component that displays information of a {@code Story}.
  */
@@ -33,6 +36,10 @@ public class StoryCard extends UiPart<Region> {
     private Label id;
     @FXML
     private FlowPane tags;
+    @FXML
+    private Label contactCount;
+    @FXML
+    private Label contacts;
 
     /**
      * Creates a {@code StoryCard} with the given {@code Story} and index to display.
@@ -45,5 +52,16 @@ public class StoryCard extends UiPart<Region> {
         story.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+        int count = story.getContacts().size();
+        contactCount.setText(count + (count == 1 ? " contact" : " contacts"));
+        if (story.getContacts().isEmpty()) {
+            contacts.setText("Contacts: (none)");
+        } else {
+            String contactsText = story.getContacts().stream()
+                    .map(Name::toString)
+                    .collect(Collectors.joining(", "));
+            contacts.setText("Contacts: " + contactsText);
+        }
     }
 }
+
