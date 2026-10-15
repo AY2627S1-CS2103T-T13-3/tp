@@ -1,6 +1,7 @@
 package seedu.address.ui;
 
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -8,6 +9,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import seedu.address.model.person.Person;
+import seedu.address.model.story.StoryName;
 
 /**
  * A UI component that displays information of a {@code Person}.
@@ -40,6 +42,8 @@ public class PersonCard extends UiPart<Region> {
     private Label email;
     @FXML
     private FlowPane tags;
+    @FXML
+    private Label stories;
 
     /**
      * Creates a {@code PersonCard} with the given {@code Person} and index to display.
@@ -55,5 +59,14 @@ public class PersonCard extends UiPart<Region> {
         person.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
                 .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+        if (person.getStories().isEmpty()) {
+            stories.setText("Stories: (none)");
+        } else {
+            String storiesText = person.getStories().stream()
+                    .map(StoryName::toString)
+                    .collect(Collectors.joining(", "));
+            stories.setText("Stories: " + storiesText);
+        }
     }
 }
+

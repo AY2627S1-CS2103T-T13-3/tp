@@ -350,3 +350,20 @@
     -fx-background-radius: 2;
     -fx-font-size: 11;
 }
+
+.panel-header {
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-font-size: 13pt;
+    -fx-text-fill: white;
+    -fx-padding: 0 0 8 2;
+}
+
+#stories, #contacts {
+    -fx-font-style: italic;
+    -fx-opacity: 0.85;
+}
+
+#contactCount {
+    -fx-opacity: 0.9;
+}
+
