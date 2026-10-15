@@ -33,7 +33,7 @@ public class DeleteStoryCommandTest {
         DeleteStoryCommand deleteStoryCommand = new DeleteStoryCommand(INDEX_FIRST_STORY);
 
         String expectedMessage = String.format(DeleteStoryCommand.MESSAGE_DELETE_STORY_SUCCESS,
-                Messages.formatStory(storyToDelete));
+                Messages.format(storyToDelete));
 
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deleteStory(storyToDelete);
@@ -57,7 +57,7 @@ public class DeleteStoryCommandTest {
         DeleteStoryCommand deleteStoryCommand = new DeleteStoryCommand(INDEX_FIRST_STORY);
 
         String expectedMessage = String.format(DeleteStoryCommand.MESSAGE_DELETE_STORY_SUCCESS,
-                Messages.formatStory(storyToDelete));
+                Messages.format(storyToDelete));
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.deleteStory(storyToDelete);
