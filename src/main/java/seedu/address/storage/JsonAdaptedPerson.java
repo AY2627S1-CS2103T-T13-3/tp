@@ -15,6 +15,7 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -29,20 +30,38 @@ class JsonAdaptedPerson {
     private final String email;
     private final String address;
     private final List<JsonAdaptedTag> tags = new ArrayList<>();
+    private final List<JsonAdaptedStoryName> stories = new ArrayList<>();
 
     /**
      * Constructs a {@code JsonAdaptedPerson} with the given person details.
      */
+    public JsonAdaptedPerson(String name, String phone, String email,
+                             String address, List<JsonAdaptedTag> tags) {
+        this(name, phone, email, address, tags, null);
+    }
+
+    /**
+     * Constructs a {@code JsonAdaptedPerson} with the given person details
+     * and assigned stories.
+     */
     @JsonCreator
-    public JsonAdaptedPerson(@JsonProperty("name") String name, @JsonProperty("phone") String phone,
-            @JsonProperty("email") String email, @JsonProperty("address") String address,
-            @JsonProperty("tags") List<JsonAdaptedTag> tags) {
+    public JsonAdaptedPerson(@JsonProperty("name") String name,
+                             @JsonProperty("phone") String phone,
+                             @JsonProperty("email") String email,
+                             @JsonProperty("address") String address,
+                             @JsonProperty("tags") List<JsonAdaptedTag> tags,
+                             @JsonProperty("stories") List<JsonAdaptedStoryName> stories) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.address = address;
+
         if (tags != null) {
             this.tags.addAll(tags);
+        }
+
+        if (stories != null) {
+            this.stories.addAll(stories);
         }
     }
 
@@ -54,8 +73,13 @@ class JsonAdaptedPerson {
         phone = source.getPhone().value;
         email = source.getEmail().value;
         address = source.getAddress().value;
+
         tags.addAll(source.getTags().stream()
                 .map(JsonAdaptedTag::new)
+                .collect(Collectors.toList()));
+
+        stories.addAll(source.getStories().stream()
+                .map(JsonAdaptedStoryName::new)
                 .collect(Collectors.toList()));
     }
 
@@ -103,7 +127,18 @@ class JsonAdaptedPerson {
         final Address modelAddress = new Address(address);
 
         final Set<Tag> modelTags = new HashSet<>(personTags);
-        return new Person(modelName, modelPhone, modelEmail, modelAddress, modelTags);
-    }
 
+        // Convert assigned stories back into StoryName objects.
+        final List<StoryName> modelStories = new ArrayList<>();
+
+        for (JsonAdaptedStoryName story : stories) {
+            if (story == null) {
+                throw new IllegalValueException("Person contains an invalid story.");
+            }
+            modelStories.add(story.toModelType());
+        }
+
+        return new Person(modelName, modelPhone, modelEmail,
+                modelAddress, modelTags, modelStories);
+    }
 }
