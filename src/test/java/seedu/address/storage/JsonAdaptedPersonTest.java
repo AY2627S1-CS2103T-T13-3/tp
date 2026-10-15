@@ -16,6 +16,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.story.StoryName;
 
 public class JsonAdaptedPersonTest {
     private static final String INVALID_NAME = "R@chel";
@@ -107,4 +108,50 @@ public class JsonAdaptedPersonTest {
         assertThrows(IllegalValueException.class, person::toModelType);
     }
 
+    @Test
+    public void toModelType_validStories_returnsPersonWithStories() throws Exception {
+        List<JsonAdaptedStoryName> validStories = List.of(
+                new JsonAdaptedStoryName("Housing Investigation"),
+                new JsonAdaptedStoryName("Education Reform"));
+
+        JsonAdaptedPerson person = new JsonAdaptedPerson(
+                VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_TAGS, validStories);
+
+        List<StoryName> expectedStories = List.of(
+                new StoryName("Housing Investigation"),
+                new StoryName("Education Reform"));
+
+        assertEquals(expectedStories, person.toModelType().getStories());
+    }
+
+    @Test
+    public void toModelType_invalidStoryName_throwsIllegalValueException() {
+        List<JsonAdaptedStoryName> invalidStories =
+                List.of(new JsonAdaptedStoryName(""));
+
+        JsonAdaptedPerson person = new JsonAdaptedPerson(
+                VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_TAGS, invalidStories);
+
+        assertThrows(IllegalValueException.class, StoryName.MESSAGE_CONSTRAINTS, person::toModelType);
+    }
+
+    @Test
+    public void toModelType_nullStory_throwsIllegalValueException() {
+        List<JsonAdaptedStoryName> invalidStories = new ArrayList<>();
+        invalidStories.add(null);
+
+        JsonAdaptedPerson person = new JsonAdaptedPerson(
+                VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_TAGS, invalidStories);
+
+        assertThrows(IllegalValueException.class,
+                "Person contains an invalid story.", person::toModelType);
+    }
+
+    @Test
+    public void toModelType_noStories_returnsPersonWithEmptyStories() throws Exception {
+        JsonAdaptedPerson person = new JsonAdaptedPerson(
+                VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, VALID_TAGS);
+
+        assertEquals(List.of(), person.toModelType().getStories());
+    }
 }
