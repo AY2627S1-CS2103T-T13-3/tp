@@ -135,6 +135,14 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(editedPerson);
 
         persons.setPerson(target, editedPerson);
+        stories.setStories(
+                getStoryList().stream()
+                        .map(story -> story.isAssigned(target)
+                                ? story.unassign(target).assign(editedPerson)
+                                : story
+                        )
+                        .toList()
+        );
     }
 
     /**
@@ -146,6 +154,14 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(editedStory);
 
         stories.setStory(target, editedStory);
+        persons.setPersons(
+                getPersonList().stream()
+                        .map(person -> person.isAssigned(target)
+                                ? person.unassign(target).assign(editedStory)
+                                : person
+                        )
+                        .toList()
+        );
     }
 
     /**
