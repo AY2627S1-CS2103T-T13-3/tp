@@ -55,11 +55,11 @@ public class ListStoriesCommandTest {
         Person person = model.getFilteredPersonList().get(
                 INDEX_FIRST_PERSON.getZeroBased());
         Story story = model.getFilteredStoryList().get(0);
+        Person assignedPerson = person.assign(story);
+        Story assignedStory = story.assign(person);
 
-        model.assignStory(person, story);
-
-        Person assignedPerson = model.getFilteredPersonList().get(
-                INDEX_FIRST_PERSON.getZeroBased());
+        model.setPerson(person, assignedPerson);
+        model.setStory(story, assignedStory);
 
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.updateFilteredStoryList(

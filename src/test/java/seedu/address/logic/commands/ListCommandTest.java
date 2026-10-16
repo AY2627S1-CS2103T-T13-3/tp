@@ -51,10 +51,11 @@ public class ListCommandTest {
     public void execute_validStoryIndex_showsAssignedContacts() {
         Person person = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        Person assignedPerson = person.assign(story);
+        Story assignedStory = story.assign(person);
 
-        model.assignStory(person, story);
-
-        Story assignedStory = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        model.setPerson(person, assignedPerson);
+        model.setStory(story, assignedStory);
 
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.updateFilteredPersonList(p -> assignedStory.isAssigned(p));

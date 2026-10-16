@@ -71,7 +71,7 @@ public interface Model {
      * Deletes the given story.
      * The story must exist in the address book.
      */
-    default void deleteStory(Story target) {}
+    void deleteStory(Story target);
 
     /**
      * Adds the given story.
