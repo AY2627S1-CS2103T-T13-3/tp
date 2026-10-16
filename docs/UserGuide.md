@@ -19,9 +19,9 @@ This guide describes the features available as of release v1.3.
 
 1. Download the PressMemo `.jar` file from [here](https://github.com/AY2627S1-CS2103T-T13-3/tp/releases).
 
-1. Copy the file to the folder you want to use as the _home folder_ for PressMemo. The commands below assume the file is named `addressbook.jar`.
+1. Copy the file to the folder you want to use as the _home folder_ for PressMemo. The commands below assume the file is named `pressmemo.jar`.
 
-1. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar addressbook.jar`.<br>
+1. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar pressmemo.jar`.<br>
    A GUI with separate **CONTACTS** and **STORIES** panels should appear in a few seconds. On the first run, the app contains sample contacts and an empty story list.<br>
    The image below is a design mockup. Follow-up reminders and status fields shown in it are not available in this version; `list` shows contacts only.<br>
    ![Ui](images/Ui.png)
