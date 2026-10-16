@@ -1,7 +1,6 @@
 package seedu.address.model;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.List;
 import java.util.Objects;
@@ -94,36 +93,6 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void addStory(Story story) {
         stories.add(story);
-    }
-
-    /**
-     * Assigns the given contact to the given story
-     * {@code target} must exist in the address book.
-     * {@code story} must exist in the address book.
-     */
-    public void assignStory(Person target, Story story) {
-        requireAllNonNull(target, story);
-
-        Person assignedPerson = target.assign(story);
-        Story assignedStory = story.assign(target);
-
-        persons.setPerson(target, assignedPerson);
-        stories.setStory(story, assignedStory);
-    }
-
-    /**
-     * Unassigns the given contact from the given story
-     * {@code target} must exist in the address book.
-     * {@code story} must exist in the address book.
-     */
-    public void unassignStory(Person target, Story story) {
-        requireAllNonNull(target, story);
-
-        Person unassignedPerson = target.unassign(story);
-        Story unassignedStory = story.unassign(target);
-
-        persons.setPerson(target, unassignedPerson);
-        stories.setStory(story, unassignedStory);
     }
 
     /**

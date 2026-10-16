@@ -72,6 +72,8 @@ public class ModelManager implements Model {
         return addressBook;
     }
 
+    //=========== Person Operations ===========================================================================
+
     @Override
     public boolean hasPerson(Person person) {
         requireNonNull(person);
@@ -81,11 +83,6 @@ public class ModelManager implements Model {
     @Override
     public void deletePerson(Person target) {
         addressBook.removePerson(target);
-    }
-
-    @Override
-    public void deleteStory(Story target) {
-        addressBook.removeStory(target);
     }
 
     @Override
@@ -110,25 +107,22 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public void deleteStory(Story target) {
+        addressBook.removeStory(target);
+    }
+
+    @Override
     public void addStory(Story story) {
         addressBook.addStory(story);
         updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
     }
 
     @Override
-    public void assignStory(Person target, Story story) {
-        requireAllNonNull(target, story);
+    public void setStory(Story target, Story editedStory) {
+        requireAllNonNull(target, editedStory);
 
-        addressBook.assignStory(target, story);
+        addressBook.setStory(target, editedStory);
     }
-
-    @Override
-    public void unassignStory(Person target, Story story) {
-        requireAllNonNull(target, story);
-
-        addressBook.unassignStory(target, story);
-    }
-
     //=========== Filtered Person List Accessors =============================================================
 
     /**
@@ -146,6 +140,25 @@ public class ModelManager implements Model {
         filteredPersons.setPredicate(predicate);
     }
 
+    //=========== Filtered Story List Accessors =============================================================
+
+    /**
+     * Returns an unmodifiable view of the list of {@code Story} backed by the internal list of
+     * {@code addressBook}
+     */
+    @Override
+    public ObservableList<Story> getFilteredStoryList() {
+        return filteredStories;
+    }
+
+    @Override
+    public void updateFilteredStoryList(Predicate<Story> predicate) {
+        requireNonNull(predicate);
+        filteredStories.setPredicate(predicate);
+    }
+
+    //=========== Object Overrides =============================================================
+
     @Override
     public boolean equals(Object other) {
         if (other == this) {
@@ -161,21 +174,5 @@ public class ModelManager implements Model {
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons)
                 && filteredStories.equals(otherModelManager.filteredStories);
-    }
-
-    //=========== Filtered Story List Accessors =============================================================
-    /**
-     * Returns an unmodifiable view of the list of {@code Story} backed by the internal list of
-     * {@code addressBook}
-     */
-    @Override
-    public ObservableList<Story> getFilteredStoryList() {
-        return filteredStories;
-    }
-
-    @Override
-    public void updateFilteredStoryList(Predicate<Story> predicate) {
-        requireNonNull(predicate);
-        filteredStories.setPredicate(predicate);
     }
 }

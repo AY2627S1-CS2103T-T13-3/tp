@@ -50,12 +50,6 @@ public interface Model {
     void deletePerson(Person target);
 
     /**
-     * Deletes the given story.
-     * The story must exist in the address book.
-     */
-    default void deleteStory(Story target) {}
-
-    /**
      * Adds the given person.
      * {@code person} must not already exist in the address book.
      */
@@ -74,24 +68,23 @@ public interface Model {
     boolean hasStory(Story story);
 
     /**
+     * Deletes the given story.
+     * The story must exist in the address book.
+     */
+    default void deleteStory(Story target) {}
+
+    /**
      * Adds the given story.
      * {@code story} must not already exist in the address book.
      */
     void addStory(Story story);
 
     /**
-     * Assigns the given contact to the given story
+     * Replaces the given story {@code target} with {@code editedStory}.
      * {@code target} must exist in the address book.
-     * {@code story} must exist in the address book.
+     * The story identity of {@code editedStory} must not be the same as another existing story in the address book.
      */
-    void assignStory(Person target, Story story);
-
-    /**
-     * Unassigns the given contact from the given story
-     * {@code target} must exist in the address book.
-     * {@code story} must exist in the address book.
-     */
-    void unassignStory(Person target, Story story);
+    void setStory(Story target, Story editedStory);
 
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();

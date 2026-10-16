@@ -62,8 +62,11 @@ public class UnassignCommand extends Command {
 
         Person personToUnassign = lastShownContactList.get(contactIndex.getZeroBased());
         Story storyToUnassign = lastShownStoryList.get(storyIndex.getZeroBased());
+        Person unassignedPerson = personToUnassign.unassign(storyToUnassign);
+        Story unassignedStory = storyToUnassign.unassign(personToUnassign);
 
-        model.unassignStory(personToUnassign, storyToUnassign);
+        model.setPerson(personToUnassign, unassignedPerson);
+        model.setStory(storyToUnassign, unassignedStory);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         model.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
         return new CommandResult(String.format(MESSAGE_SUCCESS, personToUnassign.getName(), storyToUnassign.getName()));

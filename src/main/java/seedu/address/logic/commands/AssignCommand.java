@@ -62,8 +62,11 @@ public class AssignCommand extends Command {
 
         Person personToAssign = lastShownContactList.get(contactIndex.getZeroBased());
         Story storyToAssign = lastShownStoryList.get(storyIndex.getZeroBased());
+        Person assignedPerson = personToAssign.assign(storyToAssign);
+        Story assignedStory = storyToAssign.assign(personToAssign);
 
-        model.assignStory(personToAssign, storyToAssign);
+        model.setPerson(personToAssign, assignedPerson);
+        model.setStory(storyToAssign, assignedStory);
         model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
         model.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
         return new CommandResult(String.format(MESSAGE_SUCCESS, personToAssign.getName(), storyToAssign.getName()));
