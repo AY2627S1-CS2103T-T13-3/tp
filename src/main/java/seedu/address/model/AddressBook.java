@@ -146,6 +146,14 @@ public class AddressBook implements ReadOnlyAddressBook {
                         )
                         .toList()
         );
+        followups.setFollowups(
+                getFollowupList().stream()
+                        .map(fu -> fu.isFor(target)
+                            ? new Followup(fu.getDescription(), editedPerson)
+                            : fu
+                        )
+                        .toList()
+        );
     }
 
     /**
@@ -177,6 +185,11 @@ public class AddressBook implements ReadOnlyAddressBook {
                         .map(story -> story.unassign(personKey))
                         .toList()
         );
+        followups.setFollowups(
+                getFollowupList().stream()
+                        .filter(fu -> !fu.isFor(personKey))
+                        .toList()
+        );
         persons.remove(personKey);
     }
 
@@ -199,6 +212,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     public ObservableList<Followup> getFollowupList() {
         return followups.asUnmodifiableObservableList();
     }
+    // TODO other followup methods
 
     /**
      * Replaces the contents of the followups list with {@code followups}.
