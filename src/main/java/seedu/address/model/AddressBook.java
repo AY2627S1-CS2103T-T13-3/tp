@@ -8,6 +8,8 @@ import java.util.Objects;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.followup.Followup;
+import seedu.address.model.followup.UniqueFollowupList;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.UniquePersonList;
 import seedu.address.model.story.Story;
@@ -21,6 +23,7 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     private final UniquePersonList persons = new UniquePersonList();
     private final UniqueStoryList stories = new UniqueStoryList();
+    private final UniqueFollowupList followups = new UniqueFollowupList();
 
     public AddressBook() {}
 
@@ -188,6 +191,21 @@ public class AddressBook implements ReadOnlyAddressBook {
                         .toList()
         );
         stories.remove(storyKey);
+    }
+
+    //// followups
+
+    @Override
+    public ObservableList<Followup> getFollowupList() {
+        return followups.asUnmodifiableObservableList();
+    }
+
+    /**
+     * Replaces the contents of the followups list with {@code followups}.
+     * {@code followups} must not contain duplicate followups.
+     */
+    public void setFollowups(List<Followup> followups) {
+        this.followups.setFollowups(followups);
     }
 
 
