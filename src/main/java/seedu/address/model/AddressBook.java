@@ -149,7 +149,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         followups.setFollowups(
                 getFollowupList().stream()
                         .map(fu -> fu.isFor(target)
-                            ? new Followup(fu.getDescription(), editedPerson)
+                            ? new Followup(fu.getDescription(), editedPerson.getName())
                             : fu
                         )
                         .toList()

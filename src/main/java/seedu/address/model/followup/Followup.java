@@ -18,12 +18,12 @@ public class Followup {
     private final FollowupDescription description;
 
     // Linked contact
-    private final Person contact;
+    private final Name contact;
 
     /**
      * Every field must be present and not null.
      */
-    public Followup(FollowupDescription description, Person contact) {
+    public Followup(FollowupDescription description, Name contact) {
         requireAllNonNull(description, contact);
         this.description = description;
         this.contact = contact;
@@ -37,14 +37,14 @@ public class Followup {
      * Returns the {@code Name} of the linked contact
      */
     public Name getContact() {
-        return contact.getName();
+        return contact;
     }
 
     /**
      * Returns whether the contact is linked to this Followup
      */
     public boolean isFor(Person contact) {
-        return this.contact.equals(contact);
+        return this.contact.equals(contact.getName());
     }
 
     /**
