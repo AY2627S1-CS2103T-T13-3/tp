@@ -3,6 +3,7 @@ package seedu.address.ui;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
+import javafx.collections.ObservableListBase;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
@@ -17,6 +18,9 @@ import seedu.address.logic.Logic;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.followup.Followup;
+import seedu.address.model.followup.FollowupDescription;
+import seedu.address.model.person.Name;
 
 /**
  * The Main Window. Provides the basic application layout containing
@@ -35,6 +39,7 @@ public class MainWindow extends UiPart<Stage> {
     // Independent Ui parts residing in this Ui container
     private PersonListPanel personListPanel;
     private StoryListPanel storyListPanel;
+    private FollowupListPanel followupListPanel;
     private ResultDisplay resultDisplay;
     private HelpWindow helpWindow;
 
@@ -49,6 +54,9 @@ public class MainWindow extends UiPart<Stage> {
 
     @FXML
     private StackPane storyListPanelPlaceholder;
+
+    @FXML
+    private StackPane followupListPanelPlaceholder;
 
     @FXML
     private StackPane resultDisplayPlaceholder;
@@ -123,6 +131,20 @@ public class MainWindow extends UiPart<Stage> {
 
         storyListPanel = new StoryListPanel(logic.getFilteredStoryList());
         storyListPanelPlaceholder.getChildren().add(storyListPanel.getRoot());
+
+        followupListPanel = new FollowupListPanel(new ObservableListBase<Followup>() {
+            @Override
+            public Followup get(int index) {
+                return new Followup(new FollowupDescription("find wumpus at cell" + index),
+                        new Name("wumpus finder" + (10 - index)));
+            }
+
+            @Override
+            public int size() {
+                return 3;
+            }
+        });
+        followupListPanelPlaceholder.getChildren().add(followupListPanel.getRoot());
 
         resultDisplay = new ResultDisplay();
         resultDisplayPlaceholder.getChildren().add(resultDisplay.getRoot());
