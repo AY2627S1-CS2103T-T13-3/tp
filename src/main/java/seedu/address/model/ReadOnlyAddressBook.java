@@ -1,6 +1,7 @@
 package seedu.address.model;
 
 import javafx.collections.ObservableList;
+import seedu.address.model.followup.Followup;
 import seedu.address.model.person.Person;
 import seedu.address.model.story.Story;
 
@@ -20,4 +21,11 @@ public interface ReadOnlyAddressBook {
      * This list will not contain any duplicate stories.
      */
     ObservableList<Story> getStoryList();
+
+    /**
+     * Returns an unmodifiable view of the stories list.
+     * This list will not contain any duplicate stories.
+     */
+    ObservableList<Followup> getFollowupList();
+
 }

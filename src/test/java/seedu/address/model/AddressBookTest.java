@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.address.model.followup.Followup;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.model.person.exceptions.PersonNotFoundException;
@@ -54,7 +55,8 @@ public class AddressBookTest {
                 .build();
         List<Person> newPersons = List.of(ALICE, editedAlice);
         List<Story> newStories = List.of();
-        AddressBookStub newData = new AddressBookStub(newPersons, newStories);
+        List<Followup> newFollowups = List.of();
+        AddressBookStub newData = new AddressBookStub(newPersons, newStories, newFollowups);
 
         assertThrows(DuplicatePersonException.class, () -> addressBook.resetData(newData));
     }
@@ -121,8 +123,9 @@ public class AddressBookTest {
     private static class AddressBookStub implements ReadOnlyAddressBook {
         private final ObservableList<Person> persons = FXCollections.observableArrayList();
         private final ObservableList<Story> stories = FXCollections.observableArrayList();
+        private final ObservableList<Followup> followups = FXCollections.observableArrayList();
 
-        AddressBookStub(Collection<Person> persons, Collection<Story> stories) {
+        AddressBookStub(Collection<Person> persons, Collection<Story> stories, Collection<Followup> followups) {
             this.persons.setAll(persons);
             this.stories.setAll(stories);
         }
@@ -135,6 +138,11 @@ public class AddressBookTest {
         @Override
         public ObservableList<Story> getStoryList() {
             return stories;
+        }
+
+        @Override
+        public ObservableList<Followup> getFollowupList() {
+            return followups;
         }
     }
 

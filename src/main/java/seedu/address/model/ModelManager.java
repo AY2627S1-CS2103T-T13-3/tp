@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.followup.Followup;
 import seedu.address.model.person.Person;
 import seedu.address.model.story.Story;
 
@@ -23,6 +24,7 @@ public class ModelManager implements Model {
     private final UserPrefs userPrefs;
     private final FilteredList<Person> filteredPersons;
     private final FilteredList<Story> filteredStories;
+    private final FilteredList<Followup> filteredFollowups;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -36,6 +38,7 @@ public class ModelManager implements Model {
         this.userPrefs = new UserPrefs(userPrefs);
         filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
         filteredStories = new FilteredList<>(this.addressBook.getStoryList());
+        filteredFollowups = new FilteredList<>(this.addressBook.getFollowupList());
     }
 
     public ModelManager() {
@@ -128,7 +131,8 @@ public class ModelManager implements Model {
 
         addressBook.unassignStory(target, story);
     }
-
+    //=========== Followup Operations ===========================================================================
+    // TODO
     //=========== Filtered Person List Accessors =============================================================
 
     /**
