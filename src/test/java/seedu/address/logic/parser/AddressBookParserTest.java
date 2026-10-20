@@ -10,7 +10,9 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_STORY;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
@@ -27,6 +29,7 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.ListStoriesCommand;
 import seedu.address.logic.commands.ShortcutCommand;
 import seedu.address.logic.commands.UnassignCommand;
 import seedu.address.logic.commands.UnshortcutCommand;
@@ -136,6 +139,39 @@ public class AddressBookParserTest {
     public void parseCommand_unshortcut() throws Exception {
         assertEquals(new UnshortcutCommand("ls"),
                 parser.parseCommand(UnshortcutCommand.COMMAND_WORD + " ls"));
+    }
+
+    @Test
+    public void parseCommand_shortcut_resolvesCommand() throws Exception {
+        AddressBookParser parserWithShortcuts = new AddressBookParser(() -> Map.of("ls", "list"));
+
+        assertTrue(parserWithShortcuts.parseCommand("ls") instanceof ListCommand);
+    }
+
+    @Test
+    public void parseCommand_shortcutWithArguments_preservesArguments() throws Exception {
+        AddressBookParser parserWithShortcuts = new AddressBookParser(() -> Map.of("d", "delete"));
+
+        DeleteCommand command = (DeleteCommand) parserWithShortcuts.parseCommand(
+                "d " + INDEX_FIRST_PERSON.getOneBased());
+
+        assertEquals(new DeleteCommand(INDEX_FIRST_PERSON), command);
+    }
+
+    @Test
+    public void parseCommand_shortcutsChangedAfterConstruction_usesLatestShortcuts() throws Exception {
+        Map<String, String> shortcuts = new HashMap<>();
+        AddressBookParser parserWithShortcuts = new AddressBookParser(() -> shortcuts);
+        shortcuts.put("stories", "liststories");
+
+        assertTrue(parserWithShortcuts.parseCommand("stories") instanceof ListStoriesCommand);
+    }
+
+    @Test
+    public void parseCommand_builtinCommandAlsoStoredAsShortcut_builtinCommandTakesPriority() throws Exception {
+        AddressBookParser parserWithShortcuts = new AddressBookParser(() -> Map.of("list", "find"));
+
+        assertTrue(parserWithShortcuts.parseCommand("list") instanceof ListCommand);
     }
 
     @Test

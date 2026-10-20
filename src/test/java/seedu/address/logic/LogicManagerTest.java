@@ -1,6 +1,7 @@
 package seedu.address.logic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
@@ -21,11 +22,14 @@ import org.junit.jupiter.api.io.TempDir;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.ShortcutCommand;
+import seedu.address.logic.commands.UnshortcutCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
+import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.person.Person;
 import seedu.address.storage.JsonAddressBookStorage;
@@ -43,12 +47,13 @@ public class LogicManagerTest {
 
     private Model model = new ModelManager();
     private Logic logic;
+    private JsonUserPrefsStorage userPrefsStorage;
 
     @BeforeEach
     public void setUp() {
         JsonAddressBookStorage addressBookStorage =
                 new JsonAddressBookStorage(temporaryFolder.resolve("addressBook.json"));
-        JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json"));
+        userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json"));
         JsonStoryStorage storyStorage = new JsonStoryStorage(
                 addressBookStorage.getAddressBookFilePath()
                         .resolveSibling("stories.json"));
@@ -74,6 +79,76 @@ public class LogicManagerTest {
     public void execute_validCommand_success() throws Exception {
         String listCommand = ListCommand.COMMAND_WORD;
         assertCommandSuccess(listCommand, ListCommand.MESSAGE_SUCCESS, model);
+    }
+
+    @Test
+    public void execute_shortcutAssignment_userPrefsSavedImmediately() throws Exception {
+        logic.execute(ShortcutCommand.COMMAND_WORD + " s/ls c/list");
+
+        UserPrefs savedPrefs = userPrefsStorage.readUserPrefs().orElseThrow();
+        assertEquals("list", savedPrefs.getShortcuts().get("ls"));
+    }
+
+    @Test
+    public void execute_assignedShortcut_commandExecuted() throws Exception {
+        logic.execute(ShortcutCommand.COMMAND_WORD + " s/ls c/list");
+
+        CommandResult result = logic.execute("ls");
+
+        assertEquals(ListCommand.MESSAGE_SUCCESS, result.getFeedbackToUser());
+    }
+
+    @Test
+    public void execute_unshortcut_userPrefsSavedImmediately() throws Exception {
+        logic.execute(ShortcutCommand.COMMAND_WORD + " s/ls c/list");
+
+        logic.execute(UnshortcutCommand.COMMAND_WORD + " ls");
+
+        UserPrefs savedPrefs = userPrefsStorage.readUserPrefs().orElseThrow();
+        assertFalse(savedPrefs.getShortcuts().containsKey("ls"));
+    }
+
+    @Test
+    public void execute_userPrefsStorageThrowsIoException_throwsCommandException() {
+        IOException exception = new IOException("prefs save failed");
+        JsonAddressBookStorage addressBookStorage =
+                new JsonAddressBookStorage(temporaryFolder.resolve("addressBook.json"));
+        JsonStoryStorage storyStorage = new JsonStoryStorage(temporaryFolder.resolve("stories.json"));
+        JsonUserPrefsStorage failingUserPrefsStorage =
+                new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json")) {
+                    @Override
+                    public void saveUserPrefs(ReadOnlyUserPrefs userPrefs) throws IOException {
+                        throw exception;
+                    }
+                };
+        StorageManager storage = new StorageManager(addressBookStorage, storyStorage, failingUserPrefsStorage);
+        logic = new LogicManager(model, storage);
+        Model expectedModel = new ModelManager();
+        expectedModel.assignShortcut("ls", "list");
+        String expectedMessage = String.format(LogicManager.FILE_OPS_ERROR_FORMAT, exception.getMessage());
+
+        assertCommandFailure(ShortcutCommand.COMMAND_WORD + " s/ls c/list", CommandException.class,
+                expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_listShortcuts_userPrefsNotSaved() throws Exception {
+        JsonAddressBookStorage addressBookStorage =
+                new JsonAddressBookStorage(temporaryFolder.resolve("addressBook.json"));
+        JsonStoryStorage storyStorage = new JsonStoryStorage(temporaryFolder.resolve("stories.json"));
+        JsonUserPrefsStorage failingUserPrefsStorage =
+                new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json")) {
+                    @Override
+                    public void saveUserPrefs(ReadOnlyUserPrefs userPrefs) throws IOException {
+                        throw new AssertionError("Listing shortcuts should not save user preferences.");
+                    }
+                };
+        StorageManager storage = new StorageManager(addressBookStorage, storyStorage, failingUserPrefsStorage);
+        logic = new LogicManager(model, storage);
+
+        CommandResult result = logic.execute(ShortcutCommand.COMMAND_WORD);
+
+        assertEquals(ShortcutCommand.MESSAGE_NO_SHORTCUTS, result.getFeedbackToUser());
     }
 
     @Test

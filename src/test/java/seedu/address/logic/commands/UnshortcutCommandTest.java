@@ -2,6 +2,7 @@ package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,11 @@ public class UnshortcutCommandTest {
     @Test
     public void constructor_nullShortcut_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> new UnshortcutCommand(null));
+    }
+
+    @Test
+    public void modifiesUserPrefs_returnsTrue() {
+        assertTrue(new UnshortcutCommand("ls").modifiesUserPrefs());
     }
 
     @Test
