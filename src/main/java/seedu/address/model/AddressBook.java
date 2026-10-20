@@ -61,6 +61,7 @@ public class AddressBook implements ReadOnlyAddressBook {
 
         setPersons(newData.getPersonList());
         setStories(newData.getStoryList());
+        setFollowups(newData.getFollowupList());
     }
 
     //// person-level and story-level operations
@@ -224,11 +225,18 @@ public class AddressBook implements ReadOnlyAddressBook {
         followups.add(followup);
     }
 
+    /**
+     * Removes the specified followup from the address book.
+     * The followup must exist in the address book.
+     */
+    public void removeFollowup(Followup followup) {
+        followups.remove(followup);
+    }
+
     @Override
     public ObservableList<Followup> getFollowupList() {
         return followups.asUnmodifiableObservableList();
     }
-    // TODO other followup methods
 
     /**
      * Replaces the contents of the followups list with {@code followups}.

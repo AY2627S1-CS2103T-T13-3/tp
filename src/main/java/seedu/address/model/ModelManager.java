@@ -144,6 +144,12 @@ public class ModelManager implements Model {
         addressBook.addFollowup(followup);
         updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
     }
+
+    @Override
+    public void deleteFollowup(Followup followup) {
+        addressBook.removeFollowup(followup);
+        updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
+    }
     //=========== Filtered Person List Accessors =============================================================
 
     /**

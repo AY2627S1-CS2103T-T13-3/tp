@@ -106,6 +106,12 @@ public interface Model {
      */
     void addFollowup(Followup followup);
 
+    /**
+     * Deletes the given followup.
+     * The followup must exist in the address book.
+     */
+    void deleteFollowup(Followup followup);
+
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
 
