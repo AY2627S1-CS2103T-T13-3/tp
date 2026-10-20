@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import seedu.address.logic.parser.Prefix;
+import seedu.address.model.followup.Followup;
 import seedu.address.model.person.Person;
 import seedu.address.model.story.Story;
 
@@ -66,4 +67,14 @@ public class Messages {
         return builder.toString();
     }
 
+    /**
+     * Formats the {@code Followup} for display to the user.
+     */
+    public static String format(Followup followup) {
+        final StringBuilder builder = new StringBuilder();
+        builder.append(followup.getDescription())
+                .append("; Contact: ")
+                .append(followup.getContact());
+        return builder.toString();
+    }
 }

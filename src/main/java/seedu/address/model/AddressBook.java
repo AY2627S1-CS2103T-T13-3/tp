@@ -208,6 +208,22 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     //// followups
 
+    /**
+     * Returns true if a followup with the same identity as {@code followup} exists in the address book.
+     */
+    public boolean hasFollowup(Followup followup) {
+        requireNonNull(followup);
+        return followups.contains(followup);
+    }
+
+    /**
+     * Adds a followup to the address book.
+     * The followup must not already exist in the address book.
+     */
+    public void addFollowup(Followup followup) {
+        followups.add(followup);
+    }
+
     @Override
     public ObservableList<Followup> getFollowupList() {
         return followups.asUnmodifiableObservableList();
