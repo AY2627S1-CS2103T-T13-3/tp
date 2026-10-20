@@ -3,6 +3,7 @@ package seedu.address.model;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -61,6 +62,21 @@ public class ModelManager implements Model {
     public void setGuiSettings(GuiSettings guiSettings) {
         requireNonNull(guiSettings);
         userPrefs.setGuiSettings(guiSettings);
+    }
+
+    @Override
+    public Map<String, String> getShortcuts() {
+        return userPrefs.getShortcuts();
+    }
+
+    @Override
+    public void assignShortcut(String shortcut, String commandWord) {
+        userPrefs.assignShortcut(shortcut, commandWord);
+    }
+
+    @Override
+    public boolean removeShortcut(String shortcut) {
+        return userPrefs.removeShortcut(shortcut);
     }
 
     //=========== AddressBook ================================================================================

@@ -2,9 +2,11 @@ package seedu.address.model;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.Map;
 import java.util.Objects;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.shortcut.CommandShortcutMap;
 
 /**
  * Represents User's preferences.
@@ -12,6 +14,7 @@ import seedu.address.commons.core.GuiSettings;
 public class UserPrefs implements ReadOnlyUserPrefs {
 
     private GuiSettings guiSettings = new GuiSettings();
+    private CommandShortcutMap shortcuts = new CommandShortcutMap();
 
     /**
      * Creates a {@code UserPrefs} with default values.
@@ -24,6 +27,7 @@ public class UserPrefs implements ReadOnlyUserPrefs {
     public UserPrefs(ReadOnlyUserPrefs userPrefs) {
         requireNonNull(userPrefs);
         setGuiSettings(userPrefs.getGuiSettings());
+        setShortcuts(userPrefs.getShortcuts());
     }
 
     public GuiSettings getGuiSettings() {
@@ -33,6 +37,32 @@ public class UserPrefs implements ReadOnlyUserPrefs {
     public void setGuiSettings(GuiSettings guiSettings) {
         requireNonNull(guiSettings);
         this.guiSettings = guiSettings;
+    }
+
+    @Override
+    public Map<String, String> getShortcuts() {
+        return shortcuts.asMap();
+    }
+
+    /**
+     * Replaces all command shortcuts with {@code shortcuts}.
+     */
+    public void setShortcuts(Map<String, String> shortcuts) {
+        this.shortcuts = new CommandShortcutMap(requireNonNull(shortcuts));
+    }
+
+    /**
+     * Assigns a shortcut to a command, replacing conflicting mappings.
+     */
+    public void assignShortcut(String shortcut, String commandWord) {
+        shortcuts.assignShortcut(shortcut, commandWord);
+    }
+
+    /**
+     * Removes a shortcut, returning whether a mapping was removed.
+     */
+    public boolean removeShortcut(String shortcut) {
+        return shortcuts.removeShortcut(shortcut);
     }
 
     @Override
@@ -46,17 +76,18 @@ public class UserPrefs implements ReadOnlyUserPrefs {
             return false;
         }
 
-        return guiSettings.equals(otherUserPrefs.guiSettings);
+        return guiSettings.equals(otherUserPrefs.guiSettings)
+                && shortcuts.equals(otherUserPrefs.shortcuts);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(guiSettings);
+        return Objects.hash(guiSettings, shortcuts);
     }
 
     @Override
     public String toString() {
-        return "Gui Settings : " + guiSettings;
+        return "Gui Settings : " + guiSettings + "; Shortcuts : " + shortcuts;
     }
 
 }

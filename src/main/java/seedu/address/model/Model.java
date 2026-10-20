@@ -1,5 +1,6 @@
 package seedu.address.model;
 
+import java.util.Map;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
@@ -29,6 +30,15 @@ public interface Model {
      * Sets the user prefs' GUI settings.
      */
     void setGuiSettings(GuiSettings guiSettings);
+
+    /** Returns the user's command shortcuts mapped to their command words. */
+    Map<String, String> getShortcuts();
+
+    /** Assigns a shortcut to a command, replacing conflicting mappings. */
+    void assignShortcut(String shortcut, String commandWord);
+
+    /** Removes a shortcut, returning whether a mapping was removed. */
+    boolean removeShortcut(String shortcut);
 
     /**
      * Replaces address book data with the data in {@code addressBook}.
