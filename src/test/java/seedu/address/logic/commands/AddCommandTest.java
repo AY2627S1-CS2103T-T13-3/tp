@@ -9,6 +9,7 @@ import static seedu.address.testutil.TypicalPersons.ALICE;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
@@ -100,6 +101,21 @@ public class AddCommandTest {
 
         @Override
         public void setGuiSettings(GuiSettings guiSettings) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public Map<String, String> getShortcuts() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void assignShortcut(String shortcut, String commandWord) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean removeShortcut(String shortcut) {
             throw new AssertionError("This method should not be called.");
         }
 

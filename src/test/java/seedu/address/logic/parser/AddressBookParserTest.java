@@ -27,7 +27,9 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.ShortcutCommand;
 import seedu.address.logic.commands.UnassignCommand;
+import seedu.address.logic.commands.UnshortcutCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
@@ -121,6 +123,19 @@ public class AddressBookParserTest {
                 + PREFIX_STORYINDEX + storyIndex.getOneBased());
 
         assertEquals(new UnassignCommand(storyIndex, contactIndex), command);
+    }
+
+    @Test
+    public void parseCommand_shortcut() throws Exception {
+        assertEquals(new ShortcutCommand("ls", "list"),
+                parser.parseCommand(ShortcutCommand.COMMAND_WORD + " s/ls c/list"));
+        assertEquals(new ShortcutCommand(), parser.parseCommand(ShortcutCommand.COMMAND_WORD));
+    }
+
+    @Test
+    public void parseCommand_unshortcut() throws Exception {
+        assertEquals(new UnshortcutCommand("ls"),
+                parser.parseCommand(UnshortcutCommand.COMMAND_WORD + " ls"));
     }
 
     @Test
