@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 
 /**
@@ -23,6 +24,11 @@ public class ShortcutCommand extends Command {
     public static final String MESSAGE_SUCCESS = "Shortcut '%s' assigned to command '%s'.";
     public static final String MESSAGE_NO_SHORTCUTS = "No command shortcuts assigned.";
     public static final String MESSAGE_SHORTCUTS_HEADER = "Command shortcuts:\n";
+    public static final String MESSAGE_INVALID_SHORTCUT = "Shortcut '%s' is invalid. Shortcuts must start with a "
+            + "lowercase letter and contain only lowercase letters and digits.";
+    public static final String MESSAGE_RESERVED_SHORTCUT = "'%s' is a built-in command word and cannot be used as "
+            + "a shortcut.";
+    public static final String MESSAGE_UNKNOWN_COMMAND = "'%s' is not a command that can be assigned a shortcut.";
 
     private final String shortcut;
     private final String commandWord;
@@ -40,14 +46,32 @@ public class ShortcutCommand extends Command {
     }
 
     @Override
-    public CommandResult execute(Model model) {
+    public boolean modifiesUserPrefs() {
+        return shortcut != null;
+    }
+
+    @Override
+    public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         if (shortcut == null) {
             return new CommandResult(formatShortcuts(model.getShortcuts()));
         }
 
+        validateAssignment();
         model.assignShortcut(shortcut, commandWord);
         return new CommandResult(String.format(MESSAGE_SUCCESS, shortcut, commandWord));
+    }
+
+    private void validateAssignment() throws CommandException {
+        if (!shortcut.matches("[a-z][a-z0-9]*")) {
+            throw new CommandException(String.format(MESSAGE_INVALID_SHORTCUT, shortcut));
+        }
+        if (CommandWords.isCommandWord(shortcut)) {
+            throw new CommandException(String.format(MESSAGE_RESERVED_SHORTCUT, shortcut));
+        }
+        if (!CommandWords.isAssignableCommandWord(commandWord)) {
+            throw new CommandException(String.format(MESSAGE_UNKNOWN_COMMAND, commandWord));
+        }
     }
 
     private static String formatShortcuts(Map<String, String> shortcuts) {

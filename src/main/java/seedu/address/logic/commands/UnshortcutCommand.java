@@ -26,6 +26,11 @@ public class UnshortcutCommand extends Command {
     }
 
     @Override
+    public boolean modifiesUserPrefs() {
+        return true;
+    }
+
+    @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         if (!model.removeShortcut(shortcut)) {

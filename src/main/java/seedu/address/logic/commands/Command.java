@@ -9,6 +9,13 @@ import seedu.address.model.Model;
 public abstract class Command {
 
     /**
+     * Returns whether successfully executing this command changes user preferences.
+     */
+    public boolean modifiesUserPrefs() {
+        return false;
+    }
+
+    /**
      * Executes the command and returns the result message.
      *
      * @param model {@code Model} which the command should operate on.
