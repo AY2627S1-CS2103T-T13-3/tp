@@ -1,13 +1,13 @@
 package seedu.address.logic.parser;
 
-import seedu.address.logic.Messages;
-import seedu.address.logic.parser.exceptions.ParseException;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import seedu.address.logic.Messages;
+import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
  * Tokenizes arguments string of the form: {@code preamble <prefix>value <prefix>value ...}<br>
@@ -19,25 +19,35 @@ import java.util.stream.Stream;
  */
 public class ArgumentTokenizer {
 
+    private static boolean isValidPrefixType(Prefix prefix) {
+        String prefixString = prefix.getPrefix();
+        return prefixString.charAt(prefixString.length() - 1) == '/';
+    }
+
     /**
      * Tokenizes an arguments string and returns an {@code ArgumentMultimap} object that maps prefixes to their
      * respective argument values. Only the given prefixes will be recognized in the arguments string.
+     * All prefixes must end with a forward slash.
      *
      * @param argsString Arguments string of the form: {@code preamble <prefix>value <prefix>value ...}
-     * @param prefixes   Prefixes to tokenize the arguments string with
+     * @param prefixes   Prefixes to tokenize the arguments string with. All prefixes must end with a forward slash.
      * @return           ArgumentMultimap object that maps prefixes to their arguments
      * @throws ParseException if the argsString contains any invalid prefixes
      */
     public static ArgumentMultimap tokenize(String argsString, Prefix... prefixes) throws ParseException {
+        assert Arrays.stream(prefixes)
+                .allMatch(ArgumentTokenizer::isValidPrefixType);
         List<PrefixPosition> positions = findAllPrefixPositions(argsString, prefixes);
-        List<Integer> inPositions = positions.stream()
+        List<Integer> validPositions = positions.stream()
                         .map(PrefixPosition::getStartPosition)
                         .map(i -> argsString.indexOf('/', i))
                         .toList();
-        if (!Stream.iterate(argsString.indexOf('/'), i -> argsString.indexOf('/',i+1))
+        List<Integer> invalidPositions = Stream.iterate(argsString.indexOf('/'), i -> argsString.indexOf('/', i + 1))
                 .takeWhile(i -> i != -1)
-                .allMatch(inPositions::contains)) {
-            throw new ParseException(Messages.MESSAGE_UNKNOWN_PREFIX);
+                .toList();
+        if (!invalidPositions.stream()
+                .allMatch(validPositions::contains)) {
+            throw new ParseException(Messages.getErrorMessageForInvalidPrefixes(prefixes, invalidPositions));
         }
         return extractArguments(argsString, positions);
     }
