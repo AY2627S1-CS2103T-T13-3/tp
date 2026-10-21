@@ -1,9 +1,13 @@
 package seedu.address.logic.parser;
 
+import seedu.address.logic.Messages;
+import seedu.address.logic.parser.exceptions.ParseException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Tokenizes arguments string of the form: {@code preamble <prefix>value <prefix>value ...}<br>
@@ -22,9 +26,19 @@ public class ArgumentTokenizer {
      * @param argsString Arguments string of the form: {@code preamble <prefix>value <prefix>value ...}
      * @param prefixes   Prefixes to tokenize the arguments string with
      * @return           ArgumentMultimap object that maps prefixes to their arguments
+     * @throws ParseException if the argsString contains any invalid prefixes
      */
-    public static ArgumentMultimap tokenize(String argsString, Prefix... prefixes) {
+    public static ArgumentMultimap tokenize(String argsString, Prefix... prefixes) throws ParseException {
         List<PrefixPosition> positions = findAllPrefixPositions(argsString, prefixes);
+        List<Integer> inPositions = positions.stream()
+                        .map(PrefixPosition::getStartPosition)
+                        .map(i -> argsString.indexOf('/', i))
+                        .toList();
+        if (!Stream.iterate(argsString.indexOf('/'), i -> argsString.indexOf('/',i+1))
+                .takeWhile(i -> i != -1)
+                .allMatch(inPositions::contains)) {
+            throw new ParseException(Messages.MESSAGE_UNKNOWN_PREFIX);
+        }
         return extractArguments(argsString, positions);
     }
 
