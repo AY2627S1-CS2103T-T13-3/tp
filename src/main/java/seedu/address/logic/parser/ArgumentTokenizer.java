@@ -44,12 +44,16 @@ public class ArgumentTokenizer {
                         .toList();
         List<Integer> invalidPositions = Stream.iterate(argsString.indexOf('/'), i -> argsString.indexOf('/', i + 1))
                 .takeWhile(i -> i != -1)
+                .filter(i -> !validPositions.contains(i))
+                .sorted()
                 .toList();
-        if (!invalidPositions.stream()
-                .allMatch(validPositions::contains)) {
+        if (!invalidPositions.isEmpty()) {
             throw new ParseException(Messages.getErrorMessageForInvalidPrefixes(prefixes, invalidPositions));
         }
-        return extractArguments(argsString, positions);
+        return extractArguments(
+                argsString,
+                positions
+        );
     }
 
     /**
