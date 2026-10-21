@@ -1,5 +1,6 @@
 package seedu.address.logic;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -14,6 +15,7 @@ import seedu.address.model.story.Story;
 public class Messages {
 
     public static final String MESSAGE_UNKNOWN_COMMAND = "Unknown command.";
+    public static final String MESSAGE_INVALID_PREFIX = "Invalid prefixes at indices: %s.\nUse valid prefixes: %s.";
     public static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format!\n%1$s";
     public static final String MESSAGE_INVALID_PERSON_DISPLAYED_INDEX = "The person index provided is invalid.";
     public static final String MESSAGE_INVALID_STORY_DISPLAYED_INDEX = "The story index provided is invalid.";
@@ -32,6 +34,25 @@ public class Messages {
                 Stream.of(duplicatePrefixes).map(Prefix::toString).collect(Collectors.toSet());
 
         return MESSAGE_DUPLICATE_FIELDS + String.join(" ", duplicateFields);
+    }
+    /**
+     * Returns an error message indicating the invalid prefixes.
+     */
+    public static String getErrorMessageForInvalidPrefixes(Prefix[] expectedPrefixes, List<Integer> invalidPositions) {
+        assert !invalidPositions.isEmpty();
+
+        Set<String> invalidFields =
+                invalidPositions.stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.toSet());
+        Set<String> validFields =
+                Stream.of(expectedPrefixes)
+                        .map(Prefix::getPrefix)
+                        .collect(Collectors.toSet());
+        return MESSAGE_INVALID_PREFIX.formatted(
+                String.join(", ", invalidFields),
+                String.join(", ", validFields)
+        );
     }
 
     /**
