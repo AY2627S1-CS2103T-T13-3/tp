@@ -27,6 +27,7 @@ public class AddFollowupCommandParser implements Parser<AddFollowupCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddFollowupCommand.MESSAGE_USAGE));
         }
 
+        argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_CONTACTINDEX);
         FollowupDescription followupDescription = ParserUtil.parseFollowupDescription(argMultimap.getPreamble());
         Index contactIndex = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_CONTACTINDEX).get());
 
