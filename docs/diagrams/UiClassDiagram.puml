@@ -72,9 +72,4 @@ ResultDisplay -[hidden]left- StatusBarFooter
 
 MainWindow -[hidden]-|> UiPart
 
-note bottom of FollowupListPanel
-  Sorted by contact name.
-  Uses three hard-coded examples
-  supplied by MainWindow at 64f6b41.
-end note
 @enduml
