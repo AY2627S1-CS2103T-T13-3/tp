@@ -13,6 +13,10 @@ Class HelpWindow
 Class ResultDisplay
 Class PersonListPanel
 Class PersonCard
+Class StoryListPanel
+Class StoryCard
+Class FollowupListPanel
+Class FollowupCard
 Class StatusBarFooter
 Class CommandBox
 }
@@ -33,10 +37,14 @@ UiManager -down-> "1" MainWindow
 MainWindow *-down->  "1" CommandBox
 MainWindow *-down-> "1" ResultDisplay
 MainWindow *-down-> "1" PersonListPanel
+MainWindow *-down-> "1" StoryListPanel
+MainWindow *-down-> "1" FollowupListPanel
 MainWindow *-down-> "1" StatusBarFooter
-MainWindow --> "0..1" HelpWindow
+MainWindow --> "1" HelpWindow
 
 PersonListPanel -down-> "*" PersonCard
+StoryListPanel -down-> "*" StoryCard
+FollowupListPanel -down-> "*" FollowupCard
 
 MainWindow -left-|> UiPart
 
@@ -44,10 +52,16 @@ ResultDisplay --|> UiPart
 CommandBox --|> UiPart
 PersonListPanel --|> UiPart
 PersonCard --|> UiPart
+StoryListPanel --|> UiPart
+StoryCard --|> UiPart
+FollowupListPanel --|> UiPart
+FollowupCard --|> UiPart
 StatusBarFooter --|> UiPart
 HelpWindow --|> UiPart
 
 PersonCard ..> Model
+StoryCard ..> Model
+FollowupCard ..> Model
 UiManager -right-> Logic
 MainWindow -left-> Logic
 
@@ -57,4 +71,10 @@ CommandBox -[hidden]left- ResultDisplay
 ResultDisplay -[hidden]left- StatusBarFooter
 
 MainWindow -[hidden]-|> UiPart
+
+note bottom of FollowupListPanel
+  Sorted by contact name.
+  Uses three hard-coded examples
+  supplied by MainWindow at 64f6b41.
+end note
 @enduml
