@@ -9,11 +9,13 @@ import java.util.regex.Pattern;
 
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.AddFollowupCommand;
 import seedu.address.logic.commands.AddStoryCommand;
 import seedu.address.logic.commands.AssignCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.DeleteCommand;
+import seedu.address.logic.commands.DeleteFollowupCommand;
 import seedu.address.logic.commands.DeleteStoryCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.ExitCommand;
@@ -59,8 +61,10 @@ public class AddressBookParser {
         return switch (commandWord) {
             case AddCommand.COMMAND_WORD -> new AddCommandParser().parse(arguments);
             case AddStoryCommand.COMMAND_WORD -> new AddStoryCommandParser().parse(arguments);
+            case AddFollowupCommand.COMMAND_WORD -> new AddFollowupCommandParser().parse(arguments);
             case EditCommand.COMMAND_WORD -> new EditCommandParser().parse(arguments);
             case DeleteCommand.COMMAND_WORD -> new DeleteCommandParser().parse(arguments);
+            case DeleteFollowupCommand.COMMAND_WORD -> new DeleteFollowupCommandParser().parse(arguments);
             case DeleteStoryCommand.COMMAND_WORD -> new DeleteStoryCommandParser().parse(arguments);
             case ClearCommand.COMMAND_WORD -> new ClearCommand();
             case FindCommand.COMMAND_WORD -> new FindCommandParser().parse(arguments);

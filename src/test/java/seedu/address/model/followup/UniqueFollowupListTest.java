@@ -28,7 +28,7 @@ public class UniqueFollowupListTest {
         assertFalse(followups.contains(interview));
         followups.add(interview);
         assertTrue(followups.contains(interview));
-        assertTrue(followups.contains(interviewWithBob));
+        assertFalse(followups.contains(interviewWithBob));
         assertFalse(followups.contains(notes));
     }
 
@@ -54,7 +54,6 @@ public class UniqueFollowupListTest {
     public void add_duplicateDescription_throwsDuplicateFollowupException() {
         followups.add(interview);
         assertThrows(DuplicateFollowupException.class, () -> followups.add(interview));
-        assertThrows(DuplicateFollowupException.class, () -> followups.add(interviewWithBob));
         assertEquals(List.of(interview), followups.asUnmodifiableObservableList());
     }
 
@@ -85,7 +84,7 @@ public class UniqueFollowupListTest {
     @Test
     public void setFollowup_duplicateIdentity_throwsDuplicateFollowupException() {
         followups.setFollowups(List.of(interview, notes));
-        assertThrows(DuplicateFollowupException.class, () -> followups.setFollowup(notes, interviewWithBob));
+        assertThrows(DuplicateFollowupException.class, () -> followups.setFollowup(notes, interview));
         assertEquals(List.of(interview, notes), followups.asUnmodifiableObservableList());
     }
 

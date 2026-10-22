@@ -9,6 +9,7 @@ import java.util.Set;
 import seedu.address.commons.core.index.Index;
 import seedu.address.commons.util.StringUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.followup.FollowupDescription;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -136,5 +137,20 @@ public class ParserUtil {
             tagSet.add(parseTag(tagName));
         }
         return tagSet;
+    }
+
+    /**
+     * Parses a {@code String description} into a {@code FollowupDescription}.
+     * Leading and trailing whitespaces will be trimmed.
+     *
+     * @throws ParseException if the given {@code description} is invalid.
+     */
+    public static FollowupDescription parseFollowupDescription(String followupDescription) throws ParseException {
+        requireNonNull(followupDescription);
+        String trimmedFollowupDescription = followupDescription.trim();
+        if (!FollowupDescription.isValidDescription(trimmedFollowupDescription)) {
+            throw new ParseException(FollowupDescription.MESSAGE_CONSTRAINTS);
+        }
+        return new FollowupDescription(trimmedFollowupDescription);
     }
 }
