@@ -21,6 +21,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.followup.Followup;
 import seedu.address.model.person.Person;
 import seedu.address.model.story.Story;
 import seedu.address.testutil.PersonBuilder;
@@ -144,12 +145,22 @@ public class AddCommandTest {
         }
 
         @Override
+        public ObservableList<Followup> getFilteredFollowupList() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void updateFilteredPersonList(Predicate<Person> predicate) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
         public void updateFilteredStoryList(Predicate<Story> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void updateFilteredFollowupList(Predicate<Followup> predicate) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -170,6 +181,21 @@ public class AddCommandTest {
 
         @Override
         public void unassignStory(Person target, Story story) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean hasFollowup(Followup followup) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addFollowup(Followup followup) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setFollowup(Followup target, Followup editedFollowup) {
             throw new AssertionError("This method should not be called.");
         }
     }

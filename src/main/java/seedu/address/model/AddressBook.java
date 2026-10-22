@@ -61,6 +61,7 @@ public class AddressBook implements ReadOnlyAddressBook {
 
         setPersons(newData.getPersonList());
         setStories(newData.getStoryList());
+        setFollowups(newData.getFollowupList());
     }
 
     //// person-level and story-level operations
@@ -182,7 +183,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     public void removePerson(Person personKey) {
         stories.setStories(
                 getStoryList().stream()
-                        .map(story -> story.unassign(personKey))
+                         .map(story -> story.unassign(personKey))
                         .toList()
         );
         followups.setFollowups(
@@ -212,7 +213,42 @@ public class AddressBook implements ReadOnlyAddressBook {
     public ObservableList<Followup> getFollowupList() {
         return followups.asUnmodifiableObservableList();
     }
-    // TODO other followup methods
+
+    /**
+     * Returns true if a followup with the same identity as {@code followup} exists in the address book.
+     */
+    public boolean hasFollowup(Followup followup) {
+        requireNonNull(followup);
+        return followups.contains(followup);
+    }
+
+    /**
+     * Adds a followup to the address book.
+     * The followup must not already exist in the address book.
+     */
+    public void addFollowup(Followup followup) {
+        followups.add(followup);
+    }
+
+    /**
+     * Replaces the given followup {@code target} in the list with {@code editedFollowup}.
+     * {@code target} must exist in the address book.
+     * The followup identity of {@code editedFollowup} must not be the same as another existing followup in the
+     * address book.
+     */
+    public void setFollowup(Followup target, Followup editedFollowup) {
+        requireNonNull(editedFollowup);
+
+        followups.setFollowup(target, editedFollowup);
+    }
+
+    /**
+     * Removes followup with {@code key} from this {@code AddressBook}.
+     * {@code key} must exist in the address book.
+     */
+    public void removeFollowup(Followup followupKey) {
+        followups.remove(followupKey);
+    }
 
     /**
      * Replaces the contents of the followups list with {@code followups}.
@@ -254,11 +290,13 @@ public class AddressBook implements ReadOnlyAddressBook {
             return false;
         }
 
-        return persons.equals(otherAddressBook.persons) && stories.equals(otherAddressBook.stories);
+        return persons.equals(otherAddressBook.persons)
+                && stories.equals(otherAddressBook.stories)
+                && followups.equals(otherAddressBook.followups);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(persons, stories);
+        return Objects.hash(persons, stories, followups);
     }
 }

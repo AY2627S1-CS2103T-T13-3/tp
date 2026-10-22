@@ -131,8 +131,33 @@ public class ModelManager implements Model {
 
         addressBook.unassignStory(target, story);
     }
-    //=========== Followup Operations ===========================================================================
-    // TODO
+
+    //=========== Followup Operations ========================================================================
+
+    @Override
+    public boolean hasFollowup(Followup followup) {
+        requireNonNull(followup);
+        return addressBook.hasFollowup(followup);
+    }
+
+    @Override
+    public void deleteFollowup(Followup target) {
+        addressBook.removeFollowup(target);
+    }
+
+    @Override
+    public void addFollowup(Followup followup) {
+        addressBook.addFollowup(followup);
+        updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
+    }
+
+    @Override
+    public void setFollowup(Followup target, Followup editedFollowup) {
+        requireAllNonNull(target, editedFollowup);
+
+        addressBook.setFollowup(target, editedFollowup);
+    }
+
     //=========== Filtered Person List Accessors =============================================================
 
     /**
@@ -164,7 +189,8 @@ public class ModelManager implements Model {
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons)
-                && filteredStories.equals(otherModelManager.filteredStories);
+                && filteredStories.equals(otherModelManager.filteredStories)
+                && filteredFollowups.equals(otherModelManager.filteredFollowups);
     }
 
     //=========== Filtered Story List Accessors =============================================================
@@ -181,5 +207,21 @@ public class ModelManager implements Model {
     public void updateFilteredStoryList(Predicate<Story> predicate) {
         requireNonNull(predicate);
         filteredStories.setPredicate(predicate);
+    }
+
+    //=========== Filtered Followup List Accessors ==========================================================
+    /**
+     * Returns an unmodifiable view of the list of {@code Followup} backed by the internal list of
+     * {@code addressBook}
+     */
+    @Override
+    public ObservableList<Followup> getFilteredFollowupList() {
+        return filteredFollowups;
+    }
+
+    @Override
+    public void updateFilteredFollowupList(Predicate<Followup> predicate) {
+        requireNonNull(predicate);
+        filteredFollowups.setPredicate(predicate);
     }
 }

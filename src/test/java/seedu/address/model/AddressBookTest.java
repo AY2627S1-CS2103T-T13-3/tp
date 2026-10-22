@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.testutil.TypicalFollowups.INTERVIEW_ALICE;
+import static seedu.address.testutil.TypicalFollowups.NOTES_BENSON;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BOB;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
@@ -19,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.address.model.followup.Followup;
+import seedu.address.model.followup.exceptions.FollowupNotFoundException;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.exceptions.DuplicatePersonException;
 import seedu.address.model.person.exceptions.PersonNotFoundException;
@@ -117,6 +120,15 @@ public class AddressBookTest {
         assertFalse(newData.hasStory(s1));
     }
 
+    @Test
+    public void removeFollowup_followupNotAdded_throws() {
+        AddressBook newData = new AddressBook();
+        newData.addFollowup(INTERVIEW_ALICE);
+        assertThrows(FollowupNotFoundException.class, () -> newData.removeFollowup(NOTES_BENSON));
+        assertTrue(newData.hasFollowup(INTERVIEW_ALICE));
+        assertFalse(newData.hasFollowup(NOTES_BENSON));
+    }
+
     /**
      * A stub ReadOnlyAddressBook whose persons list can violate interface constraints.
      */
@@ -128,6 +140,7 @@ public class AddressBookTest {
         AddressBookStub(Collection<Person> persons, Collection<Story> stories, Collection<Followup> followups) {
             this.persons.setAll(persons);
             this.stories.setAll(stories);
+            this.followups.setAll(followups);
         }
 
         @Override

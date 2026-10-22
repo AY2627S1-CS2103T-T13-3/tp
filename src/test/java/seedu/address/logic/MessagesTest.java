@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.followup.Followup;
+import seedu.address.model.followup.FollowupDescription;
 import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
@@ -51,5 +53,12 @@ public class MessagesTest {
                 List.of(new Name("Alice Pauline")));
         String expected = "Housing Investigation; Tags: [urgent]; Contacts: [Alice Pauline]";
         assertEquals(expected, Messages.format(story));
+    }
+
+    @Test
+    public void format_followup() {
+        Followup followup = new Followup(new FollowupDescription("Arrange interview"), new Name("Alice Pauline"));
+        String expected = "Arrange interview; Contact: Alice Pauline";
+        assertEquals(expected, Messages.format(followup));
     }
 }

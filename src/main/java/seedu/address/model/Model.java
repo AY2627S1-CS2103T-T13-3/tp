@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.followup.Followup;
 import seedu.address.model.person.Person;
 import seedu.address.model.story.Story;
 
@@ -14,6 +15,7 @@ public interface Model {
     /** {@code Predicate} that always evaluates to true */
     Predicate<Person> PREDICATE_SHOW_ALL_PERSONS = unused -> true;
     Predicate<Story> PREDICATE_SHOW_ALL_STORIES = unused -> true;
+    Predicate<Followup> PREDICATE_SHOW_ALL_FOLLOWUPS = unused -> true;
 
     /**
      * Returns the user prefs.
@@ -93,11 +95,39 @@ public interface Model {
      */
     void unassignStory(Person target, Story story);
 
+    /**
+     * Returns true if a followup with the same identity as {@code followup} exists in the address book.
+     */
+    boolean hasFollowup(Followup followup);
+
+    /**
+     * Deletes the given followup.
+     * The followup must exist in the address book.
+     */
+    default void deleteFollowup(Followup target) {}
+
+    /**
+     * Adds the given followup.
+     * {@code followup} must not already exist in the address book.
+     */
+    void addFollowup(Followup followup);
+
+    /**
+     * Replaces the given followup {@code target} with {@code editedFollowup}.
+     * {@code target} must exist in the address book.
+     * The followup identity of {@code editedFollowup} must not be the same as another existing followup in the
+     * address book.
+     */
+    void setFollowup(Followup target, Followup editedFollowup);
+
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
 
     /** Returns an unmodifiable view of the filtered story list */
     ObservableList<Story> getFilteredStoryList();
+
+    /** Returns an unmodifiable view of the filtered followup list */
+    ObservableList<Followup> getFilteredFollowupList();
 
     /**
      * Updates the filter of the filtered person list to filter by the given {@code predicate}.
@@ -110,4 +140,10 @@ public interface Model {
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredStoryList(Predicate<Story> predicate);
+
+    /**
+     * Updates the filter of the filtered followup list to filter by the given {@code predicate}.
+     * @throws NullPointerException if {@code predicate} is null.
+     */
+    void updateFilteredFollowupList(Predicate<Followup> predicate);
 }

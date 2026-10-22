@@ -3,6 +3,8 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
@@ -16,9 +18,11 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
+import seedu.address.model.followup.Followup;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.story.Story;
+import seedu.address.testutil.EditFollowupDescriptorBuilder;
 import seedu.address.testutil.EditPersonDescriptorBuilder;
 
 /**
@@ -36,6 +40,10 @@ public class CommandTestUtil {
     public static final String VALID_ADDRESS_BOB = "Block 123, Bobby Street 3";
     public static final String VALID_TAG_HUSBAND = "husband";
     public static final String VALID_TAG_FRIEND = "friend";
+    public static final String VALID_DESCRIPTION_INTERVIEW = "Arrange interview";
+    public static final String VALID_DESCRIPTION_NOTES = "Send meeting notes";
+    public static final Index VALID_CONTACT_INDEX_ONE = Index.fromOneBased(1);
+    public static final Index VALID_CONTACT_INDEX_TWO = Index.fromOneBased(2);
 
     public static final String NAME_DESC_AMY = " " + PREFIX_NAME + VALID_NAME_AMY;
     public static final String NAME_DESC_BOB = " " + PREFIX_NAME + VALID_NAME_BOB;
@@ -47,18 +55,27 @@ public class CommandTestUtil {
     public static final String ADDRESS_DESC_BOB = " " + PREFIX_ADDRESS + VALID_ADDRESS_BOB;
     public static final String TAG_DESC_FRIEND = " " + PREFIX_TAG + VALID_TAG_FRIEND;
     public static final String TAG_DESC_HUSBAND = " " + PREFIX_TAG + VALID_TAG_HUSBAND;
+    public static final String DESCRIPTION_DESC_INTERVIEW = " " + PREFIX_DESCRIPTION + VALID_DESCRIPTION_INTERVIEW;
+    public static final String DESCRIPTION_DESC_NOTES = " " + PREFIX_DESCRIPTION + VALID_DESCRIPTION_NOTES;
+    public static final String CONTACT_INDEX_DESC_ONE = " " + PREFIX_CONTACTINDEX + "1";
+    public static final String CONTACT_INDEX_DESC_TWO = " " + PREFIX_CONTACTINDEX + "2";
 
     public static final String INVALID_NAME_DESC = " " + PREFIX_NAME + "James&"; // '&' not allowed in names
     public static final String INVALID_PHONE_DESC = " " + PREFIX_PHONE + "911a"; // 'a' not allowed in phones
     public static final String INVALID_EMAIL_DESC = " " + PREFIX_EMAIL + "bob!yahoo"; // missing '@' symbol
     public static final String INVALID_ADDRESS_DESC = " " + PREFIX_ADDRESS; // empty string not allowed for addresses
     public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + "hubby*"; // '*' not allowed in tags
+    public static final String INVALID_DESCRIPTION_DESC =
+            " " + PREFIX_DESCRIPTION + "Interview&"; // '&' not allowed in descriptions
+    public static final String INVALID_CONTACT_INDEX_DESC = " " + PREFIX_CONTACTINDEX + "0"; // non-positive index
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
     public static final String PREAMBLE_NON_EMPTY = "NonEmptyPreamble";
 
     public static final EditCommand.EditPersonDescriptor DESC_AMY;
     public static final EditCommand.EditPersonDescriptor DESC_BOB;
+    public static final EditFollowupCommand.EditFollowupDescriptor DESC_INTERVIEW;
+    public static final EditFollowupCommand.EditFollowupDescriptor DESC_NOTES;
 
     static {
         DESC_AMY = new EditPersonDescriptorBuilder().withName(VALID_NAME_AMY)
@@ -67,6 +84,10 @@ public class CommandTestUtil {
         DESC_BOB = new EditPersonDescriptorBuilder().withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB).withEmail(VALID_EMAIL_BOB).withAddress(VALID_ADDRESS_BOB)
                 .withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND).build();
+        DESC_INTERVIEW = new EditFollowupDescriptorBuilder().withDescription(VALID_DESCRIPTION_INTERVIEW)
+                .withContactIndex(VALID_CONTACT_INDEX_ONE).build();
+        DESC_NOTES = new EditFollowupDescriptorBuilder().withDescription(VALID_DESCRIPTION_NOTES)
+                .withContactIndex(VALID_CONTACT_INDEX_TWO).build();
     }
 
     /**
@@ -107,11 +128,13 @@ public class CommandTestUtil {
         AddressBook expectedAddressBook = new AddressBook(actualModel.getAddressBook());
         List<Person> expectedFilteredList = new ArrayList<>(actualModel.getFilteredPersonList());
         List<Story> expectedFilteredStoryList = new ArrayList<>(actualModel.getFilteredStoryList());
+        List<Followup> expectedFilteredFollowupList = new ArrayList<>(actualModel.getFilteredFollowupList());
 
         assertThrows(CommandException.class, expectedMessage, () -> command.execute(actualModel));
         assertEquals(expectedAddressBook, actualModel.getAddressBook());
         assertEquals(expectedFilteredList, actualModel.getFilteredPersonList());
         assertEquals(expectedFilteredStoryList, actualModel.getFilteredStoryList());
+        assertEquals(expectedFilteredFollowupList, actualModel.getFilteredFollowupList());
     }
     /**
      * Updates {@code model}'s filtered list to show only the person at the given {@code targetIndex} in the
@@ -140,5 +163,17 @@ public class CommandTestUtil {
         assertEquals(1, model.getFilteredStoryList().size());
     }
 
-}
+    /**
+     * Updates {@code model}'s filtered list to show only the followup at the given {@code targetIndex} in the
+     * {@code model}'s address book.
+     */
+    public static void showFollowupAtIndex(Model model, Index targetIndex) {
+        assertTrue(targetIndex.getZeroBased() < model.getFilteredFollowupList().size());
 
+        Followup followup = model.getFilteredFollowupList().get(targetIndex.getZeroBased());
+        model.updateFilteredFollowupList(f -> f.equals(followup));
+
+        assertEquals(1, model.getFilteredFollowupList().size());
+    }
+
+}

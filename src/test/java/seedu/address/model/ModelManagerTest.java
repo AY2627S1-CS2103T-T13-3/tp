@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.testutil.TypicalFollowups.INTERVIEW_ALICE;
+import static seedu.address.testutil.TypicalFollowups.NOTES_BENSON;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 import static seedu.address.testutil.TypicalPersons.BENSON;
 import static seedu.address.testutil.TypicalPersons.BOB;
@@ -15,6 +17,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.followup.exceptions.FollowupNotFoundException;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.exceptions.PersonNotFoundException;
 import seedu.address.model.story.Story;
@@ -93,8 +96,21 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void removeFollowup_followupNotInAddressBook_throws() {
+        modelManager.addFollowup(INTERVIEW_ALICE);
+        assertThrows(FollowupNotFoundException.class, () -> modelManager.deleteFollowup(NOTES_BENSON));
+        assertTrue(modelManager.hasFollowup(INTERVIEW_ALICE));
+        assertFalse(modelManager.hasFollowup(NOTES_BENSON));
+    }
+
+    @Test
     public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredPersonList().remove(0));
+    }
+
+    @Test
+    public void getFilteredFollowupList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredFollowupList().remove(0));
     }
 
     @Test
