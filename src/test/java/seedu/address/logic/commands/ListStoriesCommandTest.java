@@ -1,10 +1,12 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalStories.STORY_A;
 import static seedu.address.testutil.TypicalStories.STORY_B;
@@ -21,7 +23,7 @@ import seedu.address.model.person.Person;
 import seedu.address.model.story.Story;
 
 /**
- * Contains integration tests and unit tests for ListStoriesCommand.
+ * Contains integration tests (interaction with the Model) and unit tests for ListStoriesCommand.
  */
 public class ListStoriesCommandTest {
 
@@ -103,5 +105,28 @@ public class ListStoriesCommandTest {
                 new ListStoriesCommand(invalidIndex),
                 model,
                 Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void equals() {
+        ListStoriesCommand listStories = new ListStoriesCommand();
+        ListStoriesCommand listStoriesWithIndex = new ListStoriesCommand(INDEX_FIRST_PERSON);
+
+        // same object -> returns true
+        assertTrue(listStories.equals(listStories));
+
+        // same values -> returns true
+        assertTrue(listStories.equals(new ListStoriesCommand()));
+        assertTrue(listStoriesWithIndex.equals(new ListStoriesCommand(INDEX_FIRST_PERSON)));
+
+        // different types -> returns false
+        assertFalse(listStories.equals(1));
+
+        // null -> returns false
+        assertFalse(listStories.equals(null));
+
+        // different indices -> returns false
+        assertFalse(listStoriesWithIndex.equals(new ListStoriesCommand(INDEX_SECOND_PERSON)));
+        assertFalse(listStories.equals(listStoriesWithIndex));
     }
 }

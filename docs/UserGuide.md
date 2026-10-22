@@ -29,7 +29,7 @@ This guide describes the features available as of release v1.3.
 1. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to open the help window.<br>
    Some example commands you can try:
 
-   * `list` : Lists all contacts.
+   * `list` : Lists all contacts and stories.
 
    * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
 
@@ -39,7 +39,7 @@ This guide describes the features available as of release v1.3.
 
    * `assign ci/1 si/1` : Assigns the 1st displayed contact to the 1st displayed story.
 
-   * `list si/1` : Lists the contacts assigned to the 1st displayed story.
+   * `listcontacts si/1` : Lists the contacts assigned to the 1st displayed story.
 
    * `delete 1` : Deletes the 1st contact shown in the current list and removes their story assignments.
 
@@ -68,9 +68,9 @@ The **CONTACTS** panel shows each person's details, tags, and assigned story nam
   For example, if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 * Indices refer to the numbers in the currently displayed lists, including filtered lists. `ci/CONTACT_INDEX` selects a contact and `si/STORY_INDEX` selects a story. Each index must be a positive integer within the corresponding displayed list. Check the displayed numbers again after changing a list.
 * Command words and prefixes are case-sensitive. Use lowercase, such as `addstory`, `ci/`, and `si/`.
-* Extraneous parameters for commands that take no parameters, such as `help`, `exit`, and `clear`, are ignored.<br>
+* Extraneous parameters for commands that take no parameters, such as `help`, `exit`, `clear`, and `list`, are ignored.<br>
   For example, `help 123` is interpreted as `help`.
-* `list` and `liststories` accept only their optional filter shown below; unrelated arguments are rejected.
+* `listcontacts` and `liststories` accept only their optional filter shown below; unrelated arguments are rejected.
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </div>
 
@@ -103,20 +103,29 @@ Examples:
 * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
 * `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
 
-### Listing persons: `list`
+### Listing all entries: `list`
 
-Shows all persons in the address book, or only those assigned to a particular story.
+Shows all contacts and stories in PressMemo, removing any active filters.
 
-Format: `list [si/STORY_INDEX]`
+Format: `list`
 
-* `list` shows all contacts and removes any contact filter, including a `find` search.
-* `list si/STORY_INDEX` shows only contacts assigned to the story at that index in the displayed story list.
+* `list` shows all contacts and all stories.
+* Active filters from commands such as `find`, `listcontacts`, or `liststories` are removed.
+
+### Listing contacts: `listcontacts`
+
+Shows all contacts in the address book, or only those assigned to a particular story.
+
+Format: `listcontacts [si/STORY_INDEX]`
+
+* `listcontacts` shows all contacts and removes any contact filter, including a `find` search.
+* `listcontacts si/STORY_INDEX` shows only contacts assigned to the story at that index in the displayed story list.
 * The story list is unchanged. If the selected story has no assigned contacts, the contact list is empty.
 
 Examples:
 
-* `liststories` followed by `list si/1` shows contacts assigned to the 1st story in the full story list.
-* `list` shows all contacts again.
+* `listcontacts si/1` shows contacts assigned to the 1st story in the story list.
+* `listcontacts` shows all contacts again.
 
 ### Editing a person: `edit`
 
@@ -215,7 +224,7 @@ Format: `assign ci/CONTACT_INDEX si/STORY_INDEX`
 
 Examples:
 
-* `list` followed by `liststories` and then `assign ci/1 si/1` assigns the 1st contact to the 1st story, provided both lists have entries.
+* `list` and then `assign ci/1 si/1` assigns the 1st contact to the 1st story, provided both lists have entries.
 * `assign si/2 ci/1` assigns the 1st displayed contact to the 2nd displayed story.
 
 <div markdown="span" class="alert alert-warning">
@@ -310,7 +319,8 @@ Action | Format, Examples
 **Delete story** | `deletestory INDEX`<br> e.g., `deletestory 2`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com`
 **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
-**List contacts** | `list [si/STORY_INDEX]`<br> e.g., `list` or `list si/1`
+**List all** | `list`
+**List contacts** | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` or `listcontacts si/1`
 **List stories** | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` or `liststories ci/1`
 **Unassign** | `unassign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `unassign ci/1 si/2`
 **Help** | `help`

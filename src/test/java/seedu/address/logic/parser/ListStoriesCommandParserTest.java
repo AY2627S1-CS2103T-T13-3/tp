@@ -1,10 +1,11 @@
 package seedu.address.logic.parser;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.ListStoriesCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
@@ -17,12 +18,13 @@ public class ListStoriesCommandParserTest {
 
     @Test
     public void parse_noArguments_success() throws ParseException {
-        assertInstanceOf(ListStoriesCommand.class, parser.parse(""));
+        assertEquals(new ListStoriesCommand(), parser.parse(""));
+        assertEquals(new ListStoriesCommand(), parser.parse("   "));
     }
 
     @Test
     public void parse_validContactIndex_success() throws ParseException {
-        assertInstanceOf(ListStoriesCommand.class, parser.parse(" ci/2"));
+        assertEquals(new ListStoriesCommand(Index.fromOneBased(2)), parser.parse(" ci/2"));
     }
 
     @Test

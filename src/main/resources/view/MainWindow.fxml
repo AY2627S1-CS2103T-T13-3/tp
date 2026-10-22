@@ -47,23 +47,32 @@
             <Insets top="5" right="10" bottom="5" left="10" />
           </padding>
         </StackPane>
-        <HBox spacing="5.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="pane-with-border">
-          <VBox fx:id="personList" styleClass="pane-with-border" minWidth="340" prefWidth="340" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-            <padding>
-              <Insets top="10" right="10" bottom="10" left="10" />
-            </padding>
-            <Label text="CONTACTS" styleClass="panel-header" />
-            <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
-          </VBox>
-          <VBox fx:id="storyList" styleClass="pane-with-border" minWidth="340" prefWidth="340" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-            <padding>
-              <Insets top="10" right="10" bottom="10" left="10" />
-            </padding>
-            <Label text="STORIES" styleClass="panel-header" />
-            <StackPane fx:id="storyListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
-          </VBox>
-        </HBox>
-        <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
+        <VBox spacing="5.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="pane-with-border">
+            <HBox spacing="5.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="pane-with-border">
+              <VBox fx:id="personList" styleClass="pane-with-border" minWidth="340" prefWidth="340" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                <padding>
+                  <Insets top="10" right="10" bottom="10" left="10" />
+                </padding>
+                <Label text="CONTACTS" styleClass="panel-header" />
+                <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+              </VBox>
+              <VBox fx:id="storyList" styleClass="pane-with-border" minWidth="340" prefWidth="340" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                <padding>
+                  <Insets top="10" right="10" bottom="10" left="10" />
+                </padding>
+                <Label text="STORIES" styleClass="panel-header" />
+                <StackPane fx:id="storyListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+              </VBox>
+            </HBox>
+            <VBox fx:id="followupList" styleClass="pane-with-border" minWidth="680" prefWidth="680" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10" />
+                </padding>
+                <Label text="FOLLOW-UPS" styleClass="panel-header" />
+                <StackPane fx:id="followupListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+            </VBox>
+        </VBox>
+      <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
       </VBox>
     </Scene>
   </scene>

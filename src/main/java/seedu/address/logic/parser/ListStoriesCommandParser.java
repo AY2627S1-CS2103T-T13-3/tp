@@ -14,7 +14,6 @@ public class ListStoriesCommandParser implements Parser<ListStoriesCommand> {
 
     @Override
     public ListStoriesCommand parse(String args) throws ParseException {
-
         // No arguments: list all stories
         if (args.trim().isEmpty()) {
             return new ListStoriesCommand();
@@ -29,7 +28,7 @@ public class ListStoriesCommandParser implements Parser<ListStoriesCommand> {
                 || argMultimap.getValue(PREFIX_CONTACTINDEX).isEmpty()) {
             throw new ParseException(String.format(
                     MESSAGE_INVALID_COMMAND_FORMAT,
-                    "liststories [ci/CONTACT_INDEX]"));
+                    ListStoriesCommand.MESSAGE_USAGE));
         }
 
         // Reject duplicate prefixes

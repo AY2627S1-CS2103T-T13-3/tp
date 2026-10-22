@@ -4,20 +4,19 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STORYINDEX;
 
 import seedu.address.commons.core.index.Index;
-import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.ListContactsCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
- * Parses input arguments and creates a ListCommand.
+ * Parses input arguments and creates a ListContactsCommand.
  */
-public class ListCommandParser implements Parser<ListCommand> {
+public class ListContactsCommandParser implements Parser<ListContactsCommand> {
 
     @Override
-    public ListCommand parse(String args) throws ParseException {
-
+    public ListContactsCommand parse(String args) throws ParseException {
         // No arguments: list all contacts
         if (args.trim().isEmpty()) {
-            return new ListCommand();
+            return new ListContactsCommand();
         }
 
         // Extract the story index
@@ -29,7 +28,7 @@ public class ListCommandParser implements Parser<ListCommand> {
                 || argMultimap.getValue(PREFIX_STORYINDEX).isEmpty()) {
             throw new ParseException(String.format(
                     MESSAGE_INVALID_COMMAND_FORMAT,
-                    "list [si/STORY_INDEX]"));
+                    ListContactsCommand.MESSAGE_USAGE));
         }
 
         // Reject duplicate prefixes
@@ -39,6 +38,6 @@ public class ListCommandParser implements Parser<ListCommand> {
         Index storyIndex = ParserUtil.parseIndex(
                 argMultimap.getValue(PREFIX_STORYINDEX).get());
 
-        return new ListCommand(storyIndex);
+        return new ListContactsCommand(storyIndex);
     }
 }
