@@ -1,28 +1,30 @@
 package seedu.address.logic.parser;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.ListCommand;
+import seedu.address.commons.core.index.Index;
+import seedu.address.logic.commands.ListContactsCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
- * Contains unit tests for ListCommandParser.
+ * Contains unit tests for ListContactsCommandParser.
  */
-public class ListCommandParserTest {
+public class ListContactsCommandParserTest {
 
-    private final ListCommandParser parser = new ListCommandParser();
+    private final ListContactsCommandParser parser = new ListContactsCommandParser();
 
     @Test
     public void parse_noArguments_success() throws ParseException {
-        assertInstanceOf(ListCommand.class, parser.parse(""));
+        assertEquals(new ListContactsCommand(), parser.parse(""));
+        assertEquals(new ListContactsCommand(), parser.parse("   "));
     }
 
     @Test
     public void parse_validStoryIndex_success() throws ParseException {
-        assertInstanceOf(ListCommand.class, parser.parse(" si/2"));
+        assertEquals(new ListContactsCommand(Index.fromOneBased(2)), parser.parse(" si/2"));
     }
 
     @Test

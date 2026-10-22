@@ -132,7 +132,24 @@ public class ModelManager implements Model {
         addressBook.unassignStory(target, story);
     }
     //=========== Followup Operations ===========================================================================
-    // TODO
+
+    @Override
+    public boolean hasFollowup(Followup followup) {
+        requireNonNull(followup);
+        return addressBook.hasFollowup(followup);
+    }
+
+    @Override
+    public void addFollowup(Followup followup) {
+        addressBook.addFollowup(followup);
+        updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
+    }
+
+    @Override
+    public void deleteFollowup(Followup followup) {
+        addressBook.removeFollowup(followup);
+        updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
+    }
     //=========== Filtered Person List Accessors =============================================================
 
     /**
@@ -150,6 +167,39 @@ public class ModelManager implements Model {
         filteredPersons.setPredicate(predicate);
     }
 
+    //=========== Filtered Story List Accessors =============================================================
+    /**
+     * Returns an unmodifiable view of the list of {@code Story} backed by the internal list of
+     * {@code addressBook}
+     */
+    @Override
+    public ObservableList<Story> getFilteredStoryList() {
+        return filteredStories;
+    }
+
+    @Override
+    public void updateFilteredStoryList(Predicate<Story> predicate) {
+        requireNonNull(predicate);
+        filteredStories.setPredicate(predicate);
+    }
+
+    //=========== Filtered Followup List Accessors =============================================================
+    /**
+     * Returns an unmodifiable view of the list of {@code Followup} backed by the internal list of
+     * {@code addressBook}
+     */
+    @Override
+    public ObservableList<Followup> getFilteredFollowupList() {
+        return filteredFollowups;
+    }
+
+    @Override
+    public void updateFilteredFollowupList(Predicate<Followup> predicate) {
+        requireNonNull(predicate);
+        filteredFollowups.setPredicate(predicate);
+    }
+
+    //=========== Object Overrides ==========================================================================
     @Override
     public boolean equals(Object other) {
         if (other == this) {
@@ -165,21 +215,5 @@ public class ModelManager implements Model {
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredPersons.equals(otherModelManager.filteredPersons)
                 && filteredStories.equals(otherModelManager.filteredStories);
-    }
-
-    //=========== Filtered Story List Accessors =============================================================
-    /**
-     * Returns an unmodifiable view of the list of {@code Story} backed by the internal list of
-     * {@code addressBook}
-     */
-    @Override
-    public ObservableList<Story> getFilteredStoryList() {
-        return filteredStories;
-    }
-
-    @Override
-    public void updateFilteredStoryList(Predicate<Story> predicate) {
-        requireNonNull(predicate);
-        filteredStories.setPredicate(predicate);
     }
 }

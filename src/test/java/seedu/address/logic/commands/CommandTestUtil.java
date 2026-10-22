@@ -16,6 +16,7 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
+import seedu.address.model.followup.Followup;
 import seedu.address.model.person.NameContainsKeywordsPredicate;
 import seedu.address.model.person.Person;
 import seedu.address.model.story.Story;
@@ -140,5 +141,17 @@ public class CommandTestUtil {
         assertEquals(1, model.getFilteredStoryList().size());
     }
 
+    /**
+     * Updates {@code model}'s filtered list to show only the followup at the given {@code targetIndex} in the
+     * {@code model}'s address book.
+     */
+    public static void showFollowupAtIndex(Model model, Index targetIndex) {
+        assertTrue(targetIndex.getZeroBased() < model.getFilteredFollowupList().size());
+
+        Followup followup = model.getFilteredFollowupList().get(targetIndex.getZeroBased());
+        model.updateFilteredFollowupList(f -> f.equals(followup));
+
+        assertEquals(1, model.getFilteredFollowupList().size());
+    }
 }
 
