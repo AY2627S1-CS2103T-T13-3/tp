@@ -13,5 +13,7 @@ public class CliSyntax {
     public static final Prefix PREFIX_TAG = new Prefix("t/");
     public static final Prefix PREFIX_CONTACTINDEX = new Prefix("ci/");
     public static final Prefix PREFIX_STORYINDEX = new Prefix("si/");
+    public static final Prefix PREFIX_SHORTCUT = new Prefix("s/");
+    public static final Prefix PREFIX_COMMAND = new Prefix("c/");
 
 }

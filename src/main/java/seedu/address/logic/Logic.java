@@ -1,5 +1,7 @@
 package seedu.address.logic;
 
+import java.util.Map;
+
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.CommandResult;
@@ -36,4 +38,7 @@ public interface Logic {
      * Set the user prefs' GUI settings.
      */
     void setGuiSettings(GuiSettings guiSettings);
+
+    /** Returns the user's command shortcuts mapped to their command words. */
+    Map<String, String> getShortcuts();
 }
