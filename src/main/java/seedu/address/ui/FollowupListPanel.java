@@ -1,6 +1,5 @@
 package seedu.address.ui;
 
-import java.util.Comparator;
 import java.util.logging.Logger;
 
 import javafx.collections.ObservableList;
@@ -23,11 +22,10 @@ public class FollowupListPanel extends UiPart<Region> {
 
     /**
      * Creates a {@code FollowupListPanel} with the given {@code ObservableList}.
-     * Uses a sorted view of the list in ascending lexicographical order.
      */
     public FollowupListPanel(ObservableList<Followup> followupList) {
         super(FXML);
-        followupListView.setItems(followupList.sorted(Comparator.comparing(fu -> fu.getContact().toString())));
+        followupListView.setItems(followupList);
         followupListView.setCellFactory(listView -> new FollowupListViewCell());
     }
 
