@@ -1,13 +1,16 @@
 package seedu.address.logic.commands;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static seedu.address.logic.commands.CommandTestUtil.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
+import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalFollowups.FOLLOWUP_A;
 import static seedu.address.testutil.TypicalFollowups.FOLLOWUP_B;
-import static seedu.address.testutil.TypicalIndexes.*;
-import static seedu.address.testutil.TypicalPersons.ALICE;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
 import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -110,15 +113,18 @@ public class AddFollowupCommandTest {
 
     @Test
     public void equals() {
-        AddFollowupCommand addFollowupACommand = new AddFollowupCommand(FOLLOWUP_A.getDescription(), INDEX_FIRST_PERSON);
-        AddFollowupCommand addFollowupBCommand = new AddFollowupCommand(FOLLOWUP_B.getDescription(), INDEX_SECOND_PERSON);
+        AddFollowupCommand addFollowupACommand = new AddFollowupCommand(FOLLOWUP_A.getDescription(),
+                INDEX_FIRST_PERSON);
+        AddFollowupCommand addFollowupBCommand = new AddFollowupCommand(FOLLOWUP_B.getDescription(),
+                INDEX_SECOND_PERSON);
 
 
         // same object -> returns true
         assertTrue(addFollowupACommand.equals(addFollowupACommand));
 
         // same values -> returns true
-        AddFollowupCommand addFollowupACommandCopy = new AddFollowupCommand(FOLLOWUP_A.getDescription(), INDEX_FIRST_PERSON);
+        AddFollowupCommand addFollowupACommandCopy = new AddFollowupCommand(FOLLOWUP_A.getDescription(),
+                INDEX_FIRST_PERSON);
         assertTrue(addFollowupACommand.equals(addFollowupACommandCopy));
 
         // different types -> returns false
@@ -131,14 +137,16 @@ public class AddFollowupCommandTest {
         assertFalse(addFollowupACommand.equals(addFollowupBCommand));
 
         // different contact index -> returns false
-        AddFollowupCommand addFollowupACommandDifferentContact = new AddFollowupCommand(FOLLOWUP_A.getDescription(), INDEX_SECOND_PERSON);
+        AddFollowupCommand addFollowupACommandDifferentContact = new AddFollowupCommand(FOLLOWUP_A.getDescription(),
+                INDEX_SECOND_PERSON);
         assertFalse(addFollowupACommand.equals(addFollowupACommandDifferentContact));
     }
 
     @Test
     public void toStringMethod() {
         AddFollowupCommand addFollowupCommand = new AddFollowupCommand(FOLLOWUP_A.getDescription(), INDEX_FIRST_PERSON);
-        String expected = AddFollowupCommand.class.getCanonicalName() + "{followupDescription=" + FOLLOWUP_A.getDescription()
+        String expected = AddFollowupCommand.class.getCanonicalName() + "{followupDescription="
+                + FOLLOWUP_A.getDescription()
                 + ", contactIndex=" + INDEX_FIRST_PERSON + "}";
         assertEquals(expected, addFollowupCommand.toString());
     }
