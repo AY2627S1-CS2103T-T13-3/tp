@@ -22,7 +22,6 @@ public class FollowupListPanel extends UiPart<Region> {
 
     /**
      * Creates a {@code FollowupListPanel} with the given {@code ObservableList}.
-     * Uses a sorted view of the list in ascending lexicographical order.
      */
     public FollowupListPanel(ObservableList<Followup> followupList) {
         super(FXML);
