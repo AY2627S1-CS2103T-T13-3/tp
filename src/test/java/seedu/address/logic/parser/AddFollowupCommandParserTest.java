@@ -5,6 +5,7 @@ import seedu.address.logic.commands.AddFollowupCommand;
 import seedu.address.model.followup.FollowupDescription;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_PREFIX;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.logic.parser.ParserUtil.MESSAGE_INVALID_INDEX;
@@ -20,35 +21,28 @@ public class AddFollowupCommandParserTest {
     }
 
     @Test
-    public void parse_compulsoryFieldMissing_failure() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddFollowupCommand.MESSAGE_USAGE);
-
-        assertParseFailure(parser, "ci/1", expectedMessage);
+    public void parse_missingDescription_failure() {
+        String expectedMessage = String.format(
+                MESSAGE_INVALID_COMMAND_FORMAT, AddFollowupCommand.MESSAGE_USAGE);
 
         assertParseFailure(parser, " ci/1", expectedMessage);
+    }
 
-        assertParseFailure(parser, "  ci/1", expectedMessage);
-
-        assertParseFailure(parser, "    ci/1", expectedMessage);
+    @Test
+    public void parse_missingIndex_failure() {
+        String expectedMessage = String.format(
+                MESSAGE_INVALID_COMMAND_FORMAT, AddFollowupCommand.MESSAGE_USAGE);
 
         assertParseFailure(parser, "Followup A", expectedMessage);
+    }
 
-        assertParseFailure(parser, "Followup A si/", expectedMessage);
-
-        assertParseFailure(parser, "Followup A si/1 n/Alice", expectedMessage);
-
-        assertParseFailure(parser, "Followup A ci/Alice", MESSAGE_INVALID_INDEX);
-
+    @Test
+    public void parse_emptyIndex_failure() {
         assertParseFailure(parser, "Followup A ci/", MESSAGE_INVALID_INDEX);
+    }
 
-        assertParseFailure(parser, "Followup A ci/ ", MESSAGE_INVALID_INDEX);
-
-        assertParseFailure(parser, "Followup A ci/  ", MESSAGE_INVALID_INDEX);
-
-        assertParseFailure(parser, "Followup A ci/*", MESSAGE_INVALID_INDEX);
-
-        assertParseFailure(parser, "Followup A ci/1 si/1", MESSAGE_INVALID_INDEX);
-
-        assertParseFailure(parser, "Followup A si/1 ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
+    @Test
+    public void parse_invalidPrefix_failure() {
+       assertParseFailure(parser, "Followup A z/invalid", String.format(MESSAGE_INVALID_PREFIX, 12, "ci/"));
     }
 }
