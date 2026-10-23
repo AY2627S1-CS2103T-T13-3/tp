@@ -3,8 +3,8 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalPersons.ALICE;
-import static seedu.address.testutil.TypicalPersons.BENSON;
+import static seedu.address.testutil.TypicalContacts.ALICE;
+import static seedu.address.testutil.TypicalContacts.BENSON;
 
 import org.junit.jupiter.api.Test;
 
@@ -23,8 +23,8 @@ public class EditFollowupCommandTest {
     private final Followup original = new Followup(new FollowupDescription("Call"), ALICE.getName());
 
     public EditFollowupCommandTest() {
-        model.addPerson(ALICE);
-        model.addPerson(BENSON);
+        model.addContact(ALICE);
+        model.addContact(BENSON);
         model.addFollowup(original);
     }
 
@@ -37,7 +37,7 @@ public class EditFollowupCommandTest {
 
     @Test
     public void execute_contactOnly_usesFilteredContactIndex() throws Exception {
-        model.updateFilteredPersonList(person -> person.equals(BENSON));
+        model.updateFilteredContactList(contact -> contact.equals(BENSON));
         new AddressBookParser().parseCommand("editfollowup 1 ci/1").execute(model);
         assertEquals(new Followup(original.getDescription(), BENSON.getName()),
                 model.getFilteredFollowupList().get(0));
@@ -72,7 +72,7 @@ public class EditFollowupCommandTest {
         assertCommandFailure(new EditFollowupCommand(Index.fromOneBased(2), descriptor), model,
                 Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX);
         assertCommandFailure(new EditFollowupCommand(Index.fromOneBased(1), descriptor), model,
-                Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+                Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
     }
 
     @Test

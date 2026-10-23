@@ -15,10 +15,12 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.contact.Contact;
+import seedu.address.model.contact.Name;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
-import seedu.address.model.person.Name;
-import seedu.address.model.person.Person;
+
+
 
 /** Edits the details of an existing followup in the address book. */
 public class EditFollowupCommand extends Command {
@@ -56,9 +58,9 @@ public class EditFollowupCommand extends Command {
         Name updatedContact = followupToEdit.getContact();
         if (editFollowupDescriptor.getContactIndex().isPresent()) {
             Index contactIndex = editFollowupDescriptor.getContactIndex().get();
-            List<Person> lastShownContacts = model.getFilteredPersonList();
+            List<Contact> lastShownContacts = model.getFilteredContactList();
             if (contactIndex.getZeroBased() >= lastShownContacts.size()) {
-                throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+                throw new CommandException(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
             }
             updatedContact = lastShownContacts.get(contactIndex.getZeroBased()).getName();
         }
