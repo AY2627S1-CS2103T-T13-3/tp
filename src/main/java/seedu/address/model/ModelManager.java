@@ -11,8 +11,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.model.contact.Contact;
 import seedu.address.model.followup.Followup;
-import seedu.address.model.person.Person;
 import seedu.address.model.story.Story;
 
 /**
@@ -23,7 +23,7 @@ public class ModelManager implements Model {
 
     private final AddressBook addressBook;
     private final UserPrefs userPrefs;
-    private final FilteredList<Person> filteredPersons;
+    private final FilteredList<Contact> filteredContacts;
     private final FilteredList<Story> filteredStories;
     private final FilteredList<Followup> filteredFollowups;
 
@@ -37,7 +37,7 @@ public class ModelManager implements Model {
 
         this.addressBook = new AddressBook(addressBook);
         this.userPrefs = new UserPrefs(userPrefs);
-        filteredPersons = new FilteredList<>(this.addressBook.getPersonList());
+        filteredContacts = new FilteredList<>(this.addressBook.getContactList());
         filteredStories = new FilteredList<>(this.addressBook.getStoryList());
         filteredFollowups = new FilteredList<>(this.addressBook.getFollowupList());
     }
@@ -92,32 +92,27 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public boolean hasPerson(Person person) {
-        requireNonNull(person);
-        return addressBook.hasPerson(person);
+    public boolean hasContact(Contact contact) {
+        requireNonNull(contact);
+        return addressBook.hasContact(contact);
     }
 
     @Override
-    public void deletePerson(Person target) {
-        addressBook.removePerson(target);
+    public void deleteContact(Contact target) {
+        addressBook.removeContact(target);
     }
 
     @Override
-    public void deleteStory(Story target) {
-        addressBook.removeStory(target);
+    public void addContact(Contact contact) {
+        addressBook.addContact(contact);
+        updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
     }
 
     @Override
-    public void addPerson(Person person) {
-        addressBook.addPerson(person);
-        updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-    }
+    public void setContact(Contact target, Contact editedContact) {
+        requireAllNonNull(target, editedContact);
 
-    @Override
-    public void setPerson(Person target, Person editedPerson) {
-        requireAllNonNull(target, editedPerson);
-
-        addressBook.setPerson(target, editedPerson);
+        addressBook.setContact(target, editedContact);
     }
 
     //=========== Story Operations ===========================================================================
@@ -135,14 +130,26 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void assignStory(Person target, Story story) {
+    public void setStory(Story target, Story editedStory) {
+        requireAllNonNull(target, editedStory);
+
+        addressBook.setStory(target, editedStory);
+    }
+
+    @Override
+    public void deleteStory(Story target) {
+        addressBook.removeStory(target);
+    }
+
+    @Override
+    public void assignStory(Contact target, Story story) {
         requireAllNonNull(target, story);
 
         addressBook.assignStory(target, story);
     }
 
     @Override
-    public void unassignStory(Person target, Story story) {
+    public void unassignStory(Contact target, Story story) {
         requireAllNonNull(target, story);
 
         addressBook.unassignStory(target, story);
@@ -166,21 +173,21 @@ public class ModelManager implements Model {
         addressBook.removeFollowup(followup);
         updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
     }
-    //=========== Filtered Person List Accessors =============================================================
+    //=========== Filtered Contact List Accessors =============================================================
 
     /**
-     * Returns an unmodifiable view of the list of {@code Person} backed by the internal list of
+     * Returns an unmodifiable view of the list of {@code Contact} backed by the internal list of
      * {@code addressBook}
      */
     @Override
-    public ObservableList<Person> getFilteredPersonList() {
-        return filteredPersons;
+    public ObservableList<Contact> getFilteredContactList() {
+        return filteredContacts;
     }
 
     @Override
-    public void updateFilteredPersonList(Predicate<Person> predicate) {
+    public void updateFilteredContactList(Predicate<Contact> predicate) {
         requireNonNull(predicate);
-        filteredPersons.setPredicate(predicate);
+        filteredContacts.setPredicate(predicate);
     }
 
     //=========== Filtered Story List Accessors =============================================================
@@ -235,7 +242,7 @@ public class ModelManager implements Model {
 
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
-                && filteredPersons.equals(otherModelManager.filteredPersons)
+                && filteredContacts.equals(otherModelManager.filteredContacts)
                 && filteredStories.equals(otherModelManager.filteredStories);
     }
 }

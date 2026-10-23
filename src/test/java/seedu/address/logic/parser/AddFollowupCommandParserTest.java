@@ -5,7 +5,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_PREFIX;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.logic.parser.ParserUtil.MESSAGE_INVALID_INDEX;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +18,7 @@ public class AddFollowupCommandParserTest {
     @Test
     public void parse_allFieldsPresent_success() {
         AddFollowupCommand expectedCommand = new AddFollowupCommand(new FollowupDescription("Followup A"),
-                INDEX_FIRST_PERSON);
+                INDEX_FIRST_CONTACT);
         assertParseSuccess(parser, "Followup A ci/1", expectedCommand);
     }
 

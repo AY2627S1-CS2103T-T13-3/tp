@@ -12,8 +12,8 @@ Class AddressBook
 Class ModelManager
 Class UserPrefs
 
-Class UniquePersonList
-Class Person
+Class UniqueContactList
+Class Contact
 
 Class UniqueStoryList
 Class Story
@@ -31,10 +31,10 @@ HiddenOutside ..> Model
 AddressBook -[hidden]right-> ModelManager
 ModelManager -[hidden]right-> UserPrefs
 
-UniquePersonList -[hidden]right-> UniqueStoryList
+UniqueContactList -[hidden]right-> UniqueStoryList
 UniqueStoryList -[hidden]right-> UniqueFollowupList
 
-Person -[hidden]right-> Story
+Contact -[hidden]right-> Story
 Story -[hidden]right-> Followup
 
 AddressBook .up.|> ReadOnlyAddressBook
@@ -45,11 +45,11 @@ ModelManager -left-> "1" AddressBook
 ModelManager -right-> "1" UserPrefs
 UserPrefs .up.|> ReadOnlyUserPrefs
 
-AddressBook *--> "1" UniquePersonList
+AddressBook *--> "1" UniqueContactList
 AddressBook *--> "1" UniqueStoryList
 AddressBook *--> "1" UniqueFollowupList
 
-UniquePersonList --> "~* all" Person
+UniqueContactList --> "~* all" Contact
 UniqueStoryList --> "~* all" Story
 UniqueFollowupList --> "~* all" Followup
 

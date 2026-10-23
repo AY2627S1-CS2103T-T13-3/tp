@@ -58,7 +58,7 @@ public class ShortcutCommandTest {
     @Test
     public void execute_builtinCommandAsShortcut_throwsCommandException() {
         Model model = new ModelManager();
-        ShortcutCommand command = new ShortcutCommand("list", "find");
+        ShortcutCommand command = new ShortcutCommand("list", "findcontacts");
         String expectedMessage = String.format(ShortcutCommand.MESSAGE_RESERVED_SHORTCUT, "list");
 
         assertThrows(CommandException.class, expectedMessage, () -> command.execute(model));
@@ -96,10 +96,11 @@ public class ShortcutCommandTest {
     public void execute_listShortcuts_success() throws Exception {
         Model model = new ModelManager();
         model.assignShortcut("ls", "list");
-        model.assignShortcut("a", "add");
+        model.assignShortcut("a", "addcontact");
 
         CommandResult result = new ShortcutCommand().execute(model);
 
-        assertEquals(ShortcutCommand.MESSAGE_SHORTCUTS_HEADER + "a -> add\nls -> list", result.getFeedbackToUser());
+        assertEquals(ShortcutCommand.MESSAGE_SHORTCUTS_HEADER + "a -> addcontact\nls -> list",
+                result.getFeedbackToUser());
     }
 }

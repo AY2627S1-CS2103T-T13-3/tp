@@ -1,7 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_CONTACTS;
 
 import java.util.List;
 import java.util.Objects;
@@ -42,7 +42,7 @@ public class ListContactsCommand extends Command {
 
         // No index: display all contacts
         if (storyIndex.isEmpty()) {
-            model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+            model.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
             return new CommandResult(MESSAGE_SUCCESS);
         }
 
@@ -58,8 +58,8 @@ public class ListContactsCommand extends Command {
         Story selectedStory = lastShownStoryList.get(index);
 
         // Display only contacts assigned to this story
-        model.updateFilteredPersonList(
-                person -> selectedStory.isAssigned(person));
+        model.updateFilteredContactList(
+                contact -> selectedStory.isAssigned(contact));
 
         return new CommandResult(
                 "Listed contacts assigned to " + selectedStory.getName());

@@ -12,7 +12,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.person.Person;
+import seedu.address.model.contact.Contact;
 
 /**
  * Lists stories in the address book to the user.
@@ -47,22 +47,22 @@ public class ListStoriesCommand extends Command {
         }
 
         // Index provided: identify the contact
-        List<Person> lastShownContactList = model.getFilteredPersonList();
+        List<Contact> lastShownContactList = model.getFilteredContactList();
         int index = contactIndex.get().getZeroBased();
 
         if (index >= lastShownContactList.size()) {
             throw new CommandException(
-                    Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+                    Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
         }
 
-        Person selectedPerson = lastShownContactList.get(index);
+        Contact selectedContact = lastShownContactList.get(index);
 
         // Display only stories assigned to this contact
         model.updateFilteredStoryList(
-                story -> story.isAssigned(selectedPerson));
+                story -> story.isAssigned(selectedContact));
 
         return new CommandResult(
-                "Listed stories assigned to " + selectedPerson.getName());
+                "Listed stories assigned to " + selectedContact.getName());
     }
 
     @Override

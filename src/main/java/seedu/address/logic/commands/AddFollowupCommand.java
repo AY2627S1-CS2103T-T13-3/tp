@@ -10,9 +10,9 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.contact.Contact;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
-import seedu.address.model.person.Person;
 
 /**
  * Adds a followup to a contact in the address book.
@@ -47,13 +47,13 @@ public class AddFollowupCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        List<Person> lastShownContactList = model.getFilteredPersonList();
+        List<Contact> lastShownContactList = model.getFilteredContactList();
 
         if (contactIndex.getZeroBased() >= lastShownContactList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+            throw new CommandException(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
         }
 
-        Person target = lastShownContactList.get(contactIndex.getZeroBased());
+        Contact target = lastShownContactList.get(contactIndex.getZeroBased());
         Followup followupToAdd = new Followup(followupDescription, target.getName());
 
         if (model.hasFollowup(followupToAdd)) {
