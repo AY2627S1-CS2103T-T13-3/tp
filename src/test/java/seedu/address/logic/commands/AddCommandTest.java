@@ -161,6 +161,11 @@ public class AddCommandTest {
         }
 
         @Override
+        public void setStory(Story target, Story editedStory) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void assignStory(Person target, Story story) {
             throw new AssertionError("This method should not be called.");
         }
