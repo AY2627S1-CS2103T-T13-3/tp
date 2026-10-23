@@ -223,6 +223,7 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void addFollowup(Followup followup) {
         followups.add(followup);
+        System.out.println(followups);
     }
 
     /**
