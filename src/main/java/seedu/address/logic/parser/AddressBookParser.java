@@ -11,20 +11,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import seedu.address.commons.core.LogsCenter;
-import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.AddContactCommand;
 import seedu.address.logic.commands.AddFollowupCommand;
 import seedu.address.logic.commands.AddStoryCommand;
 import seedu.address.logic.commands.AssignCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandWords;
-import seedu.address.logic.commands.DeleteCommand;
+import seedu.address.logic.commands.DeleteContactCommand;
 import seedu.address.logic.commands.DeleteFollowupCommand;
 import seedu.address.logic.commands.DeleteStoryCommand;
-import seedu.address.logic.commands.EditCommand;
+import seedu.address.logic.commands.EditContactCommand;
 import seedu.address.logic.commands.EditStoryCommand;
 import seedu.address.logic.commands.ExitCommand;
-import seedu.address.logic.commands.FindCommand;
+import seedu.address.logic.commands.FindContactsCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListContactsCommand;
@@ -83,16 +83,16 @@ public class AddressBookParser {
                 + "; Arguments: " + arguments);
 
         return switch (commandWord) {
-            case AddCommand.COMMAND_WORD -> new AddCommandParser().parse(arguments);
+            case AddContactCommand.COMMAND_WORD -> new AddCommandParser().parse(arguments);
             case AddStoryCommand.COMMAND_WORD -> new AddStoryCommandParser().parse(arguments);
             case AddFollowupCommand.COMMAND_WORD -> new AddFollowupCommandParser().parse(arguments);
-            case EditCommand.COMMAND_WORD -> new EditCommandParser().parse(arguments);
+            case EditContactCommand.COMMAND_WORD -> new EditCommandParser().parse(arguments);
             case EditStoryCommand.COMMAND_WORD -> new EditStoryCommandParser().parse(arguments);
-            case DeleteCommand.COMMAND_WORD -> new DeleteCommandParser().parse(arguments);
+            case DeleteContactCommand.COMMAND_WORD -> new DeleteCommandParser().parse(arguments);
             case DeleteFollowupCommand.COMMAND_WORD -> new DeleteFollowupCommandParser().parse(arguments);
             case DeleteStoryCommand.COMMAND_WORD -> new DeleteStoryCommandParser().parse(arguments);
             case ClearCommand.COMMAND_WORD -> new ClearCommand();
-            case FindCommand.COMMAND_WORD -> new FindCommandParser().parse(arguments);
+            case FindContactsCommand.COMMAND_WORD -> new FindCommandParser().parse(arguments);
             case ListCommand.COMMAND_WORD -> new ListCommand();
             case ListContactsCommand.COMMAND_WORD -> new ListContactsCommandParser().parse(arguments);
             case ListStoriesCommand.COMMAND_WORD -> new ListStoriesCommandParser().parse(arguments);

@@ -10,8 +10,8 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.model.person.Name;
-import seedu.address.model.person.Person;
+import seedu.address.model.contact.Contact;
+import seedu.address.model.contact.Name;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -61,7 +61,7 @@ public class Story {
     /**
      * Returns whether the contact has been assigned to this Story
      */
-    public boolean isAssigned(Person contact) {
+    public boolean isAssigned(Contact contact) {
         return contacts.contains(contact.getName());
     }
 
@@ -70,7 +70,7 @@ public class Story {
      * Does nothing and if the contact has already been assigned.
      * @return  An updated Story with the assigned contact
      */
-    public Story assign(Person contact) {
+    public Story assign(Contact contact) {
         if (isAssigned(contact)) {
             return this;
         }
@@ -87,7 +87,7 @@ public class Story {
      * @return  An updated Story with the assigned contact
      *
      */
-    public Story unassign(Person contact) {
+    public Story unassign(Contact contact) {
         if (!isAssigned(contact)) {
             return this;
         }
