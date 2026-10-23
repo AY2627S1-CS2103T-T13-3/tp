@@ -16,9 +16,9 @@ import seedu.address.model.contact.Contact;
 /**
  * Adds a contact to the address book.
  */
-public class AddCommand extends Command {
+public class AddContactCommand extends Command {
 
-    public static final String COMMAND_WORD = "add";
+    public static final String COMMAND_WORD = "addcontact";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a contact to the address book. "
             + "Parameters: "
@@ -41,9 +41,9 @@ public class AddCommand extends Command {
     private final Contact toAdd;
 
     /**
-     * Creates an AddCommand to add the specified {@code Contact}
+     * Creates an AddContactCommand to add the specified {@code Contact}
      */
-    public AddCommand(Contact contact) {
+    public AddContactCommand(Contact contact) {
         requireNonNull(contact);
         toAdd = contact;
     }
@@ -67,11 +67,11 @@ public class AddCommand extends Command {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof AddCommand otherAddCommand)) {
+        if (!(other instanceof AddContactCommand otherAddContactCommand)) {
             return false;
         }
 
-        return toAdd.equals(otherAddCommand.toAdd);
+        return toAdd.equals(otherAddContactCommand.toAdd);
     }
 
     @Override

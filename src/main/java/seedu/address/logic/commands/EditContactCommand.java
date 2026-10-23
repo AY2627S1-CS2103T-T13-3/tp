@@ -31,9 +31,9 @@ import seedu.address.model.tag.Tag;
 /**
  * Edits the details of an existing contact in the address book.
  */
-public class EditCommand extends Command {
+public class EditContactCommand extends Command {
 
-    public static final String COMMAND_WORD = "edit";
+    public static final String COMMAND_WORD = "editcontact";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the contact identified "
             + "by the index number used in the displayed contact list. "
@@ -59,7 +59,7 @@ public class EditCommand extends Command {
      * @param index of the contact in the filtered contact list to edit
      * @param editContactDescriptor details to edit the contact with
      */
-    public EditCommand(Index index, EditContactDescriptor editContactDescriptor) {
+    public EditContactCommand(Index index, EditContactDescriptor editContactDescriptor) {
         requireNonNull(index);
         requireNonNull(editContactDescriptor);
 
@@ -118,12 +118,12 @@ public class EditCommand extends Command {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof EditCommand otherEditCommand)) {
+        if (!(other instanceof EditContactCommand otherEditContactCommand)) {
             return false;
         }
 
-        return index.equals(otherEditCommand.index)
-                && editContactDescriptor.equals(otherEditCommand.editContactDescriptor);
+        return index.equals(otherEditContactCommand.index)
+                && editContactDescriptor.equals(otherEditContactCommand.editContactDescriptor);
     }
 
     @Override

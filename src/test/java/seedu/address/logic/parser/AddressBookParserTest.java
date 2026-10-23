@@ -18,15 +18,15 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
-import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.AddContactCommand;
 import seedu.address.logic.commands.AssignCommand;
 import seedu.address.logic.commands.ClearCommand;
-import seedu.address.logic.commands.DeleteCommand;
+import seedu.address.logic.commands.DeleteContactCommand;
 import seedu.address.logic.commands.DeleteStoryCommand;
-import seedu.address.logic.commands.EditCommand;
-import seedu.address.logic.commands.EditCommand.EditContactDescriptor;
+import seedu.address.logic.commands.EditContactCommand;
+import seedu.address.logic.commands.EditContactCommand.EditContactDescriptor;
 import seedu.address.logic.commands.ExitCommand;
-import seedu.address.logic.commands.FindCommand;
+import seedu.address.logic.commands.FindContactsCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListContactsCommand;
@@ -48,8 +48,8 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_add() throws Exception {
         Contact contact = new ContactBuilder().build();
-        AddCommand command = (AddCommand) parser.parseCommand(ContactUtil.getAddCommand(contact));
-        assertEquals(new AddCommand(contact), command);
+        AddContactCommand command = (AddContactCommand) parser.parseCommand(ContactUtil.getAddCommand(contact));
+        assertEquals(new AddContactCommand(contact), command);
     }
 
     @Test
@@ -71,9 +71,9 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_delete() throws Exception {
-        DeleteCommand command = (DeleteCommand) parser.parseCommand(
-                DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_CONTACT.getOneBased());
-        assertEquals(new DeleteCommand(INDEX_FIRST_CONTACT), command);
+        DeleteContactCommand command = (DeleteContactCommand) parser.parseCommand(
+                DeleteContactCommand.COMMAND_WORD + " " + INDEX_FIRST_CONTACT.getOneBased());
+        assertEquals(new DeleteContactCommand(INDEX_FIRST_CONTACT), command);
     }
 
     @Test
@@ -87,9 +87,9 @@ public class AddressBookParserTest {
     public void parseCommand_edit() throws Exception {
         Contact contact = new ContactBuilder().build();
         EditContactDescriptor descriptor = new EditContactDescriptorBuilder(contact).build();
-        EditCommand command = (EditCommand) parser.parseCommand(EditCommand.COMMAND_WORD + " "
+        EditContactCommand command = (EditContactCommand) parser.parseCommand(EditContactCommand.COMMAND_WORD + " "
                 + INDEX_FIRST_CONTACT.getOneBased() + " " + ContactUtil.getEditContactDescriptorDetails(descriptor));
-        assertEquals(new EditCommand(INDEX_FIRST_CONTACT, descriptor), command);
+        assertEquals(new EditContactCommand(INDEX_FIRST_CONTACT, descriptor), command);
     }
 
     @Test
@@ -101,9 +101,9 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_find() throws Exception {
         List<String> keywords = List.of("foo", "bar", "baz");
-        FindCommand command = (FindCommand) parser.parseCommand(
-                FindCommand.COMMAND_WORD + " " + keywords.stream().collect(Collectors.joining(" ")));
-        assertEquals(new FindCommand(new NameContainsKeywordsPredicate(keywords)), command);
+        FindContactsCommand command = (FindContactsCommand) parser.parseCommand(
+                FindContactsCommand.COMMAND_WORD + " " + keywords.stream().collect(Collectors.joining(" ")));
+        assertEquals(new FindContactsCommand(new NameContainsKeywordsPredicate(keywords)), command);
     }
 
     @Test
@@ -163,12 +163,12 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_shortcutWithArguments_preservesArguments() throws Exception {
-        AddressBookParser parserWithShortcuts = new AddressBookParser(() -> Map.of("d", "delete"));
+        AddressBookParser parserWithShortcuts = new AddressBookParser(() -> Map.of("d", "deletecontact"));
 
-        DeleteCommand command = (DeleteCommand) parserWithShortcuts.parseCommand(
+        DeleteContactCommand command = (DeleteContactCommand) parserWithShortcuts.parseCommand(
                 "d " + INDEX_FIRST_CONTACT.getOneBased());
 
-        assertEquals(new DeleteCommand(INDEX_FIRST_CONTACT), command);
+        assertEquals(new DeleteContactCommand(INDEX_FIRST_CONTACT), command);
     }
 
     @Test
@@ -182,7 +182,7 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_builtinCommandAlsoStoredAsShortcut_builtinCommandTakesPriority() throws Exception {
-        AddressBookParser parserWithShortcuts = new AddressBookParser(() -> Map.of("list", "find"));
+        AddressBookParser parserWithShortcuts = new AddressBookParser(() -> Map.of("list", "findcontacts"));
 
         assertTrue(parserWithShortcuts.parseCommand("list") instanceof ListCommand);
     }

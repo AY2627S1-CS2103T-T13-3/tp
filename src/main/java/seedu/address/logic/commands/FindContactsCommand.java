@@ -11,9 +11,9 @@ import seedu.address.model.contact.NameContainsKeywordsPredicate;
  * Finds and lists all contacts in the address book whose name contains any of the argument keywords.
  * Keyword matching is case insensitive.
  */
-public class FindCommand extends Command {
+public class FindContactsCommand extends Command {
 
-    public static final String COMMAND_WORD = "find";
+    public static final String COMMAND_WORD = "findcontacts";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all contacts whose names contain any of "
             + "the specified keywords (case-insensitive) and displays them as a list with index numbers.\n"
@@ -22,7 +22,7 @@ public class FindCommand extends Command {
 
     private final NameContainsKeywordsPredicate predicate;
 
-    public FindCommand(NameContainsKeywordsPredicate predicate) {
+    public FindContactsCommand(NameContainsKeywordsPredicate predicate) {
         this.predicate = predicate;
     }
 
@@ -41,11 +41,11 @@ public class FindCommand extends Command {
         }
 
         // instanceof handles nulls
-        if (!(other instanceof FindCommand otherFindCommand)) {
+        if (!(other instanceof FindContactsCommand otherFindContactsCommand)) {
             return false;
         }
 
-        return predicate.equals(otherFindCommand.predicate);
+        return predicate.equals(otherFindContactsCommand.predicate);
     }
 
     @Override

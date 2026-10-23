@@ -8,15 +8,15 @@ import java.util.Set;
 public final class CommandWords {
 
     private static final Set<String> ASSIGNABLE_COMMAND_WORDS = Set.of(
-            AddCommand.COMMAND_WORD,
+            AddContactCommand.COMMAND_WORD,
             AddStoryCommand.COMMAND_WORD,
             AssignCommand.COMMAND_WORD,
             ClearCommand.COMMAND_WORD,
-            DeleteCommand.COMMAND_WORD,
+            DeleteContactCommand.COMMAND_WORD,
             DeleteStoryCommand.COMMAND_WORD,
-            EditCommand.COMMAND_WORD,
+            EditContactCommand.COMMAND_WORD,
             ExitCommand.COMMAND_WORD,
-            FindCommand.COMMAND_WORD,
+            FindContactsCommand.COMMAND_WORD,
             HelpCommand.COMMAND_WORD,
             ListCommand.COMMAND_WORD,
             ListStoriesCommand.COMMAND_WORD,

@@ -35,7 +35,7 @@ This guide describes the features implemented for PressMemo v1.4.
 
     * `liststories` : Displays all stories without changing the contact list.
 
-    * `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
+    * `addcontact n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
 
     * `addstory Housing Investigation` : Creates a story named `Housing Investigation`.
 
@@ -55,7 +55,7 @@ This guide describes the features implemented for PressMemo v1.4.
 
     * `unshortcut ls` : Removes the custom `ls` shortcut.
 
-    * `delete 1` : Deletes the 1st displayed contact and removes their story assignments and follow-ups.
+    * `deletecontact 1` : Deletes the 1st displayed contact and removes their story assignments and follow-ups.
 
     * `clear` : Deletes all contacts, stories, assignments, and follow-ups.
 
@@ -73,7 +73,7 @@ The **CONTACTS** panel shows each contact's details, tags, and assigned story na
 ### Notes about the command format
 
 * Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
-  For example, in `add n/NAME`, replace `NAME` with a value such as `John Doe`.
+  For example, in `addcontact n/NAME`, replace `NAME` with a value such as `John Doe`.
 * Items in square brackets are optional.<br>
   For example, `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
 * Items followed by `…`​ can appear zero or more times.<br>
@@ -100,11 +100,11 @@ Format: `help`
 
 You can also open the help window from the **Help** menu or by pressing `F1`. For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
 
-### Adding a contact: `add`
+### Adding a contact: `addcontact`
 
 Adds a contact to the address book.
 
-Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
+Format: `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
 
 * All four fields (`n/`, `p/`, `e/`, and `a/`) are required and cannot be blank.
 * Names contain only letters, digits, and spaces. A contact with exactly the same name already in the address book cannot be added.
@@ -117,8 +117,8 @@ A contact can have any number of tags, including zero.
 </div>
 
 Examples:
-* `add n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+* `addcontact n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
+* `addcontact n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
 
 ### Listing contacts and stories (refactored commands)
 
@@ -145,7 +145,7 @@ Format: `list`
 * `list` has no filtering parameters; extra arguments are ignored. Use `listcontacts` or `liststories` to filter one panel.
 
 Example:
-* `find John` followed by `list` restores both lists in full.
+* `findcontact John` followed by `list` restores both lists in full.
 
 ### Listing contacts: `listcontacts`
 
@@ -153,7 +153,7 @@ Displays all contacts, or only those assigned to a selected story.
 
 Format: `listcontacts [si/STORY_INDEX]`
 
-* `listcontacts` shows all contacts and removes any active **contact** filter, including a `find` search.
+* `listcontacts` shows all contacts and removes any active **contact** filter, including a `findcontact` search.
 * `listcontacts si/STORY_INDEX` shows only contacts assigned to that story in the **currently displayed story list**.
 * The **STORIES** panel remains unchanged. If the selected story has no assigned contacts, the contact list becomes empty.
 
@@ -173,32 +173,32 @@ Format: `liststories [ci/CONTACT_INDEX]`
 
 Examples:
 * `listcontacts` followed by `liststories ci/1` shows stories assigned to the first displayed contact.
-* `find John` followed by `liststories ci/1` uses the first contact in the filtered search results.
+* `findcontact John` followed by `liststories ci/1` uses the first contact in the filtered search results.
 * `liststories` shows all stories again without changing the displayed contacts.
 
-### Editing a contact: `edit`
+### Editing a contact: `editcontact`
 
 Edits an existing contact in the address book.
 
-Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+Format: `editcontact INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
 
 * Edits the contact at the specified `INDEX`. The index refers to the index number shown in the displayed contact list. The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
 * When editing tags, all of the contact's existing tags are removed; adding tags is not cumulative.
 * To remove all of a contact's tags, enter `t/` without a tag after it.
-* The same field restrictions as `add` apply. You cannot change a contact's name to another existing contact's name.
+* The same field restrictions as `addcontact` apply. You cannot change a contact's name to another existing contact's name.
 * Editing shows the full contact list. Editing a contact, including changing their name, preserves their story assignments and updates associated follow-up references.
 
 Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st contact to be `91234567` and `johndoe@example.com` respectively.
-*  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd contact to be `Betsy Crower` and clears all existing tags.
+*  `editcontact 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st contact to be `91234567` and `johndoe@example.com` respectively.
+*  `editcontact 2 n/Betsy Crower t/` Edits the name of the 2nd contact to be `Betsy Crower` and clears all existing tags.
 
-### Locating contacts by name: `find`
+### Locating contacts by name: `findcontact`
 
 Finds contacts whose names contain any of the given keywords.
 
-Format: `find KEYWORD [MORE_KEYWORDS]`
+Format: `findcontact KEYWORD [MORE_KEYWORDS]`
 
 * The search is case-insensitive; for example, `hans` matches `Hans`.
 * Keyword order does not matter; for example, `Hans Bo` matches `Bo Hans`.
@@ -208,15 +208,15 @@ Format: `find KEYWORD [MORE_KEYWORDS]`
 * The search replaces the current contact filter and searches all contacts. It does not change the story list. Use `listcontacts` to show all contacts again without changing the story list.
 
 Examples:
-* `find John` returns `john` and `John Doe`
-* `find alex david` returns `Alex Yeoh`, `David Li`
+* `findcontact John` returns `john` and `John Doe`
+* `findcontact alex david` returns `Alex Yeoh`, `David Li`
 
 
-### Deleting a contact: `delete`
+### Deleting a contact: `deletecontact`
 
 Deletes the specified contact from the address book.
 
-Format: `delete INDEX`
+Format: `deletecontact INDEX`
 
 * Deletes the contact at the specified `INDEX`.
 * The index refers to the index number shown in the displayed contact list.
@@ -224,8 +224,8 @@ Format: `delete INDEX`
 * Deleting a contact also removes their assignments from stories and deletes all follow-ups linked to them. The stories themselves remain.
 
 Examples:
-* `list` followed by `delete 2` deletes the 2nd contact in the address book.
-* `find Betsy` followed by `delete 1` deletes the 1st contact in the results of the `find` command.
+* `list` followed by `deletecontact 2` deletes the 2nd contact in the address book.
+* `findcontact Betsy` followed by `deletecontact 1` deletes the 1st contact in the results of the `findcontact` command.
 
 ### Adding a story: `addstory`
 
@@ -331,7 +331,7 @@ Format: `shortcut [s/SHORTCUT c/COMMAND_WORD]`
 * `shortcut s/SHORTCUT c/COMMAND_WORD` assigns an alias to a command.
 * A shortcut must start with a lowercase letter and may contain only lowercase letters and digits (e.g., `ls`, `a1`, `ds`).
 * Built-in command words cannot be reused as shortcut names.
-* Only the following commands can be assigned shortcuts: `add`, `addstory`, `assign`, `clear`, `delete`, `deletestory`, `edit`, `exit`, `find`, `help`, `list`, `liststories`, and `unassign`.
+* Only the following commands can be assigned shortcuts: `addcontact`, `addstory`, `assign`, `clear`, `deletecontact`, `deletestory`, `editcontact`, `exit`, `findcontact`, `help`, `list`, `liststories`, and `unassign`.
 * Other commands, including `listcontacts`, `addfollowup`, `deletefollowup`, `shortcut`, and `unshortcut`, are not supported as shortcut targets in this version.
 * Each command can have at most one shortcut, and each shortcut can refer to one command. Reassigning a shortcut or command replaces conflicting mappings.
 * Once assigned, type the shortcut in place of the command word and keep any required arguments.
@@ -340,7 +340,7 @@ Format: `shortcut [s/SHORTCUT c/COMMAND_WORD]`
 Examples:
 * `shortcut` — lists all existing shortcuts.
 * `shortcut s/ls c/list` — assigns `ls` to `list`; you can then enter `ls`.
-* `shortcut s/a c/add` — assigns `a` to `add`; you can then enter `a n/John Tan p/91234567 e/john@example.com a/Singapore`.
+* `shortcut s/a c/addcontact` — assigns `a` to `addcontact`; you can then enter `a n/John Tan p/91234567 e/john@example.com a/Singapore`.
 * `shortcut s/ds c/deletestory` — assigns `ds` to `deletestory`.
 
 ### Removing a command shortcut: `unshortcut`
@@ -405,16 +405,16 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 
 Action | Format, Examples
 --------|------------------
-**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
+**Add** | `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `addcontact n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
 **Add follow-up** | `addfollowup DESCRIPTION ci/CONTACT_INDEX`<br> e.g., `addfollowup Interview prep ci/1`
 **Add story** | `addstory STORY_NAME`<br> e.g., `addstory Housing Investigation`
 **Assign** | `assign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `assign ci/1 si/2`
 **Clear all entries** | `clear`
-**Delete** | `delete INDEX`<br> e.g., `delete 3`
+**Delete** | `deletecontact INDEX`<br> e.g., `deletecontact 3`
 **Delete follow-up** | `deletefollowup INDEX`<br> e.g., `deletefollowup 1`
 **Delete story** | `deletestory INDEX`<br> e.g., `deletestory 2`
-**Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com`
-**Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
+**Edit** | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`
+**Find** | `findcontact KEYWORD [MORE_KEYWORDS]`<br> e.g., `findcontact James Jake`
 **List all contacts and stories** | `list` (clears both filters)
 **List contacts** | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)
 **List stories** | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)
