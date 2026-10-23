@@ -25,8 +25,8 @@ import seedu.address.model.tag.Tag;
 /**
  * Edits the details of an existing story in the address book.
  */
-public class EditStoryCommand extends Command{
-    
+public class EditStoryCommand extends Command {
+
     public static final String COMMAND_WORD = "editstory";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the details of the story identified "
@@ -67,14 +67,14 @@ public class EditStoryCommand extends Command{
             throw new CommandException(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
         }
 
-        Story StoryToEdit = lastShownList.get(index.getZeroBased());
-        Story editedStory = createEditedStory(StoryToEdit, editStoryDescriptor);
+        Story storyToEdit = lastShownList.get(index.getZeroBased());
+        Story editedStory = createEditedStory(storyToEdit, editStoryDescriptor);
 
-        if (!StoryToEdit.isSameStory(editedStory) && model.hasStory(editedStory)) {
+        if (!storyToEdit.isSameStory(editedStory) && model.hasStory(editedStory)) {
             throw new CommandException(MESSAGE_DUPLICATE_STORY);
         }
 
-        model.setStory(StoryToEdit, editedStory);
+        model.setStory(storyToEdit, editedStory);
         model.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
         return new CommandResult(String.format(MESSAGE_EDIT_STORY_SUCCESS, Messages.format(editedStory)));
     }
