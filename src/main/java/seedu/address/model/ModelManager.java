@@ -103,11 +103,6 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void deleteStory(Story target) {
-        addressBook.removeStory(target);
-    }
-
-    @Override
     public void addPerson(Person person) {
         addressBook.addPerson(person);
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
@@ -132,6 +127,18 @@ public class ModelManager implements Model {
     public void addStory(Story story) {
         addressBook.addStory(story);
         updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
+    }
+
+    @Override
+    public void setStory(Story target, Story editedStory) {
+        requireAllNonNull(target, editedStory);
+
+        addressBook.setStory(target, editedStory);
+    }
+
+    @Override
+    public void deleteStory(Story target) {
+        addressBook.removeStory(target);
     }
 
     @Override

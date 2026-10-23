@@ -92,6 +92,13 @@ public interface Model {
     void addStory(Story story);
 
     /**
+     * Replaces the given story {@code target} with {@code editedStory}.
+     * {@code target} must exist in the address book.
+     * The story identity of {@code editedStory} must not be the same as another existing story in the address book.
+     */
+    void setStory(Story target, Story editedStory);
+
+    /**
      * Assigns the given contact to the given story
      * {@code target} must exist in the address book.
      * {@code story} must exist in the address book.
