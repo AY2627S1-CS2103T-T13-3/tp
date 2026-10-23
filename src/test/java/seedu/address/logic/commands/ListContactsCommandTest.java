@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
-import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+import static seedu.address.logic.commands.CommandTestUtil.showContactAtIndex;
+import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_STORY;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_STORY;
-import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalStories.STORY_A;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,7 @@ import seedu.address.logic.Messages;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.Person;
+import seedu.address.model.contact.Contact;
 import seedu.address.model.story.Story;
 
 /**
@@ -45,41 +45,41 @@ public class ListContactsCommandTest {
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
-        showPersonAtIndex(model, INDEX_FIRST_PERSON);
+        showContactAtIndex(model, INDEX_FIRST_CONTACT);
         assertCommandSuccess(new ListContactsCommand(), model, ListContactsCommand.MESSAGE_SUCCESS, expectedModel);
     }
 
     @Test
     public void execute_validStoryIndex_showsAssignedContacts() {
-        Person person = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
         Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
-        model.assignStory(person, story);
+        model.assignStory(contact, story);
 
         Story assignedStory = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredPersonList(p -> assignedStory.isAssigned(p));
+        expectedModel.updateFilteredContactList(p -> assignedStory.isAssigned(p));
 
         String expectedMessage = "Listed contacts assigned to " + assignedStory.getName();
 
         assertCommandSuccess(new ListContactsCommand(INDEX_FIRST_STORY), model, expectedMessage, expectedModel);
 
-        assertEquals(1, model.getFilteredPersonList().size());
-        assertEquals(person.getName(), model.getFilteredPersonList().get(0).getName());
+        assertEquals(1, model.getFilteredContactList().size());
+        assertEquals(contact.getName(), model.getFilteredContactList().get(0).getName());
     }
 
     @Test
     public void execute_validStoryIndexNoAssignments_showsEmptyList() {
         Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
-        expectedModel.updateFilteredPersonList(p -> false);
+        expectedModel.updateFilteredContactList(p -> false);
 
         String expectedMessage = "Listed contacts assigned to " + story.getName();
 
         assertCommandSuccess(new ListContactsCommand(INDEX_FIRST_STORY), model, expectedMessage, expectedModel);
 
-        assertTrue(model.getFilteredPersonList().isEmpty());
+        assertTrue(model.getFilteredContactList().isEmpty());
     }
 
     @Test

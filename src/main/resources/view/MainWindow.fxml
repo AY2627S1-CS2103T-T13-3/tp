@@ -49,12 +49,12 @@
         </StackPane>
         <VBox spacing="5.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="pane-with-border">
             <HBox spacing="5.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="pane-with-border">
-              <VBox fx:id="personList" styleClass="pane-with-border" minWidth="340" prefWidth="340" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+              <VBox fx:id="contactList" styleClass="pane-with-border" minWidth="340" prefWidth="340" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                 <padding>
                   <Insets top="10" right="10" bottom="10" left="10" />
                 </padding>
                 <Label text="CONTACTS" styleClass="panel-header" />
-                <StackPane fx:id="personListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+                <StackPane fx:id="contactListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
               </VBox>
               <VBox fx:id="storyList" styleClass="pane-with-border" minWidth="340" prefWidth="340" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                 <padding>

@@ -10,7 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
-import seedu.address.model.person.Name;
+import seedu.address.model.contact.Name;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
 

@@ -67,7 +67,7 @@ This guide describes the features implemented for PressMemo v1.4.
 
 ## Features
 
-The **CONTACTS** panel shows each person's details, tags, and assigned story names. The **STORIES** panel shows each story's name, assigned contact names, and contact count. The **FOLLOW-UPS** panel shows reminders together with their associated contacts. A contact can belong to several stories and have multiple follow-ups; a story can have several contacts.
+The **CONTACTS** panel shows each contact's details, tags, and assigned story names. The **STORIES** panel shows each story's name, assigned contact names, and contact count. The **FOLLOW-UPS** panel shows reminders together with their associated contacts. A contact can belong to several stories and have multiple follow-ups; a story can have several contacts.
 
 
 ### Notes about the command format
@@ -100,20 +100,20 @@ Format: `help`
 
 You can also open the help window from the **Help** menu or by pressing `F1`. For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
 
-### Adding a person: `add`
+### Adding a contact: `add`
 
-Adds a person to the address book.
+Adds a contact to the address book.
 
 Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
 
 * All four fields (`n/`, `p/`, `e/`, and `a/`) are required and cannot be blank.
-* Names contain only letters, digits, and spaces. A person with exactly the same name already in the address book cannot be added.
+* Names contain only letters, digits, and spaces. A contact with exactly the same name already in the address book cannot be added.
 * Phone numbers contain at least three digits and no other characters. Emails must have a valid `local-part@domain` format.
 * Tag names contain only letters and digits, without spaces.
-* Adding a person shows the full contact list.
+* Adding a contact shows the full contact list.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
-A person can have any number of tags, including zero.
+A contact can have any number of tags, including zero.
 </div>
 
 Examples:
@@ -176,27 +176,27 @@ Examples:
 * `find John` followed by `liststories ci/1` uses the first contact in the filtered search results.
 * `liststories` shows all stories again without changing the displayed contacts.
 
-### Editing a person: `edit`
+### Editing a contact: `edit`
 
-Edits an existing person in the address book.
+Edits an existing contact in the address book.
 
 Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
+* Edits the contact at the specified `INDEX`. The index refers to the index number shown in the displayed contact list. The index **must be a positive integer** 1, 2, 3, …​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
-* When editing tags, all of the person's existing tags are removed; adding tags is not cumulative.
-* To remove all of a person's tags, enter `t/` without a tag after it.
-* The same field restrictions as `add` apply. You cannot change a person's name to another existing person's name.
+* When editing tags, all of the contact's existing tags are removed; adding tags is not cumulative.
+* To remove all of a contact's tags, enter `t/` without a tag after it.
+* The same field restrictions as `add` apply. You cannot change a contact's name to another existing contact's name.
 * Editing shows the full contact list. Editing a contact, including changing their name, preserves their story assignments and updates associated follow-up references.
 
 Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st person to be `91234567` and `johndoe@example.com` respectively.
-*  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd person to be `Betsy Crower` and clears all existing tags.
+*  `edit 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st contact to be `91234567` and `johndoe@example.com` respectively.
+*  `edit 2 n/Betsy Crower t/` Edits the name of the 2nd contact to be `Betsy Crower` and clears all existing tags.
 
-### Locating persons by name: `find`
+### Locating contacts by name: `find`
 
-Finds persons whose names contain any of the given keywords.
+Finds contacts whose names contain any of the given keywords.
 
 Format: `find KEYWORD [MORE_KEYWORDS]`
 
@@ -204,7 +204,7 @@ Format: `find KEYWORD [MORE_KEYWORDS]`
 * Keyword order does not matter; for example, `Hans Bo` matches `Bo Hans`.
 * The search considers only names.
 * Only full words match; for example, `Han` does not match `Hans`.
-* Persons matching at least one keyword are returned (an `OR` search); for example, `Hans Bo` returns `Hans Gruber` and `Bo Yang`.
+* Contacts matching at least one keyword are returned (an `OR` search); for example, `Hans Bo` returns `Hans Gruber` and `Bo Yang`.
 * The search replaces the current contact filter and searches all contacts. It does not change the story list. Use `listcontacts` to show all contacts again without changing the story list.
 
 Examples:
@@ -212,20 +212,20 @@ Examples:
 * `find alex david` returns `Alex Yeoh`, `David Li`
 
 
-### Deleting a person: `delete`
+### Deleting a contact: `delete`
 
-Deletes the specified person from the address book.
+Deletes the specified contact from the address book.
 
 Format: `delete INDEX`
 
-* Deletes the person at the specified `INDEX`.
-* The index refers to the index number shown in the displayed person list.
+* Deletes the contact at the specified `INDEX`.
+* The index refers to the index number shown in the displayed contact list.
 * The index **must be a positive integer** 1, 2, 3, …​
-* Deleting a person also removes their assignments from stories and deletes all follow-ups linked to them. The stories themselves remain.
+* Deleting a contact also removes their assignments from stories and deletes all follow-ups linked to them. The stories themselves remain.
 
 Examples:
-* `list` followed by `delete 2` deletes the 2nd person in the address book.
-* `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
+* `list` followed by `delete 2` deletes the 2nd contact in the address book.
+* `find Betsy` followed by `delete 1` deletes the 1st contact in the results of the `find` command.
 
 ### Adding a story: `addstory`
 

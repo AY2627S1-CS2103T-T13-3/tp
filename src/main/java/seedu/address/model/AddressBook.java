@@ -8,27 +8,27 @@ import java.util.Objects;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.contact.Contact;
+import seedu.address.model.contact.UniqueContactList;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.UniqueFollowupList;
-import seedu.address.model.person.Person;
-import seedu.address.model.person.UniquePersonList;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.UniqueStoryList;
 
 /**
  * Wraps all data at the address-book level.
- * Duplicates are not allowed (by .isSamePerson comparison).
+ * Duplicates are not allowed (by .isSameContact comparison).
  */
 public class AddressBook implements ReadOnlyAddressBook {
 
-    private final UniquePersonList persons = new UniquePersonList();
+    private final UniqueContactList contacts = new UniqueContactList();
     private final UniqueStoryList stories = new UniqueStoryList();
     private final UniqueFollowupList followups = new UniqueFollowupList();
 
     public AddressBook() {}
 
     /**
-     * Creates an AddressBook using the Persons in the {@code toBeCopied}
+     * Creates an AddressBook using the Contacts in the {@code toBeCopied}
      */
     public AddressBook(ReadOnlyAddressBook toBeCopied) {
         this();
@@ -38,16 +38,16 @@ public class AddressBook implements ReadOnlyAddressBook {
     //// list overwrite operations
 
     /**
-     * Replaces the contents of the person list with {@code persons}.
-     * {@code persons} must not contain duplicate persons.
+     * Replaces the contents of the contact list with {@code contacts}.
+     * {@code contacts} must not contain duplicate contacts.
      */
-    public void setPersons(List<Person> persons) {
-        this.persons.setPersons(persons);
+    public void setContacts(List<Contact> contacts) {
+        this.contacts.setContacts(contacts);
     }
 
     /**
      * Replaces the contents of the story list with {@code stories}.
-     * {@code persons} must not contain duplicate persons.
+     * {@code contacts} must not contain duplicate contacts.
      */
     public void setStories(List<Story> stories) {
         this.stories.setStories(stories);
@@ -59,22 +59,22 @@ public class AddressBook implements ReadOnlyAddressBook {
     public void resetData(ReadOnlyAddressBook newData) {
         requireNonNull(newData);
 
-        setPersons(newData.getPersonList());
+        setContacts(newData.getContactList());
         setStories(newData.getStoryList());
         setFollowups(newData.getFollowupList());
     }
 
-    //// person-level and story-level operations
+    //// contact-level and story-level operations
 
     /**
-     * Returns true if a person with the same identity as {@code person} exists in the address book.
+     * Returns true if a contact with the same identity as {@code contact} exists in the address book.
      */
-    public boolean hasPerson(Person person) {
-        requireNonNull(person);
-        return persons.contains(person);
+    public boolean hasContact(Contact contact) {
+        requireNonNull(contact);
+        return contacts.contains(contact);
     }
 
-    //// person-level operations
+    //// contact-level operations
 
     /**
      * Returns true if a story with the same identity as {@code story} exists in the address book.
@@ -85,11 +85,11 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Adds a person to the address book.
-     * The person must not already exist in the address book.
+     * Adds a contact to the address book.
+     * The contact must not already exist in the address book.
      */
-    public void addPerson(Person p) {
-        persons.add(p);
+    public void addContact(Contact p) {
+        contacts.add(p);
     }
 
     /**
@@ -105,13 +105,13 @@ public class AddressBook implements ReadOnlyAddressBook {
      * {@code target} must exist in the address book.
      * {@code story} must exist in the address book.
      */
-    public void assignStory(Person target, Story story) {
+    public void assignStory(Contact target, Story story) {
         requireAllNonNull(target, story);
 
-        Person assignedPerson = target.assign(story);
+        Contact assignedContact = target.assign(story);
         Story assignedStory = story.assign(target);
 
-        persons.setPerson(target, assignedPerson);
+        contacts.setContact(target, assignedContact);
         stories.setStory(story, assignedStory);
     }
 
@@ -120,29 +120,30 @@ public class AddressBook implements ReadOnlyAddressBook {
      * {@code target} must exist in the address book.
      * {@code story} must exist in the address book.
      */
-    public void unassignStory(Person target, Story story) {
+    public void unassignStory(Contact target, Story story) {
         requireAllNonNull(target, story);
 
-        Person unassignedPerson = target.unassign(story);
+        Contact unassignedContact = target.unassign(story);
         Story unassignedStory = story.unassign(target);
 
-        persons.setPerson(target, unassignedPerson);
+        contacts.setContact(target, unassignedContact);
         stories.setStory(story, unassignedStory);
     }
 
     /**
-     * Replaces the given person {@code target} in the list with {@code editedPerson}.
+     * Replaces the given contact {@code target} in the list with {@code editedContact}.
      * {@code target} must exist in the address book.
-     * The person identity of {@code editedPerson} must not be the same as another existing person in the address book.
+     * The contact identity of {@code editedContact} must not be the same as another existing contact in the address
+     * book.
      */
-    public void setPerson(Person target, Person editedPerson) {
-        requireNonNull(editedPerson);
+    public void setContact(Contact target, Contact editedContact) {
+        requireNonNull(editedContact);
 
-        persons.setPerson(target, editedPerson);
+        contacts.setContact(target, editedContact);
         stories.setStories(
                 getStoryList().stream()
                         .map(story -> story.isAssigned(target)
-                                ? story.unassign(target).assign(editedPerson)
+                                ? story.unassign(target).assign(editedContact)
                                 : story
                         )
                         .toList()
@@ -150,7 +151,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         followups.setFollowups(
                 getFollowupList().stream()
                         .map(fu -> fu.isFor(target)
-                            ? new Followup(fu.getDescription(), editedPerson.getName())
+                            ? new Followup(fu.getDescription(), editedContact.getName())
                             : fu
                         )
                         .toList()
@@ -166,32 +167,32 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(editedStory);
 
         stories.setStory(target, editedStory);
-        persons.setPersons(
-                getPersonList().stream()
-                        .map(person -> person.isAssigned(target)
-                                ? person.unassign(target).assign(editedStory)
-                                : person
+        contacts.setContacts(
+                getContactList().stream()
+                        .map(contact -> contact.isAssigned(target)
+                                ? contact.unassign(target).assign(editedStory)
+                                : contact
                         )
                         .toList()
         );
     }
 
     /**
-     * Removes person with {@code key} from this {@code AddressBook}.
+     * Removes contact with {@code key} from this {@code AddressBook}.
      * {@code key} must exist in the address book.
      */
-    public void removePerson(Person personKey) {
+    public void removeContact(Contact contactKey) {
         stories.setStories(
                 getStoryList().stream()
-                        .map(story -> story.unassign(personKey))
+                        .map(story -> story.unassign(contactKey))
                         .toList()
         );
         followups.setFollowups(
                 getFollowupList().stream()
-                        .filter(fu -> !fu.isFor(personKey))
+                        .filter(fu -> !fu.isFor(contactKey))
                         .toList()
         );
-        persons.remove(personKey);
+        contacts.remove(contactKey);
     }
 
     /**
@@ -199,8 +200,8 @@ public class AddressBook implements ReadOnlyAddressBook {
      * {@code key} must exist in the address book.
      */
     public void removeStory(Story storyKey) {
-        persons.setPersons(
-                getPersonList().stream()
+        contacts.setContacts(
+                getContactList().stream()
                         .map(contact -> contact.unassign(storyKey))
                         .toList()
         );
@@ -252,14 +253,14 @@ public class AddressBook implements ReadOnlyAddressBook {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .add("persons", persons)
+                .add("contacts", contacts)
                 .add("stories", stories)
                 .toString();
     }
 
     @Override
-    public ObservableList<Person> getPersonList() {
-        return persons.asUnmodifiableObservableList();
+    public ObservableList<Contact> getContactList() {
+        return contacts.asUnmodifiableObservableList();
     }
 
     @Override
@@ -278,11 +279,11 @@ public class AddressBook implements ReadOnlyAddressBook {
             return false;
         }
 
-        return persons.equals(otherAddressBook.persons) && stories.equals(otherAddressBook.stories);
+        return contacts.equals(otherAddressBook.contacts) && stories.equals(otherAddressBook.stories);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(persons, stories);
+        return Objects.hash(contacts, stories);
     }
 }

@@ -7,7 +7,7 @@ import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STORYINDEX;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_STORY;
 
 import java.util.HashMap;
@@ -24,7 +24,7 @@ import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.DeleteStoryCommand;
 import seedu.address.logic.commands.EditCommand;
-import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.logic.commands.EditCommand.EditContactDescriptor;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
@@ -35,11 +35,11 @@ import seedu.address.logic.commands.ShortcutCommand;
 import seedu.address.logic.commands.UnassignCommand;
 import seedu.address.logic.commands.UnshortcutCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.person.NameContainsKeywordsPredicate;
-import seedu.address.model.person.Person;
-import seedu.address.testutil.EditPersonDescriptorBuilder;
-import seedu.address.testutil.PersonBuilder;
-import seedu.address.testutil.PersonUtil;
+import seedu.address.model.contact.Contact;
+import seedu.address.model.contact.NameContainsKeywordsPredicate;
+import seedu.address.testutil.ContactBuilder;
+import seedu.address.testutil.ContactUtil;
+import seedu.address.testutil.EditContactDescriptorBuilder;
 
 public class AddressBookParserTest {
 
@@ -47,9 +47,9 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_add() throws Exception {
-        Person person = new PersonBuilder().build();
-        AddCommand command = (AddCommand) parser.parseCommand(PersonUtil.getAddCommand(person));
-        assertEquals(new AddCommand(person), command);
+        Contact contact = new ContactBuilder().build();
+        AddCommand command = (AddCommand) parser.parseCommand(ContactUtil.getAddCommand(contact));
+        assertEquals(new AddCommand(contact), command);
     }
 
     @Test
@@ -72,8 +72,8 @@ public class AddressBookParserTest {
     @Test
     public void parseCommand_delete() throws Exception {
         DeleteCommand command = (DeleteCommand) parser.parseCommand(
-                DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_PERSON.getOneBased());
-        assertEquals(new DeleteCommand(INDEX_FIRST_PERSON), command);
+                DeleteCommand.COMMAND_WORD + " " + INDEX_FIRST_CONTACT.getOneBased());
+        assertEquals(new DeleteCommand(INDEX_FIRST_CONTACT), command);
     }
 
     @Test
@@ -85,11 +85,11 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_edit() throws Exception {
-        Person person = new PersonBuilder().build();
-        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder(person).build();
+        Contact contact = new ContactBuilder().build();
+        EditContactDescriptor descriptor = new EditContactDescriptorBuilder(contact).build();
         EditCommand command = (EditCommand) parser.parseCommand(EditCommand.COMMAND_WORD + " "
-                + INDEX_FIRST_PERSON.getOneBased() + " " + PersonUtil.getEditPersonDescriptorDetails(descriptor));
-        assertEquals(new EditCommand(INDEX_FIRST_PERSON, descriptor), command);
+                + INDEX_FIRST_CONTACT.getOneBased() + " " + ContactUtil.getEditContactDescriptorDetails(descriptor));
+        assertEquals(new EditCommand(INDEX_FIRST_CONTACT, descriptor), command);
     }
 
     @Test
@@ -166,9 +166,9 @@ public class AddressBookParserTest {
         AddressBookParser parserWithShortcuts = new AddressBookParser(() -> Map.of("d", "delete"));
 
         DeleteCommand command = (DeleteCommand) parserWithShortcuts.parseCommand(
-                "d " + INDEX_FIRST_PERSON.getOneBased());
+                "d " + INDEX_FIRST_CONTACT.getOneBased());
 
-        assertEquals(new DeleteCommand(INDEX_FIRST_PERSON), command);
+        assertEquals(new DeleteCommand(INDEX_FIRST_CONTACT), command);
     }
 
     @Test

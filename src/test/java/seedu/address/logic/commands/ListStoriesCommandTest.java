@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
-import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
-import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
+import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_CONTACT;
 import static seedu.address.testutil.TypicalStories.STORY_A;
 import static seedu.address.testutil.TypicalStories.STORY_B;
 
@@ -19,7 +19,7 @@ import seedu.address.logic.Messages;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.Person;
+import seedu.address.model.contact.Contact;
 import seedu.address.model.story.Story;
 
 /**
@@ -54,24 +54,24 @@ public class ListStoriesCommandTest {
 
     @Test
     public void execute_validContactIndex_showsAssignedStories() {
-        Person person = model.getFilteredPersonList().get(
-                INDEX_FIRST_PERSON.getZeroBased());
+        Contact contact = model.getFilteredContactList().get(
+                INDEX_FIRST_CONTACT.getZeroBased());
         Story story = model.getFilteredStoryList().get(0);
 
-        model.assignStory(person, story);
+        model.assignStory(contact, story);
 
-        Person assignedPerson = model.getFilteredPersonList().get(
-                INDEX_FIRST_PERSON.getZeroBased());
+        Contact assignedContact = model.getFilteredContactList().get(
+                INDEX_FIRST_CONTACT.getZeroBased());
 
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.updateFilteredStoryList(
-                s -> s.isAssigned(assignedPerson));
+                s -> s.isAssigned(assignedContact));
 
         String expectedMessage = "Listed stories assigned to "
-                + assignedPerson.getName();
+                + assignedContact.getName();
 
         assertCommandSuccess(
-                new ListStoriesCommand(INDEX_FIRST_PERSON),
+                new ListStoriesCommand(INDEX_FIRST_CONTACT),
                 model, expectedMessage, expectedModel);
 
         assertEquals(1, model.getFilteredStoryList().size());
@@ -81,16 +81,16 @@ public class ListStoriesCommandTest {
 
     @Test
     public void execute_validContactIndexNoAssignments_showsEmptyList() {
-        Person person = model.getFilteredPersonList().get(
-                INDEX_FIRST_PERSON.getZeroBased());
+        Contact contact = model.getFilteredContactList().get(
+                INDEX_FIRST_CONTACT.getZeroBased());
 
         expectedModel.updateFilteredStoryList(story -> false);
 
         String expectedMessage = "Listed stories assigned to "
-                + person.getName();
+                + contact.getName();
 
         assertCommandSuccess(
-                new ListStoriesCommand(INDEX_FIRST_PERSON),
+                new ListStoriesCommand(INDEX_FIRST_CONTACT),
                 model, expectedMessage, expectedModel);
 
         assertTrue(model.getFilteredStoryList().isEmpty());
@@ -99,25 +99,25 @@ public class ListStoriesCommandTest {
     @Test
     public void execute_invalidContactIndex_throwsCommandException() {
         Index invalidIndex = Index.fromOneBased(
-                model.getFilteredPersonList().size() + 1);
+                model.getFilteredContactList().size() + 1);
 
         assertCommandFailure(
                 new ListStoriesCommand(invalidIndex),
                 model,
-                Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+                Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
     }
 
     @Test
     public void equals() {
         ListStoriesCommand listStories = new ListStoriesCommand();
-        ListStoriesCommand listStoriesWithIndex = new ListStoriesCommand(INDEX_FIRST_PERSON);
+        ListStoriesCommand listStoriesWithIndex = new ListStoriesCommand(INDEX_FIRST_CONTACT);
 
         // same object -> returns true
         assertTrue(listStories.equals(listStories));
 
         // same values -> returns true
         assertTrue(listStories.equals(new ListStoriesCommand()));
-        assertTrue(listStoriesWithIndex.equals(new ListStoriesCommand(INDEX_FIRST_PERSON)));
+        assertTrue(listStoriesWithIndex.equals(new ListStoriesCommand(INDEX_FIRST_CONTACT)));
 
         // different types -> returns false
         assertFalse(listStories.equals(1));
@@ -126,7 +126,7 @@ public class ListStoriesCommandTest {
         assertFalse(listStories.equals(null));
 
         // different indices -> returns false
-        assertFalse(listStoriesWithIndex.equals(new ListStoriesCommand(INDEX_SECOND_PERSON)));
+        assertFalse(listStoriesWithIndex.equals(new ListStoriesCommand(INDEX_SECOND_CONTACT)));
         assertFalse(listStories.equals(listStoriesWithIndex));
     }
 }

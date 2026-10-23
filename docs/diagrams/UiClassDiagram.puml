@@ -11,8 +11,8 @@ Class UiManager
 Class MainWindow
 Class HelpWindow
 Class ResultDisplay
-Class PersonListPanel
-Class PersonCard
+Class ContactListPanel
+Class ContactCard
 Class StoryListPanel
 Class StoryCard
 Class FollowupListPanel
@@ -36,13 +36,13 @@ UiManager .left.|> Ui
 UiManager -down-> "1" MainWindow
 MainWindow *-down->  "1" CommandBox
 MainWindow *-down-> "1" ResultDisplay
-MainWindow *-down-> "1" PersonListPanel
+MainWindow *-down-> "1" ContactListPanel
 MainWindow *-down-> "1" StoryListPanel
 MainWindow *-down-> "1" FollowupListPanel
 MainWindow *-down-> "1" StatusBarFooter
 MainWindow --> "1" HelpWindow
 
-PersonListPanel -down-> "*" PersonCard
+ContactListPanel -down-> "*" ContactCard
 StoryListPanel -down-> "*" StoryCard
 FollowupListPanel -down-> "*" FollowupCard
 
@@ -50,8 +50,8 @@ MainWindow -left-|> UiPart
 
 ResultDisplay --|> UiPart
 CommandBox --|> UiPart
-PersonListPanel --|> UiPart
-PersonCard --|> UiPart
+ContactListPanel --|> UiPart
+ContactCard --|> UiPart
 StoryListPanel --|> UiPart
 StoryCard --|> UiPart
 FollowupListPanel --|> UiPart
@@ -59,13 +59,13 @@ FollowupCard --|> UiPart
 StatusBarFooter --|> UiPart
 HelpWindow --|> UiPart
 
-PersonCard ..> Model
+ContactCard ..> Model
 StoryCard ..> Model
 FollowupCard ..> Model
 UiManager -right-> Logic
 MainWindow -left-> Logic
 
-PersonListPanel -[hidden]left- HelpWindow
+ContactListPanel -[hidden]left- HelpWindow
 HelpWindow -[hidden]left- CommandBox
 CommandBox -[hidden]left- ResultDisplay
 ResultDisplay -[hidden]left- StatusBarFooter

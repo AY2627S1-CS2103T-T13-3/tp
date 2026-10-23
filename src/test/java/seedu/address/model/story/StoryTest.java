@@ -8,8 +8,8 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.model.person.Person;
-import seedu.address.testutil.PersonBuilder;
+import seedu.address.model.contact.Contact;
+import seedu.address.testutil.ContactBuilder;
 
 public class StoryTest {
 
@@ -22,14 +22,14 @@ public class StoryTest {
     @Test
     public void isAssigned_notAssigned_returnsFalse() {
         Story s = new Story(new StoryName("test"), Set.of());
-        Person p = new PersonBuilder().build();
+        Contact p = new ContactBuilder().build();
         assertFalse(s.isAssigned(p));
     }
 
     @Test
     public void assign_newContact_addsContact() {
         Story s = new Story(new StoryName("test"), Set.of());
-        Person p = new PersonBuilder().build();
+        Contact p = new ContactBuilder().build();
         Story s1 = s.assign(p);
         assertFalse(p.isAssigned(s));
         assertTrue(s1.isAssigned(p));
@@ -39,8 +39,8 @@ public class StoryTest {
     @Test
     public void unassign_notAssigned_doesNothing() {
         Story s = new Story(new StoryName("test"), Set.of());
-        Person a = new PersonBuilder().withName("al").build();
-        Person b = new PersonBuilder().withName("bob").build();
+        Contact a = new ContactBuilder().withName("al").build();
+        Contact b = new ContactBuilder().withName("bob").build();
         Story s1 = s.assign(a).unassign(b);
         assertTrue(s1.isAssigned(a));
         assertFalse(s1.isAssigned(b));

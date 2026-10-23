@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import seedu.address.model.AddressBook;
+import seedu.address.model.contact.Name;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
-import seedu.address.model.person.Name;
 
 /**
  * A utility class containing a list of {@code Followup} objects to be used in tests.
