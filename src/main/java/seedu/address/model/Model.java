@@ -122,6 +122,9 @@ public interface Model {
      */
     void deleteFollowup(Followup followup);
 
+    /** Replaces an existing followup with the given edited followup. */
+    void setFollowup(Followup target, Followup editedFollowup);
+
     /** Returns an unmodifiable view of the filtered person list */
     ObservableList<Person> getFilteredPersonList();
 

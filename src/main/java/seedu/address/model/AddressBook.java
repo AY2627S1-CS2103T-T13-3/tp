@@ -225,6 +225,11 @@ public class AddressBook implements ReadOnlyAddressBook {
         followups.add(followup);
     }
 
+    /** Replaces an existing followup with the given edited followup. */
+    public void setFollowup(Followup target, Followup editedFollowup) {
+        followups.setFollowup(target, editedFollowup);
+    }
+
     /**
      * Removes the specified followup from the address book.
      * The followup must exist in the address book.

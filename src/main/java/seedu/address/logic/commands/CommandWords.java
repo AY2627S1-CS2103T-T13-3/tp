@@ -15,6 +15,7 @@ public final class CommandWords {
             DeleteCommand.COMMAND_WORD,
             DeleteStoryCommand.COMMAND_WORD,
             EditCommand.COMMAND_WORD,
+            EditFollowupCommand.COMMAND_WORD,
             ExitCommand.COMMAND_WORD,
             FindCommand.COMMAND_WORD,
             HelpCommand.COMMAND_WORD,

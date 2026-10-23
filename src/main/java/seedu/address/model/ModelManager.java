@@ -199,6 +199,12 @@ public class ModelManager implements Model {
         filteredStories.setPredicate(predicate);
     }
 
+    @Override
+    public void setFollowup(Followup target, Followup editedFollowup) {
+        requireAllNonNull(target, editedFollowup);
+        addressBook.setFollowup(target, editedFollowup);
+    }
+
     //=========== Filtered Followup List Accessors =============================================================
     /**
      * Returns an unmodifiable view of the list of {@code Followup} backed by the internal list of

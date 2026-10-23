@@ -183,6 +183,11 @@ public class AddStoryCommandTest {
         }
 
         @Override
+        public void setFollowup(Followup target, Followup editedFollowup) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void deleteFollowup(Followup followup) {
             throw new AssertionError("This method should not be called.");
         }
