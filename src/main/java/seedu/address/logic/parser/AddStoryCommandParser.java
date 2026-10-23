@@ -1,13 +1,15 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import seedu.address.logic.commands.AddStoryCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
+import seedu.address.model.tag.Tag;
 
 /**
  * Parses input arguments and creates a new AddStoryCommand object
@@ -20,14 +22,16 @@ public class AddStoryCommandParser implements Parser<AddStoryCommand> {
      * @throws ParseException if the user input does not conform to the expected format
      */
     public AddStoryCommand parse(String args) throws ParseException {
-        String trimmedArgs = args.trim();
-        if (trimmedArgs.isEmpty()) {
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_TAG);
+
+        if (argMultimap.getPreamble().isEmpty()) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
         }
 
-        StoryName storyName = ParserUtil.parseStoryName(trimmedArgs);
-        Story story = new Story(storyName, new HashSet<>());
+        StoryName storyName = ParserUtil.parseStoryName(argMultimap.getPreamble());
+        Set<Tag> tagList = ParserUtil.parseTags(argMultimap.getAllValues(PREFIX_TAG));
+        Story story = new Story(storyName, tagList);
 
         return new AddStoryCommand(story);
     }
