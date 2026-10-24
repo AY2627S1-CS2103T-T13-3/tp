@@ -163,6 +163,44 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Assign feature
+
+#### Implementation
+
+The assign feature facilitates linking an existing contact to an existing story in PressMemo. It is executed via `AssignCommand` and parsed by `AssignCommandParser`.
+
+When the user enters an assign command (e.g., `assign ci/1 si/1`):
+1. `LogicManager` calls `AddressBookParser#parseCommand("assign ci/1 si/1")`.
+2. `AddressBookParser` creates an `AssignCommandParser` and calls `AssignCommandParser#parse("ci/1 si/1")`.
+3. `AssignCommandParser` tokenizes the input arguments using `ArgumentTokenizer`, extracting the contact index (`ci/`) and story index (`si/`).
+4. Both indices are validated using `ParserUtil#parseIndex(...)`, and an `AssignCommand` object is created with these indices.
+5. `LogicManager` executes the `AssignCommand` by passing in the `Model`.
+6. `AssignCommand` retrieves the current filtered contact list and story list via `Model#getFilteredPersonList()` and `Model#getFilteredStoryList()`, and gets the target `Person` and `Story` at the specified zero-based indices.
+7. `AssignCommand` calls `Model#assignStory(personToAssign, storyToAssign)`.
+8. `ModelManager#assignStory(target, story)` delegates to `AddressBook#assignStory(target, story)`, creating updated immutable `Person` and `Story` records with mutual associations and replacing them in their respective internal lists.
+9. `AssignCommand` resets the list filters via `Model#updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)` and `Model#updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES)` so that all entries and updated associations are visible in the UI.
+10. A `CommandResult` containing the success feedback message is returned to `LogicManager`.
+
+The sequence diagram below illustrates the interactions within the `Logic` component and with the `Model` when executing the `assign ci/1 si/1` command:
+
+![AssignSequenceDiagram](images/AssignSequenceDiagram.png)
+
+<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `AssignCommandParser` should end at the destroy marker (X), but due to a limitation of PlantUML, it continues to the end of the diagram.
+
+</div>
+
+#### Design considerations:
+
+**Aspect: How associations between contacts and stories are stored:**
+
+* **Alternative 1 (current choice):** Bidirectional references inside `Person` and `Story` models.
+  * Pros: Direct and efficient lookups when rendering contact cards and story cards in the UI without requiring joint table queries or complex searches.
+  * Cons: Both entities must be updated concurrently in `AddressBook` whenever an assignment, unassignment, contact edit, or story edit occurs.
+
+* **Alternative 2:** Separate association list or join table in `AddressBook`.
+  * Pros: Decouples `Person` and `Story` models from referencing each other directly.
+  * Cons: Increases overhead for looking up relationships and requires managing a separate association list during serialization and deserialization.
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
