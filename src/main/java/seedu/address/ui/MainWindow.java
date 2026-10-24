@@ -10,6 +10,7 @@ import javafx.scene.control.TextInputControl;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
@@ -37,7 +38,7 @@ public class MainWindow extends UiPart<Stage> {
     private StoryListPanel storyListPanel;
     private FollowupListPanel followupListPanel;
     private ResultDisplay resultDisplay;
-    private HelpWindow helpWindow;
+    private HelpPanel helpPanel;
 
     @FXML
     private StackPane commandBoxPlaceholder;
@@ -60,6 +61,9 @@ public class MainWindow extends UiPart<Stage> {
     @FXML
     private StackPane statusbarPlaceholder;
 
+    @FXML
+    private StackPane helpPanelPlaceholder;
+
     /**
      * Creates a {@code MainWindow} with the given {@code Stage}, {@code Logic},
      * and the data file path to show in the status bar.
@@ -76,8 +80,6 @@ public class MainWindow extends UiPart<Stage> {
         setWindowDefaultSize(logic.getGuiSettings());
 
         setAccelerators();
-
-        helpWindow = new HelpWindow();
     }
 
     public Stage getPrimaryStage() {
@@ -140,6 +142,12 @@ public class MainWindow extends UiPart<Stage> {
 
         CommandBox commandBox = new CommandBox(this::executeCommand);
         commandBoxPlaceholder.getChildren().add(commandBox.getRoot());
+
+        helpPanel = new HelpPanel(logic, () -> {
+            helpPanelPlaceholder.setVisible(false);
+            helpPanelPlaceholder.setManaged(false);
+        });
+        helpPanelPlaceholder.getChildren().add(helpPanel.getRoot());
     }
 
     /**
@@ -155,15 +163,19 @@ public class MainWindow extends UiPart<Stage> {
     }
 
     /**
-     * Opens the help window or focuses on it if it's already opened.
+     * Toggles the help panel or updates its contents.
      */
     @FXML
     public void handleHelp() {
-        if (!helpWindow.isShowing()) {
-            helpWindow.show();
-        } else {
-            helpWindow.focus();
+        boolean isVisible = helpPanelPlaceholder.isVisible();
+        if (!isVisible) {
+            helpPanel.refresh();
+            if (!primaryStage.isMaximized() && !primaryStage.isFullScreen() && primaryStage.getWidth() < 1000) {
+                primaryStage.setWidth(Math.min(Screen.getPrimary().getVisualBounds().getWidth(), 1050));
+            }
         }
+        helpPanelPlaceholder.setVisible(!isVisible);
+        helpPanelPlaceholder.setManaged(!isVisible);
     }
 
     void show() {
@@ -178,7 +190,6 @@ public class MainWindow extends UiPart<Stage> {
         GuiSettings guiSettings = new GuiSettings(primaryStage.getWidth(), primaryStage.getHeight(),
                 (int) primaryStage.getX(), (int) primaryStage.getY());
         logic.setGuiSettings(guiSettings);
-        helpWindow.hide();
         primaryStage.hide();
     }
 
