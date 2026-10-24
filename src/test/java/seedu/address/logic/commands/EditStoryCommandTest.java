@@ -3,7 +3,7 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import static seedu.address.logic.Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_CRIME;
 import static seedu.address.logic.commands.CommandTestUtil.DESC_FRAUD;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_STORYNAME_CRIME;
@@ -14,12 +14,9 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showStoryAtIndex;
 import static seedu.address.logic.commands.EditStoryCommand.MESSAGE_DUPLICATE_STORY;
 import static seedu.address.logic.commands.EditStoryCommand.MESSAGE_EDIT_STORY_SUCCESS;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX;
-import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalStories.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_STORY;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_STORY;
-
+import static seedu.address.testutil.TypicalStories.getTypicalAddressBook;
 
 import org.junit.jupiter.api.Test;
 

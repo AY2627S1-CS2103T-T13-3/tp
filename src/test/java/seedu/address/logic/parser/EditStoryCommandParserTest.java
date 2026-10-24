@@ -38,7 +38,6 @@ public class EditStoryCommandParserTest {
 
     private static final String MESSAGE_INVALID_FORMAT =
             String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditStoryCommand.MESSAGE_USAGE);
-    
     private EditStoryCommandParser parser = new EditStoryCommandParser();
 
     @Test

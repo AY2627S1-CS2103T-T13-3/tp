@@ -12,10 +12,8 @@ import seedu.address.model.util.SampleDataUtil;
  * A utility class to help with building Story objects.
  */
 public class StoryBuilder {
-    
     public static final String DEFAULT_STORY_NAME = "Crime Investigation";
     public static final String DEFAULT_TAG_NAME = "Singapore";
-    
     private StoryName storyName;
     private Set<Tag> tags;
 
