@@ -1,0 +1,162 @@
+package seedu.address.logic.parser;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_STORYNAME_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.INVALID_STORYTAG_DESC;
+import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_CRIME;
+import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_FRAUD;
+import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_MALAYSIA;
+import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_SINGAPORE;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_STORYNAME_CRIME;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_STORYNAME_FRAUD;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_STORYTAG_MALAYSIA;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_STORYTAG_SINGAPORE;
+import static seedu.address.logic.commands.EditStoryCommand.MESSAGE_NOT_EDITED;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
+import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
+import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_STORY;
+import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_STORY;
+import static seedu.address.testutil.TypicalIndexes.INDEX_THIRD_STORY;
+
+import org.junit.jupiter.api.Test;
+
+import seedu.address.commons.core.index.Index;
+import seedu.address.logic.Messages;
+import seedu.address.logic.commands.EditStoryCommand;
+import seedu.address.logic.commands.EditStoryCommand.EditStoryDescriptor;
+import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.story.StoryName;
+import seedu.address.model.tag.Tag;
+import seedu.address.testutil.EditStoryDescriptorBuilder;
+
+public class EditStoryCommandParserTest {
+
+    private static final String TAG_EMPTY = " " + PREFIX_TAG;
+
+    private static final String MESSAGE_INVALID_FORMAT =
+            String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditStoryCommand.MESSAGE_USAGE);
+    
+    private EditStoryCommandParser parser = new EditStoryCommandParser();
+
+    @Test
+    public void parse_missingParts_failure() {
+        // no index specified
+        assertParseFailure(parser, VALID_STORYNAME_CRIME, MESSAGE_INVALID_FORMAT);
+
+        // no field specified
+        assertParseFailure(parser, "1", MESSAGE_NOT_EDITED);
+
+        // no index and no field specified
+        assertParseFailure(parser, "", MESSAGE_INVALID_FORMAT);
+    }
+
+    @Test
+    public void parse_invalidPreamble_failure() {
+        // negative index
+        assertParseFailure(parser, "-5" + NAME_DESC_CRIME, MESSAGE_INVALID_FORMAT);
+
+        // zero index
+        assertParseFailure(parser, "0" + NAME_DESC_CRIME, MESSAGE_INVALID_FORMAT);
+
+        // invalid arguments being parsed as preamble
+        assertParseFailure(parser, "1 some random string", MESSAGE_INVALID_FORMAT);
+
+        // invalid prefix being parsed as preamble
+        assertThrows(ParseException.class, () -> parser.parse("1 i/ string"));
+    }
+
+    @Test
+    public void parse_invalidValue_failure() {
+        assertParseFailure(parser, "1" + INVALID_STORYNAME_DESC, StoryName.MESSAGE_CONSTRAINTS); // invalid name
+        assertParseFailure(parser, "1" + INVALID_STORYTAG_DESC, Tag.MESSAGE_CONSTRAINTS); // invalid tag
+
+        // while parsing {@code PREFIX_TAG} alone will reset the tags of the {@code Story} being edited,
+        // parsing it together with a valid tag results in error
+        assertParseFailure(parser, "1" + TAG_DESC_SINGAPORE + TAG_DESC_MALAYSIA + TAG_EMPTY, Tag.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "1" + TAG_DESC_SINGAPORE + TAG_EMPTY + TAG_DESC_MALAYSIA, Tag.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "1" + TAG_EMPTY + TAG_DESC_SINGAPORE + TAG_DESC_MALAYSIA, Tag.MESSAGE_CONSTRAINTS);
+
+        // multiple invalid values, but only the first invalid value is captured
+        assertParseFailure(parser, "1" + INVALID_STORYNAME_DESC + INVALID_STORYTAG_DESC,
+                StoryName.MESSAGE_CONSTRAINTS);
+    }
+
+    @Test
+    public void parse_allFieldsSpecified_success() {
+        Index targetIndex = INDEX_SECOND_STORY;
+        String userInput = targetIndex.getOneBased() + TAG_DESC_SINGAPORE
+                + TAG_DESC_MALAYSIA + NAME_DESC_FRAUD;
+
+        EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD)
+                .withTags(VALID_STORYTAG_SINGAPORE, VALID_STORYTAG_MALAYSIA).build();
+        EditStoryCommand expectedCommand = new EditStoryCommand(targetIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_onlyNameFieldSpecified_success() {
+        Index targetIndex = INDEX_FIRST_STORY;
+        String userInput = targetIndex.getOneBased() + NAME_DESC_FRAUD;
+
+        EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).build();
+        EditStoryCommand expectedCommand = new EditStoryCommand(targetIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_onlyTagFieldSpecified_success() {
+        Index targetIndex = INDEX_THIRD_STORY;
+        String userInput = targetIndex.getOneBased() + TAG_DESC_MALAYSIA;
+        EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withTags(VALID_STORYTAG_MALAYSIA).build();
+        EditStoryCommand expectedCommand = new EditStoryCommand(targetIndex, descriptor);
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_multipleRepeatedFields_failure() {
+        // More extensive testing of duplicate parameter detections is done in
+        // AddStoryCommandParserTest#parse_repeatedNonTagValue_failure()
+
+        // valid followed by invalid
+        Index targetIndex = INDEX_FIRST_STORY;
+        String userInput = targetIndex.getOneBased() + INVALID_STORYNAME_DESC + NAME_DESC_FRAUD;
+
+        assertParseFailure(parser, userInput, Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NAME));
+
+        // invalid followed by valid
+        userInput = targetIndex.getOneBased() + NAME_DESC_FRAUD + INVALID_STORYNAME_DESC;
+
+        assertParseFailure(parser, userInput, Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NAME));
+
+        // multiple valid fields repeated
+        userInput = targetIndex.getOneBased() + NAME_DESC_FRAUD + NAME_DESC_CRIME + TAG_DESC_MALAYSIA
+                + TAG_DESC_SINGAPORE;
+
+        assertParseFailure(parser, userInput,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NAME));
+
+        // multiple invalid values
+        userInput = targetIndex.getOneBased() + INVALID_STORYNAME_DESC + INVALID_STORYTAG_DESC + INVALID_STORYNAME_DESC
+                + INVALID_STORYTAG_DESC;
+
+        assertParseFailure(parser, userInput,
+                Messages.getErrorMessageForDuplicatePrefixes(PREFIX_NAME));
+    }
+
+    @Test
+    public void parse_resetTags_success() {
+        Index targetIndex = INDEX_THIRD_STORY;
+        String userInput = targetIndex.getOneBased() + TAG_EMPTY;
+
+        EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withTags().build();
+        EditStoryCommand expectedCommand = new EditStoryCommand(targetIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+}
+
