@@ -84,7 +84,7 @@ Panel | Card and layout | Displayed information
 `ContactListPanel` | `ContactCard`, `ContactListCard.fxml` | Displayed index, name, contact details, tags, and assigned story names. Displays `Stories: (none)` when unassigned.
 `StoryListPanel` | `StoryCard`, `StoryListCard.fxml` | Displayed index, story name, tags, assigned contact count, and contact names. Displays `Contacts: (none)` when unassigned.
 `FollowupListPanel` | `FollowupCard`, `FollowupListCard.fxml` | Displayed index, follow-up description, and contact name. Followups for the same contact are shown together by default.
-`HelpPanel` | `HelpPanel.fxml` | Available built-in commands with syntax/descriptions and active user-defined shortcuts. Can be toggled open/closed via `help`.
+`HelpPanel` | `HelpPanel.fxml` | Available built-in commands with syntax and descriptions. Can be toggled open/closed via `help`.
 
 The `UI` component,
 

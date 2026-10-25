@@ -64,7 +64,6 @@ StoryCard ..> Model
 FollowupCard ..> Model
 UiManager -right-> Logic
 MainWindow -left-> Logic
-HelpPanel ..> Logic
 
 HelpPanel -[hidden]left- ContactListPanel
 ContactListPanel -[hidden]left- CommandBox

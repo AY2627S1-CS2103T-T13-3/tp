@@ -13,7 +13,7 @@
     <Insets top="10" right="10" bottom="10" left="10" />
   </padding>
   <HBox alignment="CENTER_LEFT">
-    <Label text="COMMANDS &amp; SHORTCUTS" styleClass="panel-header" />
+    <Label text="COMMANDS" styleClass="panel-header" />
     <Region HBox.hgrow="ALWAYS" />
     <Button fx:id="closeButton" text="✕" onAction="#handleClose" styleClass="help-close-button" />
   </HBox>
@@ -22,9 +22,6 @@
       <padding>
         <Insets top="8" right="4" bottom="8" left="2" />
       </padding>
-      <Label text="CUSTOM SHORTCUTS" styleClass="help-section-header" />
-      <VBox fx:id="shortcutsContainer" spacing="6" />
-      <Label text="AVAILABLE COMMANDS" styleClass="help-section-header" />
       <VBox fx:id="commandsContainer" spacing="8" />
     </VBox>
   </ScrollPane>

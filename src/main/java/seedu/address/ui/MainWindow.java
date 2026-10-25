@@ -105,7 +105,7 @@ public class MainWindow extends UiPart<Stage> {
         CommandBox commandBox = new CommandBox(this::executeCommand);
         commandBoxPlaceholder.getChildren().add(commandBox.getRoot());
 
-        helpPanel = new HelpPanel(logic, () -> {
+        helpPanel = new HelpPanel(() -> {
             helpPanelPlaceholder.setVisible(false);
             helpPanelPlaceholder.setManaged(false);
         });
@@ -125,13 +125,12 @@ public class MainWindow extends UiPart<Stage> {
     }
 
     /**
-     * Toggles the help panel or updates its contents.
+     * Toggles the help panel.
      */
     @FXML
     public void handleHelp() {
         boolean isVisible = helpPanelPlaceholder.isVisible();
         if (!isVisible) {
-            helpPanel.refresh();
             if (!primaryStage.isMaximized() && !primaryStage.isFullScreen() && primaryStage.getWidth() < 1000) {
                 primaryStage.setWidth(Math.min(Screen.getPrimary().getVisualBounds().getWidth(), 1050));
             }
