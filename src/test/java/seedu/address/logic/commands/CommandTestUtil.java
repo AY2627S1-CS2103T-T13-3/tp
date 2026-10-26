@@ -21,6 +21,7 @@ import seedu.address.model.contact.NameContainsKeywordsPredicate;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.story.Story;
 import seedu.address.testutil.EditContactDescriptorBuilder;
+import seedu.address.testutil.EditStoryDescriptorBuilder;
 
 /**
  * Contains helper methods for testing commands.
@@ -68,6 +69,31 @@ public class CommandTestUtil {
         DESC_BOB = new EditContactDescriptorBuilder().withName(VALID_NAME_BOB)
                 .withPhone(VALID_PHONE_BOB).withEmail(VALID_EMAIL_BOB).withAddress(VALID_ADDRESS_BOB)
                 .withTags(VALID_TAG_HUSBAND, VALID_TAG_FRIEND).build();
+    }
+
+    //=========== Story ==================================================================================
+    public static final String VALID_STORYNAME_CRIME = "Crime Investigation";
+    public static final String VALID_STORYNAME_FRAUD = "Financial Fraud";
+
+    public static final String VALID_STORYTAG_SINGAPORE = "Singapore";
+    public static final String VALID_STORYTAG_MALAYSIA = "Malaysia";
+
+    public static final String NAME_DESC_CRIME = " " + PREFIX_NAME + VALID_STORYNAME_CRIME;
+    public static final String NAME_DESC_FRAUD = " " + PREFIX_NAME + VALID_STORYNAME_FRAUD;
+    public static final String TAG_DESC_SINGAPORE = " " + PREFIX_TAG + VALID_STORYTAG_SINGAPORE;
+    public static final String TAG_DESC_MALAYSIA = " " + PREFIX_TAG + VALID_STORYTAG_MALAYSIA;
+
+    public static final String INVALID_STORYNAME_DESC = " " + PREFIX_NAME + "Scandal&"; // '&' not allowed in names
+    public static final String INVALID_STORYTAG_DESC = " " + PREFIX_TAG + "China*"; // '*' not allowed in tags
+
+    public static final EditStoryCommand.EditStoryDescriptor DESC_CRIME;
+    public static final EditStoryCommand.EditStoryDescriptor DESC_FRAUD;
+
+    static {
+        DESC_CRIME = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_CRIME)
+                .withTags(VALID_STORYTAG_SINGAPORE).build();
+        DESC_FRAUD = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD)
+                .withTags(VALID_STORYTAG_MALAYSIA).build();
     }
 
     /**

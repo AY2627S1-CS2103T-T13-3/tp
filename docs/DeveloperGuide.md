@@ -164,6 +164,36 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+## `addstory`
+
+- **Objective:** Adds a story to PressMemo
+
+### API
+
+* **Command:** `addstory STORY_NAME [t/TAG]…`
+* **Parameters**: refer to [user guide](docs/UserGuide.md)
+* **Description:**
+	* Adds a story with the specified name and (optionally) tags to ArchiveStoryList
+* **Preconditions:** 
+	* `STORY_NAME` is not the name of any existing story in ArchiveStoryList
+* **Postconditions:** 
+	* A story with the specified name and tags is added to the ArchiveStoryList
+	* ActiveStoryList = ArchiveStoryList 
+* **Exceptions:** 
+	* if `STORY_NAME` is the name of some existing story in ArchiveStoryList: displays error message for CommandException (duplicate story) 
+
+### Implementation details
+
+#### Execution flow
+1. The user enters the `addstory` command as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates an `AddStoryCommandParser` to parse the command arguments.
+4. `AddStoryCommandParser` parses the story name and tags and creates an `AddStoryCommand` object.
+5. `LogicManager` executes the `AddStoryCommand` object.
+6. `AddStoryCommand` verifies that the specified story name is not the name of any existing story in ArchiveStoryList.
+7. `AddStoryCommand` requests `Model` to add a new `Story` object with no assigned contacts and with the specified name and tags to the address book.
+8. `Model` sets `ActiveStoryList` to `ArchiveStoryList`.  
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
