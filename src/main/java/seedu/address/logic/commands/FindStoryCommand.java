@@ -12,7 +12,7 @@ import seedu.address.model.story.StoryNameContainsKeywordsPredicate;
  */
 public class FindStoryCommand extends Command {
 
-    public static final String COMMAND_WORD = "findstory";
+    public static final String COMMAND_WORD = "findstories";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all stories whose names contain any of "
             + "the specified keywords (case-insensitive).\n"
