@@ -244,6 +244,22 @@ Examples:
 * `addstory Housing Investigation`
 * `addstory Football article`
 
+### Locating stories by name: `findstory`
+
+Finds stories whose names contain any of the given keywords.
+
+Format: `findstory STORY_NAME [MORE_KEYWORDS]`
+
+* The search is case-insensitive and considers only story names.
+* Only full words match; for example, `House` does not match `Housing`.
+* Stories matching at least one keyword are returned (an `OR` search).
+* The search replaces the current story filter without changing the contact list. Use `liststories` to show all stories again.
+
+Examples:
+
+* `findstory Housing` returns stories with `Housing` as a word in their name.
+* `findstory housing education` returns stories containing either `housing` or `education` in their name.
+
 ### Assigning a contact to a story: `assign`
 
 Links an existing contact to an existing story.
@@ -331,7 +347,7 @@ Format: `shortcut [s/SHORTCUT c/COMMAND_WORD]`
 * `shortcut s/SHORTCUT c/COMMAND_WORD` assigns an alias to a command.
 * A shortcut must start with a lowercase letter and may contain only lowercase letters and digits (e.g., `ls`, `a1`, `ds`).
 * Built-in command words cannot be reused as shortcut names.
-* Only the following commands can be assigned shortcuts: `addcontact`, `addstory`, `assign`, `clear`, `deletecontact`, `deletestory`, `editcontact`, `exit`, `findcontact`, `help`, `list`, `liststories`, and `unassign`.
+* Only the following commands can be assigned shortcuts: `addcontact`, `addstory`, `assign`, `clear`, `deletecontact`, `deletestory`, `editcontact`, `exit`, `findcontact`, `findstory`, `help`, `list`, `liststories`, and `unassign`.
 * Other commands, including `listcontacts`, `addfollowup`, `deletefollowup`, `shortcut`, and `unshortcut`, are not supported as shortcut targets in this version.
 * Each command can have at most one shortcut, and each shortcut can refer to one command. Reassigning a shortcut or command replaces conflicting mappings.
 * Once assigned, type the shortcut in place of the command word and keep any required arguments.
@@ -415,6 +431,7 @@ Action | Format, Examples
 **Delete story** | `deletestory INDEX`<br> e.g., `deletestory 2`
 **Edit** | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`
 **Find** | `findcontact KEYWORD [MORE_KEYWORDS]`<br> e.g., `findcontact James Jake`
+**Find story** | `findstory STORY_NAME [MORE_KEYWORDS]`<br> e.g., `findstory Housing Investigation`
 **List all contacts and stories** | `list` (clears both filters)
 **List contacts** | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)
 **List stories** | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)

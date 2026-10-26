@@ -18,6 +18,7 @@ public final class CommandWords {
             EditFollowupCommand.COMMAND_WORD,
             ExitCommand.COMMAND_WORD,
             FindContactsCommand.COMMAND_WORD,
+            FindStoryCommand.COMMAND_WORD,
             HelpCommand.COMMAND_WORD,
             ListCommand.COMMAND_WORD,
             ListStoriesCommand.COMMAND_WORD,
