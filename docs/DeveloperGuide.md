@@ -193,6 +193,66 @@ This section describes some noteworthy details on how certain features are imple
 7. `AddStoryCommand` requests `Model` to add a new `Story` object with no assigned contacts and with the specified name and tags to the address book.
 8. `Model` sets `ActiveStoryList` to `ArchiveStoryList`.  
 
+## `listfollowups`
+
+- **Objective:** Lists all follow-ups in the address book, or filters the follow-ups assigned to a specified contact in the Active Contact List.
+
+### API
+
+* **Command:** `listfollowups [ci/CONTACT_INDEX]`
+* **Parameters**: refer to [user guide](UserGuide.md#listing-follow-ups-listfollowups)
+* **Description:**
+	* Updates the Active Follow-up List filter in `Model` to display either all follow-ups from the Archive Follow-up List or only those associated with the contact identified by `CONTACT_INDEX`.
+* **Preconditions:** 
+	* If `ci/CONTACT_INDEX` is specified, `CONTACT_INDEX` must be a positive integer within the bounds of the Active Contact List.
+* **Postconditions:** 
+	* ActiveFollowupList is updated:
+		* If no index is provided, ActiveFollowupList displays all follow-ups (`PREDICATE_SHOW_ALL_FOLLOWUPS`).
+		* If `CONTACT_INDEX` is provided, ActiveFollowupList displays only follow-ups where `followup.isFor(selectedContact)` is true.
+	* ArchiveContactList, ArchiveStoryList, ArchiveFollowupList, ActiveContactList, and ActiveStoryList remain unchanged.
+* **Exceptions:** 
+	* if `CONTACT_INDEX` is not a positive integer: displays error message for ParseException (`ParserUtil.MESSAGE_INVALID_INDEX`).
+	* if `CONTACT_INDEX` exceeds the size of the Active Contact List: displays error message for CommandException (`Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX`).
+	* if unexpected extra text or empty `ci/` prefix is supplied: displays error message for ParseException (`Messages.MESSAGE_INVALID_COMMAND_FORMAT`).
+	* if multiple `ci/` prefixes are supplied: displays error message for ParseException (duplicate prefix error).
+
+### Implementation details
+
+The sequence diagram below illustrates the interactions within the Logic and Model components when the user executes `listfollowups ci/1`.
+
+<!-- Note: ListFollowupsSequenceDiagram.puml is located in docs/diagrams/ListFollowupsSequenceDiagram.puml -->
+
+#### Execution flow
+
+- When `listfollowups` is executed without arguments, `ListFollowupsCommandParser` returns a `ListFollowupsCommand` without a contact index, which calls `Model#updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS)`. When a `ci/CONTACT_INDEX` is provided, `ListFollowupsCommand` retrieves the target contact from `Model#getFilteredContactList()` and sets a filtering predicate matching that contact.
+1. The user enters `listfollowups ci/1` as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` identifies the `listfollowups` command word and creates a `ListFollowupsCommandParser` to parse the command arguments.
+4. `ListFollowupsCommandParser` extracts the `ci/` prefix using `ArgumentTokenizer`, parses `1` into an `Index` object via `ParserUtil#parseIndex()`, and creates a `ListFollowupsCommand` initialized with the index.
+5. `LogicManager` executes the `ListFollowupsCommand` object by passing the `Model`.
+6. `ListFollowupsCommand` retrieves the current `FilteredList<Contact>` from `Model#getFilteredContactList()` and checks if the index is within range.
+7. `ListFollowupsCommand` retrieves the `Contact` at the specified index.
+8. `ListFollowupsCommand` requests `Model` to update the Active Follow-up List filter with the predicate `followup -> followup.isFor(selectedContact)`.
+9. `Model` sets the predicate on `filteredFollowups`.
+10. `ListFollowupsCommand` creates and returns a `CommandResult` containing the success message (e.g., `Listed followups assigned to Alex Yeoh`).
+11. `LogicManager` returns the `CommandResult` to the GUI.
+
+### Design Considerations (optional)
+
+- **Aspect: Filter persistence and independence across panels**
+
+|          | Chosen | Alternative |
+| -------- | ------ | ----------- |
+| **Pros** | **Independent panel filtering**: `listfollowups` only alters `filteredFollowups`, leaving `filteredContacts` and `filteredStories` intact. This allows users to view follow-ups for a specific contact while preserving their active search/filter in the contacts and stories panels. | **Coupled panel filtering**: Automatically filtering contacts when follow-ups are listed. |
+| **Cons** | Requires separate commands to view or reset filters across different panels. | Limits flexible cross-panel exploration; unintended side-effects on other UI panels when querying follow-ups. |
+
+- **Aspect: Single command word vs. sub-commands**
+
+|          | Chosen | Alternative |
+| -------- | ------ | ----------- |
+| **Pros** | **Dedicated command `listfollowups` with optional prefix `ci/`**: Mirrors the pattern established by `listcontacts [si/STORY_INDEX]` and `liststories [ci/CONTACT_INDEX]`, providing a cohesive and intuitive CLI experience. | **Generic `list` command with flags** (e.g., `list --followups` or `list f/`): Might be more concise. |
+| **Cons** | More command words for users to learn. | Inconsistent with existing commands like `listcontacts` and `liststories`, making parser logic more complex and prone to ambiguous syntax. |
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation

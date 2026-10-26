@@ -84,9 +84,9 @@ The **CONTACTS** panel shows each contact's details, tags, and assigned story na
 * Command words and prefixes are case-sensitive. Use lowercase, such as `addstory`, `addfollowup`, `shortcut`, `ci/`, `si/`, `s/`, and `c/`.
 * Extraneous parameters for commands that take no parameters, such as `help`, `exit`, `clear`, and `list`, are ignored.<br>
   For example, `help 123` is interpreted as `help`.
-* The refactored listing commands are `list`, `listcontacts`, and `liststories`. Enter each as **one command word**; `list contacts`, `list stories`, `list f`, and `listfollowups` are not supported.
-* `listcontacts` and `liststories` accept only their optional filters described below; unrelated arguments are rejected.
-* Follow-ups are shown in the **FOLLOW-UPS** panel. There is currently no separate command to list or filter follow-ups.
+* The refactored listing commands are `list`, `listcontacts`, `liststories`, and `listfollowups`. Enter each as **one command word**; spaced variants such as `list contacts`, `list stories`, and `list followups` are not supported.
+* `listcontacts`, `liststories`, and `listfollowups` accept only their optional filters described below; unrelated arguments are rejected.
+* Follow-ups are shown in the **FOLLOW-UPS** panel. Use `listfollowups` to show all follow-ups or filter them by contact.
 * `shortcut` without arguments lists all saved shortcuts. To define a shortcut, use both `s/SHORTCUT` and `c/COMMAND_WORD`.
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 
@@ -345,7 +345,7 @@ Format: `addfollowup DESCRIPTION ci/CONTACT_INDEX`
 * `ci/CONTACT_INDEX` refers to the contact's number in the currently displayed contact list. The index must be a positive integer within that list.
 * An identical description cannot be added twice for the same contact. Description comparison is case-sensitive.
 * Follow-ups belong to contacts, not directly to stories; deleting a story does not remove a contact's follow-ups.
-* There is currently no command to edit, search, or separately list follow-ups; view them in the **FOLLOW-UPS** panel.
+* Use `listfollowups` to show all follow-ups or filter follow-ups by assigned contact in the **FOLLOW-UPS** panel.
 * Editing a contact's name updates their follow-up references. Deleting a contact also removes their follow-ups.
 * New reminders appear in the **FOLLOW-UPS** panel.
 
@@ -366,6 +366,50 @@ Format: `deletefollowup INDEX`
 Examples:
 * `deletefollowup 1`
 * `deletefollowup 3`
+
+## Listing follow-ups: `listfollowups`
+
+- **Objective:** Displays follow-ups in the follow-ups panel, optionally filtering them by assigned contact.
+
+### Usage / Command Format
+
+`listfollowups [ci/CONTACT_INDEX]`
+
+### Parameters & Constraints
+
+| Parameter          | Type            | Description                                                                                                | Examples |
+| :----------------- | :-------------- | :--------------------------------------------------------------------------------------------------------- | :------- |
+| `ci/CONTACT_INDEX` | `Contact Index` | 1-based index of a contact in the currently displayed contact list whose follow-ups to display (optional) | `ci/1`   |
+
+> **Tip / Note:**
+> * If `ci/CONTACT_INDEX` is omitted, `listfollowups` displays all follow-ups in PressMemo and clears any active follow-up filter.
+> * If `ci/CONTACT_INDEX` is provided, `listfollowups` displays only follow-ups assigned to that contact.
+> * The index refers to the contact's position in the **currently displayed contact list** (which may be filtered by `findcontact` or `listcontacts`).
+> * `listfollowups` only filters the **FOLLOW-UPS** panel; the **CONTACTS** and **STORIES** panels remain unchanged.
+> * Extraneous arguments or multiple `ci/` prefixes are rejected with an error message.
+
+### Examples
+
+* **Example 1: List all follow-ups**
+  * **Input / Action:** `listfollowups`
+  * **Expected Outcome:** Displays all follow-ups in the **FOLLOW-UPS** panel, with the message `Listed all followups.`
+
+* **Example 2: List follow-ups for a specific contact**
+  * **Input / Action:** `listfollowups ci/1`
+  * **Expected Outcome:** Displays only follow-ups assigned to the 1st displayed contact in the **FOLLOW-UPS** panel, with the message `Listed followups assigned to <Contact Name>` (e.g., `Listed followups assigned to Alex Yeoh`).
+
+* **Example 3: Combined workflow with contact search**
+  * **Input / Action:** `findcontact Bernice` followed by `listfollowups ci/1`
+  * **Expected Outcome:** Filters contacts to show Bernice, then displays only follow-ups assigned to Bernice in the **FOLLOW-UPS** panel.
+
+### Common Errors & Troubleshooting (optional, feature-specific)
+
+| Error Message / Symptom | Cause | How to Fix |
+|:---|:---|:---|
+| `The contact index provided is invalid` | The provided index is larger than the number of contacts currently displayed in the contact list | Check the contact index numbers in the **CONTACTS** panel and enter a valid index within range |
+| `Invalid command format!`<br>`listfollowups: Lists followups in the address book.`<br>`Parameters: [ci/CONTACT_INDEX]`<br>`Example: listfollowups ci/1` | Extraneous preamble text was provided, or the `ci/` prefix was left empty without an index | Use `listfollowups` with no arguments to show all follow-ups, or specify an index after `ci/` (e.g., `listfollowups ci/1`) |
+| `Multiple values specified for the following single-valued field(s): ci/` | The `ci/` prefix was specified more than once in the command | Provide only a single `ci/CONTACT_INDEX` parameter |
+| `Index is not a non-zero unsigned integer.` | The index specified after `ci/` is zero, negative, or not a number | Ensure the contact index is a positive integer (e.g., `ci/1`, `ci/2`) |
 
 ### Managing command shortcuts: `shortcut`
 
@@ -464,6 +508,7 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 | **Find story**                    | `findstory STORY_NAME [MORE_KEYWORDS]`<br> e.g., `findstory Housing Investigation`                                                                                                  |
 | **List all contacts and stories** | `list` (clears both filters)                                                                                                                                                        |
 | **List contacts**                 | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)                                        |
+| **List follow-ups**               | `listfollowups [ci/CONTACT_INDEX]`<br> e.g., `listfollowups` (all follow-ups) or `listfollowups ci/1` (follow-ups for contact 1)                   |
 | **List stories**                  | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)                                         |
 | **Manage shortcuts**              | `shortcut [s/SHORTCUT c/COMMAND_WORD]`<br> e.g., `shortcut` or `shortcut s/ls c/list`                                                                                               |
 | **Remove shortcut**               | `unshortcut SHORTCUT`<br> e.g., `unshortcut ls`                                                                                                                                     |

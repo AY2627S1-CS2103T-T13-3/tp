@@ -1,0 +1,76 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":ListFollowupsCommandParser" as ListFollowupsCommandParser LOGIC_COLOR
+participant "l:ListFollowupsCommand" as ListFollowupsCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("listfollowups ci/1")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("listfollowups ci/1")
+activate AddressBookParser
+
+create ListFollowupsCommandParser
+AddressBookParser -> ListFollowupsCommandParser
+activate ListFollowupsCommandParser
+
+ListFollowupsCommandParser --> AddressBookParser
+deactivate ListFollowupsCommandParser
+
+AddressBookParser -> ListFollowupsCommandParser : parse("ci/1")
+activate ListFollowupsCommandParser
+
+create ListFollowupsCommand
+ListFollowupsCommandParser -> ListFollowupsCommand
+activate ListFollowupsCommand
+
+ListFollowupsCommand --> ListFollowupsCommandParser :
+deactivate ListFollowupsCommand
+
+ListFollowupsCommandParser --> AddressBookParser : l
+deactivate ListFollowupsCommandParser
+'Hidden arrow to position the destroy marker below the end of the activation bar.
+ListFollowupsCommandParser -[hidden]-> AddressBookParser
+destroy ListFollowupsCommandParser
+
+AddressBookParser --> LogicManager : l
+deactivate AddressBookParser
+
+LogicManager -> ListFollowupsCommand : execute(m)
+activate ListFollowupsCommand
+
+ListFollowupsCommand -> Model : getFilteredContactList()
+activate Model
+
+Model --> ListFollowupsCommand : lastShownContactList
+deactivate Model
+
+ListFollowupsCommand -> Model : updateFilteredFollowupList(predicate)
+activate Model
+
+Model --> ListFollowupsCommand
+deactivate Model
+
+create CommandResult
+ListFollowupsCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> ListFollowupsCommand
+deactivate CommandResult
+
+ListFollowupsCommand --> LogicManager : r
+deactivate ListFollowupsCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml
