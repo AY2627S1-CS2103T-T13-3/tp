@@ -6,7 +6,7 @@ title: PressMemo
 [![CI Status](https://github.com/AY2627S1-CS2103T-T13-3/tp/actions/workflows/gradle.yml/badge.svg)](https://github.com/AY2627S1-CS2103T-T13-3/tp/actions)
 [![codecov](https://codecov.io/gh/AY2627S1-CS2103T-T13-3/tp/branch/master/graph/badge.svg)](https://codecov.io/gh/AY2627S1-CS2103T-T13-3/tp)
 
-![Ui](images/testUi.png)
+![Ui](images/Ui.png)
 
 **PressMemo is a desktop application for journalists to manage their contacts, stories and followup details.** While it has a GUI, most of the user interactions happen using a CLI (Command Line Interface).
 
