@@ -193,6 +193,59 @@ This section describes some noteworthy details on how certain features are imple
 7. `AddStoryCommand` requests `Model` to add a new `Story` object with no assigned contacts and with the specified name and tags to the address book.
 8. `Model` sets `ActiveStoryList` to `ArchiveStoryList`.  
 
+## `findstories`
+
+- **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and updates the Active Story List.
+
+### API
+
+* **Command:** `findstories STORY_NAME [MORE_KEYWORDS]...`
+* **Parameters**: refer to [user guide](UserGuide.md#locating-stories-by-name-findstories)
+* **Description:**
+	* Filters the Active Story List to contain only stories from the Archive Story List whose names contain at least one of the specified keywords.
+* **Preconditions:** 
+	* At least one keyword is provided in the command arguments.
+* **Postconditions:** 
+	* ActiveStoryList contains only stories from ArchiveStoryList whose names match at least one keyword in a case-insensitive, full-word comparison.
+	* ArchiveStoryList, ActiveContactList, and ActiveFollowupList remain unchanged.
+* **Exceptions:** 
+	* if no keywords are provided: displays error message for ParseException (invalid command format)
+
+### Implementation details
+
+The sequence diagram below illustrates the interactions within the Logic and Model components when the user executes a `findstories` command.
+
+<!-- Note: FindStorySequenceDiagram.puml is located in docs/diagrams/FindStorySequenceDiagram.puml -->
+
+#### Execution flow
+
+- The user enters a `findstories` command. The command arguments are parsed by `AddressBookParser` and `FindStoryCommandParser`, which instantiate a `StoryNameContainsKeywordsPredicate` and `FindStoryCommand`. When executed, the command updates the filtered story list in `Model`, displaying matching stories in the GUI.
+1. The user enters the `findstories housing investigation` command as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates a `FindStoryCommandParser` to parse the command arguments.
+4. `FindStoryCommandParser` parses the arguments into keywords, creates a `StoryNameContainsKeywordsPredicate` containing the keywords, and creates a `FindStoryCommand` object.
+5. `LogicManager` executes the `FindStoryCommand` object.
+6. `FindStoryCommand` requests `Model` to update the filter of the Active Story List with the predicate.
+7. `Model` updates the predicate on the `FilteredList<Story>`.
+8. `FindStoryCommand` creates and returns a `CommandResult` containing the number of matching stories.
+9. `LogicManager` returns the `CommandResult` to the GUI.
+
+### Design Considerations (optional)
+
+- **Aspect: Matching mechanism for story names**
+
+|          | Chosen | Alternative |
+| -------- | ------ | ----------- |
+| **Pros** | **Whole-word matching** (`StringUtil.containsWordIgnoreCase`) avoids false positives on accidental substring matches (e.g., searching for "ad" will not match "broadcast"), ensuring high precision and consistency with `findcontacts`. | **Substring matching** allows partial matches without requiring complete words. |
+| **Cons** | Users must type full words; partial terms will not return results. | May return many irrelevant stories containing common character sequences. |
+
+- **Aspect: Multiple keywords combination logic**
+
+|          | Chosen | Alternative |
+| -------- | ------ | ----------- |
+| **Pros** | **Disjunctive / OR search** (`anyMatch`) allows flexible exploratory queries across multiple topics in a single command. | **Conjunctive / AND search** (`allMatch`) returns strictly targeted results matching every keyword. |
+| **Cons** | Results may be broader than intended if common words are included. | Less flexible when exploring multiple distinct story ideas; yields zero results if even one keyword misses. |
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation

@@ -1,0 +1,70 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":FindStoryCommandParser" as FindStoryCommandParser LOGIC_COLOR
+participant "f:FindStoryCommand" as FindStoryCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("findstories housing investigation")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("findstories housing investigation")
+activate AddressBookParser
+
+create FindStoryCommandParser
+AddressBookParser -> FindStoryCommandParser
+activate FindStoryCommandParser
+
+FindStoryCommandParser --> AddressBookParser
+deactivate FindStoryCommandParser
+
+AddressBookParser -> FindStoryCommandParser : parse("housing investigation")
+activate FindStoryCommandParser
+
+create FindStoryCommand
+FindStoryCommandParser -> FindStoryCommand
+activate FindStoryCommand
+
+FindStoryCommand --> FindStoryCommandParser :
+deactivate FindStoryCommand
+
+FindStoryCommandParser --> AddressBookParser : f
+deactivate FindStoryCommandParser
+'Hidden arrow to position the destroy marker below the end of the activation bar.
+FindStoryCommandParser -[hidden]-> AddressBookParser
+destroy FindStoryCommandParser
+
+AddressBookParser --> LogicManager : f
+deactivate AddressBookParser
+
+LogicManager -> FindStoryCommand : execute(m)
+activate FindStoryCommand
+
+FindStoryCommand -> Model : updateFilteredStoryList(predicate)
+activate Model
+
+Model --> FindStoryCommand
+deactivate Model
+
+create CommandResult
+FindStoryCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> FindStoryCommand
+deactivate CommandResult
+
+FindStoryCommand --> LogicManager : r
+deactivate FindStoryCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml

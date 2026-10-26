@@ -274,21 +274,49 @@ Examples:
 | :------------------------------------------ | :----------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
 | Error: there is already a story named {xxx} | Trying to add a story named {xxx} when {xxx} already exists in PressMemo | delete the existing story named {xxx} first<br><br>OR<br><br>use a different story name |
 
-### Locating stories by name: `findstory`
+## Locating stories by name: `findstories`
 
-Finds stories whose names contain any of the given keywords.
+- **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and displays them in the story panel.
 
-Format: `findstory STORY_NAME [MORE_KEYWORDS]`
+### Usage / Command Format
 
-* The search is case-insensitive and considers only story names.
-* Only full words match; for example, `House` does not match `Housing`.
-* Stories matching at least one keyword are returned (an `OR` search).
-* The search replaces the current story filter without changing the contact list. Use `liststories` to show all stories again.
+`findstories STORY_NAME [MORE_KEYWORDS]...`
 
-Examples:
+### Parameters & Constraints
 
-* `findstory Housing` returns stories with `Housing` as a word in their name.
-* `findstory housing education` returns stories containing either `housing` or `education` in their name.
+| Parameter       | Type   | Description                                                 | Examples      |
+| :-------------- | :----- | :---------------------------------------------------------- | :------------ |
+| `STORY_NAME`    | `word` | First keyword to search for in story names                  | housing       |
+| `MORE_KEYWORDS` | `word` | Additional keywords to search for in story names (optional) | investigation |
+
+> **Tip / Note:**
+> * The search is case-insensitive (e.g., `housing` matches `Housing`).
+> * Only full words will be matched (e.g., `House` will not match `Housing`).
+> * The order of the keywords does not matter (e.g., `housing investigation` will match `investigation into housing`).
+> * Stories matching at least one keyword are returned (an `OR` search).
+> * The search filters the **STORIES** panel without changing the **CONTACTS** or **FOLLOW-UPS** panels.
+> * To display all stories again, use `liststories` or `list`.
+
+### Examples
+
+* **Example 1: Single keyword search**
+  * **Input / Action:** `findstories Housing`
+  * **Expected Outcome:** Displays all stories with `Housing` as a word in their name, and shows the status message `1 story(ies) listed!` (or the number of matching stories).
+
+* **Example 2: Multiple keywords search (OR search)**
+  * **Input / Action:** `findstories housing investigation`
+  * **Expected Outcome:** Displays all stories whose names contain either `housing` or `investigation`, and shows the status message `2 story(ies) listed!` (or the number of matching stories).
+
+* **Example 3: Search with no matches**
+  * **Input / Action:** `findstories nonExistentStory`
+  * **Expected Outcome:** The story panel displays no stories, and shows the status message `0 story(ies) listed!`.
+
+### Common Errors & Troubleshooting (optional, feature-specific)
+
+| Error Message / Symptom | Cause | How to Fix |
+|:---|:---|:---|
+| `Invalid command format!`<br>`findstories: Finds all stories whose names contain any of the specified keywords (case-insensitive).`<br>`Parameters: STORY_NAME [MORE_KEYWORDS]...`<br>`Example: findstories housing investigation` | No keywords were provided after `findstories` (e.g., typing only `findstories` or `findstories   `) | Enter at least one keyword after `findstories`, e.g., `findstories housing` |
+| `0 story(ies) listed!` when matching stories were expected | Search keywords were partial words (e.g., `hous` instead of `housing`) or misspelled | Ensure full words are used in the search keyword, e.g., `findstories housing` |
 
 ### Assigning a contact to a story: `assign`
 
@@ -461,7 +489,7 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 | **Delete story**                  | `deletestory INDEX`<br> e.g., `deletestory 2`                                                                                                                                       |
 | **Edit**                          | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`                                          |
 | **Find**                          | `findcontact KEYWORD [MORE_KEYWORDS]`<br> e.g., `findcontact James Jake`                                                                                                            |
-| **Find story**                    | `findstory STORY_NAME [MORE_KEYWORDS]`<br> e.g., `findstory Housing Investigation`                                                                                                  |
+| **Find stories**                  | `findstories STORY_NAME [MORE_KEYWORDS]...`<br> e.g., `findstories Housing Investigation`                                                                                           |
 | **List all contacts and stories** | `list` (clears both filters)                                                                                                                                                        |
 | **List contacts**                 | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)                                        |
 | **List stories**                  | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)                                         |
