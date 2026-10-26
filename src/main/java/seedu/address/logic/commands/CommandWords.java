@@ -54,8 +54,7 @@ public final class CommandWords {
             new CommandInfo(AddStoryCommand.COMMAND_WORD,
                     "addstory NAME [t/TAG]...",
                     "Adds a story to the address book."),
-            new CommandInfo(EditStoryComman
-                            .COMMAND_WORD,
+            new CommandInfo(EditStoryCommand.COMMAND_WORD,
                     "editstory INDEX [n/NAME] [t/TAG]...",
                     "Edits the details of an existing story."),
             new CommandInfo(DeleteStoryCommand.COMMAND_WORD,
