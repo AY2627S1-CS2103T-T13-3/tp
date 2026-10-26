@@ -320,19 +320,43 @@ Examples:
 
 * `unassign ci/1 si/1` removes the assignment between the 1st displayed contact and the 1st displayed story.
 
-### Deleting a story: `deletestory`
+## Deleting a story: `deletestory`
 
-Deletes the specified story from PressMemo.
+- **Objective:** Deletes the specified story from PressMemo and unassigns it from all associated contacts.
 
-Format: `deletestory INDEX`
+### Usage / Command Format
 
-* The index refers to the number in the displayed story list, including a filtered list, and must be a positive integer.
-* Deleting a story also removes its assignments from contacts. The contacts themselves remain.
+`deletestory INDEX`
 
-Examples:
+### Parameters & Constraints
 
-* `liststories` followed by `deletestory 2` deletes the 2nd story in the full story list.
-* `liststories ci/1` followed by `deletestory 1` deletes the 1st story assigned to the 1st displayed contact, provided there is a result.
+| Parameter | Type          | Description                                                        | Examples |
+| :-------- | :------------ | :----------------------------------------------------------------- | :------- |
+| `INDEX`   | `Story Index` | 1-based index of the story to delete from the displayed story list | `1`      |
+
+> **Tip / Note:**
+> * `INDEX` refers to the index number in the **currently displayed story list** (Active Story List), including filtered lists (e.g., after `liststories ci/1` or `findstories`).
+> * `INDEX` must be a positive integer (1, 2, 3, …) and cannot exceed the number of stories currently displayed.
+> * Deleting a story automatically unassigns it from all contacts linked to it. The contacts themselves remain in PressMemo.
+> * Follow-ups are unaffected because follow-ups are tied to contacts, not stories.
+> * Deletion cannot be undone in this version.
+
+### Examples
+
+* **Example 1: Deleting a story from the full story list**
+  * **Input / Action:** `deletestory 2`
+  * **Expected Outcome:** Deletes the 2nd story in the currently displayed story list and displays `Deleted story: <Story Name>; Tags: ...; Contacts: ...`.
+
+* **Example 2: Combined workflow with listing or filtering**
+  * **Input / Action:** `liststories ci/1` followed by `deletestory 1`
+  * **Expected Outcome:** Deletes the 1st displayed story assigned to the 1st contact.
+
+### Common Errors & Troubleshooting (optional, feature-specific)
+
+| Error Message / Symptom | Cause | How to Fix |
+|:---|:---|:---|
+| `The story index provided is invalid` | The provided index is larger than the number of stories currently displayed in the story list | Check the index numbers displayed in the **STORIES** panel and provide a valid index within range |
+| `Invalid command format!`<br>`deletestory: Deletes the story identified by the index number used in the displayed story list.`<br>`Parameters: INDEX (must be a positive integer)`<br>`Example: deletestory 1` | The index provided is zero, negative, not a number, or missing altogether | Enter a positive integer index after `deletestory`, e.g., `deletestory 1` |
 
 ### Adding a follow-up: `addfollowup`
 

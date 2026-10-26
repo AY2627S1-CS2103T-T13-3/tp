@@ -193,6 +193,64 @@ This section describes some noteworthy details on how certain features are imple
 7. `AddStoryCommand` requests `Model` to add a new `Story` object with no assigned contacts and with the specified name and tags to the address book.
 8. `Model` sets `ActiveStoryList` to `ArchiveStoryList`.  
 
+## `deletestory`
+
+- **Objective:** Deletes the specified story from PressMemo and removes its assignments from any associated contacts.
+
+### API
+
+* **Command:** `deletestory INDEX`
+* **Parameters**: refer to [user guide](UserGuide.md#deleting-a-story-deletestory)
+* **Description:**
+	* Deletes the story identified by `INDEX` from the Active Story List, removes the story from the Archive Story List, and unassigns the story from all contacts in the Archive Contact List.
+* **Preconditions:** 
+	* `INDEX` must be a positive integer within the bounds of the Active Story List.
+* **Postconditions:** 
+	* The targeted story is removed from the Archive Story List and Active Story List.
+	* Any contact in the Archive Contact List that was assigned to this story is unassigned from it.
+	* ActiveContactList, ArchiveFollowupList, and ActiveFollowupList remain unchanged (except for updated story assignments displayed on contact cards).
+* **Exceptions:** 
+	* if `INDEX` is non-positive or not a valid integer: displays error message for ParseException (`Messages.MESSAGE_INVALID_COMMAND_FORMAT`).
+	* if `INDEX` exceeds the size of the Active Story List: displays error message for CommandException (`Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX`).
+
+### Implementation details
+
+The sequence diagram below illustrates the interactions within the Logic and Model components when the user executes `deletestory 1`.
+
+<!-- Note: DeleteStorySequenceDiagram.puml is located in docs/diagrams/DeleteStorySequenceDiagram.puml -->
+
+#### Execution flow
+
+- The user enters a `deletestory` command specifying the target index. The command arguments are parsed by `AddressBookParser` and `DeleteStoryCommandParser` into an `Index`. When executed, `DeleteStoryCommand` retrieves the story from the filtered story list in `Model`, and calls `Model#deleteStory(Story)`, which cascades the deletion to unassign all associated contacts in the address book.
+1. The user enters `deletestory 1` as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates a `DeleteStoryCommandParser` to parse the command arguments.
+4. `DeleteStoryCommandParser` parses `1` using `ParserUtil#parseIndex()`, creates a `DeleteStoryCommand` object with the index, and returns it.
+5. `LogicManager` executes the `DeleteStoryCommand` object.
+6. `DeleteStoryCommand` retrieves the current `FilteredList<Story>` from `Model#getFilteredStoryList()`.
+7. `DeleteStoryCommand` checks that the index is within range and retrieves the `Story` at index 1.
+8. `DeleteStoryCommand` calls `Model#deleteStory(storyToDelete)`.
+9. `Model` delegates to `AddressBook#removeStory(storyToDelete)`.
+10. `AddressBook` unassigns `storyToDelete` from all contacts in the contact list, and removes the story from the unique story list.
+11. `DeleteStoryCommand` creates and returns a `CommandResult` containing the success message.
+12. `LogicManager` returns the `CommandResult` to the GUI.
+
+### Design Considerations (optional)
+
+- **Aspect: Cascading unassignment upon story deletion**
+
+|          | Chosen | Alternative |
+| -------- | ------ | ----------- |
+| **Pros** | **Automatic unassignment**: When a story is deleted, all references to it in contacts are automatically cleaned up in `AddressBook#removeStory`. This ensures referential integrity and prevents contacts from retaining dangling references to deleted stories. | **Block deletion if story has assigned contacts**: Require user to unassign all contacts before deleting. |
+| **Cons** | Changes contact state implicitly during a story command. | Tedious user experience requiring multiple manual unassignment commands before a story can be deleted. |
+
+- **Aspect: Indexing based on displayed list vs. global story name**
+
+|          | Chosen | Alternative |
+| -------- | ------ | ----------- |
+| **Pros** | **1-based index based on Active Story List**: Consistent with other CLI commands (`deletecontact`, `editcontact`, `assign`) and fast to type without needing to retype full story names. | **Target by story name**: `deletestory STORY_NAME`. |
+| **Cons** | User must refer to the current displayed list numbers; filtering may change the indices. | Typing long or multi-word story names is prone to typos. |
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
