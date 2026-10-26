@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showContactAtIndex;
+import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_STORY;
@@ -113,5 +114,35 @@ public class ListContactsCommandTest {
         // different indices -> returns false
         assertFalse(listContactsWithIndex.equals(new ListContactsCommand(INDEX_SECOND_STORY)));
         assertFalse(listContacts.equals(listContactsWithIndex));
+    }
+
+    @Test
+    public void constructor_nullIndex_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new ListContactsCommand(null));
+    }
+
+    @Test
+    public void execute_nullModel_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new ListContactsCommand().execute(null));
+        assertThrows(NullPointerException.class, () -> new ListContactsCommand(INDEX_FIRST_STORY).execute(null));
+    }
+
+    @Test
+    public void hashCodeMethod() {
+        ListContactsCommand listContacts1 = new ListContactsCommand();
+        ListContactsCommand listContacts2 = new ListContactsCommand();
+        assertEquals(listContacts1.hashCode(), listContacts2.hashCode());
+
+        ListContactsCommand listContactsWithIndex1 = new ListContactsCommand(INDEX_FIRST_STORY);
+        ListContactsCommand listContactsWithIndex2 = new ListContactsCommand(INDEX_FIRST_STORY);
+        assertEquals(listContactsWithIndex1.hashCode(), listContactsWithIndex2.hashCode());
+    }
+
+    @Test
+    public void toStringMethod() {
+        ListContactsCommand listContacts = new ListContactsCommand(INDEX_FIRST_STORY);
+        String expected = ListContactsCommand.class.getCanonicalName()
+                + "{storyIndex=Optional[" + INDEX_FIRST_STORY + "]}";
+        assertEquals(expected, listContacts.toString());
     }
 }

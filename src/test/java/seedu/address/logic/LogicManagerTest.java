@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.AddContactCommand;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.ListCommand;
@@ -253,6 +254,28 @@ public class LogicManagerTest {
     @Test
     public void getFilteredContactList_modifyList_throwsUnsupportedOperationException() {
         assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredContactList().remove(0));
+    }
+
+    @Test
+    public void getFilteredStoryList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredStoryList().remove(0));
+    }
+
+    @Test
+    public void getFilteredFollowupList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredFollowupList().remove(0));
+    }
+
+    @Test
+    public void guiSettings_getAndSet_success() {
+        GuiSettings guiSettings = new GuiSettings(1, 2, 3, 4);
+        logic.setGuiSettings(guiSettings);
+        assertEquals(guiSettings, logic.getGuiSettings());
+    }
+
+    @Test
+    public void getShortcuts_returnsCorrectShortcuts() {
+        assertEquals(model.getShortcuts(), logic.getShortcuts());
     }
 
     /**
