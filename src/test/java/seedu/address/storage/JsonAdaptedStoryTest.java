@@ -20,7 +20,7 @@ import seedu.address.model.story.StoryName;
 public class JsonAdaptedStoryTest {
 
     private static final String VALID_NAME = "Housing Investigation";
-    private static final String INVALID_NAME = "Housing@Investigation";
+    private static final String INVALID_NAME = "Housing/Investigation";
 
     @Test
     public void toModelType_validStoryDetails_returnsStory() throws Exception {
@@ -71,7 +71,7 @@ public class JsonAdaptedStoryTest {
     @Test
     public void toModelType_invalidContact_throwsIllegalValueException() {
         List<JsonAdaptedName> invalidContacts = List.of(
-                new JsonAdaptedName("Alex@Yeoh"));
+                new JsonAdaptedName("Alex/Yeoh"));
 
         JsonAdaptedStory story = new JsonAdaptedStory(
                 VALID_NAME, List.of(), invalidContacts);

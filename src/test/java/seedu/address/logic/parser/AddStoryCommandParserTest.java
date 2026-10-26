@@ -8,9 +8,11 @@ import java.util.HashSet;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddStoryCommand;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
+import seedu.address.model.tag.Tag;
 
 public class AddStoryCommandParserTest {
 
@@ -20,6 +22,10 @@ public class AddStoryCommandParserTest {
     public void parse_validArgs_returnsAddStoryCommand() {
         Story expectedStory = new Story(new StoryName("Breaking News"), new HashSet<>());
         assertParseSuccess(parser, "Breaking News", new AddStoryCommand(expectedStory));
+
+        // Story name with symbols and punctuation
+        Story expectedStoryWithSymbols = new Story(new StoryName("Budget 2026: Politics & Tech!"), new HashSet<>());
+        assertParseSuccess(parser, "Budget 2026: Politics & Tech!", new AddStoryCommand(expectedStoryWithSymbols));
     }
 
     @Test
@@ -30,7 +36,11 @@ public class AddStoryCommandParserTest {
 
     @Test
     public void parse_invalidArgs_throwsParseException() {
-        // Non-alphanumeric story name
-        assertParseFailure(parser, "Invalid@Story", StoryName.MESSAGE_CONSTRAINTS);
+        // Invalid tag (spaces only)
+        assertParseFailure(parser, "Valid Story t/   ", Tag.MESSAGE_CONSTRAINTS);
+
+        // Story name with forward slash triggers invalid prefix error
+        assertParseFailure(parser, "Invalid/Story",
+                String.format(Messages.MESSAGE_INVALID_PREFIX, 7, "t/"));
     }
 }
