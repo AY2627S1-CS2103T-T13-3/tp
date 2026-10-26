@@ -30,6 +30,7 @@ import seedu.address.logic.commands.FindStoryCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListContactsCommand;
+import seedu.address.logic.commands.ListFollowupsCommand;
 import seedu.address.logic.commands.ListStoriesCommand;
 import seedu.address.logic.commands.ShortcutCommand;
 import seedu.address.logic.commands.UnassignCommand;
@@ -99,6 +100,7 @@ public class AddressBookParser {
             case FindStoryCommand.COMMAND_WORD -> new FindStoryCommandParser().parse(arguments);
             case ListCommand.COMMAND_WORD -> new ListCommand();
             case ListContactsCommand.COMMAND_WORD -> new ListContactsCommandParser().parse(arguments);
+            case ListFollowupsCommand.COMMAND_WORD -> new ListFollowupsCommandParser().parse(arguments);
             case ListStoriesCommand.COMMAND_WORD -> new ListStoriesCommandParser().parse(arguments);
             case ExitCommand.COMMAND_WORD -> new ExitCommand();
             case HelpCommand.COMMAND_WORD -> new HelpCommand();
