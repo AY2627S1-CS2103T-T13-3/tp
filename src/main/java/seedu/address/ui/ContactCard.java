@@ -58,7 +58,14 @@ public class ContactCard extends UiPart<Region> {
         email.setText(contact.getEmail().value);
         contact.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+                .forEach(tag -> {
+                    Label label = new Label(tag.tagName);
+                    label.setWrapText(true);
+                    label.setMinWidth(0);
+                    label.setMinHeight(Region.USE_PREF_SIZE);
+                    label.maxWidthProperty().bind(tags.widthProperty());
+                    tags.getChildren().add(label);
+                });
         if (contact.getStories().isEmpty()) {
             stories.setText("Stories: (none)");
         } else {
