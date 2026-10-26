@@ -165,29 +165,45 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Assign feature
 
-#### Implementation
+#### Feature Specification
 
-The assign feature facilitates linking an existing contact to an existing story in PressMemo. It is executed via `AssignCommand` and parsed by `AssignCommandParser`.
+The assign feature establishes a bidirectional link between an existing contact and an existing story in PressMemo.
 
-When the user enters an assign command (e.g., `assign ci/1 si/1`):
-1. `LogicManager` calls `AddressBookParser#parseCommand("assign ci/1 si/1")`.
-2. `AddressBookParser` creates an `AssignCommandParser` and calls `AssignCommandParser#parse("ci/1 si/1")`.
-3. `AssignCommandParser` tokenizes the input arguments using `ArgumentTokenizer`, extracting the contact index (`ci/`) and story index (`si/`).
-4. Both indices are validated using `ParserUtil#parseIndex(...)`, and an `AssignCommand` object is created with these indices.
-5. `LogicManager` executes the `AssignCommand` by passing in the `Model`.
-6. `AssignCommand` retrieves the current filtered contact list and story list via `Model#getFilteredPersonList()` and `Model#getFilteredStoryList()`, and gets the target `Person` and `Story` at the specified zero-based indices.
-7. `AssignCommand` calls `Model#assignStory(personToAssign, storyToAssign)`.
-8. `ModelManager#assignStory(target, story)` delegates to `AddressBook#assignStory(target, story)`, creating updated immutable `Person` and `Story` records with mutual associations and replacing them in their respective internal lists.
-9. `AssignCommand` resets the list filters via `Model#updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)` and `Model#updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES)` so that all entries and updated associations are visible in the UI.
-10. A `CommandResult` containing the success feedback message is returned to `LogicManager`.
+* **Command format:** `assign ci/CONTACT_INDEX si/STORY_INDEX`
+  * `ci/CONTACT_INDEX`: A 1-based positive integer specifying the contact from the currently displayed contact list.
+  * `si/STORY_INDEX`: A 1-based positive integer specifying the story from the currently displayed story list.
+  * Parameter order is flexible (e.g., `assign si/1 ci/1` is equally valid).
 
-The sequence diagram below illustrates the interactions within the `Logic` component and with the `Model` when executing the `assign ci/1 si/1` command:
+* **Output & Feedback:**
+  * Success: Returns `Assigned [Contact Name] to [Story Name]` and displays the updated associations in both panels.
+  * Invalid command format: Displays the command usage guidance with examples.
+  * Invalid index: Displays an error message indicating that the contact or story index is invalid.
+
+* **Edge Case Behaviour:**
+  * **Filtered lists:** Indices always refer to the displayed contact and story lists at the moment of command execution, not the unfiltered master lists.
+  * **Already assigned:** If the specified contact is already assigned to the story, the operation is idempotent; the association is retained without creating duplicates.
+  * **Missing / out-of-bounds indices:** An invalid index triggers a `CommandException` before any state changes are applied to either entity.
+
+* **Side Effects:**
+  * Creates a bidirectional reference: adds the story name to the contact's assigned stories set, and adds the contact name to the story's assigned contacts set.
+  * Automatically resets list filters via `Model#updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)` and `Model#updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES)` so that both updated entities are visible immediately in the UI.
+
+#### Model Execution Details
+
+Unlike creation or deletion commands where parsing constitutes the primary logic flow, the assign command's core complexity lies in the `Model` component, which maintains immutability and bidirectional consistency across `Person` and `Story` instances.
+
+When `AssignCommand#execute(model)` is invoked:
+1. `AssignCommand` retrieves the target `Person` and `Story` from the filtered lists using the provided indices.
+2. `AssignCommand` calls `Model#assignStory(target, story)`.
+3. `ModelManager` delegates this call to `AddressBook#assignStory(target, story)`.
+4. `AddressBook` invokes `target.assign(story)`, returning a new immutable `Person` containing the updated story set.
+5. `AddressBook` invokes `story.assign(target)`, returning a new immutable `Story` containing the updated person set.
+6. `AddressBook` replaces the old `Person` and `Story` in `UniquePersonList` and `UniqueStoryList` with their updated immutable counterparts.
+7. `AssignCommand` resets the filtered contact and story lists so the updated entries are reflected across the interface.
+
+The sequence diagram below illustrates the interactions within the `Model` component during the execution of `assign ci/1 si/1`:
 
 ![AssignSequenceDiagram](images/AssignSequenceDiagram.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `AssignCommandParser` should end at the destroy marker (X), but due to a limitation of PlantUML, it continues to the end of the diagram.
-
-</div>
 
 #### Design considerations:
 

@@ -1,74 +1,82 @@
 @startuml
 !include style.puml
-<style>
-arrow {
-  FontStyle plain
-}
-</style>
+skinparam ArrowFontStyle plain
 
 box Logic LOGIC_COLOR_T1
-participant ":LogicManager" as LogicManager LOGIC_COLOR
-participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
-participant ":AssignCommandParser" as AssignCommandParser LOGIC_COLOR
 participant "a:AssignCommand" as AssignCommand LOGIC_COLOR
-participant "r:CommandResult" as CommandResult LOGIC_COLOR
 end box
 
 box Model MODEL_COLOR_T1
-participant "m:Model" as Model MODEL_COLOR
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant ":AddressBook" as AddressBook MODEL_COLOR
+participant "target:Person" as TargetPerson MODEL_COLOR
+participant "story:Story" as TargetStory MODEL_COLOR
+participant "assignedPerson:Person" as AssignedPerson MODEL_COLOR
+participant "assignedStory:Story" as AssignedStory MODEL_COLOR
+participant ":UniquePersonList" as UniquePersonList MODEL_COLOR
+participant ":UniqueStoryList" as UniqueStoryList MODEL_COLOR
 end box
 
-[-> LogicManager : execute("assign ci/1 si/1")
-activate LogicManager
-
-LogicManager -> AddressBookParser : parseCommand("assign ci/1 si/1")
-activate AddressBookParser
-
-create AssignCommandParser
-AddressBookParser -> AssignCommandParser
-activate AssignCommandParser
-
-AssignCommandParser --> AddressBookParser
-deactivate AssignCommandParser
-
-AddressBookParser -> AssignCommandParser : parse("ci/1 si/1")
-activate AssignCommandParser
-
-create AssignCommand
-AssignCommandParser -> AssignCommand
+[-> AssignCommand : execute(model)
 activate AssignCommand
 
-AssignCommand --> AssignCommandParser : a
+AssignCommand -> ModelManager : assignStory(target, story)
+activate ModelManager
+
+ModelManager -> AddressBook : assignStory(target, story)
+activate AddressBook
+
+AddressBook -> TargetPerson : assign(story)
+activate TargetPerson
+
+create AssignedPerson
+TargetPerson -> AssignedPerson
+activate AssignedPerson
+AssignedPerson --> TargetPerson
+deactivate AssignedPerson
+
+TargetPerson --> AddressBook : assignedPerson
+deactivate TargetPerson
+
+AddressBook -> TargetStory : assign(target)
+activate TargetStory
+
+create AssignedStory
+TargetStory -> AssignedStory
+activate AssignedStory
+AssignedStory --> TargetStory
+deactivate AssignedStory
+
+TargetStory --> AddressBook : assignedStory
+deactivate TargetStory
+
+AddressBook -> UniquePersonList : setPerson(target, assignedPerson)
+activate UniquePersonList
+UniquePersonList --> AddressBook
+deactivate UniquePersonList
+
+AddressBook -> UniqueStoryList : setStory(story, assignedStory)
+activate UniqueStoryList
+UniqueStoryList --> AddressBook
+deactivate UniqueStoryList
+
+AddressBook --> ModelManager
+deactivate AddressBook
+
+ModelManager --> AssignCommand
+deactivate ModelManager
+
+AssignCommand -> ModelManager : updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)
+activate ModelManager
+ModelManager --> AssignCommand
+deactivate ModelManager
+
+AssignCommand -> ModelManager : updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES)
+activate ModelManager
+ModelManager --> AssignCommand
+deactivate ModelManager
+
+[<-- AssignCommand : result
 deactivate AssignCommand
 
-AssignCommandParser --> AddressBookParser : a
-deactivate AssignCommandParser
-
-AssignCommandParser -[hidden]-> AddressBookParser
-destroy AssignCommandParser
-
-AddressBookParser --> LogicManager : a
-deactivate AddressBookParser
-
-LogicManager -> AssignCommand : execute(m)
-activate AssignCommand
-
-AssignCommand -> Model : assignStory(person, story)
-activate Model
-
-Model --> AssignCommand
-deactivate Model
-
-create CommandResult
-AssignCommand -> CommandResult
-activate CommandResult
-
-CommandResult --> AssignCommand
-deactivate CommandResult
-
-AssignCommand --> LogicManager : r
-deactivate AssignCommand
-
-[<--LogicManager
-deactivate LogicManager
 @enduml
