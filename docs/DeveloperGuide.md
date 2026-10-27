@@ -547,6 +547,8 @@ Use case ends.
 
 #### UI Components
 
+![Ui](images/Ui-labelled.png)
+
 | Number | Component name | Definition                                                                     |
 | ------ | -------------- | ------------------------------------------------------------------------------ |
 | 0      | console        | interface for inputting `command`s and viewing `response`s                     |
