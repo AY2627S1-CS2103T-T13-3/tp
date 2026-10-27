@@ -274,7 +274,7 @@ Examples:
 | :------------------------------------------ | :----------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
 | Error: there is already a story named {xxx} | Trying to add a story named {xxx} when {xxx} already exists in PressMemo | delete the existing story named {xxx} first<br><br>OR<br><br>use a different story name |
 
-## Locating stories by name: `findstories`
+## Filter stories by name: `findstories`
 
 - **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and displays them in the story panel.
 
@@ -284,39 +284,38 @@ Examples:
 
 ### Parameters & Constraints
 
-| Parameter       | Type   | Description                                                 | Examples      |
-| :-------------- | :----- | :---------------------------------------------------------- | :------------ |
-| `STORY_NAME`    | `word` | First keyword to search for in story names                  | housing       |
-| `MORE_KEYWORDS` | `word` | Additional keywords to search for in story names (optional) | investigation |
+| Parameter       | Type   | Description                                      | Examples   |
+| :-------------- | :----- | :----------------------------------------------- | :--------- |
+| `STORY_NAME`    | `word` | First keyword to search for in story names       | wumpus     |
+| `MORE_KEYWORDS` | `word` | Additional keywords to search for in story names | the smelly |
 
 > **Tip / Note:**
-> * The search is case-insensitive (e.g., `housing` matches `Housing`).
-> * Only full words will be matched (e.g., `House` will not match `Housing`).
-> * The order of the keywords does not matter (e.g., `housing investigation` will match `investigation into housing`).
-> * Stories matching at least one keyword are returned (an `OR` search).
-> * The search filters the **STORIES** panel without changing the **CONTACTS** or **FOLLOW-UPS** panels.
+> * `findstories` is case-insensitive (e.g., `wumpus` matches `WumPuS`).
+> * Only full words will be matched (e.g., `wump` will not match `wumpus`).
+> * The order of the keywords does not matter.
+> * All stories matching at least one keyword are returned (e.g. `wumpus smelly` matches `find wumpus` and `something smelly`) 
+> * The **STORIES** panel is updated without changing the **CONTACTS** or **FOLLOW-UPS** panels.
 > * To display all stories again, use `liststories` or `list`.
 
 ### Examples
 
 * **Example 1: Single keyword search**
-  * **Input / Action:** `findstories Housing`
-  * **Expected Outcome:** Displays all stories with `Housing` as a word in their name, and shows the status message `1 story(ies) listed!` (or the number of matching stories).
+  * **Input / Action:** `findstories wumpus`
+  * **Expected Outcome:** Displays all stories with `wummpus` as a word in their name. A message in the console indicates the number of matches found.
 
-* **Example 2: Multiple keywords search (OR search)**
-  * **Input / Action:** `findstories housing investigation`
-  * **Expected Outcome:** Displays all stories whose names contain either `housing` or `investigation`, and shows the status message `2 story(ies) listed!` (or the number of matching stories).
+* **Example 2: Multiple keywords search**
+  * **Input / Action:** `findstories wumpus smelly`
+  * **Expected Outcome:** Displays all stories whose names contain either `wumpus` or `smelly`. A message in the console indicates the number of matches found.
 
 * **Example 3: Search with no matches**
-  * **Input / Action:** `findstories nonExistentStory`
-  * **Expected Outcome:** The story panel displays no stories, and shows the status message `0 story(ies) listed!`.
+  * **Input / Action:** `findstories wompusDoesNotExist` when there is no story whose name contains `wompusDoesNotExist`
+  * **Expected Outcome:** The story panel displays no stories. A message in the console indicates that no matches were found.
 
-### Common Errors & Troubleshooting (optional, feature-specific)
+### Common Errors & Troubleshooting
 
-| Error Message / Symptom | Cause | How to Fix |
-|:---|:---|:---|
-| `Invalid command format!`<br>`findstories: Finds all stories whose names contain any of the specified keywords (case-insensitive).`<br>`Parameters: STORY_NAME [MORE_KEYWORDS]...`<br>`Example: findstories housing investigation` | No keywords were provided after `findstories` (e.g., typing only `findstories` or `findstories   `) | Enter at least one keyword after `findstories`, e.g., `findstories housing` |
-| `0 story(ies) listed!` when matching stories were expected | Search keywords were partial words (e.g., `hous` instead of `housing`) or misspelled | Ensure full words are used in the search keyword, e.g., `findstories housing` |
+| Error Message / Symptom                                    | Cause                                                                           | How to Fix                                                                   |
+| :--------------------------------------------------------- | :------------------------------------------------------------------------------ | :--------------------------------------------------------------------------- |
+| `0 story(ies) listed!` when matching stories were expected | Search keywords were partial words (e.g., `wump` instead of `wumpus`)           | Ensure full words are used in the search keyword, e.g., `findstories wumpus` |
 
 ### Assigning a contact to a story: `assign`
 
