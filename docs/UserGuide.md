@@ -346,6 +346,7 @@ Examples:
 ## Listing follow-ups: `listfollowups`
 
 - **Objective:** Displays follow-ups in the follow-ups panel, optionally filtering them by assigned contact.
+![listfollowups](images/listfollowups-example.png)
 
 ### Usage / Command Format
 
