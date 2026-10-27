@@ -64,7 +64,6 @@ This guide describes the features implemented for PressMemo v1.4.
 1. Refer to the [Features](#features) section below for details of each command.
 
 --------------------------------------------------------------------------------------------------------------------
-
 ## Features
 
 The **CONTACTS** panel shows each contact's details, tags, and assigned story names. The **STORIES** panel shows each story's name, assigned contact names, and contact count. The **FOLLOW-UPS** panel shows reminders together with their associated contacts. A contact can belong to several stories and have multiple follow-ups; a story can have several contacts.
@@ -91,6 +90,16 @@ The **CONTACTS** panel shows each contact's details, tags, and assigned story na
 * `shortcut` without arguments lists all saved shortcuts. To define a shortcut, use both `s/SHORTCUT` and `c/COMMAND_WORD`.
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 
+### Common input types
+
+| Input type     | Definition                                                                                                                                             | Format/s                                                                                                                                                                                                  | Examples                   |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| user string    | A typed unit of text input.<br><br>Behaviour for invalid `user string`s is unspecified, and may result in unexpected behaviour such as error messages. | Valid `user string`s comprise only alphanumeric characters and/or spaces (U+0020). It must contain at least 1 alphanumeric character.<br><br>Any spaces at the start or end of`user string`s are ignored. | wumpus<br><br>wumpus farts |
+| word           | A `user string` that does not contain spaces                                                                                                           | Does not contain spaces.                                                                                                                                                                                  | wumpus<br><br>wumpusfarts  |
+| Contact Index  | A `word` representing the 1-based position of a `Contact` in the contact panel                                                                         | Integer between and including 1 and the number of `Contact`s in the contact panel<br><br>If the contact panel is empty, there is no valid `Contact Index`                                                 | 1                          |
+| Story Index    | A `word` representing the 1-based position of a `Story` in the story panel                                                                             | Integer between and including 1 and the number of `Story`s in the story panel<br><br>If the story panel is empty, there is no valid `Story Index`                                                         | 2                          |
+| Followup Index | A `word` representing the 1-based position of a `Followup` in the followup panel                                                                       | Integer between and including 1 and the number of `Followup`s in the followup panel<br><br>If the followup panel is empty, there is no valid `Followup Index`                                             | 1                          |
+
 ### Viewing help: `help`
 
 Shows a message explaining how to access the help page.
@@ -98,7 +107,7 @@ Shows a message explaining how to access the help page.
 
 Format: `help`
 
-You can also open the help window from the **Help** menu or by pressing `F1`. For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
+You can also open the help panel from the **Help** menu. For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
 
 ### Adding a contact: `addcontact`
 
@@ -227,22 +236,58 @@ Examples:
 * `list` followed by `deletecontact 2` deletes the 2nd contact in the address book.
 * `findcontact Betsy` followed by `deletecontact 1` deletes the 1st contact in the results of the `findcontact` command.
 
-### Adding a story: `addstory`
+## Adding a story: `addstory`
 
-Adds a story to PressMemo.
+- **Objective:** Adds a story to PressMemo
 
-Format: `addstory STORY_NAME`
+### Usage / Command Format
 
-* Enter the name directly after `addstory`, without an `n/` prefix or quotation marks.
-* The name must not be blank and can contain only letters, digits, and spaces.
-* A story with exactly the same name cannot be added twice. Name comparison is case-sensitive.
-* The new story starts with no assigned contacts. Adding it shows the full story list.
-* Story editing and adding story tags through commands are not available in this version.
+`addstory STORY_NAME [t/TAG]…`
+
+### Parameters
+
+| Parameter    | Type          | Description              | Examples                  |
+| :----------- | :------------ | :----------------------- | :------------------------ |
+| `STORY_NAME` | `user string` | name of the story to add | wumpus<br><br>find wumpus |
+| TAG          | `word`        | a tag for the story      | smelly                    |
+
+
+> **Tip / Note:**
+> * No two stories can have the same name. The provided `STORY_NAME` must not already exist in PressMemo.
+> * `addstory` refreshes the story panel to show all stories in PressMemo 
+> * The new story starts with no assigned contacts.
+
+### Examples
+
+* **Example 1: valid and unique story name, no tags 
+  * **Input / Action:** `addstory find wumpus`
+  * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel without tags
+
+* **Example 2: valid and unique story name with 2 tags 
+  * **Input / Action:** `addstory find wumpus t/smelly t/at22`
+  * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel with the tags "smelly" and "at22"
+
+### Common Errors & Troubleshooting (optional, feature-specific)
+
+| Error Message / Symptom                     | Cause                                                                    | How to Fix                                                                              |
+| :------------------------------------------ | :----------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
+| Error: there is already a story named {xxx} | Trying to add a story named {xxx} when {xxx} already exists in PressMemo | delete the existing story named {xxx} first<br><br>OR<br><br>use a different story name |
+
+### Locating stories by name: `findstory`
+
+Finds stories whose names contain any of the given keywords.
+
+Format: `findstory STORY_NAME [MORE_KEYWORDS]`
+
+* The search is case-insensitive and considers only story names.
+* Only full words match; for example, `House` does not match `Housing`.
+* Stories matching at least one keyword are returned (an `OR` search).
+* The search replaces the current story filter without changing the contact list. Use `liststories` to show all stories again.
 
 Examples:
 
-* `addstory Housing Investigation`
-* `addstory Football article`
+* `findstory Housing` returns stories with `Housing` as a word in their name.
+* `findstory housing education` returns stories containing either `housing` or `education` in their name.
 
 ### Assigning a contact to a story: `assign`
 
@@ -331,7 +376,7 @@ Format: `shortcut [s/SHORTCUT c/COMMAND_WORD]`
 * `shortcut s/SHORTCUT c/COMMAND_WORD` assigns an alias to a command.
 * A shortcut must start with a lowercase letter and may contain only lowercase letters and digits (e.g., `ls`, `a1`, `ds`).
 * Built-in command words cannot be reused as shortcut names.
-* Only the following commands can be assigned shortcuts: `addcontact`, `addstory`, `assign`, `clear`, `deletecontact`, `deletestory`, `editcontact`, `exit`, `findcontact`, `help`, `list`, `liststories`, and `unassign`.
+* Only the following commands can be assigned shortcuts: `addcontact`, `addstory`, `assign`, `clear`, `deletecontact`, `deletestory`, `editcontact`, `exit`, `findcontact`, `findstory`, `help`, `list`, `liststories`, and `unassign`.
 * Other commands, including `listcontacts`, `addfollowup`, `deletefollowup`, `shortcut`, and `unshortcut`, are not supported as shortcut targets in this version.
 * Each command can have at most one shortcut, and each shortcut can refer to one command. Reassigning a shortcut or command replaces conflicting mappings.
 * Once assigned, type the shortcut in place of the command word and keep any required arguments.
@@ -387,6 +432,21 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 
 --------------------------------------------------------------------------------------------------------------------
 
+## Common Errors and Troubleshooting
+
+| Error Messages / Symptoms                                                                                                                                                                                                               | Causes                                                                                                                                                                                                                                     | How to Fix                                                                                                                                                       |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `The contact index provided is invalid.`<br><br>`The story index provided is invalid.`<br><br>`The followup index provided is invalid.`                                                                                                 | The Contact Index, Story Index, or Followup Index provided is greater than the number of items currently displayed in the corresponding panel (or the panel is empty).                                                                     | Check the index numbers displayed in the corresponding panel (Contacts, Stories, or Follow-ups). Run `list`, to show all items, if the item you need is missing. |
+| `Index must be a positive integer.`<br><br>`Invalid command format!`                                                                                                                                                                    | The Contact Index, Story Index, or Followup Index is not a positive integer.                                                                                                                                                               | Ensure the index is a  positive integer with no signs, decimals, or letters.                                                                                     |
+| `Names should only contain alphanumeric characters and spaces, and should not be blank`<br><br>`Descriptions should only contain alphanumeric characters and spaces, and should not be blank`<br><br>`Tag names should be alphanumeric` | The provided value or preamble is not a valid `user string` or `word`, or a value is missing.<br><br>Most preambles and values have to be valid `user string`s.<br><br>Some commands require preamble and some values to be valid `word`s. | Ensure the value is a valid `user string` or `word`, as required.                                                                                                |
+| `Invalid command format!`                                                                                                                                                                                                               | Unexpected text was entered as preamble after the command word and before prefixes.                                                                                                                                                        | Remove any non-space text between the command word and the first prefix.                                                                                         |
+| `Invalid command format!`                                                                                                                                                                                                               | The command expects a preamble after the command word and before prefixes, but none was entered.                                                                                                                                           | Provide the required preamble text immediately after the command word and before any prefixes.                                                                   |
+| `Multiple values specified for the following single-valued value(s): [PREFIX]`                                                                                                                                                          | A prefix was provided multiple times in the same command, even though at most one is supported.                                                                                                                                            | Remove duplicate prefixes.                                                                                                                                       |
+| `Invalid command format!`<br><br>`At least one value must be provided.`                                                                                                                                                                 | One or more compulsory prefixes were omitted                                                                                                                                                                                               | Include all mandatory prefixes and their values as indicated in the command usage message.                                                                       |
+| `Unknown command.`                                                                                                                                                                                                                      | The command word was mistyped, or uses incorrect casing.<br>command words are case-sensitive.                                                                                                                                              | Enter a valid command word in lowercase (e.g., `addcontact`, `addstory`, `findstories`). Type `help` to view all available commands.                             |
+
+---
+
 ## FAQ
 
 **Q**: How do I transfer my data to another computer?<br>
@@ -397,29 +457,30 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 ## Known issues
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
-2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
+2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
 
 --------------------------------------------------------------------------------------------------------------------
 
 ## Command summary
 
-Action | Format, Examples
---------|------------------
-**Add** | `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `addcontact n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
-**Add follow-up** | `addfollowup DESCRIPTION ci/CONTACT_INDEX`<br> e.g., `addfollowup Interview prep ci/1`
-**Add story** | `addstory STORY_NAME`<br> e.g., `addstory Housing Investigation`
-**Assign** | `assign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `assign ci/1 si/2`
-**Clear all entries** | `clear`
-**Delete** | `deletecontact INDEX`<br> e.g., `deletecontact 3`
-**Delete follow-up** | `deletefollowup INDEX`<br> e.g., `deletefollowup 1`
-**Delete story** | `deletestory INDEX`<br> e.g., `deletestory 2`
-**Edit** | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`
-**Find** | `findcontact KEYWORD [MORE_KEYWORDS]`<br> e.g., `findcontact James Jake`
-**List all contacts and stories** | `list` (clears both filters)
-**List contacts** | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)
-**List stories** | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)
-**Manage shortcuts** | `shortcut [s/SHORTCUT c/COMMAND_WORD]`<br> e.g., `shortcut` or `shortcut s/ls c/list`
-**Remove shortcut** | `unshortcut SHORTCUT`<br> e.g., `unshortcut ls`
-**Unassign** | `unassign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `unassign ci/1 si/2`
-**Help** | `help`
-**Exit** | `exit`
+| Action                            | Format, Examples                                                                                                                                                                    |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Add**                           | `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `addcontact n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague` |
+| **Add follow-up**                 | `addfollowup DESCRIPTION ci/CONTACT_INDEX`<br> e.g., `addfollowup Interview prep ci/1`                                                                                              |
+| **Add story**                     | `addstory STORY_NAME`<br> e.g., `addstory Housing Investigation`                                                                                                                    |
+| **Assign**                        | `assign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `assign ci/1 si/2`                                                                                                               |
+| **Clear all entries**             | `clear`                                                                                                                                                                             |
+| **Delete**                        | `deletecontact INDEX`<br> e.g., `deletecontact 3`                                                                                                                                   |
+| **Delete follow-up**              | `deletefollowup INDEX`<br> e.g., `deletefollowup 1`                                                                                                                                 |
+| **Delete story**                  | `deletestory INDEX`<br> e.g., `deletestory 2`                                                                                                                                       |
+| **Edit**                          | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`                                          |
+| **Find**                          | `findcontact KEYWORD [MORE_KEYWORDS]`<br> e.g., `findcontact James Jake`                                                                                                            |
+| **Find story**                    | `findstory STORY_NAME [MORE_KEYWORDS]`<br> e.g., `findstory Housing Investigation`                                                                                                  |
+| **List all contacts and stories** | `list` (clears both filters)                                                                                                                                                        |
+| **List contacts**                 | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)                                        |
+| **List stories**                  | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)                                         |
+| **Manage shortcuts**              | `shortcut [s/SHORTCUT c/COMMAND_WORD]`<br> e.g., `shortcut` or `shortcut s/ls c/list`                                                                                               |
+| **Remove shortcut**               | `unshortcut SHORTCUT`<br> e.g., `unshortcut ls`                                                                                                                                     |
+| **Unassign**                      | `unassign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `unassign ci/1 si/2`                                                                                                           |
+| **Help**                          | `help`                                                                                                                                                                              |
+| **Exit**                          | `exit`                                                                                                                                                                              |
