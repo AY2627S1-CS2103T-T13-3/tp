@@ -5,6 +5,7 @@ import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailur
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -26,11 +27,29 @@ public class AddStoryCommandParserTest {
         // Story name with symbols and punctuation
         Story expectedStoryWithSymbols = new Story(new StoryName("Budget 2026: Politics & Tech!"), new HashSet<>());
         assertParseSuccess(parser, "Budget 2026: Politics & Tech!", new AddStoryCommand(expectedStoryWithSymbols));
+
+        // single character story name
+        Story singleCharStory = new Story(new StoryName("A"), new HashSet<>());
+        assertParseSuccess(parser, "A", new AddStoryCommand(singleCharStory));
+
+        // story name with single tag
+        Story storyWithTag = new Story(new StoryName("Breaking News"), Set.of(new Tag("urgent")));
+        assertParseSuccess(parser, "Breaking News t/urgent", new AddStoryCommand(storyWithTag));
+
+        // story name with multiple tags and duplicates (deduplicated)
+        Story storyWithMultipleTags = new Story(new StoryName("Breaking News"),
+                Set.of(new Tag("urgent"), new Tag("breaking")));
+        assertParseSuccess(parser, "Breaking News t/urgent t/breaking t/urgent",
+                new AddStoryCommand(storyWithMultipleTags));
     }
 
     @Test
     public void parse_emptyArgs_throwsParseException() {
         assertParseFailure(parser, "     ",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
+
+        // tags provided but empty preamble
+        assertParseFailure(parser, " t/urgent",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
     }
 
@@ -42,5 +61,10 @@ public class AddStoryCommandParserTest {
         // Story name with forward slash triggers invalid prefix error
         assertParseFailure(parser, "Invalid/Story",
                 String.format(Messages.MESSAGE_INVALID_PREFIX, 7, "t/"));
+        // Non-alphanumeric story name
+        assertParseFailure(parser, "Invalid@Story", StoryName.MESSAGE_CONSTRAINTS);
+
+        // Valid story name but invalid tag
+        assertParseFailure(parser, "Valid Story t/invalid#tag", Tag.MESSAGE_CONSTRAINTS);
     }
 }

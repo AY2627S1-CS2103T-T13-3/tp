@@ -69,12 +69,36 @@ public class UnassignCommandParserTest {
 
     @Test
     public void parse_invalidIndex_throwsParseException() {
-        String invalidContactIndex = " " + PREFIX_CONTACTINDEX + "0 "
+        String invalidContactZero = " " + PREFIX_CONTACTINDEX + "0 "
                 + PREFIX_STORYINDEX + STORY_INDEX.getOneBased();
-        String invalidStoryIndex = " " + PREFIX_CONTACTINDEX + CONTACT_INDEX.getOneBased()
+        String invalidStoryZero = " " + PREFIX_CONTACTINDEX + CONTACT_INDEX.getOneBased()
+                + " " + PREFIX_STORYINDEX + "0";
+        String invalidContactNegative = " " + PREFIX_CONTACTINDEX + "-1 "
+                + PREFIX_STORYINDEX + STORY_INDEX.getOneBased();
+        String invalidStoryNegative = " " + PREFIX_CONTACTINDEX + CONTACT_INDEX.getOneBased()
+                + " " + PREFIX_STORYINDEX + "-1";
+        String invalidContactOverflow = " " + PREFIX_CONTACTINDEX + "2147483648 "
+                + PREFIX_STORYINDEX + STORY_INDEX.getOneBased();
+        String invalidStoryOverflow = " " + PREFIX_CONTACTINDEX + CONTACT_INDEX.getOneBased()
+                + " " + PREFIX_STORYINDEX + "2147483648";
+        String invalidStoryString = " " + PREFIX_CONTACTINDEX + CONTACT_INDEX.getOneBased()
                 + " " + PREFIX_STORYINDEX + "notAnIndex";
 
-        assertParseFailure(parser, invalidContactIndex, ParserUtil.MESSAGE_INVALID_INDEX);
-        assertParseFailure(parser, invalidStoryIndex, ParserUtil.MESSAGE_INVALID_INDEX);
+        assertParseFailure(parser, invalidContactZero, ParserUtil.MESSAGE_INVALID_INDEX);
+        assertParseFailure(parser, invalidStoryZero, ParserUtil.MESSAGE_INVALID_INDEX);
+        assertParseFailure(parser, invalidContactNegative, ParserUtil.MESSAGE_INVALID_INDEX);
+        assertParseFailure(parser, invalidStoryNegative, ParserUtil.MESSAGE_INVALID_INDEX);
+        assertParseFailure(parser, invalidContactOverflow, ParserUtil.MESSAGE_INVALID_INDEX);
+        assertParseFailure(parser, invalidStoryOverflow, ParserUtil.MESSAGE_INVALID_INDEX);
+        assertParseFailure(parser, invalidStoryString, ParserUtil.MESSAGE_INVALID_INDEX);
+    }
+
+    @Test
+    public void parse_boundaryMaxIntegerIndices_success() {
+        String maxIndex = Integer.toString(Integer.MAX_VALUE);
+        String userInput = " " + PREFIX_CONTACTINDEX + maxIndex + " " + PREFIX_STORYINDEX + maxIndex;
+        Index expectedIndex = Index.fromOneBased(Integer.MAX_VALUE);
+
+        assertParseSuccess(parser, userInput, new UnassignCommand(expectedIndex, expectedIndex));
     }
 }

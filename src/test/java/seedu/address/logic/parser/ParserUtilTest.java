@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.parser.ParserUtil.MESSAGE_INVALID_INDEX;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -16,6 +17,8 @@ import seedu.address.model.contact.Address;
 import seedu.address.model.contact.Email;
 import seedu.address.model.contact.Name;
 import seedu.address.model.contact.Phone;
+import seedu.address.model.followup.FollowupDescription;
+import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
 
 public class ParserUtilTest {
@@ -35,6 +38,11 @@ public class ParserUtilTest {
     private static final String WHITESPACE = " \t\r\n";
 
     @Test
+    public void instantiation() {
+        assertNotNull(new ParserUtil());
+    }
+
+    @Test
     public void parseIndex_invalidInput_throwsParseException() {
         assertThrows(ParseException.class, () -> ParserUtil.parseIndex("10 a"));
     }
@@ -42,7 +50,62 @@ public class ParserUtilTest {
     @Test
     public void parseIndex_outOfRangeInput_throwsParseException() {
         assertThrows(ParseException.class, MESSAGE_INVALID_INDEX, ()
-            -> ParserUtil.parseIndex(Long.toString(Integer.MAX_VALUE + 1)));
+            -> ParserUtil.parseIndex(Long.toString((long) Integer.MAX_VALUE + 1)));
+    }
+
+    @Test
+    public void parseIndex_nonPositiveOrMalformedInput_throwsParseException() {
+        for (String input : List.of("", WHITESPACE, "0", "-1", "+1", "1.0", "1 0")) {
+            assertThrows(ParseException.class, MESSAGE_INVALID_INDEX, () -> ParserUtil.parseIndex(input));
+        }
+    }
+
+    @Test
+    public void parseIndex_maximumInteger_returnsIndex() throws Exception {
+        assertEquals(Integer.MAX_VALUE,
+                ParserUtil.parseIndex(WHITESPACE + Integer.MAX_VALUE + WHITESPACE).getOneBased());
+    }
+
+    @Test
+    public void parseStoryName_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseStoryName(null));
+    }
+
+    @Test
+    public void parseStoryName_blankOrInvalidValue_throwsParseException() {
+        for (String input : List.of("", WHITESPACE, "Story!", "Story\tName")) {
+            assertThrows(ParseException.class, StoryName.MESSAGE_CONSTRAINTS, () -> ParserUtil.parseStoryName(input));
+        }
+    }
+
+    @Test
+    public void parseStoryName_surroundingWhitespace_preservesInternalSpaces() throws Exception {
+        assertEquals(new StoryName("Story  1"), ParserUtil.parseStoryName(WHITESPACE + "Story  1" + WHITESPACE));
+    }
+
+    @Test
+    public void parseFollowupDescription_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseFollowupDescription(null));
+    }
+
+    @Test
+    public void parseFollowupDescription_blankOrInvalidValue_throwsParseException() {
+        for (String input : List.of("", WHITESPACE, "Call!", "Call\tback")) {
+            assertThrows(ParseException.class, FollowupDescription.MESSAGE_CONSTRAINTS, ()
+                    -> ParserUtil.parseFollowupDescription(input));
+        }
+    }
+
+    @Test
+    public void parseFollowupDescription_surroundingWhitespace_preservesInternalSpaces() throws Exception {
+        assertEquals(new FollowupDescription("Call  back"),
+                ParserUtil.parseFollowupDescription(WHITESPACE + "Call  back" + WHITESPACE));
+    }
+
+    @Test
+    public void parseTags_duplicatesAfterTrimming_returnsUniqueTags() throws Exception {
+        assertEquals(Set.of(new Tag(VALID_TAG_1)),
+                ParserUtil.parseTags(List.of(VALID_TAG_1, WHITESPACE + VALID_TAG_1 + WHITESPACE, VALID_TAG_1)));
     }
 
     @Test

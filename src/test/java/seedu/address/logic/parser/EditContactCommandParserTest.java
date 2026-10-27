@@ -209,4 +209,97 @@ public class EditContactCommandParserTest {
 
         assertParseSuccess(parser, userInput, expectedCommand);
     }
+
+    @Test
+    public void parse_pairwiseFieldsSpecified_success() {
+        Index targetIndex = INDEX_FIRST_CONTACT;
+
+        // Name + Phone (edge name + typical phone)
+        EditContactDescriptor descriptor = new EditContactDescriptorBuilder()
+                .withName("A").withPhone(VALID_PHONE_BOB).build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + " n/A" + PHONE_DESC_BOB,
+                new EditContactCommand(targetIndex, descriptor));
+
+        // Name + Email (typical name + edge email)
+        descriptor = new EditContactDescriptorBuilder()
+                .withName(VALID_NAME_AMY).withEmail("a@b.co").build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + NAME_DESC_AMY + " e/a@b.co",
+                new EditContactCommand(targetIndex, descriptor));
+
+        // Name + Address (edge name + edge address)
+        descriptor = new EditContactDescriptorBuilder()
+                .withName("Amy 2nd").withAddress("X").build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + " n/Amy 2nd a/X",
+                new EditContactCommand(targetIndex, descriptor));
+
+        // Name + Tags (typical name + multiple tags)
+        descriptor = new EditContactDescriptorBuilder()
+                .withName(VALID_NAME_AMY).withTags(VALID_TAG_FRIEND, VALID_TAG_HUSBAND).build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + NAME_DESC_AMY + TAG_DESC_FRIEND + TAG_DESC_HUSBAND,
+                new EditContactCommand(targetIndex, descriptor));
+
+        // Name + Tag Reset (typical name + reset tags)
+        descriptor = new EditContactDescriptorBuilder()
+                .withName(VALID_NAME_AMY).withTags().build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + NAME_DESC_AMY + TAG_EMPTY,
+                new EditContactCommand(targetIndex, descriptor));
+
+        // Phone + Address (edge phone + edge address)
+        descriptor = new EditContactDescriptorBuilder()
+                .withPhone("123").withAddress("X").build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + " p/123 a/X",
+                new EditContactCommand(targetIndex, descriptor));
+
+        // Phone + Tag (edge phone + single tag)
+        descriptor = new EditContactDescriptorBuilder()
+                .withPhone("123").withTags(VALID_TAG_FRIEND).build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + " p/123" + TAG_DESC_FRIEND,
+                new EditContactCommand(targetIndex, descriptor));
+
+        // Phone + Tag Reset (typical phone + reset tags)
+        descriptor = new EditContactDescriptorBuilder()
+                .withPhone(VALID_PHONE_AMY).withTags().build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + PHONE_DESC_AMY + TAG_EMPTY,
+                new EditContactCommand(targetIndex, descriptor));
+
+        // Email + Address (edge email + typical address)
+        descriptor = new EditContactDescriptorBuilder()
+                .withEmail("a@b.co").withAddress(VALID_ADDRESS_AMY).build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + " e/a@b.co" + ADDRESS_DESC_AMY,
+                new EditContactCommand(targetIndex, descriptor));
+
+        // Email + Tag (edge email + single tag)
+        descriptor = new EditContactDescriptorBuilder()
+                .withEmail("a@b.co").withTags(VALID_TAG_FRIEND).build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + " e/a@b.co" + TAG_DESC_FRIEND,
+                new EditContactCommand(targetIndex, descriptor));
+
+        // Email + Tag Reset (edge email + reset tags)
+        descriptor = new EditContactDescriptorBuilder()
+                .withEmail("a@b.co").withTags().build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + " e/a@b.co" + TAG_EMPTY,
+                new EditContactCommand(targetIndex, descriptor));
+
+        // Address + Tag (edge address + single tag)
+        descriptor = new EditContactDescriptorBuilder()
+                .withAddress("X").withTags(VALID_TAG_FRIEND).build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + " a/X" + TAG_DESC_FRIEND,
+                new EditContactCommand(targetIndex, descriptor));
+
+        // Address + Tag Reset (typical address + reset tags)
+        descriptor = new EditContactDescriptorBuilder()
+                .withAddress(VALID_ADDRESS_AMY).withTags().build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + ADDRESS_DESC_AMY + TAG_EMPTY,
+                new EditContactCommand(targetIndex, descriptor));
+    }
+
+    @Test
+    public void parse_boundaryIndex_success() {
+        Index boundaryIndex = Index.fromOneBased(Integer.MAX_VALUE);
+        String userInput = Integer.MAX_VALUE + NAME_DESC_AMY;
+        EditContactDescriptor descriptor = new EditContactDescriptorBuilder().withName(VALID_NAME_AMY).build();
+        EditContactCommand expectedCommand = new EditContactCommand(boundaryIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
 }
