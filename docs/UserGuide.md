@@ -22,7 +22,7 @@ This guide describes the features implemented for PressMemo v1.4.
 1. Copy the file to a folder you can write to as the _home folder_ for PressMemo.
 
 1. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar pressmemo.jar`.<br>
-   A GUI with the **Contacts**, **Stories**, and **Follow-ups** panels similar to the one below should appear in a few seconds. On the first run, the app contains sample contacts, stories and follow-ups.<br>
+   A GUI with the **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels similar to the one below should appear in a few seconds. On the first run, the app contains sample contacts, stories and follow-ups.<br>
    ![Ui](images/Ui.png)
 
 1. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to open the help window.<br>
