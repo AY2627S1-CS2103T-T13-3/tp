@@ -43,9 +43,9 @@ public class AddFollowupCommandParserTest {
 
     @Test
     public void parse_invalidDescription_failure() {
-        // symbols not allowed in FollowupDescription
-        assertParseFailure(parser, "Call Dr. Smith @ 10am ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "#urgent ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
+        // fslash not allowed in FollowupDescription
+        assertParseFailure(parser, "Call Dr. Smith s/o the myth ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "/urgent ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
     }
 
     @Test

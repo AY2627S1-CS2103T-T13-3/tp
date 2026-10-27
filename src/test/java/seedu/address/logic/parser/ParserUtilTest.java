@@ -73,7 +73,7 @@ public class ParserUtilTest {
 
     @Test
     public void parseStoryName_blankOrInvalidValue_throwsParseException() {
-        for (String input : List.of("", WHITESPACE, "Story!", "Story\tName")) {
+        for (String input : List.of("", WHITESPACE, "Stor/y", "Story /Name")) {
             assertThrows(ParseException.class, StoryName.MESSAGE_CONSTRAINTS, () -> ParserUtil.parseStoryName(input));
         }
     }
@@ -90,7 +90,7 @@ public class ParserUtilTest {
 
     @Test
     public void parseFollowupDescription_blankOrInvalidValue_throwsParseException() {
-        for (String input : List.of("", WHITESPACE, "Call!", "Call\tback")) {
+        for (String input : List.of("", WHITESPACE, "the s/o myth", "Callback/")) {
             assertThrows(ParseException.class, FollowupDescription.MESSAGE_CONSTRAINTS, ()
                     -> ParserUtil.parseFollowupDescription(input));
         }

@@ -61,8 +61,6 @@ public class AddStoryCommandParserTest {
         // Story name with forward slash triggers invalid prefix error
         assertParseFailure(parser, "Invalid/Story",
                 String.format(Messages.MESSAGE_INVALID_PREFIX, 7, "t/"));
-        // Non-alphanumeric story name
-        assertParseFailure(parser, "Invalid@Story", StoryName.MESSAGE_CONSTRAINTS);
 
         // Valid story name but invalid tag
         assertParseFailure(parser, "Valid Story t/invalid#tag", Tag.MESSAGE_CONSTRAINTS);
