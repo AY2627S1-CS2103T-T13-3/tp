@@ -127,6 +127,27 @@ public class UnassignCommandTest {
     }
 
     @Test
+    public void execute_bothIndicesOutOfRange_throwsCommandException() {
+        Index outOfBoundContactIndex = Index.fromOneBased(model.getFilteredContactList().size() + 1);
+        Index outOfBoundStoryIndex = Index.fromOneBased(model.getFilteredStoryList().size() + 1);
+        UnassignCommand unassignCommand = new UnassignCommand(outOfBoundStoryIndex, outOfBoundContactIndex);
+
+        assertCommandFailure(unassignCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void execute_notCurrentlyAssignedContactAndStory_success() {
+        Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+
+        UnassignCommand unassignCommand = new UnassignCommand(INDEX_FIRST_STORY, INDEX_FIRST_CONTACT);
+        expectedModel.unassignStory(contact, story);
+
+        String expectedMessage = String.format(UnassignCommand.MESSAGE_SUCCESS, contact.getName(), story.getName());
+        assertCommandSuccess(unassignCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
     public void equals() {
         UnassignCommand command = new UnassignCommand(STORY_INDEX, CONTACT_INDEX);
 

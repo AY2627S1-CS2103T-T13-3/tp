@@ -121,6 +121,28 @@ public class AssignCommandTest {
     }
 
     @Test
+    public void execute_bothIndicesOutOfRange_throwsCommandException() {
+        Index outOfBoundContactIndex = Index.fromOneBased(model.getFilteredContactList().size() + 1);
+        Index outOfBoundStoryIndex = Index.fromOneBased(model.getFilteredStoryList().size() + 1);
+        AssignCommand assignCommand = new AssignCommand(outOfBoundStoryIndex, outOfBoundContactIndex);
+
+        assertCommandFailure(assignCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void execute_alreadyAssignedContactAndStory_success() {
+        Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        model.assignStory(contact, story);
+
+        AssignCommand assignCommand = new AssignCommand(INDEX_FIRST_STORY, INDEX_FIRST_CONTACT);
+        expectedModel.assignStory(contact, story);
+
+        String expectedMessage = String.format(AssignCommand.MESSAGE_SUCCESS, contact.getName(), story.getName());
+        assertCommandSuccess(assignCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
     public void equals() {
         AssignCommand command = new AssignCommand(STORY_INDEX, CONTACT_INDEX);
 
