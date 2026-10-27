@@ -299,6 +299,7 @@ Examples:
 ## Deleting a story: `deletestory`
 
 - **Objective:** Deletes the specified story from PressMemo.
+![deletestory](images/deletestory-example.png)
 
 ### Usage / Command Format
 
