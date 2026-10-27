@@ -569,32 +569,37 @@ Use case ends.
 
 #### Command format
 
-| Input type    | Definition                                                                                    | Format/s                                                                                                                                                                                            | Examples                          |
-| ------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| command       | A single instruction from the user.<br>A user inputs a `command` using the `command bar`.<br> | A `command` comprises: a `command name` followed by a `preamble`, and then a `argument list`.<br><br>`command name` is mandatory while the other parts may be optional (depending on the `command`) | editstory<br><br>1 n/ find wumpus |
-| command name  | A `word` specifying the type/ class of a `command`.                                           | Must be space-separated from the `preamble` (or `argument list` if there is no `preamble`)<br>                                                                                                      | editstory                         |
-| preamble      | A `user string` specifying some behaviour of a command.                                       | Must be space-separated from the `argument name` (and `argument list`, if any)                                                                                                                      | 1<br><br>smelly wumpus            |
-| argument list | A list of `argument`s that specifies the behaviour of a `command`.                            | The order of `argument`s does not matter; every permutation of the same `argument`s produces the same outcome                                                                                       | n/ find wumpus t/ smelly          |
-| argument      | A specification of an aspect of a `command`                                                   | Comprises a `prefix`, followed by a `field`.<br><br>`prefix` is mandatory while `field` may be optional (depending on the `command` and `argument`)                                                 | n/find wumpus<br><br>t/           |
-| prefix        | Identifies the aspect of a `command` specified by an `argument`                               | Comprises a `word` followed by a forward slash (U+002F).<br><br>Must be space-separated from any previous item.                                                                                     | n/<br><br>ci/                     |
-| field         | A `user string` that provides information for an `argument`                                   | Must follow a `prefix`                                                                                                                                                                              | find wumpus                       |
+| Input type    | Definition                                                                                                                                       | Format/s                                                                                                                                                                                                          | Examples                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| command       | A single instruction from the user.<br>A user inputs a `command` using the `command bar`.<br>                                                    | A `command` comprises: a `command name` or `shortcut` followed by a `preamble`, and then a `argument list`.<br><br>`command name` is mandatory while the other parts may be optional (depending on the `command`) | editstory<br><br>1 n/ find wumpus |
+| command name  | A `word` specifying the type/ class of a `command`.                                                                                              | Must be space-separated from the `preamble` (or `argument list` if there is no `preamble`)<br>                                                                                                                    | editstory                         |
+| shortcut      | A `word` alias for a `command name`, defined by the user.<br><br>Using a shortcut in a command is equivalent to using the aliased `command name` | Must be space-separated from the `preamble` (or `argument list` if there is no `preamble`)<br><br>A shortcut must be defined by the user (using the `shortcut` command) before it can be used                     | ls                                |
+| preamble      | A `user string` specifying some behaviour of a command.                                                                                          | Must be space-separated from the `argument name` (and `argument list`, if any)                                                                                                                                    | 1<br><br>smelly wumpus            |
+| argument list | A list of `argument`s that specifies the behaviour of a `command`.                                                                               | The order of `argument`s does not matter; every permutation of the same `argument`s produces the same outcome                                                                                                     | n/ find wumpus t/ smelly          |
+| argument      | A specification of an aspect of a `command`                                                                                                      | Comprises a `prefix`, followed by a `field`.<br><br>`prefix` is mandatory while `field` may be optional (depending on the `command` and `argument`)                                                               | n/find wumpus<br><br>t/           |
+| prefix        | Identifies the aspect of a `command` specified by an `argument`                                                                                  | Comprises a `word` followed by a forward slash (U+002F).<br><br>Must be space-separated from any previous item.                                                                                                   | n/<br><br>ci/                     |
+| field         | A `user string` that provides information for an `argument`                                                                                      | Must follow a `prefix`                                                                                                                                                                                            | find wumpus                       |
 
 #### Domain terms
 
+* **Contact**: A contact whose information is stored in PressMemo, including a name, phone number, and email address. A contact can optionally include any number of **tags**.
+* **Story**: A news story or topic managed in PressMemo that may be linked to one or more Contacts. A Story can optionally include any number of **tags**.
+* **Follow-up**: An action item, task or upcoming event related to a Contact. Each followup is described by a **description**. 
 * **Assign**: To create a link between an existing Contact and an existing Story.
 * **Assigned Contact**: A Contact that has been linked to a particular Story.
-* **Contact**: A contact whose information is stored in PressMemo, including a name, phone number, and optional email address.
-* **Story**: A news story or topic managed in PressMemo that may be linked to one or more Contacts.
+* **Assigned Story**: A Story that has been linked to a particular Contact.
 * **Unassign**: To remove the link between a Contact and a Story without deleting either the Contact or the Story.
 
-#### Solution-specific models
+#### Solution-specific terms
 
-* **Data File**: The local JSON file used by PressMemo to store application data between sessions.
+* **Data Files**: The local JSON files used by PressMemo to store application data between sessions.
 * **Active Contact List**: The list of contacts currently displayed in the Contact Panel. Contacts in this list can be referenced using their ContactIndex.
 * **Active Story List**: The list of stories currently displayed in the Story Panel. Stories in this list can be referenced using their StoryIndex.
+* **Active Followup List**: The list of follow-ups currently displayed in the Story Panel. Stories in this list can be referenced using their StoryIndex.
 * **Archive Contact List**: The list containing all contacts stored in PressMemo, including contacts that are not currently displayed in the Active Contact List.
 * **Archive Story List**: The list containing all stories stored in PressMemo, including stories that are not currently displayed in the Active Story List.
-* **Filter**: A condition used to narrow down the Contacts or Stories displayed to the user.
+* **Archive Followup List**: The list containing all follow-ups stored in PressMemo, including stories that are not currently displayed in the Active Story List.
+* **Filter**: A condition used to select a subset of Contacts, Stories or Follow-ups displayed to the user.
 
 --------------------------------------------------------------------------------------------------------------------
 
