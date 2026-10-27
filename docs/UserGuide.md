@@ -61,7 +61,7 @@ This guide describes the features implemented for PressMemo v1.4.
   For example, if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 * Each command only accepts its specified prefixes.<br>
   For example, if the command specifies `ci/CONTACT_INDEX`, `n/NAME` will result in an error.
-* The `/` character is reserved for parameter prefixes and cannot be used in parameter values.
+* The `/` character is reserved for prefixes and cannot be used in command words, preambles and fields.
 * Extraneous parameters for commands that take no parameters, such as `help`, `exit`, `clear`, and `list`, are ignored.<br>
   For example, `help 123` is interpreted as `help`.
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
