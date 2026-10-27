@@ -253,6 +253,7 @@ Examples:
 ## Filter stories by name: `findstories`
 
 - **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and displays them in the story panel.
+![findstories](images/findstories-example.png)
 
 ### Usage / Command Format
 
