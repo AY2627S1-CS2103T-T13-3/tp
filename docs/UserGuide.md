@@ -17,59 +17,39 @@ This guide describes the features implemented for PressMemo v1.4.
 1. Ensure that Java `25` or later is installed on your computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the PressMemo `.jar` file from [here](https://github.com/AY2627S1-CS2103T-T13-3/tp/releases).
+2. Download the PressMemo `.jar` file from [here](https://github.com/AY2627S1-CS2103T-T13-3/tp/releases).
 
-1. Copy the file to the folder you want to use as the _home folder_ for PressMemo. The commands below assume the file is named `pressmemo.jar`.
+3. Copy the file to a folder you can write to as the _home folder_ for PressMemo.
 
-1. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar pressmemo.jar`.<br>
-   A GUI with **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels should appear in a few seconds. On the first run, the app contains sample contacts, an empty story list, and no follow-ups.<br>
-   The image below illustrates the application interface; some visual details may vary.<br>
+4. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar pressmemo.jar`.<br>
+   A GUI with the **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels similar to the one below should appear in a few seconds. On the first run, the app contains sample contacts, stories and follow-ups.<br>
    ![Ui](images/Ui.png)
 
-1. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to open the help window.<br>
+5. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to open the help window.<br>
    Some example commands you can try:
 
-    * `list` : Displays all contacts and stories, clearing both filters.
+    * `list` : Displays all contacts, stories and follow-ups.
 
-    * `listcontacts` : Displays all contacts without changing the story list.
-
-    * `liststories` : Displays all stories without changing the contact list.
-
-    * `addcontact n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to the Address Book.
-
-    * `addstory Housing Investigation` : Creates a story named `Housing Investigation`.
+    * `addcontact n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to PressMemo.
 
     * `assign ci/1 si/1` : Assigns the 1st displayed contact to the 1st displayed story.
-
-    * `listcontacts si/1` : Displays only contacts assigned to the 1st displayed story.
-
-    * `liststories ci/1` : Displays only stories assigned to the 1st displayed contact.
-
-    * `addfollowup Interview prep ci/1` : Adds a follow-up reminder for the 1st displayed contact.
 
     * `deletefollowup 1` : Deletes the follow-up at index 1.
 
     * `shortcut s/ls c/list` : Defines `ls` as a shortcut for `list`.
 
-    * `ls` : Executes `list` after the shortcut above has been assigned.
-
-    * `unshortcut ls` : Removes the custom `ls` shortcut.
-
-    * `deletecontact 1` : Deletes the 1st displayed contact and removes their story assignments and follow-ups.
-
-    * `clear` : Deletes all contacts, stories, assignments, and follow-ups.
+    * `clear` : Deletes all contacts, stories and follow-ups.
 
     * `exit` : Exits the app.
 
-1. Refer to the [Features](#features) section below for details of each command.
+6. Refer to the [Features](#features) section below for details of each command.
 
 --------------------------------------------------------------------------------------------------------------------
 ## Features
 
-The **CONTACTS** panel shows each contact's details, tags, and assigned story names. The **STORIES** panel shows each story's name, assigned contact names, and contact count. The **FOLLOW-UPS** panel shows reminders together with their associated contacts. A contact can belong to several stories and have multiple follow-ups; a story can have several contacts.
+<div markdown="block" class="alert alert-info">
 
-
-### Notes about the command format
+**:information_source: Notes about the command format:**<br>
 
 * Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
   For example, in `addcontact n/NAME`, replace `NAME` with a value such as `John Doe`.
@@ -79,16 +59,13 @@ The **CONTACTS** panel shows each contact's details, tags, and assigned story na
   For example, `[t/TAG]…​` may be omitted, or written as `t/friend` or `t/friend t/family`.
 * Prefixed parameters can be in any order.<br>
   For example, if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
-* Prefixes end with `/` (e.g., `n/`, `p/`, `ci/`, `si/`, `s/`, and `c/`). Unrecognized prefixes may be rejected.
-* Indices refer to the numbers in the currently displayed lists, including filtered lists. `ci/CONTACT_INDEX` selects a contact, `si/STORY_INDEX` selects a story, and a bare `INDEX` selects an entry according to the command. Each index must be a positive integer within the relevant displayed list. Check the numbers after changing a list.
-* Command words and prefixes are case-sensitive. Use lowercase, such as `addstory`, `addfollowup`, `shortcut`, `ci/`, `si/`, `s/`, and `c/`.
+* Each command only accepts its specified prefixes.<br>
+  For example, if the command specifies `ci/CONTACT_INDEX`, `n/NAME` will result in an error.
+* The `/` character is reserved for prefixes and cannot be used in command words, preambles and fields.
 * Extraneous parameters for commands that take no parameters, such as `help`, `exit`, `clear`, and `list`, are ignored.<br>
   For example, `help 123` is interpreted as `help`.
-* The refactored listing commands are `list`, `listcontacts`, and `liststories`. Enter each as **one command word**; `list contacts`, `list stories`, `list f`, and `listfollowups` are not supported.
-* `listcontacts` and `liststories` accept only their optional filters described below; unrelated arguments are rejected.
-* Follow-ups are shown in the **FOLLOW-UPS** panel. There is currently no separate command to list or filter follow-ups.
-* `shortcut` without arguments lists all saved shortcuts. To define a shortcut, use both `s/SHORTCUT` and `c/COMMAND_WORD`.
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
+</div>
 
 ### Common input types
 
@@ -99,7 +76,6 @@ The **CONTACTS** panel shows each contact's details, tags, and assigned story na
 | Contact Index  | A `word` representing the 1-based position of a `Contact` in the contact panel                                                                         | Integer between and including 1 and the number of `Contact`s in the contact panel<br><br>If the contact panel is empty, there is no valid `Contact Index`                                                 | 1                          |
 | Story Index    | A `word` representing the 1-based position of a `Story` in the story panel                                                                             | Integer between and including 1 and the number of `Story`s in the story panel<br><br>If the story panel is empty, there is no valid `Story Index`                                                         | 2                          |
 | Followup Index | A `word` representing the 1-based position of a `Followup` in the followup panel                                                                       | Integer between and including 1 and the number of `Followup`s in the followup panel<br><br>If the followup panel is empty, there is no valid `Followup Index`                                             | 1                          |
-
 
 ### Viewing help: `help`
 
