@@ -48,7 +48,8 @@
             <Insets top="5" right="10" bottom="5" left="10" />
           </padding>
         </StackPane>
-        <VBox spacing="5.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="pane-with-border">
+        <HBox spacing="5.0" VBox.vgrow="ALWAYS">
+          <VBox spacing="5.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="pane-with-border">
             <GridPane hgap="5.0" VBox.vgrow="ALWAYS" styleClass="pane-with-border">
               <columnConstraints>
                 <ColumnConstraints percentWidth="50" minWidth="0" />
@@ -76,8 +77,11 @@
                 <Label text="FOLLOW-UPS" styleClass="panel-header" />
                 <StackPane fx:id="followupListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
             </VBox>
-        </VBox>
-      <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
+          </VBox>
+          <StackPane fx:id="helpPanelPlaceholder" minWidth="0" prefWidth="340" maxWidth="420"
+                     visible="false" managed="false" VBox.vgrow="ALWAYS" HBox.hgrow="NEVER" />
+        </HBox>
+        <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
       </VBox>
     </Scene>
   </scene>

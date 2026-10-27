@@ -108,7 +108,7 @@ Shows a message explaining how to access the help page.
 
 Format: `help`
 
-You can also open the help window from the **Help** menu or by pressing `F1`. For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
+You can also open the help panel from the **Help** menu. For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
 
 ### Adding a contact: `addcontact`
 
@@ -443,7 +443,7 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 ## Known issues
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
-2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu, or the keyboard shortcut `F1`) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
+2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
 
 --------------------------------------------------------------------------------------------------------------------
 
