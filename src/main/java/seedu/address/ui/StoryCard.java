@@ -8,7 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import seedu.address.model.person.Name;
+import seedu.address.model.contact.Name;
 import seedu.address.model.story.Story;
 
 /**
@@ -51,7 +51,14 @@ public class StoryCard extends UiPart<Region> {
         name.setText(story.getName().fullName);
         story.getTags().stream()
                 .sorted(Comparator.comparing(tag -> tag.tagName))
-                .forEach(tag -> tags.getChildren().add(new Label(tag.tagName)));
+                .forEach(tag -> {
+                    Label label = new Label(tag.tagName);
+                    label.setWrapText(true);
+                    label.setMinWidth(0);
+                    label.setMinHeight(Region.USE_PREF_SIZE);
+                    label.maxWidthProperty().bind(tags.widthProperty());
+                    tags.getChildren().add(label);
+                });
         int count = story.getContacts().size();
         contactCount.setText(count + (count == 1 ? " contact" : " contacts"));
         if (story.getContacts().isEmpty()) {

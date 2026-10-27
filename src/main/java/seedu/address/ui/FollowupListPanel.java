@@ -1,8 +1,8 @@
 package seedu.address.ui;
 
-import java.util.Comparator;
 import java.util.logging.Logger;
 
+import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
@@ -23,11 +23,10 @@ public class FollowupListPanel extends UiPart<Region> {
 
     /**
      * Creates a {@code FollowupListPanel} with the given {@code ObservableList}.
-     * Uses a sorted view of the list in ascending lexicographical order.
      */
     public FollowupListPanel(ObservableList<Followup> followupList) {
         super(FXML);
-        followupListView.setItems(followupList.sorted(Comparator.comparing(fu -> fu.getContact().toString())));
+        followupListView.setItems(followupList);
         followupListView.setCellFactory(listView -> new FollowupListViewCell());
     }
 
@@ -42,7 +41,13 @@ public class FollowupListPanel extends UiPart<Region> {
                 setGraphic(null);
                 setText(null);
             } else {
-                setGraphic(new FollowupCard(followup, getIndex() + 1).getRoot());
+                Region card = new FollowupCard(followup, getIndex() + 1).getRoot();
+                card.prefWidthProperty().bind(Bindings.createDoubleBinding(()
+                        -> Math.max(0, getWidth() - getInsets().getLeft() - getInsets().getRight()),
+                        widthProperty(), insetsProperty()));
+                card.setMinWidth(0);
+                card.maxWidthProperty().bind(card.prefWidthProperty());
+                setGraphic(card);
             }
         }
     }

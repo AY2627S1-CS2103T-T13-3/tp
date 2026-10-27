@@ -6,9 +6,9 @@ import static seedu.address.testutil.Assert.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
+import seedu.address.model.contact.Name;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
-import seedu.address.model.person.Name;
 
 /**
  * Contains unit tests for JsonAdaptedFollowup.

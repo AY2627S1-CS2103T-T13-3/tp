@@ -9,6 +9,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
@@ -20,8 +21,8 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
+import seedu.address.model.contact.Contact;
 import seedu.address.model.followup.Followup;
-import seedu.address.model.person.Person;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
 
@@ -107,7 +108,22 @@ public class AddStoryCommandTest {
         }
 
         @Override
-        public void addPerson(Person person) {
+        public Map<String, String> getShortcuts() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void assignShortcut(String shortcut, String commandWord) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public boolean removeShortcut(String shortcut) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void addContact(Contact contact) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -122,17 +138,17 @@ public class AddStoryCommandTest {
         }
 
         @Override
-        public boolean hasPerson(Person person) {
+        public boolean hasContact(Contact contact) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void deletePerson(Person target) {
+        public void deleteContact(Contact target) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void setPerson(Person target, Person editedPerson) {
+        public void setContact(Contact target, Contact editedContact) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -147,12 +163,17 @@ public class AddStoryCommandTest {
         }
 
         @Override
-        public void assignStory(Person target, Story story) {
+        public void setStory(Story target, Story editedStory) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void unassignStory(Person target, Story story) {
+        public void assignStory(Contact target, Story story) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void unassignStory(Contact target, Story story) {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -167,12 +188,17 @@ public class AddStoryCommandTest {
         }
 
         @Override
+        public void setFollowup(Followup target, Followup editedFollowup) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void deleteFollowup(Followup followup) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public ObservableList<Person> getFilteredPersonList() {
+        public ObservableList<Contact> getFilteredContactList() {
             throw new AssertionError("This method should not be called.");
         }
 
@@ -187,7 +213,7 @@ public class AddStoryCommandTest {
         }
 
         @Override
-        public void updateFilteredPersonList(Predicate<Person> predicate) {
+        public void updateFilteredContactList(Predicate<Contact> predicate) {
             throw new AssertionError("This method should not be called.");
         }
 
