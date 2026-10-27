@@ -26,7 +26,9 @@
         </Label>
         <Label fx:id="description" text="\$first" styleClass="cell_big_label" wrapText="true" minWidth="0" maxWidth="Infinity" minHeight="-Infinity" />
       </HBox>
-        <Label fx:id="contact" styleClass="cell_contact" text="\$contact" wrapText="true" minWidth="0" maxWidth="Infinity" minHeight="-Infinity" />
+      <HBox alignment="CENTER_LEFT" minWidth="0">
+        <Label fx:id="contact" styleClass="cell_contact" wrapText="true" text="\$contact" />
+      </HBox>
     </VBox>
   </GridPane>
 </HBox>
