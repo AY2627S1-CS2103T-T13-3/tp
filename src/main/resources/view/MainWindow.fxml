@@ -9,6 +9,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
@@ -48,36 +49,42 @@
             <Insets top="5" right="10" bottom="5" left="10" />
           </padding>
         </StackPane>
-        <VBox spacing="5.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="pane-with-border">
-            <GridPane hgap="5.0" VBox.vgrow="ALWAYS" styleClass="pane-with-border">
-              <columnConstraints>
-                <ColumnConstraints percentWidth="50" minWidth="0" />
-                <ColumnConstraints percentWidth="50" minWidth="0" />
-              </columnConstraints>
-              <VBox fx:id="contactList" styleClass="pane-with-border" minWidth="0" GridPane.vgrow="ALWAYS">
-                <padding>
-                  <Insets top="10" right="10" bottom="10" left="10" />
-                </padding>
-                <Label text="CONTACTS" styleClass="panel-header" />
-                <StackPane fx:id="contactListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
-              </VBox>
-              <VBox fx:id="storyList" GridPane.columnIndex="1" styleClass="pane-with-border" minWidth="0" GridPane.vgrow="ALWAYS">
-                <padding>
-                  <Insets top="10" right="10" bottom="10" left="10" />
-                </padding>
-                <Label text="STORIES" styleClass="panel-header" />
-                <StackPane fx:id="storyListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
-              </VBox>
-            </GridPane>
-            <VBox fx:id="followupList" styleClass="pane-with-border" minWidth="0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-                <padding>
-                    <Insets top="10" right="10" bottom="10" left="10" />
-                </padding>
-                <Label text="FOLLOW-UPS" styleClass="panel-header" />
-                <StackPane fx:id="followupListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+        <HBox spacing="5.0" VBox.vgrow="ALWAYS">
+          <GridPane hgap="5.0" vgap="5.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="pane-with-border">
+            <columnConstraints>
+              <ColumnConstraints percentWidth="50" minWidth="0" />
+              <ColumnConstraints percentWidth="50" minWidth="0" />
+            </columnConstraints>
+            <rowConstraints>
+              <RowConstraints percentHeight="60" minHeight="0" vgrow="ALWAYS" />
+              <RowConstraints percentHeight="40" minHeight="0" vgrow="ALWAYS" />
+            </rowConstraints>
+            <VBox fx:id="contactList" styleClass="pane-with-border" minWidth="0" GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.vgrow="ALWAYS">
+              <padding>
+                <Insets top="10" right="10" bottom="10" left="10" />
+              </padding>
+              <Label text="CONTACTS" styleClass="panel-header" />
+              <StackPane fx:id="contactListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
             </VBox>
-        </VBox>
-      <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
+            <VBox fx:id="storyList" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="pane-with-border" minWidth="0" GridPane.vgrow="ALWAYS">
+              <padding>
+                <Insets top="10" right="10" bottom="10" left="10" />
+              </padding>
+              <Label text="STORIES" styleClass="panel-header" />
+              <StackPane fx:id="storyListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+            </VBox>
+            <VBox fx:id="followupList" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2" styleClass="pane-with-border" minWidth="0" GridPane.vgrow="ALWAYS">
+              <padding>
+                <Insets top="10" right="10" bottom="10" left="10" />
+              </padding>
+              <Label text="FOLLOW-UPS" styleClass="panel-header" />
+              <StackPane fx:id="followupListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
+            </VBox>
+          </GridPane>
+          <StackPane fx:id="helpPanelPlaceholder" minWidth="0" prefWidth="340" maxWidth="420"
+                     visible="false" managed="false" VBox.vgrow="ALWAYS" HBox.hgrow="NEVER" />
+        </HBox>
+        <StackPane fx:id="statusbarPlaceholder" VBox.vgrow="NEVER" />
       </VBox>
     </Scene>
   </scene>
