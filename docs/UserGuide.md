@@ -377,39 +377,24 @@ Examples:
 
 ### Parameters & Constraints
 
-| Parameter          | Type            | Description                                                                                                | Examples |
-| :----------------- | :-------------- | :--------------------------------------------------------------------------------------------------------- | :------- |
-| `ci/CONTACT_INDEX` | `Contact Index` | 1-based index of a contact in the currently displayed contact list whose follow-ups to display (optional) | `ci/1`   |
+| Parameter          | Type            | Description                                       | Examples |
+| :----------------- | :-------------- | :------------------------------------------------ | :------- |
+| `ci/CONTACT_INDEX` | `Contact Index` | to display only follow-ups linked to this contact | 1        |
 
 > **Tip / Note:**
-> * If `ci/CONTACT_INDEX` is omitted, `listfollowups` displays all follow-ups in PressMemo and clears any active follow-up filter.
-> * If `ci/CONTACT_INDEX` is provided, `listfollowups` displays only follow-ups assigned to that contact.
-> * The index refers to the contact's position in the **currently displayed contact list** (which may be filtered by `findcontact` or `listcontacts`).
-> * `listfollowups` only filters the **FOLLOW-UPS** panel; the **CONTACTS** and **STORIES** panels remain unchanged.
-> * Extraneous arguments or multiple `ci/` prefixes are rejected with an error message.
+> * If `ci/CONTACT_INDEX` is omitted, `listfollowups` displays all follow-ups in PressMemo.
+> * If `ci/CONTACT_INDEX` is provided, `listfollowups` displays only follow-ups linked to that contact.
+> * `listfollowups` only updates the **FOLLOW-UPS** panel; the **CONTACTS** and **STORIES** panels remain unchanged.
 
 ### Examples
 
 * **Example 1: List all follow-ups**
   * **Input / Action:** `listfollowups`
-  * **Expected Outcome:** Displays all follow-ups in the **FOLLOW-UPS** panel, with the message `Listed all followups.`
+  * **Expected Outcome:** All follow-ups from PressMemo are displayed in the **FOLLOW-UPS** panel.
 
 * **Example 2: List follow-ups for a specific contact**
   * **Input / Action:** `listfollowups ci/1`
-  * **Expected Outcome:** Displays only follow-ups assigned to the 1st displayed contact in the **FOLLOW-UPS** panel, with the message `Listed followups assigned to <Contact Name>` (e.g., `Listed followups assigned to Alex Yeoh`).
-
-* **Example 3: Combined workflow with contact search**
-  * **Input / Action:** `findcontact Bernice` followed by `listfollowups ci/1`
-  * **Expected Outcome:** Filters contacts to show Bernice, then displays only follow-ups assigned to Bernice in the **FOLLOW-UPS** panel.
-
-### Common Errors & Troubleshooting (optional, feature-specific)
-
-| Error Message / Symptom | Cause | How to Fix |
-|:---|:---|:---|
-| `The contact index provided is invalid` | The provided index is larger than the number of contacts currently displayed in the contact list | Check the contact index numbers in the **CONTACTS** panel and enter a valid index within range |
-| `Invalid command format!`<br>`listfollowups: Lists followups in the address book.`<br>`Parameters: [ci/CONTACT_INDEX]`<br>`Example: listfollowups ci/1` | Extraneous preamble text was provided, or the `ci/` prefix was left empty without an index | Use `listfollowups` with no arguments to show all follow-ups, or specify an index after `ci/` (e.g., `listfollowups ci/1`) |
-| `Multiple values specified for the following single-valued field(s): ci/` | The `ci/` prefix was specified more than once in the command | Provide only a single `ci/CONTACT_INDEX` parameter |
-| `Index is not a non-zero unsigned integer.` | The index specified after `ci/` is zero, negative, or not a number | Ensure the contact index is a positive integer (e.g., `ci/1`, `ci/2`) |
+  * **Expected Outcome:** Displays only follow-ups linked to the first displayed contact in the **FOLLOW-UPS** panel. 
 
 ### Managing command shortcuts: `shortcut`
 
