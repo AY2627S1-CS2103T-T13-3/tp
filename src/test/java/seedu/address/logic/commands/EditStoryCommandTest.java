@@ -18,6 +18,9 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_STORY;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_STORY;
 import static seedu.address.testutil.TypicalStories.getTypicalAddressBook;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
@@ -28,6 +31,8 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryName;
+import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditStoryDescriptorBuilder;
 import seedu.address.testutil.StoryBuilder;
 
@@ -207,5 +212,49 @@ public class EditStoryCommandTest {
         String expected = EditStoryCommand.class.getCanonicalName() + "{index=" + index + ", editStoryDescriptor="
                 + editStoryDescriptor + "}";
         assertEquals(expected, editStoryCommand.toString());
+    }
+
+    @Test
+    public void execute_resetTagsOnly_success() {
+        Story storyToEdit = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        Story editedStory = new Story(storyToEdit.getName(), new HashSet<>());
+
+        EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withTags().build();
+        EditStoryCommand editStoryCommand = new EditStoryCommand(INDEX_FIRST_STORY, descriptor);
+
+        String expectedMessage = String.format(EditStoryCommand.MESSAGE_EDIT_STORY_SUCCESS,
+                Messages.format(editedStory));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setStory(storyToEdit, editedStory);
+
+        assertCommandSuccess(editStoryCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_bothNameAndTags_success() {
+        Story storyToEdit = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        Story editedStory = new Story(new StoryName("Updated Unique Story"), Set.of(new Tag("urgent")));
+
+        EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder()
+                .withName("Updated Unique Story").withTags("urgent").build();
+        EditStoryCommand editStoryCommand = new EditStoryCommand(INDEX_FIRST_STORY, descriptor);
+
+        String expectedMessage = String.format(EditStoryCommand.MESSAGE_EDIT_STORY_SUCCESS,
+                Messages.format(editedStory));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setStory(storyToEdit, editedStory);
+
+        assertCommandSuccess(editStoryCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_boundaryMaxIntegerIndex_failure() {
+        Index maxIntIndex = Index.fromOneBased(Integer.MAX_VALUE);
+        EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).build();
+        EditStoryCommand editStoryCommand = new EditStoryCommand(maxIntIndex, descriptor);
+
+        assertCommandFailure(editStoryCommand, model, MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
     }
 }

@@ -1,5 +1,7 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showContactAtIndex;
 import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
@@ -38,5 +40,22 @@ public class ListCommandTest {
         showContactAtIndex(model, INDEX_FIRST_CONTACT);
         model.updateFilteredStoryList(story -> false);
         assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
+    }
+
+    @Test
+    public void equals() {
+        ListCommand listCommand = new ListCommand();
+
+        // same object -> returns true
+        assertTrue(listCommand.equals(listCommand));
+
+        // same values -> returns true
+        assertTrue(listCommand.equals(new ListCommand()));
+
+        // different types -> returns false
+        assertFalse(listCommand.equals(1));
+
+        // null -> returns false
+        assertFalse(listCommand.equals(null));
     }
 }

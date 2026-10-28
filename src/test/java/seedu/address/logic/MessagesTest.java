@@ -1,17 +1,21 @@
 package seedu.address.logic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.parser.Prefix;
 import seedu.address.model.contact.Address;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.contact.Email;
 import seedu.address.model.contact.Name;
 import seedu.address.model.contact.Phone;
+import seedu.address.model.followup.Followup;
+import seedu.address.model.followup.FollowupDescription;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
@@ -51,5 +55,30 @@ public class MessagesTest {
                 List.of(new Name("Alice Pauline")));
         String expected = "Housing Investigation; Tags: [urgent]; Contacts: [Alice Pauline]";
         assertEquals(expected, Messages.format(story));
+    }
+
+    @Test
+    public void format_followup() {
+        Followup followup = new Followup(new FollowupDescription("Call back"), new Name("Alice Pauline"));
+        String expected = "Call back; Contact: Alice Pauline";
+        assertEquals(expected, Messages.format(followup));
+    }
+
+    @Test
+    public void getErrorMessageForDuplicatePrefixes() {
+        Prefix p1 = new Prefix("n/");
+        Prefix p2 = new Prefix("p/");
+        String message = Messages.getErrorMessageForDuplicatePrefixes(p1, p2);
+        assertTrue(message.contains(Messages.MESSAGE_DUPLICATE_FIELDS));
+        assertTrue(message.contains("n/"));
+        assertTrue(message.contains("p/"));
+    }
+
+    @Test
+    public void getErrorMessageForInvalidPrefixes() {
+        Prefix[] expectedPrefixes = new Prefix[] { new Prefix("n/"), new Prefix("p/") };
+        String message = Messages.getErrorMessageForInvalidPrefixes(expectedPrefixes, List.of(1, 2));
+        assertTrue(message.contains("1") && message.contains("2"));
+        assertTrue(message.contains("n/") && message.contains("p/"));
     }
 }

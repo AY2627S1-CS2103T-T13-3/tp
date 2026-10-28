@@ -41,4 +41,36 @@ public class UnshortcutCommandTest {
 
         assertThrows(CommandException.class, expectedMessage, () -> new UnshortcutCommand("ls").execute(model));
     }
+
+    @Test
+    public void execute_nullModel_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new UnshortcutCommand("ls").execute(null));
+    }
+
+    @Test
+    public void equals() {
+        UnshortcutCommand command = new UnshortcutCommand("ls");
+
+        // same object -> returns true
+        assertTrue(command.equals(command));
+
+        // same values -> returns true
+        assertTrue(command.equals(new UnshortcutCommand("ls")));
+
+        // null -> returns false
+        assertFalse(command.equals(null));
+
+        // different types -> returns false
+        assertFalse(command.equals(5));
+
+        // different shortcut -> returns false
+        assertFalse(command.equals(new UnshortcutCommand("sc")));
+    }
+
+    @Test
+    public void hashCodeMethod() {
+        UnshortcutCommand command1 = new UnshortcutCommand("ls");
+        UnshortcutCommand command2 = new UnshortcutCommand("ls");
+        assertEquals(command1.hashCode(), command2.hashCode());
+    }
 }
