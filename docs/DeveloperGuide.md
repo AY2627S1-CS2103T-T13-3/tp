@@ -171,7 +171,7 @@ This section describes some noteworthy details on how certain features are imple
 ### API
 
 * **Command:** `addstory STORY_NAME [t/TAG]…`
-* **Parameters**: refer to [user guide](docs/UserGuide.md)
+* **Parameters**: refer to [user guide](UserGuide.md#adding-a-story-addstory)
 * **Description:**
 	* Adds a story with the specified name and (optionally) tags to ArchiveStoryList
 * **Preconditions:** 
@@ -193,6 +193,60 @@ This section describes some noteworthy details on how certain features are imple
 6. `AddStoryCommand` verifies that the specified story name is not the name of any existing story in ArchiveStoryList.
 7. `AddStoryCommand` requests `Model` to add a new `Story` object with no assigned contacts and with the specified name and tags to the address book.
 8. `Model` sets `ActiveStoryList` to `ArchiveStoryList`.  
+9. `UI` updates the story panel accordingly. 
+
+## `findstories`
+
+- **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and updates the `ActiveStoryList`.
+
+### API
+
+* **Command:** `findstories STORY_NAME [MORE_KEYWORDS]...`
+* **Parameters**: refer to [user guide](UserGuide.md#locating-stories-by-name-findstories)
+* **Description:**
+	* Set the Active Story List to contain exactly the stories from the Archive Story List whose names contain at least one of the specified keywords.
+* **Preconditions:** 
+	* At least one keyword is provided in the command arguments.
+* **Postconditions:** 
+	* ActiveStoryList contains exactly the stories from ArchiveStoryList whose names match at least one keyword in a case-insensitive, full-word comparison.
+	* ArchiveStoryList is unchanged.
+* **Exceptions:** 
+	* if no keywords are provided: displays error message for ParseException (invalid command format)
+
+### Implementation details
+
+The sequence diagram below illustrates the interactions within the Model component when the user executes a `findstories` command.
+
+<!-- Note: FindStorySequenceDiagram.puml is located in docs/diagrams/FindStorySequenceDiagram.puml -->
+
+#### Execution flow
+
+- The user enters a `findstories` command. The command arguments are parsed by `AddressBookParser` and `FindStoryCommandParser`, which instantiates a `FindStoryCommand`. When executed, the command updates the filtered story list in `Model`, displaying matching stories in the GUI.
+1. The user enters the `findstories` command as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates a `FindStoryCommandParser` to parse the command arguments.
+4. `FindStoryCommandParser` parses the arguments into keywords and creates a `FindStoryCommand` object.
+5. `LogicManager` executes the `FindStoryCommand` object.
+6. `FindStoryCommand` requests `Model` to update the filter predicate of the `ActiveStoryList` to match at least one of the provided keywords.
+7. `Model` updates the `ActiveStoryList`.
+8. `FindStoryCommand` returns a `CommandResult` containing the number of matching stories.
+9. `UI` updates the story panel accordingly. 
+
+### Design Considerations
+
+- **Aspect: Matching mechanism for story names**
+
+|          | Chosen                                                                                                                                                         | Alternative                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **Pros** | **Whole-word matching** avoids false positives on accidental substring matches (e.g., searching for "ad" will not match "broadcast"), ensuring high precision. | **Substring matching** allows partial matches without requiring complete words. |
+| **Cons** | Users must type full words; partial terms will not return results.                                                                                             | May return many irrelevant stories containing common character sequences.       |
+
+- **Aspect: Multiple keywords combination logic**
+
+|          | Chosen                                                                                                      | Alternative                                                                                                             |
+| -------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Pros** | **Disjunctive / OR search** allows flexible exploratory queries across multiple topics in a single command. | **Conjunctive / AND search** returns strictly targeted results matching every keyword.                                  |
+| **Cons** | Results may be broader than intended if common words are included.                                          | Less flexible when looking for possible matches across multiple topics; yields zero results if even one keyword misses. |
 
 ### \[Proposed\] Undo/redo feature
 
