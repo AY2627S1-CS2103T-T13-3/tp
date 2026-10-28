@@ -1,6 +1,6 @@
 {
   "contacts": [ {
-    "name": "Contact with invalid name field: Ha!ns Mu@ster",
+    "name": "Contact with invalid name field: Ha/ns Muster",
     "phone": "9482424",
     "email": "hans@example",
     "address": "4th street"
