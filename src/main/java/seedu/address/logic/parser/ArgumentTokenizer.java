@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import seedu.address.logic.Messages;
-import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
  * Tokenizes arguments string of the form: {@code preamble <prefix>value <prefix>value ...}<br>
@@ -32,24 +28,11 @@ public class ArgumentTokenizer {
      * @param argsString Arguments string of the form: {@code preamble <prefix>value <prefix>value ...}
      * @param prefixes   Prefixes to tokenize the arguments string with. All prefixes must end with a forward slash.
      * @return           ArgumentMultimap object that maps prefixes to their arguments
-     * @throws ParseException if the argsString contains any invalid prefixes
      */
-    public static ArgumentMultimap tokenize(String argsString, Prefix... prefixes) throws ParseException {
+    public static ArgumentMultimap tokenize(String argsString, Prefix... prefixes) {
         assert Arrays.stream(prefixes)
                 .allMatch(ArgumentTokenizer::isValidPrefixType);
         List<PrefixPosition> positions = findAllPrefixPositions(argsString, prefixes);
-        List<Integer> validPositions = positions.stream()
-                        .map(PrefixPosition::getStartPosition)
-                        .map(i -> argsString.indexOf('/', i))
-                        .toList();
-        List<Integer> invalidPositions = Stream.iterate(argsString.indexOf('/'), i -> argsString.indexOf('/', i + 1))
-                .takeWhile(i -> i != -1)
-                .filter(i -> !validPositions.contains(i))
-                .sorted()
-                .toList();
-        if (!invalidPositions.isEmpty()) {
-            throw new ParseException(Messages.getErrorMessageForInvalidPrefixes(prefixes, invalidPositions));
-        }
         return extractArguments(
                 argsString,
                 positions
