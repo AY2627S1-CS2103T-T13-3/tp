@@ -292,12 +292,13 @@ public class AddContactCommandParserTest {
         assertParseFailure(parser, validName + " p/12" + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + " p/123a" + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
 
-        // Email edge cases: empty, missing @, missing domain, domain label < 2 chars, consecutive dots
+        // Email edge cases: empty, missing @, missing domain, missing local-part, multiple @
         assertParseFailure(parser, validName + validPhone + " e/" + validAddress, Email.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + " e/notanemail" + validAddress, Email.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + " e/alice@" + validAddress, Email.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + " e/alice@b.c" + validAddress, Email.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + " e/alice@b..com" + validAddress,
+        assertParseFailure(parser, validName + validPhone + " e/@example.com" + validAddress,
+                Email.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, validName + validPhone + " e/alice@@example.com" + validAddress,
                 Email.MESSAGE_CONSTRAINTS);
 
         // Address edge cases: empty, whitespace only
