@@ -9,13 +9,13 @@ import seedu.address.model.Model;
 import seedu.address.model.story.Story;
 
 /**
- * Adds a story to the address book.
+ * Adds a story to PressMemo.
  */
 public class AddStoryCommand extends Command {
 
     public static final String COMMAND_WORD = "addstory";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a story to the address book.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a story to PressMemo.\n"
             + "Parameters: NAME "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " hello"

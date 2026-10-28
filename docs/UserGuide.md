@@ -88,12 +88,12 @@ You can also open the help window from the **Help** menu or by pressing `F1`. Fo
 
 ### Adding a contact: `addcontact`
 
-Adds a contact to the address book.
+Adds a contact to PressMemo.
 
 Format: `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
 
 * All four fields (`n/`, `p/`, `e/`, and `a/`) are required and cannot be blank.
-* Names contain only letters, digits, and spaces. A contact with exactly the same name already in the address book cannot be added.
+* Names contain only letters, digits, and spaces. A contact with exactly the same name already in PressMemo cannot be added.
 * Phone numbers contain at least three digits and no other characters. Emails must have a valid `word@word` format.
 * Tag names contain only letters and digits, without spaces.
 * Adding a contact shows the full contact list.
@@ -164,7 +164,7 @@ Examples:
 
 ### Editing a contact: `editcontact`
 
-Edits an existing contact in the address book.
+Edits an existing contact in PressMemo.
 
 Format: `editcontact INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
 
@@ -200,7 +200,7 @@ Examples:
 
 ### Deleting a contact: `deletecontact`
 
-Deletes the specified contact from the address book.
+Deletes the specified contact from PressMemo.
 
 Format: `deletecontact INDEX`
 
@@ -210,7 +210,7 @@ Format: `deletecontact INDEX`
 * Deleting a contact also removes their assignments from stories and deletes all follow-ups linked to them. The stories themselves remain.
 
 Examples:
-* `list` followed by `deletecontact 2` deletes the 2nd contact in the address book.
+* `list` followed by `deletecontact 2` deletes the 2nd contact in PressMemo.
 * `findcontact Betsy` followed by `deletecontact 1` deletes the 1st contact in the results of the `findcontact` command.
 
 ## Adding a story: `addstory`

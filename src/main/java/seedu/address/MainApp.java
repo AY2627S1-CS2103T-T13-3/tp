@@ -49,7 +49,7 @@ public class MainApp extends Application {
 
     @Override
     public void init() throws Exception {
-        logger.info("=============================[ Initializing AddressBook ]===========================");
+        logger.info("=============================[ Initializing PressMemo ]===========================");
         super.init();
 
         JsonUserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(USER_PREFS_FILE_PATH);
@@ -84,12 +84,12 @@ public class MainApp extends Application {
             addressBookOptional = storage.readAddressBook();
             if (addressBookOptional.isEmpty()) {
                 logger.info("Creating a new data file " + storage.getAddressBookFilePath()
-                        + " populated with a sample AddressBook.");
+                        + " populated with a sample PressMemo.");
             }
             initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
         } catch (DataLoadingException e) {
             logger.warning("Data file at " + storage.getAddressBookFilePath() + " could not be loaded."
-                    + " Will be starting with an empty AddressBook.");
+                    + " Will be starting with an empty PressMemo.");
             initialData = new AddressBook();
         }
 
@@ -99,7 +99,7 @@ public class MainApp extends Application {
         logger.info("Using story data file : " + storage.getStoryFilePath());
 
         try {
-            addressBook.setStories(storage.readStories().orElseGet(List::of));
+            addressBook.setStories(storage.readStories().orElseGet(() -> List.of(SampleDataUtil.getSampleStories())));
         } catch (DataLoadingException e) {
             logger.warning("Story data file at " + storage.getStoryFilePath()
                     + " could not be loaded."
@@ -144,13 +144,13 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        logger.info("Starting AddressBook " + MainApp.VERSION);
+        logger.info("Starting PressMemo " + MainApp.VERSION);
         ui.start(primaryStage);
     }
 
     @Override
     public void stop() {
-        logger.info("============================ [ Stopping AddressBook ] =============================");
+        logger.info("============================ [ Stopping PressMemo ] =============================");
         try {
             storage.saveUserPrefs(model.getUserPrefs());
         } catch (IOException e) {

@@ -15,13 +15,13 @@ import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
 
 /**
- * Adds a followup to a contact in the address book.
+ * Adds a followup to a contact in PressMemo.
  */
 public class AddFollowupCommand extends Command {
 
     public static final String COMMAND_WORD = "addfollowup";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a followup to a contact in the address book.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a followup to a contact in PressMemo.\n"
             + "Parameters: DESCRIPTION "
             + PREFIX_CONTACTINDEX + "CONTACT INDEX"
             + "Example: " + COMMAND_WORD + " meeting " + PREFIX_CONTACTINDEX + "1";

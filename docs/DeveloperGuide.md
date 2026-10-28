@@ -36,7 +36,7 @@ The following provides a quick overview of the main components and their interac
 
 **Main components of the architecture**
 
-**`Main`** (consisting of classes [`Main`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
+**`Main`** (consisting of classes [`Main`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
 * At app launch, it initializes the other components in the correct sequence, and connects them up with each other.
 * At shut down, it shuts down the other components and invokes cleanup methods where necessary.
 
@@ -125,14 +125,14 @@ How the parsing works:
 * All `XYZCommandParser` classes, such as `AddCommandParser` and `DeleteCommandParser`, implement the `Parser` interface so they can be treated similarly where appropriate, for example during testing.
 
 ### Model component
-**API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
+**API** : [`Model.java`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/model/Model.java)
 
 <img src="images/ModelClassDiagram.png" width="450" />
 
 
 The `Model` component,
 
-* stores the address book data:
+* stores the PressMemo data:
   * all `Contact` objects (which are contained in a `UniqueContactList` object).
   * all `Story` objects (which are contained in a `UniqueStoryList` object).
   * all `Followup` objects (which are contained in a `UniqueFollowupList` object).
@@ -144,12 +144,12 @@ The `Model` component,
 
 ### Storage component
 
-**API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
+**API** : [`Storage.java`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/storage/Storage.java)
 
 <img src="images/StorageClassDiagram.png" width="550" />
 
 The `Storage` component,
-* can save address book data, story data, follow-up data, and user preference data in JSON format, and read them back into corresponding objects.
+* can save contact data, story data, follow-up data, and user preference data in JSON format, and read them back into corresponding objects.
 * is implemented by `StorageManager`, which delegates the actual JSON file access to `JsonAddressBookStorage`, `JsonStoryStorage`, and `JsonUserPrefsStorage`.
 * uses JSON-adapted classes to serialize and deserialize contacts, stories, follow-ups, and their associations.
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`).
@@ -191,7 +191,7 @@ This section describes some noteworthy details on how certain features are imple
 4. `AddStoryCommandParser` parses the story name and tags and creates an `AddStoryCommand` object.
 5. `LogicManager` executes the `AddStoryCommand` object.
 6. `AddStoryCommand` verifies that the specified story name is not the name of any existing story in ArchiveStoryList.
-7. `AddStoryCommand` requests `Model` to add a new `Story` object with no assigned contacts and with the specified name and tags to the address book.
+7. `AddStoryCommand` requests `Model` to add a new `Story` object with no assigned contacts and with the specified name and tags to PressMemo.
 8. `Model` sets `ActiveStoryList` to `ArchiveStoryList`.  
 9. `UI` updates the story panel accordingly. 
 
@@ -250,7 +250,7 @@ The sequence diagram below illustrates the interactions within the Model compone
 
 ## `listfollowups`
 
-- **Objective:** Lists all follow-ups in the address book, or filters the follow-ups assigned to a specified contact in the Active Contact List.
+- **Objective:** Lists all follow-ups in PressMemo, or filters the follow-ups assigned to a specified contact in the Active Contact List.
 
 ### API
 
@@ -449,7 +449,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is `PressMemo` and the **Actor** is the `user`, unless specified otherwise)
 
 #### Use Case: UC1 - Add Contact
 
@@ -607,9 +607,9 @@ Actor: User
 ##### MSS:
 
 1. User requests to list contacts
-2. AddressBook shows a list of contacts
+2. PressMemo shows a list of contacts
 3. User requests to delete a specific contact in the list
-4. AddressBook deletes the contact
+4. PressMemo deletes the contact
 
 Use case ends.
 
@@ -621,7 +621,7 @@ Use case ends.
 
 3a. The given index is invalid (not positive integer or larger than the number of contacts displayed)
 
-- AddressBook shows an error message.
+- PressMemo shows an error message.
 - Use case resumes at step 2.
 
 #### Use Case: UC8 - Find stories by keywords

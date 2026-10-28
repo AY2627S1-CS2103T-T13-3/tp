@@ -15,14 +15,14 @@ import seedu.address.model.Model;
 import seedu.address.model.story.Story;
 
 /**
- * Lists contacts in the address book to the user.
+ * Lists contacts in PressMemo to the user.
  */
 public class ListContactsCommand extends Command {
 
     public static final String COMMAND_WORD = "listcontacts";
     public static final String MESSAGE_SUCCESS = "Listed all contacts.";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists contacts in the address book.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists contacts in PressMemo.\n"
             + "Parameters: [si/STORY_INDEX]\n"
             + "Example: " + COMMAND_WORD + " si/1";
 
