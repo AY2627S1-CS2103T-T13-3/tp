@@ -304,10 +304,12 @@ public class AddContactCommandParserTest {
         assertParseFailure(parser, validName + validPhone + validEmail + " a/", Address.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + validEmail + " a/   ", Address.MESSAGE_CONSTRAINTS);
 
-        // Tag edge cases: invalid symbol, space inside tag
-        assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/tag#1",
+        // Tag edge cases: empty, whitespace only, contains fslash
+        assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/",
                 Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/tag with space",
+        assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/   ",
+                Tag.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/tag/1",
                 Tag.MESSAGE_CONSTRAINTS);
     }
 }

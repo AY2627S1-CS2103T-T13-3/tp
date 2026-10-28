@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddStoryCommand;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
@@ -58,11 +57,10 @@ public class AddStoryCommandParserTest {
         // Invalid tag (spaces only)
         assertParseFailure(parser, "Valid Story t/   ", Tag.MESSAGE_CONSTRAINTS);
 
-        // Story name with forward slash triggers invalid prefix error
-        assertParseFailure(parser, "Invalid/Story",
-                String.format(Messages.MESSAGE_INVALID_PREFIX, 7, "t/"));
+        // Story name with forward slash triggers story name constraint error
+        assertParseFailure(parser, "Invalid/Story", StoryName.MESSAGE_CONSTRAINTS);
 
-        // Valid story name but invalid tag
-        assertParseFailure(parser, "Valid Story t/invalid#tag", Tag.MESSAGE_CONSTRAINTS);
+        // Valid story name but invalid tag containing forward slash
+        assertParseFailure(parser, "Valid Story t/invalid/tag", Tag.MESSAGE_CONSTRAINTS);
     }
 }

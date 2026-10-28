@@ -1,7 +1,6 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_PREFIX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
@@ -86,6 +85,9 @@ public class AddFollowupCommandParserTest {
 
     @Test
     public void parse_invalidPrefix_failure() {
-        assertParseFailure(parser, "Followup A z/invalid", String.format(MESSAGE_INVALID_PREFIX, 12, "ci/"));
+        assertParseFailure(parser, "Followup A z/invalid",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddFollowupCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "Followup A z/invalid ci/1",
+                FollowupDescription.MESSAGE_CONSTRAINTS);
     }
 }
