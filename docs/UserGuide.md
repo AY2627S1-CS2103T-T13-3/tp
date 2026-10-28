@@ -325,19 +325,31 @@ Examples:
 
 * `unassign ci/1 si/1` removes the assignment between the 1st displayed contact and the 1st displayed story.
 
-### Deleting a story: `deletestory`
+## Deleting a story: `deletestory`
 
-Deletes the specified story from PressMemo.
+- **Objective:** Deletes the specified story from PressMemo.
+![deletestory](images/deletestory-example.png)
 
-Format: `deletestory INDEX`
+### Usage / Command Format
 
-* The index refers to the number in the displayed story list, including a filtered list, and must be a positive integer.
-* Deleting a story also removes its assignments from contacts. The contacts themselves remain.
+`deletestory INDEX`
 
-Examples:
+### Parameters & Constraints
 
-* `liststories` followed by `deletestory 2` deletes the 2nd story in the full story list.
-* `liststories ci/1` followed by `deletestory 1` deletes the 1st story assigned to the 1st displayed contact, provided there is a result.
+| Parameter | Type          | Description                                                        | Examples |
+| :-------- | :------------ | :----------------------------------------------------------------- | :------- |
+| `INDEX`   | `Story Index` | 1-based index of the story to delete from the displayed story list | `1`      |
+
+> **Tip / Note:**
+> * Deleting a story automatically unassigns it from all contacts originally assigned to it. The contacts themselves remain in PressMemo.
+> * Follow-ups are unaffected.
+> * Deletion cannot be undone.
+
+### Examples
+
+* **Example 1: Deleting a story from the full story list**
+  * **Input / Action:** `deletestory 2`
+  * **Expected Outcome:** Deletes the 2nd story from the story panel. Identifying information about the recently-deleted story is displayed in the console.
 
 ### Adding a follow-up: `addfollowup`
 
