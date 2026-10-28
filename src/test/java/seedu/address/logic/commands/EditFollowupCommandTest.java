@@ -1,6 +1,8 @@
 package seedu.address.logic.commands;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalContacts.ALICE;
@@ -79,5 +81,49 @@ public class EditFollowupCommandTest {
     public void execute_unchangedValues_success() throws Exception {
         new AddressBookParser().parseCommand("editfollowup 1 d/Call ci/1").execute(model);
         assertEquals(original, model.getFilteredFollowupList().get(0));
+    }
+
+    @Test
+    public void execute_nullModel_throwsNullPointerException() {
+        EditFollowupDescriptor descriptor = new EditFollowupDescriptor();
+        EditFollowupCommand command = new EditFollowupCommand(Index.fromOneBased(1), descriptor);
+        assertThrows(NullPointerException.class, () -> command.execute(null));
+    }
+
+    @Test
+    public void equals() {
+        EditFollowupDescriptor descriptor = new EditFollowupDescriptor();
+        descriptor.setDescription(new FollowupDescription("Call"));
+        EditFollowupCommand command = new EditFollowupCommand(Index.fromOneBased(1), descriptor);
+
+        // same object -> returns true
+        assertTrue(command.equals(command));
+
+        // same values -> returns true
+        assertTrue(command.equals(new EditFollowupCommand(Index.fromOneBased(1), descriptor)));
+
+        // null -> returns false
+        assertFalse(command.equals(null));
+
+        // different types -> returns false
+        assertFalse(command.equals(5));
+
+        // different index -> returns false
+        assertFalse(command.equals(new EditFollowupCommand(Index.fromOneBased(2), descriptor)));
+
+        // different descriptor -> returns false
+        EditFollowupDescriptor differentDescriptor = new EditFollowupDescriptor();
+        differentDescriptor.setDescription(new FollowupDescription("Email"));
+        assertFalse(command.equals(new EditFollowupCommand(Index.fromOneBased(1), differentDescriptor)));
+    }
+
+    @Test
+    public void toStringMethod() {
+        EditFollowupDescriptor descriptor = new EditFollowupDescriptor();
+        descriptor.setDescription(new FollowupDescription("Call"));
+        EditFollowupCommand command = new EditFollowupCommand(Index.fromOneBased(1), descriptor);
+        String expected = EditFollowupCommand.class.getCanonicalName()
+                + "{index=" + Index.fromOneBased(1) + ", editFollowupDescriptor=" + descriptor + "}";
+        assertEquals(expected, command.toString());
     }
 }

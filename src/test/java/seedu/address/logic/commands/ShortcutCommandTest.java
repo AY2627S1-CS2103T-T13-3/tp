@@ -103,4 +103,50 @@ public class ShortcutCommandTest {
         assertEquals(ShortcutCommand.MESSAGE_SHORTCUTS_HEADER + "a -> addcontact\nls -> list",
                 result.getFeedbackToUser());
     }
+
+    @Test
+    public void execute_nullModel_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new ShortcutCommand().execute(null));
+        assertThrows(NullPointerException.class, () -> new ShortcutCommand("ls", "list").execute(null));
+    }
+
+    @Test
+    public void equals() {
+        ShortcutCommand command = new ShortcutCommand("ls", "list");
+
+        // same object -> returns true
+        assertTrue(command.equals(command));
+
+        // same values -> returns true
+        assertTrue(command.equals(new ShortcutCommand("ls", "list")));
+
+        // null -> returns false
+        assertFalse(command.equals(null));
+
+        // different types -> returns false
+        assertFalse(command.equals(5));
+
+        // different shortcut -> returns false
+        assertFalse(command.equals(new ShortcutCommand("l", "list")));
+
+        // different commandWord -> returns false
+        assertFalse(command.equals(new ShortcutCommand("ls", "findcontacts")));
+
+        // list mode -> equals only another list mode
+        ShortcutCommand listCommand1 = new ShortcutCommand();
+        ShortcutCommand listCommand2 = new ShortcutCommand();
+        assertTrue(listCommand1.equals(listCommand2));
+        assertFalse(command.equals(listCommand1));
+    }
+
+    @Test
+    public void hashCodeMethod() {
+        ShortcutCommand command1 = new ShortcutCommand("ls", "list");
+        ShortcutCommand command2 = new ShortcutCommand("ls", "list");
+        assertEquals(command1.hashCode(), command2.hashCode());
+
+        ShortcutCommand listCommand1 = new ShortcutCommand();
+        ShortcutCommand listCommand2 = new ShortcutCommand();
+        assertEquals(listCommand1.hashCode(), listCommand2.hashCode());
+    }
 }

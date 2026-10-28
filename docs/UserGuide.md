@@ -17,15 +17,15 @@ This guide describes the features implemented for PressMemo v1.4.
 1. Ensure that Java `25` or later is installed on your computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the PressMemo `.jar` file from [here](https://github.com/AY2627S1-CS2103T-T13-3/tp/releases).
+2. Download the PressMemo `.jar` file from [here](https://github.com/AY2627S1-CS2103T-T13-3/tp/releases).
 
-1. Copy the file to a folder you can write to as the _home folder_ for PressMemo.
+3. Copy the file to a folder you can write to as the _home folder_ for PressMemo.
 
-1. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar pressmemo.jar`.<br>
+4. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar pressmemo.jar`.<br>
    A GUI with the **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels similar to the one below should appear in a few seconds. On the first run, the app contains sample contacts, stories and follow-ups.<br>
    ![Ui](images/Ui.png)
 
-1. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to open the help window.<br>
+5. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to open the help window.<br>
    Some example commands you can try:
 
     * `list` : Displays all contacts, stories and follow-ups.
@@ -42,7 +42,7 @@ This guide describes the features implemented for PressMemo v1.4.
 
     * `exit` : Exits the app.
 
-1. Refer to the [Features](#features) section below for details of each command.
+6. Refer to the [Features](#features) section below for details of each command.
 
 --------------------------------------------------------------------------------------------------------------------
 ## Features
@@ -84,7 +84,7 @@ Shows a message explaining how to access the help page.
 
 Format: `help`
 
-You can also open the help panel from the **Help** menu. For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
+You can also open the help window from the **Help** menu or by pressing `F1`. For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
 
 ### Adding a contact: `addcontact`
 
@@ -216,6 +216,7 @@ Examples:
 ## Adding a story: `addstory`
 
 - **Objective:** Adds a story to PressMemo
+![addstory](images/addstory-example.png)
 
 ### Usage / Command Format
 
@@ -420,21 +421,6 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 </div>
 
 --------------------------------------------------------------------------------------------------------------------
-
-## Common Errors and Troubleshooting
-
-| Error Messages / Symptoms                                                                                                                                                                                                               | Causes                                                                                                                                                                                                                                     | How to Fix                                                                                                                                                       |
-| :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `The contact index provided is invalid.`<br><br>`The story index provided is invalid.`<br><br>`The followup index provided is invalid.`                                                                                                 | The Contact Index, Story Index, or Followup Index provided is greater than the number of items currently displayed in the corresponding panel (or the panel is empty).                                                                     | Check the index numbers displayed in the corresponding panel (Contacts, Stories, or Follow-ups). Run `list`, to show all items, if the item you need is missing. |
-| `Index must be a positive integer.`<br><br>`Invalid command format!`                                                                                                                                                                    | The Contact Index, Story Index, or Followup Index is not a positive integer.                                                                                                                                                               | Ensure the index is a  positive integer with no signs, decimals, or letters.                                                                                     |
-| `Names should only contain alphanumeric characters and spaces, and should not be blank`<br><br>`Descriptions should only contain alphanumeric characters and spaces, and should not be blank`<br><br>`Tag names should be alphanumeric` | The provided value or preamble is not a valid `user string` or `word`, or a value is missing.<br><br>Most preambles and values have to be valid `user string`s.<br><br>Some commands require preamble and some values to be valid `word`s. | Ensure the value is a valid `user string` or `word`, as required.                                                                                                |
-| `Invalid command format!`                                                                                                                                                                                                               | Unexpected text was entered as preamble after the command word and before prefixes.                                                                                                                                                        | Remove any non-space text between the command word and the first prefix.                                                                                         |
-| `Invalid command format!`                                                                                                                                                                                                               | The command expects a preamble after the command word and before prefixes, but none was entered.                                                                                                                                           | Provide the required preamble text immediately after the command word and before any prefixes.                                                                   |
-| `Multiple values specified for the following single-valued value(s): [PREFIX]`                                                                                                                                                          | A prefix was provided multiple times in the same command, even though at most one is supported.                                                                                                                                            | Remove duplicate prefixes.                                                                                                                                       |
-| `Invalid command format!`<br><br>`At least one value must be provided.`                                                                                                                                                                 | One or more compulsory prefixes were omitted                                                                                                                                                                                               | Include all mandatory prefixes and their values as indicated in the command usage message.                                                                       |
-| `Unknown command.`                                                                                                                                                                                                                      | The command word was mistyped, or uses incorrect casing.<br>command words are case-sensitive.                                                                                                                                              | Enter a valid command word in lowercase (e.g., `addcontact`, `addstory`, `findstories`). Type `help` to view all available commands.                             |
-
----
 
 ## FAQ
 

@@ -157,5 +157,38 @@ public class EditStoryCommandParserTest {
 
         assertParseSuccess(parser, userInput, expectedCommand);
     }
+
+    @Test
+    public void parse_pairwiseNameAndTags_success() {
+        Index targetIndex = INDEX_FIRST_STORY;
+
+        // StoryName + single tag
+        EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder()
+                .withName("A").withTags("urgent").build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + " n/A t/urgent",
+                new EditStoryCommand(targetIndex, descriptor));
+
+        // StoryName + multiple tags
+        descriptor = new EditStoryDescriptorBuilder()
+                .withName(VALID_STORYNAME_CRIME).withTags("urgent", "breaking").build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + NAME_DESC_CRIME + " t/urgent t/breaking",
+                new EditStoryCommand(targetIndex, descriptor));
+
+        // StoryName + reset tags
+        descriptor = new EditStoryDescriptorBuilder()
+                .withName(VALID_STORYNAME_CRIME).withTags().build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + NAME_DESC_CRIME + TAG_EMPTY,
+                new EditStoryCommand(targetIndex, descriptor));
+    }
+
+    @Test
+    public void parse_boundaryIndex_success() {
+        Index boundaryIndex = Index.fromOneBased(Integer.MAX_VALUE);
+        String userInput = Integer.MAX_VALUE + NAME_DESC_CRIME;
+        EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_CRIME).build();
+        EditStoryCommand expectedCommand = new EditStoryCommand(boundaryIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
 }
 
