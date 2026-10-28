@@ -406,44 +406,45 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-## User Stories
-
-| Priority | As a …​ | I want to …​ | So that I can…​ |
-| -------- | ------- | ------------ | ---------------- |
-| `* * *` | investigative journalist | add a new contact with basic details | build a database of sources |
-| `* * *` | investigative journalist | view all active contacts | quickly browse my source network |
-| `* * *` | investigative journalist | edit a contact's details | keep my database accurate without recreating contacts |
-| `* * *` | investigative journalist | delete a contact | remove obsolete contacts from my database |
-| `* * *` | journalist with frequent story assignments | add a story | record a new story assignment |
-| `* * *` | journalist working on several assignments | view all stories | keep track of stories I have worked on |
-| `* * *` | journalist covering a developing story | edit a story's name | keep the story title current and relevant |
-| `* * *` | journalist with obsolete assignments | delete a story | remove cancelled, shelved, or irrelevant stories without deleting their contacts |
-| `* * *` | journalist liaising with several contacts for a story | assign a contact to a story | record the sources involved in that story |
-| `* * *` | journalist correcting a source assignment | unassign a contact from a story | remove an irrelevant or incorrect association while retaining the contact |
-| `* * *` | journalist managing a story | list contacts assigned to a story | know which sources are needed for that story |
-| `* * *` | journalist reviewing a source | view the stories associated with a contact | track the history of stories for which I have liaised with that source |
-| `* *` | investigative journalist covering a breaking story | search contacts using multiple keywords, locations, and tags | retrieve relevant witnesses and sources quickly |
-| `* *` | journalist seeking a particular source | search contacts by role | find relevant witnesses, experts, officials, or other source types |
-| `* *` | journalist managing international correspondence | search contacts by location or region | find people who are directly connected to the relevant area |
-| `* *` | journalist seeking different perspectives | search contacts by profession | find sources with relevant expertise |
-| `* *` | journalist covering stories in various sectors | search contacts by industry | find people with direct knowledge of the relevant industry |
-| `* *` | journalist covering stories involving stakeholders | search contacts by organisation | find people who directly represent the relevant organisation |
-| `* *` | journalist receiving a call | search contacts by phone number | identify whether the caller is an existing contact |
-| `* *` | journalist receiving an email | search contacts by email address | identify whether the sender is an existing contact |
-| `* *` | journalist communicating across regions | search contacts by language | identify people I can communicate with in the required language |
-| `* *` | senior journalist | assign a role to a contact | record the type of liaison or source relationship involved |
-| `* *` | journalist communicating with different contacts | record a contact's preferred contact method | know the best way to reach each source |
-| `* *` | journalist managing sources known by different names | record a contact's alias | identify the same contact when a different name is used |
-| `* *` | journalist adding a new source | receive a duplicate-contact warning | avoid creating records with an existing phone number or email address |
-| `* *` | journalist who often contacts certain sources | mark a contact as a favourite | access frequently used contacts more easily |
-| `* *` | journalist with inactive sources | archive and restore contacts | keep inactive records available without cluttering the active list |
-| `* *` | journalist managing multiple stories | assign and update a story priority | identify work that requires attention first |
-| `* *` | reporter speaking to a source | append a timestamped note to a contact | keep a chronological record of statements and interactions |
-| `* *` | busy reporter managing several leads | schedule a follow-up or deadline | avoid missing promised callbacks, interviews, or verification work |
-| `* *` | busy reporter | view pending follow-ups and deadlines | see upcoming work in chronological order and recognise overdue items |
-| `*` | time-pressured reporter using the terminal | use command aliases and tab completion | query and record information without typing full commands or memorising IDs |
-| `*` | investigative journalist sharing a screen or working in public | use a redacted display mode | protect confidential identities and contact details from shoulder-surfing |
-| `*` | journalist handing a story to desk editors | export filtered source dossiers as Markdown or plain text | let editors and fact-checkers verify attribution without access to my command-line setup |
+| Priority | As a …​                                                        | I want to …​                                                 | So that I can…​                                                                          |
+| -------- | -------------------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `* * *`  | investigative journalist                                       | add a new contact with basic details                         | build a database of sources                                                              |
+| `* * *`  | investigative journalist                                       | view all active contacts                                     | quickly browse my source network                                                         |
+| `* * *`  | investigative journalist                                       | edit a contact's details                                     | keep my database accurate without recreating contacts                                    |
+| `* * *`  | investigative journalist                                       | delete a contact                                             | remove obsolete contacts from my database                                                |
+| `* * *`  | journalist with frequent story assignments                     | add a story                                                  | record a new story                                                                       |
+| `* * *`  | journalist working on different types of stories               | add tags to stories                                          | categorise different types of stories                                                    |
+| `* * *`  | journalist working on several assignments                      | view all stories                                             | keep track of stories I have worked on                                                   |
+| `* * *`  | journalist covering a developing story                         | edit a story's name                                          | keep the story title current and relevant                                                |
+| `* * *`  | journalist with obsolete assignments                           | delete a story                                               | remove cancelled, shelved, or irrelevant stories without deleting their contacts         |
+| `* * *`  | journalist working on many stories simultaneously              | find stories by keywords                                     | quickly locate stories among a huge list                                                 |
+| `* * *`  | journalist liaising with several contacts for a story          | assign a contact to a story                                  | record the sources involved in that story                                                |
+| `* * *`  | journalist correcting a source assignment                      | unassign a contact from a story                              | remove an irrelevant or incorrect association while retaining the contact                |
+| `* * *`  | journalist managing a story                                    | list contacts assigned to a story                            | know which sources are needed for that story                                             |
+| `* * *`  | journalist reviewing a source                                  | view the stories associated with a contact                   | track the history of stories for which I have liaised with that source                   |
+| `* *`    | investigative journalist covering a breaking story             | search contacts using multiple keywords, locations, and tags | retrieve relevant witnesses and sources quickly                                          |
+| `* *`    | journalist seeking a particular source                         | search contacts by role                                      | find relevant witnesses, experts, officials, or other source types                       |
+| `* *`    | journalist managing international correspondence               | search contacts by location or region                        | find people who are directly connected to the relevant area                              |
+| `* *`    | journalist seeking different perspectives                      | search contacts by profession                                | find sources with relevant expertise                                                     |
+| `* *`    | journalist covering stories in various sectors                 | search contacts by industry                                  | find people with direct knowledge of the relevant industry                               |
+| `* *`    | journalist covering stories involving stakeholders             | search contacts by organisation                              | find people who directly represent the relevant organisation                             |
+| `* *`    | journalist receiving a call                                    | search contacts by phone number                              | identify whether the caller is an existing contact                                       |
+| `* *`    | journalist receiving an email                                  | search contacts by email address                             | identify whether the sender is an existing contact                                       |
+| `* *`    | journalist communicating across regions                        | search contacts by language                                  | identify people I can communicate with in the required language                          |
+| `* *`    | senior journalist                                              | assign a role to a contact                                   | record the type of liaison or source relationship involved                               |
+| `* *`    | journalist communicating with different contacts               | record a contact's preferred contact method                  | know the best way to reach each source                                                   |
+| `* *`    | journalist managing sources known by different names           | record a contact's alias                                     | identify the same contact when a different name is used                                  |
+| `* *`    | journalist adding a new source                                 | receive a duplicate-contact warning                          | avoid creating records with an existing phone number or email address                    |
+| `* *`    | journalist who often contacts certain sources                  | mark a contact as a favourite                                | access frequently used contacts more easily                                              |
+| `* *`    | journalist with inactive sources                               | archive and restore contacts                                 | keep inactive records available without cluttering the active list                       |
+| `* *`    | journalist managing multiple stories                           | assign and update a story priority                           | identify work that requires attention first                                              |
+| `* *`    | reporter speaking to a source                                  | append a timestamped note to a contact                       | keep a chronological record of statements and interactions                               |
+| `* *`    | busy reporter managing several leads                           | schedule a follow-up or deadline                             | avoid missing promised callbacks, interviews, or verification work                       |
+| `* *`    | busy reporter                                                  | view pending follow-ups and deadlines                        | see upcoming work in chronological order and recognise overdue items                     |
+| `* *`    | busy reporter liaising with multiple contacts                  | view the follow-ups for a particuluar contact                | track upcoming tasks and meetings involving that specific person                         |
+| `*`      | time-pressured reporter using the terminal                     | use command aliases and tab completion                       | query and record information without typing full commands or memorising IDs              |
+| `*`      | investigative journalist sharing a screen or working in public | use a redacted display mode                                  | protect confidential identities and contact details from shoulder-surfing                |
+| `*`      | journalist handing a story to desk editors                     | export filtered source dossiers as Markdown or plain text    | let editors and fact-checkers verify attribution without access to my command-line setup |
 
 
 ### Use cases
@@ -513,7 +514,7 @@ Actor: User
 
 Guarantees:
 
-- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the contacts that match the specified filter
+- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the stories that match the specified filter
 - The ActiveContactList  and contact panel remain unchanged
 
 ##### MSS:
@@ -569,52 +570,121 @@ Use case ends
 - System informs the user that the contact is already assigned to the specified story
 - Use case ends
 
-#### Use Case: UC5 – Add Story
+#### Use Case: UC5 - Add Story
 
 Actor: User
 
+##### Guarantees:
+
+- At the end of MSS, the new story is added to the ArchiveStoryList and displayed in the story panel
+- At the end of MSS, ActiveStoryList is updated to show all stories (ActiveStoryList = ArchiveStoryList)
+
 ##### MSS:
 
-1. User enters the add story command with the story information.
-2. System parses the command.
-3. System validates the provided story information.
-4. System adds the new story.
-5. System saves the updated data to storage.
-6. System displays a success message.
+1. User requests to add a story by providing the story name and optional tags
+2. System adds the story to the ArchiveStoryList
+3. System updates the ActiveStoryList and story panel to display all stories
+4. System informs the user in the console that the story has been added successfully
 
 Use case ends.
 
 ##### Extensions:
 
-3a. User provides invalid or missing story information.
+1a. Crucial details are missing or format is invalid (e.g. blank story name or invalid tag format).
 
-- System informs the user that the provided information is invalid.
+- System informs the user in the console of the invalid command format.
 - Use case ends.
 
-4a. A story with the same name already exists.
+1b. A story with the same name already exists in the ArchiveStoryList.
 
-- System informs the user that the story already exists.
+- System informs the user in the console that the story already exists.
 - Use case ends.
 
-#### **Use case:  UC6 – Delete a contact**
+#### Use Case: UC6 - Delete a contact
 
 Actor: User
 
-**MSS**
+##### MSS:
 
 1. User requests to list contacts
 2. AddressBook shows a list of contacts
 3. User requests to delete a specific contact in the list
 4. AddressBook deletes the contact
-  Use case ends.
 
-**Extensions**
-
-- 2a. The list is empty.
 Use case ends.
-- 3a. The given index is invalid.
-  - 3a1. AddressBook shows an error message.
-  Use case resumes at step 2.
+
+##### Extensions:
+
+2a. The list is empty.
+
+- Use case ends.
+
+3a. The given index is invalid (not positive integer or larger than the number of contacts displayed)
+
+- AddressBook shows an error message.
+- Use case resumes at step 2.
+
+#### Use Case: UC8 - Find stories by keywords
+
+Actor: User
+
+##### Guarantees:
+
+- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the stories from the ArchiveStoryList whose names contain at least one of the specified keywords (case-insensitive, whole-word match)
+- The ActiveContactList, ActiveFollowupList, and ArchiveStoryList remain unchanged
+
+##### MSS:
+
+1. User request to find stories, providing one or more search keywords
+2. System filters stories whose names contain at least one of the specified keywords
+3. System updates the ActiveStoryList and story panel to display the matching stories
+4. System informs the user in the console of the number of matching stories listed
+
+Use case ends.
+
+##### Extensions:
+
+1a. User does not provide any keywords (empty search query).
+
+- System informs the user in the console of the invalid command format.
+- Use case ends.
+
+2a. No stories match the specified keywords.
+
+- System updates the story panel to display an empty list.
+- System informs the user in the console that 0 stories are matched.
+- Use case ends.
+
+#### Use Case: UC9 - List follow-ups
+
+Actor: User
+
+##### Guarantees:
+
+- At the end of MSS and Ext. 2a, the ActiveFollowupList is updated to show either all follow-ups from the ArchiveFollowupList (if no contact index is specified) or only the follow-ups associated with the specified contact in the ActiveContactList
+- ActiveContactList, ActiveStoryList, and all archive lists remain unchanged
+
+##### MSS:
+
+1. User requests to list follow-ups, optionally specifying a contact index
+2. If a contact index was specified, System filters the follow-ups to include only those associated with the specified contact
+3. System updates the ActiveFollowupList and followup panel to display the follow-ups
+4. System informs the user in the console that the follow-ups have been listed successfully
+
+Use case ends.
+
+##### Extensions:
+
+1a. User specifies an invalid contact index  (not positive integer or larger than the number of contacts displayed).
+
+- System informs the user in the console of the invalid index.
+- Use case ends.
+
+2a. There are no follow-ups associated with the specified contact.
+
+- 2a1. System updates the followup panel to display an empty list.
+- 2a2. System informs the user in the console that no followups have been matched.
+- Use case ends.
 
 ### Non-Functional Requirements
 
