@@ -14,7 +14,7 @@ import seedu.address.model.contact.Name;
 public class JsonAdaptedNameTest {
 
     private static final String VALID_NAME = "Alex Yeoh";
-    private static final String INVALID_NAME = "Alex@Yeoh";
+    private static final String INVALID_NAME = "Alex/Yeoh";
 
     @Test
     public void toModelType_validName_returnsName() throws Exception {

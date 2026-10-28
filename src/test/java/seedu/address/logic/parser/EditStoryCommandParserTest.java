@@ -1,6 +1,5 @@
 package seedu.address.logic.parser;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_STORYNAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_STORYTAG_DESC;
@@ -27,7 +26,6 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditStoryCommand;
 import seedu.address.logic.commands.EditStoryCommand.EditStoryDescriptor;
-import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditStoryDescriptorBuilder;
@@ -64,7 +62,7 @@ public class EditStoryCommandParserTest {
         assertParseFailure(parser, "1 some random string", MESSAGE_INVALID_FORMAT);
 
         // invalid prefix being parsed as preamble
-        assertThrows(ParseException.class, () -> parser.parse("1 i/ string"));
+        assertParseFailure(parser, "1 i/ string", MESSAGE_INVALID_FORMAT);
     }
 
     @Test
