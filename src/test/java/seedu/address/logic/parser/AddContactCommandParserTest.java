@@ -198,81 +198,81 @@ public class AddContactCommandParserTest {
     public void parse_allPairsCombinations_success() {
         // TC1: N1, P1, E1, A1, T1
         Contact c1 = new ContactBuilder().withName("John Doe").withPhone("98765432")
-                .withEmail("john@example").withAddress("123 Clementi Rd, #01-02").withTags().build();
-        assertParseSuccess(parser, " n/John Doe p/98765432 e/john@example a/123 Clementi Rd, #01-02",
+                .withEmail("john@example.com").withAddress("123 Clementi Rd, #01-02").withTags().build();
+        assertParseSuccess(parser, " n/John Doe p/98765432 e/john@example.com a/123 Clementi Rd, #01-02",
                 new AddContactCommand(c1));
 
         // TC2: N1, P2, E2, A2, T2
         Contact c2 = new ContactBuilder().withName("John Doe").withPhone("123")
-                .withEmail("a@b").withAddress("X").withTags("colleague").build();
-        assertParseSuccess(parser, " n/John Doe p/123 e/a@b a/X t/colleague",
+                .withEmail("a@b.co").withAddress("X").withTags("colleague").build();
+        assertParseSuccess(parser, " n/John Doe p/123 e/a@b.co a/X t/colleague",
                 new AddContactCommand(c2));
 
         // TC3: N1, P3, E3, A3, T3
         Contact c3 = new ContactBuilder().withName("John Doe").withPhone("123456789012345")
-                .withEmail("john1@example2").withAddress("#12-34, 5th Ave., West-St.")
+                .withEmail("john+doe_test-1@example.com").withAddress("#12-34, 5th Ave., West-St.")
                 .withTags("friend", "client").build();
-        assertParseSuccess(parser, " n/John Doe p/123456789012345 e/john1@example2"
+        assertParseSuccess(parser, " n/John Doe p/123456789012345 e/john+doe_test-1@example.com"
                 + " a/#12-34, 5th Ave., West-St. t/friend t/client", new AddContactCommand(c3));
 
         // TC4: N1, P1, E2, A3, T4
         Contact c4 = new ContactBuilder().withName("John Doe").withPhone("98765432")
-                .withEmail("a@b").withAddress("#12-34, 5th Ave., West-St.")
+                .withEmail("a@b.co").withAddress("#12-34, 5th Ave., West-St.")
                 .withTags("friend").build();
-        assertParseSuccess(parser, " n/John Doe p/98765432 e/a@b a/#12-34, 5th Ave., West-St. t/friend t/friend",
+        assertParseSuccess(parser, " n/John Doe p/98765432 e/a@b.co a/#12-34, 5th Ave., West-St. t/friend t/friend",
                 new AddContactCommand(c4));
 
         // TC5: N2, P1, E3, A2, T4
         Contact c5 = new ContactBuilder().withName("J").withPhone("98765432")
-                .withEmail("john1@example2").withAddress("X")
+                .withEmail("john+doe_test-1@example.com").withAddress("X")
                 .withTags("friend").build();
-        assertParseSuccess(parser, " n/J p/98765432 e/john1@example2 a/X t/friend t/friend",
+        assertParseSuccess(parser, " n/J p/98765432 e/john+doe_test-1@example.com a/X t/friend t/friend",
                 new AddContactCommand(c5));
 
         // TC6: N2, P2, E1, A3, T1
         Contact c6 = new ContactBuilder().withName("J").withPhone("123")
-                .withEmail("john@example").withAddress("#12-34, 5th Ave., West-St.").withTags().build();
-        assertParseSuccess(parser, " n/J p/123 e/john@example a/#12-34, 5th Ave., West-St.",
+                .withEmail("john@example.com").withAddress("#12-34, 5th Ave., West-St.").withTags().build();
+        assertParseSuccess(parser, " n/J p/123 e/john@example.com a/#12-34, 5th Ave., West-St.",
                 new AddContactCommand(c6));
 
         // TC7: N2, P3, E2, A1, T3
         Contact c7 = new ContactBuilder().withName("J").withPhone("123456789012345")
-                .withEmail("a@b").withAddress("123 Clementi Rd, #01-02")
+                .withEmail("a@b.co").withAddress("123 Clementi Rd, #01-02")
                 .withTags("friend", "client").build();
-        assertParseSuccess(parser, " n/J p/123456789012345 e/a@b a/123 Clementi Rd, #01-02 t/friend t/client",
+        assertParseSuccess(parser, " n/J p/123456789012345 e/a@b.co a/123 Clementi Rd, #01-02 t/friend t/client",
                 new AddContactCommand(c7));
 
         // TC8: N2, P2, E3, A1, T2
         Contact c8 = new ContactBuilder().withName("J").withPhone("123")
-                .withEmail("john1@example2").withAddress("123 Clementi Rd, #01-02")
+                .withEmail("john+doe_test-1@example.com").withAddress("123 Clementi Rd, #01-02")
                 .withTags("colleague").build();
-        assertParseSuccess(parser, " n/J p/123 e/john1@example2 a/123 Clementi Rd, #01-02 t/colleague",
+        assertParseSuccess(parser, " n/J p/123 e/john+doe_test-1@example.com a/123 Clementi Rd, #01-02 t/colleague",
                 new AddContactCommand(c8));
 
         // TC9: N3, P1, E2, A3, T2
         Contact c9 = new ContactBuilder().withName("John the 2nd").withPhone("98765432")
-                .withEmail("a@b").withAddress("#12-34, 5th Ave., West-St.")
+                .withEmail("a@b.co").withAddress("#12-34, 5th Ave., West-St.")
                 .withTags("colleague").build();
-        assertParseSuccess(parser, " n/John the 2nd p/98765432 e/a@b a/#12-34, 5th Ave., West-St. t/colleague",
+        assertParseSuccess(parser, " n/John the 2nd p/98765432 e/a@b.co a/#12-34, 5th Ave., West-St. t/colleague",
                 new AddContactCommand(c9));
 
         // TC10: N3, P2, E3, A1, T4
         Contact c10 = new ContactBuilder().withName("John the 2nd").withPhone("123")
-                .withEmail("john1@example2").withAddress("123 Clementi Rd, #01-02")
+                .withEmail("john+doe_test-1@example.com").withAddress("123 Clementi Rd, #01-02")
                 .withTags("friend").build();
-        assertParseSuccess(parser, " n/John the 2nd p/123 e/john1@example2"
+        assertParseSuccess(parser, " n/John the 2nd p/123 e/john+doe_test-1@example.com"
                 + " a/123 Clementi Rd, #01-02 t/friend t/friend", new AddContactCommand(c10));
 
         // TC11: N3, P3, E1, A2, T1
         Contact c11 = new ContactBuilder().withName("John the 2nd").withPhone("123456789012345")
-                .withEmail("john@example").withAddress("X").withTags().build();
-        assertParseSuccess(parser, " n/John the 2nd p/123456789012345 e/john@example a/X",
+                .withEmail("john@example.com").withAddress("X").withTags().build();
+        assertParseSuccess(parser, " n/John the 2nd p/123456789012345 e/john@example.com a/X",
                 new AddContactCommand(c11));
 
         // TC12: N3, P3, E2, A2, T3
         Contact c12 = new ContactBuilder().withName("John the 2nd").withPhone("123456789012345")
-                .withEmail("a@b").withAddress("X").withTags("friend", "client").build();
-        assertParseSuccess(parser, " n/John the 2nd p/123456789012345 e/a@b a/X t/friend t/client",
+                .withEmail("a@b.co").withAddress("X").withTags("friend", "client").build();
+        assertParseSuccess(parser, " n/John the 2nd p/123456789012345 e/a@b.co a/X t/friend t/client",
                 new AddContactCommand(c12));
     }
 
@@ -280,7 +280,7 @@ public class AddContactCommandParserTest {
     public void parse_edgeCaseIsolatedInvalidInputs_failure() {
         String validName = " n/Alice";
         String validPhone = " p/12345678";
-        String validEmail = " e/alice@example";
+        String validEmail = " e/alice@example.com";
         String validAddress = " a/123 Street";
 
         // Name edge cases: empty, invalid name containing fslash
@@ -296,8 +296,9 @@ public class AddContactCommandParserTest {
         assertParseFailure(parser, validName + validPhone + " e/" + validAddress, Email.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + " e/notanemail" + validAddress, Email.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + " e/alice@" + validAddress, Email.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + " e/@example" + validAddress, Email.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + " e/alice@@example" + validAddress,
+        assertParseFailure(parser, validName + validPhone + " e/@example.com" + validAddress,
+                Email.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, validName + validPhone + " e/alice@@example.com" + validAddress,
                 Email.MESSAGE_CONSTRAINTS);
 
         // Address edge cases: empty, whitespace only

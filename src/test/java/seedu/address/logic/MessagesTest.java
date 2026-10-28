@@ -25,9 +25,9 @@ public class MessagesTest {
     @Test
     public void format_contactWithoutStories() {
         Contact contact = new Contact(new Name("Alice Pauline"), new Phone("94351253"),
-                new Email("alice@example"), new Address("123, Jurong West Ave 6, #08-111"),
+                new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
                 Set.of(new Tag("friends")));
-        String expected = "Alice Pauline; Phone: 94351253; Email: alice@example; "
+        String expected = "Alice Pauline; Phone: 94351253; Email: alice@example.com; "
                 + "Address: 123, Jurong West Ave 6, #08-111; Tags: [friends]; Stories: ";
         assertEquals(expected, Messages.format(contact));
     }
@@ -35,9 +35,9 @@ public class MessagesTest {
     @Test
     public void format_contactWithStories() {
         Contact contact = new Contact(new Name("Alice Pauline"), new Phone("94351253"),
-                new Email("alice@example"), new Address("123, Jurong West Ave 6, #08-111"),
+                new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
                 Set.of(new Tag("friends")), List.of(new StoryName("Housing Investigation")));
-        String expected = "Alice Pauline; Phone: 94351253; Email: alice@example; "
+        String expected = "Alice Pauline; Phone: 94351253; Email: alice@example.com; "
                 + "Address: 123, Jurong West Ave 6, #08-111; Tags: [friends]; Stories: [Housing Investigation]";
         assertEquals(expected, Messages.format(contact));
     }

@@ -220,8 +220,8 @@ public class EditContactCommandParserTest {
 
         // Name + Email (typical name + edge email)
         descriptor = new EditContactDescriptorBuilder()
-                .withName(VALID_NAME_AMY).withEmail("a@b").build();
-        assertParseSuccess(parser, targetIndex.getOneBased() + NAME_DESC_AMY + " e/a@b",
+                .withName(VALID_NAME_AMY).withEmail("a@b.co").build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + NAME_DESC_AMY + " e/a@b.co",
                 new EditContactCommand(targetIndex, descriptor));
 
         // Name + Address (edge name + edge address)
@@ -262,20 +262,20 @@ public class EditContactCommandParserTest {
 
         // Email + Address (edge email + typical address)
         descriptor = new EditContactDescriptorBuilder()
-                .withEmail("a@b").withAddress(VALID_ADDRESS_AMY).build();
-        assertParseSuccess(parser, targetIndex.getOneBased() + " e/a@b" + ADDRESS_DESC_AMY,
+                .withEmail("a@b.co").withAddress(VALID_ADDRESS_AMY).build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + " e/a@b.co" + ADDRESS_DESC_AMY,
                 new EditContactCommand(targetIndex, descriptor));
 
         // Email + Tag (edge email + single tag)
         descriptor = new EditContactDescriptorBuilder()
-                .withEmail("a@b").withTags(VALID_TAG_FRIEND).build();
-        assertParseSuccess(parser, targetIndex.getOneBased() + " e/a@b" + TAG_DESC_FRIEND,
+                .withEmail("a@b.co").withTags(VALID_TAG_FRIEND).build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + " e/a@b.co" + TAG_DESC_FRIEND,
                 new EditContactCommand(targetIndex, descriptor));
 
         // Email + Tag Reset (edge email + reset tags)
         descriptor = new EditContactDescriptorBuilder()
-                .withEmail("a@b").withTags().build();
-        assertParseSuccess(parser, targetIndex.getOneBased() + " e/a@b" + TAG_EMPTY,
+                .withEmail("a@b.co").withTags().build();
+        assertParseSuccess(parser, targetIndex.getOneBased() + " e/a@b.co" + TAG_EMPTY,
                 new EditContactCommand(targetIndex, descriptor));
 
         // Address + Tag (edge address + single tag)

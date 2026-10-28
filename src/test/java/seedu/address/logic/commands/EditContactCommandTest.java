@@ -209,10 +209,10 @@ public class EditContactCommandTest {
     public void execute_pairwiseFieldsEmailAndAddress_success() {
         Contact contactToEdit = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
         Contact editedContact = new ContactBuilder(contactToEdit)
-                .withEmail("a@b").withAddress("X").build();
+                .withEmail("a@b.co").withAddress("X").build();
 
         EditContactDescriptor descriptor = new EditContactDescriptorBuilder()
-                .withEmail("a@b").withAddress("X").build();
+                .withEmail("a@b.co").withAddress("X").build();
         EditContactCommand editContactCommand = new EditContactCommand(INDEX_FIRST_CONTACT, descriptor);
 
         String expectedMessage =
