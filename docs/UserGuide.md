@@ -362,7 +362,7 @@ Format: `addfollowup DESCRIPTION ci/CONTACT_INDEX`
 * `ci/CONTACT_INDEX` refers to the contact's number in the currently displayed contact list. The index must be a positive integer within that list.
 * An identical description cannot be added twice for the same contact. Description comparison is case-sensitive.
 * Follow-ups belong to contacts, not directly to stories; deleting a story does not remove a contact's follow-ups.
-* There is currently no command to edit, search, or separately list follow-ups; view them in the **FOLLOW-UPS** panel.
+* Use `listfollowups` to show all follow-ups or filter follow-ups by assigned contact in the **FOLLOW-UPS** panel.
 * Editing a contact's name updates their follow-up references. Deleting a contact also removes their follow-ups.
 * New reminders appear in the **FOLLOW-UPS** panel.
 
@@ -383,6 +383,36 @@ Format: `deletefollowup INDEX`
 Examples:
 * `deletefollowup 1`
 * `deletefollowup 3`
+
+## Listing follow-ups: `listfollowups`
+
+- **Objective:** Displays follow-ups in the follow-ups panel, optionally filtering them by assigned contact.
+![listfollowups](images/listfollowups-example.png)
+
+### Usage / Command Format
+
+`listfollowups [ci/CONTACT_INDEX]`
+
+### Parameters & Constraints
+
+| Parameter          | Type            | Description                                       | Examples |
+| :----------------- | :-------------- | :------------------------------------------------ | :------- |
+| `ci/CONTACT_INDEX` | `Contact Index` | to display only follow-ups linked to this contact | 1        |
+
+> **Tip / Note:**
+> * If `ci/CONTACT_INDEX` is omitted, `listfollowups` displays all follow-ups in PressMemo.
+> * If `ci/CONTACT_INDEX` is provided, `listfollowups` displays only follow-ups linked to that contact.
+> * `listfollowups` only updates the **FOLLOW-UPS** panel; the **CONTACTS** and **STORIES** panels remain unchanged.
+
+### Examples
+
+* **Example 1: List all follow-ups**
+  * **Input / Action:** `listfollowups`
+  * **Expected Outcome:** All follow-ups from PressMemo are displayed in the **FOLLOW-UPS** panel.
+
+* **Example 2: List follow-ups for a specific contact**
+  * **Input / Action:** `listfollowups ci/1`
+  * **Expected Outcome:** Displays only follow-ups linked to the first displayed contact in the **FOLLOW-UPS** panel. 
 
 ### Managing command shortcuts: `shortcut`
 
@@ -481,6 +511,7 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 | **Find stories**                  | `findstories STORY_NAME [MORE_KEYWORDS]...`<br> e.g., `findstories Housing Investigation`                                                                                           |
 | **List all contacts and stories** | `list` (clears both filters)                                                                                                                                                        |
 | **List contacts**                 | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)                                        |
+| **List follow-ups**               | `listfollowups [ci/CONTACT_INDEX]`<br> e.g., `listfollowups` (all follow-ups) or `listfollowups ci/1` (follow-ups for contact 1)                   |
 | **List stories**                  | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)                                         |
 | **Manage shortcuts**              | `shortcut [s/SHORTCUT c/COMMAND_WORD]`<br> e.g., `shortcut` or `shortcut s/ls c/list`                                                                                               |
 | **Remove shortcut**               | `unshortcut SHORTCUT`<br> e.g., `unshortcut ls`                                                                                                                                     |

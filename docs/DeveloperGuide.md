@@ -160,7 +160,7 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Implementation**
+# **Implementation**
 
 This section describes some noteworthy details on how certain features are implemented.
 
@@ -247,6 +247,39 @@ The sequence diagram below illustrates the interactions within the Model compone
 | -------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | **Pros** | **Disjunctive / OR search** allows flexible exploratory queries across multiple topics in a single command. | **Conjunctive / AND search** returns strictly targeted results matching every keyword.                                  |
 | **Cons** | Results may be broader than intended if common words are included.                                          | Less flexible when looking for possible matches across multiple topics; yields zero results if even one keyword misses. |
+
+## `listfollowups`
+
+- **Objective:** Lists all follow-ups in the address book, or filters the follow-ups assigned to a specified contact in the Active Contact List.
+
+### API
+
+* **Command:** `listfollowups [ci/CONTACT_INDEX]`
+* **Parameters**: refer to [user guide](UserGuide.md#listing-follow-ups-listfollowups)
+* **Description:**
+	* Updates the ActiveFollowupList to display either all follow-ups from the ArchiveFollowupList or only those associated with the contact identified by `CONTACT_INDEX`.
+* **Preconditions:** 
+	* If `ci/CONTACT_INDEX` is specified, `CONTACT_INDEX` must be valid
+* **Postconditions:** 
+	* ActiveFollowupList is updated:
+		* If no `ci/CONTACT_INDEX` is provided, ActiveFollowupList = ArchiveFollowupList
+		* If `CONTACT_INDEX` is provided, ActiveFollowupList displays only followups linked to the contact identified by `CONTACT_INDEX`
+- ArchiveFollowupList is unchanged.
+
+### Implementation details
+
+The sequence diagram below illustrates the interactions within the Logic and Model components when the user executes `listfollowups ci/1`.
+
+#### Execution flow
+
+1. The user enters `listfollowups` as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates an `ListFollowupsCommandParser` to parse the command arguments.
+4. `ListFollowupsCommandParser` parses the story name and tags and creates a `ListFollowupsCommand` object.
+5. `LogicManager` executes the `ListFollowupsCommand` object.
+6. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the ActiveContactList from `Model` and obtains the Contact corresponding to `CONTACT_INDEX`
+7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` request Model to update the filter predicate of ActiveFollowupList to match Followups linked to the specified Contact. Else, `ListFollowupsCommand` request Model to update ActiveFollowupList to include the whole ArchiveFollowupList
+8. `UI` updates the followup panel accordingly.
 
 ### \[Proposed\] Undo/redo feature
 
