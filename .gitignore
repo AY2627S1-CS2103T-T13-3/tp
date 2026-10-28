@@ -21,6 +21,10 @@ src/test/data/sandbox/
 .DS_Store
 docs/_site/
 
+# Microslop Windows custom attributes files
+*.ini
+
+
 # AI Agents
 AGENTS.md
 CLAUDE.md
