@@ -599,23 +599,63 @@ Use case ends.
 
 ### Glossary
 
-* **Active Contact List**: The list of contacts currently displayed in the Contact Panel. Contacts in this list can be referenced using their ContactIndex.
-* **Active Story List**: The list of stories currently displayed in the Story Panel. Stories in this list can be referenced using their StoryIndex.
-* **Archive Contact List**: The list containing all contacts stored in PressMemo, including contacts that are not currently displayed in the Active Contact List.
-* **Archive Story List**: The list containing all stories stored in PressMemo, including stories that are not currently displayed in the Active Story List.
+#### UI Components
+
+![Ui](images/Ui-labelled.png)
+
+| Number | Component name | Definition                                                                     |
+| ------ | -------------- | ------------------------------------------------------------------------------ |
+| 0      | console        | interface for inputting `command`s and viewing `response`s                     |
+| 1      | command bar    | widget for inputting `command`s                                                |
+| 2      | message panel  | widget that displays the response to the most recently input `command`, if any |
+| 3      | contact panel  | widget that displays the `Active Contact List`                                 |
+| 4      | story panel    | widget that displays the `Active Story List`                                   |
+| 5      | followup panel | widget that displays the `Active Followup List`                                |
+| 6      | help panel     | toggle-able widget that displays the `help info` when active                   |
+
+#### Input data types
+
+| Input type     | Definition                                                                                                                                                           | Format/s                                                                                                                                                                                                  | Examples                   |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| user string    | A typed unit of text input from the user.<br><br>Behaviour for invalid `user string`s is unspecified, and may result in unexpected behaviour such as error messages. | Valid `user string`s comprise only alphanumeric characters and/or spaces (U+0020). It must contain at least 1 alphanumeric character.<br><br>Any spaces at the start or end of`user string`s are ignored. | wumpus<br><br>wumpus farts |
+| word           | A `user string` that does not contain spaces                                                                                                                         | Does not contain spaces.                                                                                                                                                                                  | wumpus<br><br>wumpusfarts  |
+| Contact Index  | A `word` representing the 1-based position of a `Contact` in the `Active Contact List`, used to identify that Contact in `command`s                                  | Integer between and including 1 and the number of `Contact`s in the `Active Contact List`.<br><br>If the `Active Contact List` is empty, there is no valid `Contact Index`                                | 1                          |
+| Story Index    | A `word` representing the 1-based position of a `Story` in the `Active Story List`, used to identify that `Story` in `command`s                                      | Integer between and including 1 and the number of `Story`s in the `Active Story List`<br><br>If the `Active Story List` is empty, there is no valid `Story Index`                                         | 2                          |
+| Followup Index | A `word` representing the 1-based position of a `Followup` in the `Active Followup List`, used to identify that `Followup` in `command`s                             | Integer between and including 1 and the number of `Followup`s in the `Active Followup List`<br><br>If the `Active Followup List` is empty, there is no valid `Followup Index`                             | 1                          |
+
+#### Command format
+
+| Input type    | Definition                                                                                                                                       | Format/s                                                                                                                                                                                                          | Examples                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| command       | A single instruction from the user.<br>A user inputs a `command` using the `command bar`.<br>                                                    | A `command` comprises: a `command name` or `shortcut` followed by a `preamble`, and then a `argument list`.<br><br>`command name` is mandatory while the other parts may be optional (depending on the `command`) | editstory<br><br>1 n/ find wumpus |
+| command name  | A `word` specifying the type/ class of a `command`.                                                                                              | Must be space-separated from the `preamble` (or `argument list` if there is no `preamble`)<br>                                                                                                                    | editstory                         |
+| shortcut      | A `word` alias for a `command name`, defined by the user.<br><br>Using a shortcut in a command is equivalent to using the aliased `command name` | Must be space-separated from the `preamble` (or `argument list` if there is no `preamble`)<br><br>A shortcut must be defined by the user (using the `shortcut` command) before it can be used                     | ls                                |
+| preamble      | A `user string` specifying some behaviour of a command.                                                                                          | Must be space-separated from the `argument name` (and `argument list`, if any)                                                                                                                                    | 1<br><br>smelly wumpus            |
+| argument list | A list of `argument`s that specifies the behaviour of a `command`.                                                                               | The order of `argument`s does not matter; every permutation of the same `argument`s produces the same outcome                                                                                                     | n/ find wumpus t/ smelly          |
+| argument      | A specification of an aspect of a `command`                                                                                                      | Comprises a `prefix`, followed by a `field`.<br><br>`prefix` is mandatory while `field` may be optional (depending on the `command` and `argument`)                                                               | n/find wumpus<br><br>t/           |
+| prefix        | Identifies the aspect of a `command` specified by an `argument`                                                                                  | Comprises a `word` followed by a forward slash (U+002F).<br><br>Must be space-separated from any previous item.                                                                                                   | n/<br><br>ci/                     |
+| field         | A `user string` that provides information for an `argument`                                                                                      | Must follow a `prefix`                                                                                                                                                                                            | find wumpus                       |
+
+#### Domain terms
+
+* **Contact**: A contact whose information is stored in PressMemo, including a name, phone number, and email address. A contact can optionally include any number of **tags**.
+* **Story**: A news story or topic managed in PressMemo that may be linked to one or more Contacts. A Story can optionally include any number of **tags**.
+* **Follow-up**: An action item, task or upcoming event related to a Contact. Each followup is described by a **description**. 
 * **Assign**: To create a link between an existing Contact and an existing Story.
 * **Assigned Contact**: A Contact that has been linked to a particular Story.
-* **Command**: A text instruction entered by the user to perform an action in PressMemo. The first String is the command name, followed by any fields or arguments required by that command.
-* **Contact**: A contact whose information is stored in PressMemo, including a name, phone number, and optional email address.
-* **ContactIndex**: The 1-based position of a Contact in the Active Contact List, used to identify that Contact in commands.
-* **Contact Panel**: The part of the PressMemo interface that displays the Active Contact List.
-* **Data File**: The local JSON file used by PressMemo to store application data between sessions.
-* **Filter**: A condition used to narrow down the Contacts or Stories displayed to the user.
-* **Story**: A news story or topic managed in PressMemo that may be linked to one or more Contacts.
-* **StoryIndex**: The 1-based position of a Story in the Active Story List, used to identify that Story in commands.
-* **Story Panel**: The part of the PressMemo interface that displays the Active Story List.
-* **String**: A sequence of characters used as input in PressMemo commands. Strings containing spaces should be enclosed in double quotation marks (`"..."`). Use `\"` to represent a double quotation mark inside a quoted String.
+* **Assigned Story**: A Story that has been linked to a particular Contact.
 * **Unassign**: To remove the link between a Contact and a Story without deleting either the Contact or the Story.
+
+#### Solution-specific terms
+
+* **Data Files**: The local JSON files used by PressMemo to store application data between sessions.
+* **Active Contact List**: The list of contacts currently displayed in the Contact Panel. Contacts in this list can be referenced using their ContactIndex.
+* **Active Story List**: The list of stories currently displayed in the Story Panel. Stories in this list can be referenced using their StoryIndex.
+* **Active Followup List**: The list of follow-ups currently displayed in the Story Panel. Stories in this list can be referenced using their StoryIndex.
+* **Archive Contact List**: The list containing all contacts stored in PressMemo, including contacts that are not currently displayed in the Active Contact List.
+* **Archive Story List**: The list containing all stories stored in PressMemo, including stories that are not currently displayed in the Active Story List.
+* **Archive Followup List**: The list containing all follow-ups stored in PressMemo, including stories that are not currently displayed in the Active Story List.
+* **Filter**: A condition used to select a subset of Contacts, Stories or Follow-ups displayed to the user.
 
 --------------------------------------------------------------------------------------------------------------------
 
