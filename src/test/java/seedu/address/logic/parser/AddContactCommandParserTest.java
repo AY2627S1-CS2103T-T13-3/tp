@@ -283,9 +283,9 @@ public class AddContactCommandParserTest {
         String validEmail = " e/alice@example.com";
         String validAddress = " a/123 Street";
 
-        // Name edge cases: empty, non-alphanumeric leading
+        // Name edge cases: empty, invalid name containing fslash
         assertParseFailure(parser, " n/" + validPhone + validEmail + validAddress, Name.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, " n/!Alice" + validPhone + validEmail + validAddress, Name.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, " n/Al/ice" + validPhone + validEmail + validAddress, Name.MESSAGE_CONSTRAINTS);
 
         // Phone edge cases: empty, less than 3 digits, non-digits
         assertParseFailure(parser, validName + " p/" + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
@@ -304,10 +304,12 @@ public class AddContactCommandParserTest {
         assertParseFailure(parser, validName + validPhone + validEmail + " a/", Address.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + validEmail + " a/   ", Address.MESSAGE_CONSTRAINTS);
 
-        // Tag edge cases: invalid symbol, space inside tag
-        assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/tag#1",
+        // Tag edge cases: empty, whitespace only, contains fslash
+        assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/",
                 Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/tag with space",
+        assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/   ",
+                Tag.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/tag/1",
                 Tag.MESSAGE_CONSTRAINTS);
     }
 }
