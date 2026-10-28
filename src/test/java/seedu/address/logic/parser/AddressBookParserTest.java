@@ -5,11 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STORYINDEX;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_STORY;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,18 +22,27 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.AddContactCommand;
+import seedu.address.logic.commands.AddFollowupCommand;
+import seedu.address.logic.commands.AddStoryCommand;
 import seedu.address.logic.commands.AssignCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteContactCommand;
+import seedu.address.logic.commands.DeleteFollowupCommand;
 import seedu.address.logic.commands.DeleteStoryCommand;
 import seedu.address.logic.commands.EditContactCommand;
 import seedu.address.logic.commands.EditContactCommand.EditContactDescriptor;
+import seedu.address.logic.commands.EditFollowupCommand;
+import seedu.address.logic.commands.EditFollowupCommand.EditFollowupDescriptor;
+import seedu.address.logic.commands.EditStoryCommand;
+import seedu.address.logic.commands.EditStoryCommand.EditStoryDescriptor;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindContactsCommand;
+import seedu.address.logic.commands.FindFollowupCommand;
 import seedu.address.logic.commands.FindStoryCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ListContactsCommand;
+import seedu.address.logic.commands.ListFollowupsCommand;
 import seedu.address.logic.commands.ListStoriesCommand;
 import seedu.address.logic.commands.ShortcutCommand;
 import seedu.address.logic.commands.UnassignCommand;
@@ -38,6 +50,10 @@ import seedu.address.logic.commands.UnshortcutCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.contact.NameContainsKeywordsPredicate;
+import seedu.address.model.followup.FollowupDescription;
+import seedu.address.model.followup.FollowupDescriptionContainsKeywordsPredicate;
+import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryName;
 import seedu.address.model.story.StoryNameContainsKeywordsPredicate;
 import seedu.address.testutil.ContactBuilder;
 import seedu.address.testutil.ContactUtil;
@@ -138,6 +154,62 @@ public class AddressBookParserTest {
     public void parseCommand_liststories() throws Exception {
         assertTrue(parser.parseCommand(ListStoriesCommand.COMMAND_WORD) instanceof ListStoriesCommand);
         assertTrue(parser.parseCommand(ListStoriesCommand.COMMAND_WORD + " ci/2") instanceof ListStoriesCommand);
+    }
+
+    @Test
+    public void parseCommand_listfollowups() throws Exception {
+        assertTrue(parser.parseCommand(ListFollowupsCommand.COMMAND_WORD) instanceof ListFollowupsCommand);
+        assertTrue(parser.parseCommand(ListFollowupsCommand.COMMAND_WORD + " ci/2") instanceof ListFollowupsCommand);
+    }
+
+    @Test
+    public void parseCommand_addStory() throws Exception {
+        Story story = new Story(new StoryName("Housing Investigation"), Collections.emptySet());
+        AddStoryCommand command = (AddStoryCommand) parser.parseCommand(
+                AddStoryCommand.COMMAND_WORD + " Housing Investigation");
+        assertEquals(new AddStoryCommand(story), command);
+    }
+
+    @Test
+    public void parseCommand_addFollowup() throws Exception {
+        AddFollowupCommand command = (AddFollowupCommand) parser.parseCommand(
+                AddFollowupCommand.COMMAND_WORD + " Interview "
+                + PREFIX_CONTACTINDEX + INDEX_FIRST_CONTACT.getOneBased());
+        assertEquals(new AddFollowupCommand(new FollowupDescription("Interview"), INDEX_FIRST_CONTACT), command);
+    }
+
+    @Test
+    public void parseCommand_deleteFollowup() throws Exception {
+        DeleteFollowupCommand command = (DeleteFollowupCommand) parser.parseCommand(
+                DeleteFollowupCommand.COMMAND_WORD + " 1");
+        assertEquals(new DeleteFollowupCommand(Index.fromOneBased(1)), command);
+    }
+
+    @Test
+    public void parseCommand_editStory() throws Exception {
+        EditStoryDescriptor descriptor = new EditStoryDescriptor();
+        descriptor.setName(new StoryName("Housing Investigation"));
+        EditStoryCommand command = (EditStoryCommand) parser.parseCommand(
+                EditStoryCommand.COMMAND_WORD + " " + INDEX_FIRST_STORY.getOneBased() + " "
+                + PREFIX_NAME + "Housing Investigation");
+        assertEquals(new EditStoryCommand(INDEX_FIRST_STORY, descriptor), command);
+    }
+
+    @Test
+    public void parseCommand_editFollowup() throws Exception {
+        EditFollowupDescriptor descriptor = new EditFollowupDescriptor();
+        descriptor.setDescription(new FollowupDescription("Interview"));
+        EditFollowupCommand command = (EditFollowupCommand) parser.parseCommand(
+                EditFollowupCommand.COMMAND_WORD + " 1 " + PREFIX_DESCRIPTION + "Interview");
+        assertEquals(new EditFollowupCommand(Index.fromOneBased(1), descriptor), command);
+    }
+
+    @Test
+    public void parseCommand_findFollowup() throws Exception {
+        List<String> keywords = List.of("interview", "urgent");
+        FindFollowupCommand command = (FindFollowupCommand) parser.parseCommand(
+                FindFollowupCommand.COMMAND_WORD + " " + String.join(" ", keywords));
+        assertEquals(new FindFollowupCommand(new FollowupDescriptionContainsKeywordsPredicate(keywords)), command);
     }
 
     @Test

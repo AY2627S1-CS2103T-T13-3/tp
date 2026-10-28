@@ -188,4 +188,71 @@ public class EditContactCommandTest {
         assertEquals(expected, editContactCommand.toString());
     }
 
+    @Test
+    public void execute_resetTagsOnly_success() {
+        Contact contactToEdit = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Contact editedContact = new ContactBuilder(contactToEdit).withTags().build();
+
+        EditContactDescriptor descriptor = new EditContactDescriptorBuilder().withTags().build();
+        EditContactCommand editContactCommand = new EditContactCommand(INDEX_FIRST_CONTACT, descriptor);
+
+        String expectedMessage =
+                String.format(EditContactCommand.MESSAGE_EDIT_CONTACT_SUCCESS, Messages.format(editedContact));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setContact(contactToEdit, editedContact);
+
+        assertCommandSuccess(editContactCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_pairwiseFieldsEmailAndAddress_success() {
+        Contact contactToEdit = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Contact editedContact = new ContactBuilder(contactToEdit)
+                .withEmail("a@b.co").withAddress("X").build();
+
+        EditContactDescriptor descriptor = new EditContactDescriptorBuilder()
+                .withEmail("a@b.co").withAddress("X").build();
+        EditContactCommand editContactCommand = new EditContactCommand(INDEX_FIRST_CONTACT, descriptor);
+
+        String expectedMessage =
+                String.format(EditContactCommand.MESSAGE_EDIT_CONTACT_SUCCESS, Messages.format(editedContact));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setContact(contactToEdit, editedContact);
+
+        assertCommandSuccess(editContactCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_pairwiseFieldsNameAndPhone_success() {
+        Contact contactToEdit = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Contact editedContact = new ContactBuilder(contactToEdit)
+                .withName("A").withPhone("123").build();
+
+        EditContactDescriptor descriptor = new EditContactDescriptorBuilder()
+                .withName("A").withPhone("123").build();
+        EditContactCommand editContactCommand = new EditContactCommand(INDEX_FIRST_CONTACT, descriptor);
+
+        String expectedMessage =
+                String.format(EditContactCommand.MESSAGE_EDIT_CONTACT_SUCCESS, Messages.format(editedContact));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.setContact(contactToEdit, editedContact);
+
+        assertCommandSuccess(editContactCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_boundaryIndexOutOfRange_failure() {
+        Index outOfBoundIndex = Index.fromOneBased(model.getFilteredContactList().size() + 1);
+        EditContactDescriptor descriptor = new EditContactDescriptorBuilder().withName(VALID_NAME_BOB).build();
+        EditContactCommand editContactCommand = new EditContactCommand(outOfBoundIndex, descriptor);
+
+        assertCommandFailure(editContactCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+
+        Index maxIntIndex = Index.fromOneBased(Integer.MAX_VALUE);
+        EditContactCommand editContactMaxIndex = new EditContactCommand(maxIntIndex, descriptor);
+        assertCommandFailure(editContactMaxIndex, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+    }
 }

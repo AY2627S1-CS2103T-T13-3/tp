@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalFollowups.FOLLOWUP_A;
 import static seedu.address.testutil.TypicalFollowups.FOLLOWUP_B;
 import static seedu.address.testutil.TypicalFollowups.FOLLOWUP_C;
@@ -76,5 +77,27 @@ public class FindFollowupCommandTest {
 
         assertCommandSuccess(command, model, "0 followup(s) listed!", expectedModel);
         assertEquals(List.of(), model.getFilteredFollowupList());
+    }
+
+    @Test
+    public void constructor_nullPredicate_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new FindFollowupCommand(null));
+    }
+
+    @Test
+    public void execute_nullModel_throwsNullPointerException() {
+        FollowupDescriptionContainsKeywordsPredicate predicate =
+                new FollowupDescriptionContainsKeywordsPredicate(List.of("interview"));
+        FindFollowupCommand command = new FindFollowupCommand(predicate);
+        assertThrows(NullPointerException.class, () -> command.execute(null));
+    }
+
+    @Test
+    public void toStringMethod() {
+        FollowupDescriptionContainsKeywordsPredicate predicate =
+                new FollowupDescriptionContainsKeywordsPredicate(List.of("interview"));
+        FindFollowupCommand command = new FindFollowupCommand(predicate);
+        String expected = FindFollowupCommand.class.getCanonicalName() + "{predicate=" + predicate + "}";
+        assertEquals(expected, command.toString());
     }
 }
