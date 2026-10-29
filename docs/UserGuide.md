@@ -94,7 +94,7 @@ Format: `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
 
 * All four fields (`n/`, `p/`, `e/`, and `a/`) are required and cannot be blank.
 * Names contain only letters, digits, and spaces. A contact with exactly the same name already in PressMemo cannot be added.
-* Phone numbers contain at least three digits and no other characters. Emails must have a valid `word@word` format.
+* Phone numbers contain between 3 and 15 digits and no other characters. Emails must have a valid `word@word` format.
 * Tag names contain only letters and digits, without spaces.
 * Adding a contact shows the full contact list.
 
