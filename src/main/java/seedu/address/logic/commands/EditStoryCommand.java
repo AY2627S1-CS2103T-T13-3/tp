@@ -25,7 +25,7 @@ import seedu.address.model.tag.Tag;
 /**
  * Edits the details of an existing story in PressMemo.
  */
-public class EditStoryCommand extends Command {
+public class EditStoryCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "editstory";
 

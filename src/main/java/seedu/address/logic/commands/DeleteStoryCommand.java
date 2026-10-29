@@ -14,7 +14,7 @@ import seedu.address.model.story.Story;
 /**
  * Deletes a story identified using its displayed index from the address book.
  */
-public class DeleteStoryCommand extends Command {
+public class DeleteStoryCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "deletestory";
 

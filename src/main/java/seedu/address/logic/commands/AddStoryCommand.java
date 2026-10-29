@@ -11,7 +11,7 @@ import seedu.address.model.story.Story;
 /**
  * Adds a story to PressMemo.
  */
-public class AddStoryCommand extends Command {
+public class AddStoryCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "addstory";
 

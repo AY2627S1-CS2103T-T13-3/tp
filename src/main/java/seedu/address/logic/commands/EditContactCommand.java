@@ -31,7 +31,7 @@ import seedu.address.model.tag.Tag;
 /**
  * Edits the details of an existing contact in PressMemo.
  */
-public class EditContactCommand extends Command {
+public class EditContactCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "editcontact";
 

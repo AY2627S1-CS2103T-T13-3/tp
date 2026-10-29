@@ -16,7 +16,7 @@ import seedu.address.model.contact.Contact;
 /**
  * Adds a contact to PressMemo.
  */
-public class AddContactCommand extends Command {
+public class AddContactCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "addcontact";
 

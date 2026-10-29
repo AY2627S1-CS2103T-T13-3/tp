@@ -17,7 +17,7 @@ import seedu.address.model.followup.FollowupDescription;
 /**
  * Adds a followup to a contact in PressMemo.
  */
-public class AddFollowupCommand extends Command {
+public class AddFollowupCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "addfollowup";
 

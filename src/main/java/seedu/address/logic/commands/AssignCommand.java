@@ -19,7 +19,7 @@ import seedu.address.model.story.Story;
 /**
  * Assigns a contact to a story.
  */
-public class AssignCommand extends Command {
+public class AssignCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "assign";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Assigns a contact to the story. "

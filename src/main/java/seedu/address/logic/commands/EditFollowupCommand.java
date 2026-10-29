@@ -23,7 +23,7 @@ import seedu.address.model.followup.FollowupDescription;
 
 
 /** Edits the details of an existing followup in the address book. */
-public class EditFollowupCommand extends Command {
+public class EditFollowupCommand extends AddressBookMutatingCommand {
     public static final String COMMAND_WORD = "editfollowup";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the followup identified "
             + "by the index number used in the displayed followup list. "
