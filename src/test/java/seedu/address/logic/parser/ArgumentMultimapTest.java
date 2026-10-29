@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
 
@@ -54,6 +55,21 @@ public class ArgumentMultimapTest {
         assertEquals(List.of("Alice"), values);
         assertEquals(List.of("Alice", "Bob"), map.getAllValues(namePrefix));
         assertEquals(Optional.of("Bob"), map.getValue(namePrefix));
+    }
+
+    @Test
+    public void arePrefixesPresent_allPresent_returnsTrue() {
+        map.put(namePrefix, "Alice");
+        map.put(tagPrefix, "friend");
+
+        assertTrue(map.arePrefixesPresent(namePrefix, tagPrefix));
+    }
+
+    @Test
+    public void arePrefixesPresent_missingPrefix_returnsFalse() {
+        map.put(namePrefix, "Alice");
+
+        assertFalse(map.arePrefixesPresent(namePrefix, tagPrefix));
     }
 
     @Test

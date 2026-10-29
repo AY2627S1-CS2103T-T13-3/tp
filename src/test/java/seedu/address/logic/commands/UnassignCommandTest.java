@@ -136,15 +136,15 @@ public class UnassignCommandTest {
     }
 
     @Test
-    public void execute_notCurrentlyAssignedContactAndStory_success() {
+    public void execute_notCurrentlyAssignedContactAndStory_throwsCommandException() {
         Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
         Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
         UnassignCommand unassignCommand = new UnassignCommand(INDEX_FIRST_STORY, INDEX_FIRST_CONTACT);
-        expectedModel.unassignStory(contact, story);
 
-        String expectedMessage = String.format(UnassignCommand.MESSAGE_SUCCESS, contact.getName(), story.getName());
-        assertCommandSuccess(unassignCommand, model, expectedMessage, expectedModel);
+        String expectedMessage = String.format(UnassignCommand.MESSAGE_NOT_ASSIGNED,
+                contact.getName(), story.getName());
+        assertCommandFailure(unassignCommand, model, expectedMessage);
     }
 
     @Test

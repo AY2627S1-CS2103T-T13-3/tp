@@ -46,14 +46,18 @@ public class EditFollowupCommandTest {
     }
 
     @Test
-    public void execute_bothFields_usesFilteredFollowupIndexAndResetsFilter() throws Exception {
+    public void execute_bothFields_usesFilteredFollowupIndexAndPreservesFilter() throws Exception {
         Followup second = new Followup(new FollowupDescription("Meet"), ALICE.getName());
         model.addFollowup(second);
-        model.updateFilteredFollowupList(second::equals);
-        new AddressBookParser().parseCommand("editfollowup 1 d/Email ci/2").execute(model);
+        model.updateFilteredFollowupList(followup -> followup.getContact().equals(ALICE.getName()));
+        assertEquals(2, model.getFilteredFollowupList().size());
+
+        new AddressBookParser().parseCommand("editfollowup 2 d/Email ci/2").execute(model);
+        assertEquals(1, model.getFilteredFollowupList().size());
         assertEquals(original, model.getFilteredFollowupList().get(0));
-        assertEquals(new Followup(new FollowupDescription("Email"), BENSON.getName()),
-                model.getFilteredFollowupList().get(1));
+
+        Followup edited = new Followup(new FollowupDescription("Email"), BENSON.getName());
+        assertTrue(model.getAddressBook().getFollowupList().contains(edited));
     }
 
     @Test

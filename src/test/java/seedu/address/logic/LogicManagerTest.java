@@ -2,7 +2,6 @@ package seedu.address.logic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
@@ -24,6 +23,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.AddContactCommand;
+import seedu.address.logic.commands.AddStoryCommand;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ShortcutCommand;
@@ -37,7 +37,6 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
 import seedu.address.storage.JsonAddressBookStorage;
-import seedu.address.storage.JsonStoryStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.StorageManager;
 import seedu.address.testutil.ContactBuilder;
@@ -59,12 +58,8 @@ public class LogicManagerTest {
         JsonAddressBookStorage addressBookStorage =
                 new JsonAddressBookStorage(temporaryFolder.resolve("addressBook.json"));
         userPrefsStorage = new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json"));
-        JsonStoryStorage storyStorage = new JsonStoryStorage(
-                addressBookStorage.getAddressBookFilePath()
-                        .resolveSibling("stories.json"));
-
         StorageManager storage =
-                new StorageManager(addressBookStorage, storyStorage, userPrefsStorage);
+                new StorageManager(addressBookStorage, userPrefsStorage);
         logic = new LogicManager(model, storage);
     }
 
@@ -83,7 +78,30 @@ public class LogicManagerTest {
     @Test
     public void execute_validCommand_success() throws Exception {
         String listCommand = ListCommand.COMMAND_WORD;
-        assertCommandSuccess(listCommand, ListCommand.MESSAGE_SUCCESS, model);
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
+                model.getFilteredContactList().size(),
+                model.getFilteredStoryList().size(),
+                model.getFilteredFollowupList().size()
+        );
+        assertCommandSuccess(listCommand, expectedMessage, model);
+    }
+
+    @Test
+    public void execute_readOnlyCommand_addressBookNotSaved() throws Exception {
+        logic.execute(ListCommand.COMMAND_WORD);
+
+        assertFalse(Files.exists(temporaryFolder.resolve("addressBook.json")));
+    }
+
+    @Test
+    public void execute_addStory_storySavedInAddressBookFile() throws Exception {
+        logic.execute(AddStoryCommand.COMMAND_WORD + " Investigative Story");
+
+        ReadOnlyAddressBook savedAddressBook = new JsonAddressBookStorage(
+                temporaryFolder.resolve("addressBook.json")).readAddressBook().orElseThrow();
+
+        assertEquals(model.getAddressBook().getStoryList(), savedAddressBook.getStoryList());
+        assertFalse(Files.exists(temporaryFolder.resolve("stories.json")));
     }
 
     @Test
@@ -92,6 +110,7 @@ public class LogicManagerTest {
 
         UserPrefs savedPrefs = userPrefsStorage.readUserPrefs().orElseThrow();
         assertEquals("list", savedPrefs.getShortcuts().get("ls"));
+        assertFalse(Files.exists(temporaryFolder.resolve("addressBook.json")));
     }
 
     @Test
@@ -100,7 +119,12 @@ public class LogicManagerTest {
 
         CommandResult result = logic.execute("ls");
 
-        assertEquals(ListCommand.MESSAGE_SUCCESS, result.getFeedbackToUser());
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
+                model.getFilteredContactList().size(),
+                model.getFilteredStoryList().size(),
+                model.getFilteredFollowupList().size()
+        );
+        assertEquals(expectedMessage, result.getFeedbackToUser());
     }
 
     @Test
@@ -118,7 +142,6 @@ public class LogicManagerTest {
         IOException exception = new IOException("prefs save failed");
         JsonAddressBookStorage addressBookStorage =
                 new JsonAddressBookStorage(temporaryFolder.resolve("addressBook.json"));
-        JsonStoryStorage storyStorage = new JsonStoryStorage(temporaryFolder.resolve("stories.json"));
         JsonUserPrefsStorage failingUserPrefsStorage =
                 new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json")) {
                     @Override
@@ -126,7 +149,7 @@ public class LogicManagerTest {
                         throw exception;
                     }
                 };
-        StorageManager storage = new StorageManager(addressBookStorage, storyStorage, failingUserPrefsStorage);
+        StorageManager storage = new StorageManager(addressBookStorage, failingUserPrefsStorage);
         logic = new LogicManager(model, storage);
         Model expectedModel = new ModelManager();
         expectedModel.assignShortcut("ls", "list");
@@ -140,7 +163,6 @@ public class LogicManagerTest {
     public void execute_listShortcuts_userPrefsNotSaved() throws Exception {
         JsonAddressBookStorage addressBookStorage =
                 new JsonAddressBookStorage(temporaryFolder.resolve("addressBook.json"));
-        JsonStoryStorage storyStorage = new JsonStoryStorage(temporaryFolder.resolve("stories.json"));
         JsonUserPrefsStorage failingUserPrefsStorage =
                 new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json")) {
                     @Override
@@ -148,7 +170,7 @@ public class LogicManagerTest {
                         throw new AssertionError("Listing shortcuts should not save user preferences.");
                     }
                 };
-        StorageManager storage = new StorageManager(addressBookStorage, storyStorage, failingUserPrefsStorage);
+        StorageManager storage = new StorageManager(addressBookStorage, failingUserPrefsStorage);
         logic = new LogicManager(model, storage);
 
         CommandResult result = logic.execute(ShortcutCommand.COMMAND_WORD);
@@ -174,7 +196,6 @@ public class LogicManagerTest {
         assertCommandException("deletecontact 1", MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
 
         assertFalse(Files.exists(temporaryFolder.resolve("addressBook.json")));
-        assertFalse(Files.exists(temporaryFolder.resolve("stories.json")));
         assertFalse(Files.exists(temporaryFolder.resolve("userPrefs.json")));
     }
 
@@ -211,44 +232,6 @@ public class LogicManagerTest {
         assertCommandException("unassign ci/2 si/1", MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
         assertCommandException("assign ci/1 si/2", MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
         assertCommandException("unassign ci/1 si/2", MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
-    }
-
-    @Test
-    public void execute_storyStorageThrowsIoException_preservesCauseAndSkipsUserPrefs() {
-        assertStoryStorageFailure(DUMMY_IO_EXCEPTION, LogicManager.FILE_OPS_ERROR_FORMAT);
-    }
-
-    @Test
-    public void execute_storyStorageThrowsAccessDeniedException_preservesCauseAndSkipsUserPrefs() {
-        assertStoryStorageFailure(DUMMY_AD_EXCEPTION, LogicManager.FILE_OPS_PERMISSION_ERROR_FORMAT);
-    }
-
-    /** Verifies that a failure saving stories stops persistence and retains the original cause. */
-    private void assertStoryStorageFailure(IOException failure, String messageFormat) {
-        JsonAddressBookStorage addressBookStorage =
-                new JsonAddressBookStorage(temporaryFolder.resolve("addressBook.json"));
-        JsonStoryStorage failingStoryStorage = new JsonStoryStorage(temporaryFolder.resolve("stories.json")) {
-            @Override
-            public void saveStories(ReadOnlyAddressBook addressBook) throws IOException {
-                throw failure;
-            }
-        };
-        JsonUserPrefsStorage unexpectedUserPrefsStorage =
-                new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json")) {
-                    @Override
-                    public void saveUserPrefs(ReadOnlyUserPrefs userPrefs) {
-                        throw new AssertionError("Preferences must not be saved after story storage fails.");
-                    }
-                };
-        logic = new LogicManager(model,
-                new StorageManager(addressBookStorage, failingStoryStorage, unexpectedUserPrefsStorage));
-
-        CommandException exception = org.junit.jupiter.api.Assertions.assertThrows(CommandException.class, ()
-                -> logic.execute("shortcut s/ls c/list"));
-
-        assertEquals(String.format(messageFormat, failure.getMessage()), exception.getMessage());
-        assertSame(failure, exception.getCause());
-        assertEquals("list", model.getShortcuts().get("ls"));
     }
 
     @Test
@@ -350,12 +333,8 @@ public class LogicManagerTest {
 
         JsonUserPrefsStorage userPrefsStorage =
                 new JsonUserPrefsStorage(temporaryFolder.resolve("ExceptionUserPrefs.json"));
-        JsonStoryStorage storyStorage = new JsonStoryStorage(
-                addressBookStorage.getAddressBookFilePath()
-                        .resolveSibling("stories.json"));
-
         StorageManager storage =
-                new StorageManager(addressBookStorage, storyStorage, userPrefsStorage);
+                new StorageManager(addressBookStorage, userPrefsStorage);
 
         logic = new LogicManager(model, storage);
 

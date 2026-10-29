@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.Messages;
@@ -219,12 +220,42 @@ public class AddContactCommandTest {
         }
 
         @Override
+        public void updateFilteredContactList(Predicate<Contact> predicate, String filterStatus) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void updateFilteredStoryList(Predicate<Story> predicate) {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
+        public void updateFilteredStoryList(Predicate<Story> predicate, String filterStatus) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
         public void updateFilteredFollowupList(Predicate<Followup> predicate) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void updateFilteredFollowupList(Predicate<Followup> predicate, String filterStatus) {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableValue<String> getContactFilterStatusProperty() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableValue<String> getStoryFilterStatusProperty() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public ObservableValue<String> getFollowupFilterStatusProperty() {
             throw new AssertionError("This method should not be called.");
         }
     }

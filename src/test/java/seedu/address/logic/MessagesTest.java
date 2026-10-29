@@ -45,7 +45,22 @@ public class MessagesTest {
     @Test
     public void format_storyWithoutContacts() {
         Story story = new Story(new StoryName("Housing Investigation"), Set.of(new Tag("urgent")));
-        String expected = "Housing Investigation; Tags: [urgent]; Contacts: ";
+        String expected = "Housing Investigation; Tags: [urgent]";
+        assertEquals(expected, Messages.format(story));
+    }
+
+    @Test
+    public void format_storyWithoutTags() {
+        Story story = new Story(new StoryName("Housing Investigation"), Set.of(),
+                List.of(new Name("Alice Pauline")));
+        String expected = "Housing Investigation; Contacts: [Alice Pauline]";
+        assertEquals(expected, Messages.format(story));
+    }
+
+    @Test
+    public void format_storyWithoutTagsAndContacts() {
+        Story story = new Story(new StoryName("Housing Investigation"), Set.of());
+        String expected = "Housing Investigation";
         assertEquals(expected, Messages.format(story));
     }
 

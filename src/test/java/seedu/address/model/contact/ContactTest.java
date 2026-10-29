@@ -92,6 +92,16 @@ public class ContactTest {
         // different tags -> returns false
         editedAlice = new ContactBuilder(ALICE).withTags(VALID_TAG_HUSBAND).build();
         assertFalse(ALICE.equals(editedAlice));
+
+        // different assigned stories -> returns false
+        Story story = new Story(new StoryName("test"), Set.of());
+        editedAlice = ALICE.assign(story);
+        assertFalse(ALICE.equals(editedAlice));
+
+        // same assigned stories -> returns true
+        Contact aliceWithStoryCopy = ALICE.assign(story);
+        assertTrue(editedAlice.equals(aliceWithStoryCopy));
+        assertEquals(editedAlice.hashCode(), aliceWithStoryCopy.hashCode());
     }
 
     @Test
@@ -133,5 +143,18 @@ public class ContactTest {
         Contact p1 = p.assign(a).unassign(b);
         assertTrue(p1.isAssigned(a));
         assertFalse(p1.isAssigned(b));
+    }
+
+    @Test
+    public void isNameMatching() {
+        Contact contact = new ContactBuilder().withName("Alice Pauline").build();
+
+        // matches name keyword
+        assertTrue(contact.isNameMatching("Alice"));
+        assertTrue(contact.isNameMatching("pauline")); // case-insensitive
+
+        // does not match
+        assertFalse(contact.isNameMatching("Bob"));
+        assertFalse(contact.isNameMatching("Ali"));
     }
 }

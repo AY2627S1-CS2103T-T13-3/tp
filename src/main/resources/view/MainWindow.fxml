@@ -16,9 +16,9 @@
 <?import javafx.scene.layout.VBox?>
 
 <fx:root type="javafx.stage.Stage" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-         title="Address App" minWidth="450" minHeight="600" onCloseRequest="#handleExit">
+         title="PressMemo" minWidth="450" minHeight="600" onCloseRequest="#handleExit">
   <icons>
-    <Image url="@/images/address_book_32.png" />
+    <Image url="@/images/pressmemo_32.png" />
   </icons>
   <scene>
     <Scene>
@@ -63,21 +63,30 @@
               <padding>
                 <Insets top="10" right="10" bottom="10" left="10" />
               </padding>
-              <Label text="CONTACTS" styleClass="panel-header" />
+              <HBox alignment="CENTER_LEFT" spacing="8" styleClass="panel-header-box">
+                <Label text="CONTACTS" styleClass="panel-header" minWidth="-Infinity" />
+                <Label fx:id="contactFilterIndicator" styleClass="filter-status-badge" minWidth="0" textOverrun="ELLIPSIS" HBox.hgrow="SOMETIMES" />
+              </HBox>
               <StackPane fx:id="contactListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
             </VBox>
             <VBox fx:id="storyList" GridPane.rowIndex="0" GridPane.columnIndex="1" styleClass="pane-with-border" minWidth="0" GridPane.vgrow="ALWAYS">
               <padding>
                 <Insets top="10" right="10" bottom="10" left="10" />
               </padding>
-              <Label text="STORIES" styleClass="panel-header" />
+              <HBox alignment="CENTER_LEFT" spacing="8" styleClass="panel-header-box">
+                <Label text="STORIES" styleClass="panel-header" minWidth="-Infinity" />
+                <Label fx:id="storyFilterIndicator" styleClass="filter-status-badge" minWidth="0" textOverrun="ELLIPSIS" HBox.hgrow="SOMETIMES" />
+              </HBox>
               <StackPane fx:id="storyListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
             </VBox>
             <VBox fx:id="followupList" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2" styleClass="pane-with-border" minWidth="0" GridPane.vgrow="ALWAYS">
               <padding>
                 <Insets top="10" right="10" bottom="10" left="10" />
               </padding>
-              <Label text="FOLLOW-UPS" styleClass="panel-header" />
+              <HBox alignment="CENTER_LEFT" spacing="8" styleClass="panel-header-box">
+                <Label text="FOLLOW-UPS" styleClass="panel-header" minWidth="-Infinity" />
+                <Label fx:id="followupFilterIndicator" styleClass="filter-status-badge" minWidth="0" textOverrun="ELLIPSIS" HBox.hgrow="SOMETIMES" />
+              </HBox>
               <StackPane fx:id="followupListPanelPlaceholder" VBox.vgrow="ALWAYS"/>
             </VBox>
           </GridPane>

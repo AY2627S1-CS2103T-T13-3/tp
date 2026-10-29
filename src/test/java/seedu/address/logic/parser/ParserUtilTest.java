@@ -8,6 +8,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -22,11 +23,11 @@ import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
 
 public class ParserUtilTest {
-    private static final String INVALID_NAME = "R@chel";
+    private static final String INVALID_NAME = "R/chel";
     private static final String INVALID_PHONE = "+651234";
     private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_EMAIL = "example.com";
-    private static final String INVALID_TAG = "#friend";
+    private static final String INVALID_TAG = "friend/1";
 
     private static final String VALID_NAME = "Rachel Walker";
     private static final String VALID_PHONE = "123456";
@@ -73,7 +74,7 @@ public class ParserUtilTest {
 
     @Test
     public void parseStoryName_blankOrInvalidValue_throwsParseException() {
-        for (String input : List.of("", WHITESPACE, "Story!", "Story\tName")) {
+        for (String input : List.of("", WHITESPACE, "Stor/y", "Story /Name")) {
             assertThrows(ParseException.class, StoryName.MESSAGE_CONSTRAINTS, () -> ParserUtil.parseStoryName(input));
         }
     }
@@ -90,7 +91,7 @@ public class ParserUtilTest {
 
     @Test
     public void parseFollowupDescription_blankOrInvalidValue_throwsParseException() {
-        for (String input : List.of("", WHITESPACE, "Call!", "Call\tback")) {
+        for (String input : List.of("", WHITESPACE, "the s/o myth", "Callback/")) {
             assertThrows(ParseException.class, FollowupDescription.MESSAGE_CONSTRAINTS, ()
                     -> ParserUtil.parseFollowupDescription(input));
         }
@@ -253,5 +254,26 @@ public class ParserUtilTest {
         Set<Tag> expectedTagSet = Set.of(new Tag(VALID_TAG_1), new Tag(VALID_TAG_2));
 
         assertEquals(expectedTagSet, actualTagSet);
+    }
+
+    @Test
+    public void parseTagsForEdit_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseTagsForEdit(null));
+    }
+
+    @Test
+    public void parseTagsForEdit_noValues_returnsEmptyOptional() throws Exception {
+        assertEquals(Optional.empty(), ParserUtil.parseTagsForEdit(List.of()));
+    }
+
+    @Test
+    public void parseTagsForEdit_emptyValue_returnsEmptyTagSet() throws Exception {
+        assertEquals(Optional.of(Set.of()), ParserUtil.parseTagsForEdit(List.of("")));
+    }
+
+    @Test
+    public void parseTagsForEdit_validValues_returnsTagSet() throws Exception {
+        assertEquals(Optional.of(Set.of(new Tag(VALID_TAG_1), new Tag(VALID_TAG_2))),
+                ParserUtil.parseTagsForEdit(List.of(VALID_TAG_1, VALID_TAG_2)));
     }
 }

@@ -1,6 +1,5 @@
 package seedu.address.logic.parser;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_BOB;
@@ -39,7 +38,6 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditContactCommand;
 import seedu.address.logic.commands.EditContactCommand.EditContactDescriptor;
-import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.contact.Address;
 import seedu.address.model.contact.Email;
 import seedu.address.model.contact.Name;
@@ -90,7 +88,7 @@ public class EditContactCommandParserTest {
         assertParseFailure(parser, "1 some random string", MESSAGE_INVALID_FORMAT);
 
         // invalid prefix being parsed as preamble
-        assertThrows(ParseException.class, () -> parser.parse("1 i/ string"));
+        assertParseFailure(parser, "1 i/ string", MESSAGE_INVALID_FORMAT);
     }
 
     @Test

@@ -39,7 +39,7 @@ public class FollowupTest {
     public void isSameFollowup() {
         assertTrue(followup.isSameFollowup(followup));
         assertTrue(followup.isSameFollowup(new Followup(description, ALICE.getName())));
-        assertTrue(followup.isSameFollowup(new Followup(description, BOB.getName())));
+        assertFalse(followup.isSameFollowup(new Followup(description, BOB.getName())));
         assertFalse(followup.isSameFollowup(null));
         assertFalse(followup.isSameFollowup(new Followup(new FollowupDescription("Send notes"), ALICE.getName())));
     }
@@ -52,7 +52,19 @@ public class FollowupTest {
         assertEquals(followup.hashCode(), copy.hashCode());
         assertFalse(followup.equals(null));
         assertFalse(followup.equals(description));
+        // different linked contact -> returns false
         assertFalse(followup.equals(new Followup(description, BOB.getName())));
         assertFalse(followup.equals(new Followup(new FollowupDescription("Send notes"), ALICE.getName())));
+    }
+
+    @Test
+    public void isDescriptionMatching() {
+        // matches description keyword
+        assertTrue(followup.isDescriptionMatching("Arrange"));
+        assertTrue(followup.isDescriptionMatching("interview")); // case-insensitive
+
+        // does not match
+        assertFalse(followup.isDescriptionMatching("Meeting"));
+        assertFalse(followup.isDescriptionMatching("Arr"));
     }
 }

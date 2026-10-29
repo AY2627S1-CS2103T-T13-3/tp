@@ -19,9 +19,10 @@ import seedu.address.model.story.Story;
 /**
  * Unassigns a contact from a story.
  */
-public class UnassignCommand extends Command {
+public class UnassignCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "unassign";
+    public static final String MESSAGE_NOT_ASSIGNED = "%s is not assigned to %s.";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Unassigns a contact from the story. "
             + "Parameters: "
             + PREFIX_CONTACTINDEX + " CONTACT's INDEX "
@@ -62,6 +63,11 @@ public class UnassignCommand extends Command {
 
         Contact contactToUnassign = lastShownContactList.get(contactIndex.getZeroBased());
         Story storyToUnassign = lastShownStoryList.get(storyIndex.getZeroBased());
+
+        if (!contactToUnassign.isAssigned(storyToUnassign)) {
+            throw new CommandException(String.format(MESSAGE_NOT_ASSIGNED,
+                    contactToUnassign.getName(), storyToUnassign.getName()));
+        }
 
         model.unassignStory(contactToUnassign, storyToUnassign);
         model.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);

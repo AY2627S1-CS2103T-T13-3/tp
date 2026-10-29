@@ -8,9 +8,12 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_STORY;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_CONTACT;
 import static seedu.address.testutil.TypicalStories.STORY_A;
 import static seedu.address.testutil.TypicalStories.STORY_B;
+
+import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,16 +44,20 @@ public class ListStoriesCommandTest {
 
     @Test
     public void execute_listIsNotFiltered_showsSameList() {
+        String expectedMessage = String.format(ListStoriesCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredStoryList().size());
         assertCommandSuccess(new ListStoriesCommand(), model,
-                ListStoriesCommand.MESSAGE_SUCCESS, expectedModel);
+                expectedMessage, expectedModel);
     }
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
         model.updateFilteredStoryList(story -> false);
 
+        String expectedMessage = String.format(ListStoriesCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredStoryList().size());
         assertCommandSuccess(new ListStoriesCommand(), model,
-                ListStoriesCommand.MESSAGE_SUCCESS, expectedModel);
+                expectedMessage, expectedModel);
     }
 
     @Test
@@ -66,10 +73,11 @@ public class ListStoriesCommandTest {
 
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.updateFilteredStoryList(
-                s -> s.isAssigned(assignedContact));
+                s -> s.isAssigned(assignedContact),
+                String.format("Filtered by contact: \"%s\"", assignedContact.getName()));
 
-        String expectedMessage = "Listed stories assigned to "
-                + assignedContact.getName();
+        String expectedMessage = String.format(ListStoriesCommand.MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,
+                1, assignedContact.getName());
 
         assertCommandSuccess(
                 new ListStoriesCommand(INDEX_FIRST_CONTACT),
@@ -85,16 +93,37 @@ public class ListStoriesCommandTest {
         Contact contact = model.getFilteredContactList().get(
                 INDEX_FIRST_CONTACT.getZeroBased());
 
-        expectedModel.updateFilteredStoryList(story -> false);
+        expectedModel.updateFilteredStoryList(story -> false,
+                String.format("Filtered by contact: \"%s\"", contact.getName()));
 
-        String expectedMessage = "Listed stories assigned to "
-                + contact.getName();
+        String expectedMessage = String.format(ListStoriesCommand.MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,
+                0, contact.getName());
 
         assertCommandSuccess(
                 new ListStoriesCommand(INDEX_FIRST_CONTACT),
                 model, expectedMessage, expectedModel);
 
         assertTrue(model.getFilteredStoryList().isEmpty());
+    }
+
+    @Test
+    public void execute_editStoryAfterListStories_storyRemainsInFilteredList() throws Exception {
+        Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        model.assignStory(contact, story);
+
+        ListStoriesCommand listStoriesCommand = new ListStoriesCommand(INDEX_FIRST_CONTACT);
+        listStoriesCommand.execute(model);
+        assertEquals(1, model.getFilteredStoryList().size());
+
+        // Edit the story's tags while under liststories filter
+        Story storyToEdit = model.getFilteredStoryList().get(0);
+        Story editedStory = new Story(storyToEdit.getName(), Collections.emptySet(), storyToEdit.getContacts());
+        model.setStory(storyToEdit, editedStory);
+
+        // The edited story must still be present in the filtered story list!
+        assertEquals(1, model.getFilteredStoryList().size());
+        assertEquals(editedStory.getName(), model.getFilteredStoryList().get(0).getName());
     }
 
     @Test

@@ -5,6 +5,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -58,7 +59,7 @@ public class UniqueContactList implements Iterable<Contact> {
     public void setContact(Contact target, Contact editedContact) {
         requireAllNonNull(target, editedContact);
 
-        int index = internalList.indexOf(target);
+        int index = indexOfSameContact(target);
         if (index == -1) {
             throw new ContactNotFoundException();
         }
@@ -147,5 +148,15 @@ public class UniqueContactList implements Iterable<Contact> {
             }
         }
         return true;
+    }
+
+    /**
+     * Returns the index of the contact with the same identity as {@code target}, or -1 if absent.
+     */
+    private int indexOfSameContact(Contact target) {
+        return IntStream.range(0, internalList.size())
+                .filter(index -> internalList.get(index).isSameContact(target))
+                .findFirst()
+                .orElse(-1);
     }
 }

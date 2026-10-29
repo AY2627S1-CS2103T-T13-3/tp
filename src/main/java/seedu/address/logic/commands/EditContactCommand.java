@@ -6,7 +6,6 @@ import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_CONTACTS;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -29,9 +28,9 @@ import seedu.address.model.contact.Phone;
 import seedu.address.model.tag.Tag;
 
 /**
- * Edits the details of an existing contact in the address book.
+ * Edits the details of an existing contact in PressMemo.
  */
-public class EditContactCommand extends Command {
+public class EditContactCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "editcontact";
 
@@ -50,7 +49,7 @@ public class EditContactCommand extends Command {
 
     public static final String MESSAGE_EDIT_CONTACT_SUCCESS = "Edited contact: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
-    public static final String MESSAGE_DUPLICATE_CONTACT = "This contact already exists in the address book.";
+    public static final String MESSAGE_DUPLICATE_CONTACT = "This contact already exists in PressMemo.";
 
     private final Index index;
     private final EditContactDescriptor editContactDescriptor;
@@ -77,38 +76,14 @@ public class EditContactCommand extends Command {
         }
 
         Contact contactToEdit = lastShownList.get(index.getZeroBased());
-        Contact editedContact = createEditedContact(contactToEdit, editContactDescriptor);
+        Contact editedContact = editContactDescriptor.createEditedContact(contactToEdit);
 
         if (!contactToEdit.isSameContact(editedContact) && model.hasContact(editedContact)) {
             throw new CommandException(MESSAGE_DUPLICATE_CONTACT);
         }
 
         model.setContact(contactToEdit, editedContact);
-        model.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
         return new CommandResult(String.format(MESSAGE_EDIT_CONTACT_SUCCESS, Messages.format(editedContact)));
-    }
-
-    /**
-     * Creates and returns a {@code Contact} with the details of {@code contactToEdit}
-     * edited with {@code editContactDescriptor}.
-     */
-    private static Contact createEditedContact(Contact contactToEdit, EditContactDescriptor editContactDescriptor) {
-        assert contactToEdit != null;
-
-        Name updatedName = editContactDescriptor.getName().orElse(contactToEdit.getName());
-        Phone updatedPhone = editContactDescriptor.getPhone().orElse(contactToEdit.getPhone());
-        Email updatedEmail = editContactDescriptor.getEmail().orElse(contactToEdit.getEmail());
-        Address updatedAddress = editContactDescriptor.getAddress().orElse(contactToEdit.getAddress());
-        Set<Tag> updatedTags = editContactDescriptor.getTags().orElse(contactToEdit.getTags());
-
-        return new Contact(
-                updatedName,
-                updatedPhone,
-                updatedEmail,
-                updatedAddress,
-                updatedTags,
-                contactToEdit.getStories()
-        );
     }
 
     @Override
@@ -213,6 +188,29 @@ public class EditContactCommand extends Command {
          */
         public Optional<Set<Tag>> getTags() {
             return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
+        }
+
+        /**
+         * Creates and returns a {@code Contact} with the details of {@code contactToEdit}
+         * edited with this descriptor's fields.
+         */
+        public Contact createEditedContact(Contact contactToEdit) {
+            assert contactToEdit != null;
+
+            Name updatedName = getName().orElse(contactToEdit.getName());
+            Phone updatedPhone = getPhone().orElse(contactToEdit.getPhone());
+            Email updatedEmail = getEmail().orElse(contactToEdit.getEmail());
+            Address updatedAddress = getAddress().orElse(contactToEdit.getAddress());
+            Set<Tag> updatedTags = getTags().orElse(contactToEdit.getTags());
+
+            return new Contact(
+                    updatedName,
+                    updatedPhone,
+                    updatedEmail,
+                    updatedAddress,
+                    updatedTags,
+                    contactToEdit.getStories()
+            );
         }
 
         @Override

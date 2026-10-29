@@ -3,8 +3,6 @@ package seedu.address.model.followup;
 import java.util.List;
 import java.util.function.Predicate;
 
-import seedu.address.commons.util.StringUtil;
-
 /**
  * Tests that a Followup's description contains
  * any of the keywords given.
@@ -18,11 +16,14 @@ public class FollowupDescriptionContainsKeywordsPredicate
         this.keywords = List.copyOf(keywords);
     }
 
+    public List<String> getKeywords() {
+        return keywords;
+    }
+
     @Override
     public boolean test(Followup followup) {
         return keywords.stream()
-                .anyMatch(keyword -> StringUtil.containsWordIgnoreCase(
-                        followup.getDescription().toString(), keyword));
+                .anyMatch(followup::isDescriptionMatching);
     }
 
     @Override

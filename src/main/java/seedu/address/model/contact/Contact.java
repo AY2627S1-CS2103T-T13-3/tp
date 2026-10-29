@@ -72,6 +72,13 @@ public class Contact {
     }
 
     /**
+     * Returns true if the contact's name matches the given keyword.
+     */
+    public boolean isNameMatching(String keyword) {
+        return name.isMatching(keyword);
+    }
+
+    /**
      * Returns whether the story has been assigned to this Contact
      */
     public boolean isAssigned(Story story) {
@@ -142,7 +149,7 @@ public class Contact {
     }
 
     /**
-     * Returns true if both contacts have the same identity and data fields.
+     * Returns true if both contacts have the same identity, data, and assigned-story fields.
      * This defines a stronger notion of equality between two contacts.
      */
     @Override
@@ -160,13 +167,14 @@ public class Contact {
                 && phone.equals(otherContact.phone)
                 && email.equals(otherContact.email)
                 && address.equals(otherContact.address)
-                && tags.equals(otherContact.tags);
+                && tags.equals(otherContact.tags)
+                && stories.equals(otherContact.stories);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, phone, email, address, tags);
+        return Objects.hash(name, phone, email, address, tags, stories);
     }
 
     @Override

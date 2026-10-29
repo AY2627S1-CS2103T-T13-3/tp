@@ -51,6 +51,13 @@ public class Story {
     }
 
     /**
+     * Returns true if the story's name matches the given keyword.
+     */
+    public boolean isNameMatching(String keyword) {
+        return name.isMatching(keyword);
+    }
+
+    /**
      * Returns an immutable list of contacts, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */
@@ -120,7 +127,7 @@ public class Story {
     }
 
     /**
-     * Returns true if both stories have the same identity and data fields.
+     * Returns true if both stories have the same identity, data, and assigned-contact fields.
      * This defines a stronger notion of equality between two stories.
      */
     @Override
@@ -135,13 +142,14 @@ public class Story {
         }
 
         return name.equals(otherStory.name)
-                && tags.equals(otherStory.tags);
+                && tags.equals(otherStory.tags)
+                && contacts.equals(otherStory.contacts);
     }
 
     @Override
     public int hashCode() {
         // use this method for custom fields hashing instead of implementing your own
-        return Objects.hash(name, tags);
+        return Objects.hash(name, tags, contacts);
     }
 
     @Override

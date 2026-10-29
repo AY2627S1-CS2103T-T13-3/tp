@@ -15,14 +15,16 @@ import seedu.address.model.Model;
 import seedu.address.model.contact.Contact;
 
 /**
- * Lists stories in the address book to the user.
+ * Lists stories in PressMemo to the user.
  */
 public class ListStoriesCommand extends Command {
 
     public static final String COMMAND_WORD = "liststories";
-    public static final String MESSAGE_SUCCESS = "Listed all stories.";
+    public static final String MESSAGE_SUCCESS = "Listed all %1$d story(ies).";
+    public static final String MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS =
+            "Listed %1$d story(ies) assigned to %2$s";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists stories in the address book.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists stories in PressMemo.\n"
             + "Parameters: [ci/CONTACT_INDEX]\n"
             + "Example: " + COMMAND_WORD + " ci/1";
 
@@ -43,7 +45,8 @@ public class ListStoriesCommand extends Command {
         // No index: display all stories
         if (contactIndex.isEmpty()) {
             model.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
-            return new CommandResult(MESSAGE_SUCCESS);
+            return new CommandResult(String.format(MESSAGE_SUCCESS,
+                    model.getFilteredStoryList().size()));
         }
 
         // Index provided: identify the contact
@@ -59,10 +62,13 @@ public class ListStoriesCommand extends Command {
 
         // Display only stories assigned to this contact
         model.updateFilteredStoryList(
-                story -> story.isAssigned(selectedContact));
+                story -> story.isAssigned(selectedContact),
+                String.format("Filtered by contact: \"%s\"", selectedContact.getName()));
 
         return new CommandResult(
-                "Listed stories assigned to " + selectedContact.getName());
+                String.format(MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,
+                        model.getFilteredStoryList().size(),
+                        selectedContact.getName()));
     }
 
     @Override

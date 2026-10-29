@@ -3,16 +3,17 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.Messages;
 import seedu.address.model.Model;
 import seedu.address.model.followup.FollowupDescriptionContainsKeywordsPredicate;
 
 /**
- * Finds and lists followups whose descriptions contain
+ * Finds followups whose descriptions contain
  * any of the supplied keywords (case-insensitive).
  */
-public class FindFollowupCommand extends Command {
+public class FindFollowupsCommand extends Command {
 
-    public static final String COMMAND_WORD = "findfollowup";
+    public static final String COMMAND_WORD = "findfollowups";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Finds followups whose descriptions contain any of "
@@ -22,7 +23,7 @@ public class FindFollowupCommand extends Command {
 
     private final FollowupDescriptionContainsKeywordsPredicate predicate;
 
-    public FindFollowupCommand(
+    public FindFollowupsCommand(
             FollowupDescriptionContainsKeywordsPredicate predicate) {
         this.predicate = requireNonNull(predicate);
     }
@@ -31,10 +32,11 @@ public class FindFollowupCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
 
-        model.updateFilteredFollowupList(predicate);
+        model.updateFilteredFollowupList(predicate,
+                String.format("Filtered: \"%s\"", String.join(" ", predicate.getKeywords())));
 
         return new CommandResult(
-                String.format("%d followup(s) listed!",
+                String.format(Messages.MESSAGE_FOLLOWUPS_LISTED_OVERVIEW,
                         model.getFilteredFollowupList().size()));
     }
 
@@ -44,7 +46,7 @@ public class FindFollowupCommand extends Command {
             return true;
         }
 
-        if (!(other instanceof FindFollowupCommand otherCommand)) {
+        if (!(other instanceof FindFollowupsCommand otherCommand)) {
             return false;
         }
 

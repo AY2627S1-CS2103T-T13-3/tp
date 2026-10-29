@@ -1,12 +1,10 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_PREFIX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 import static seedu.address.logic.parser.ParserUtil.MESSAGE_INVALID_INDEX;
-import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 
 import org.junit.jupiter.api.Test;
 
@@ -84,13 +82,6 @@ public class AddFollowupCommandParserTest {
      * according to Heuristic 2 (no more than one invalid input per test case).
      */
     @Test
-<<<<<<< Updated upstream
-    public void parse_invalidDescription_failure() {
-        // symbols not allowed in FollowupDescription
-        assertParseFailure(parser, "Call Dr. Smith @ 10am ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "#urgent ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
-    }
-=======
     public void parse_edgeCaseIsolatedInvalidInputs_failure() {
         // D_INV1: Missing or blank description
         String expectedMissingDescMessage = String.format(
@@ -104,7 +95,6 @@ public class AddFollowupCommandParserTest {
         assertParseFailure(parser, "/urgent ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "Call Dr. Smith s/o the myth ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "Interview/Investigation ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
->>>>>>> Stashed changes
 
         // CI_INV1: Boundary 0
         assertParseFailure(parser, "Followup A ci/0", MESSAGE_INVALID_INDEX);
@@ -128,18 +118,16 @@ public class AddFollowupCommandParserTest {
         assertParseFailure(parser, "Followup A ci/1 ci/2",
                 Messages.getErrorMessageForDuplicatePrefixes(PREFIX_CONTACTINDEX));
 
-<<<<<<< Updated upstream
-    @Test
-    public void parse_invalidPrefix_failure() {
-        assertParseFailure(parser, "Followup A z/invalid", String.format(MESSAGE_INVALID_PREFIX, 12, "ci/"));
-=======
         // CI_INV7: Missing contact index prefix
         assertParseFailure(parser, "Followup A",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddFollowupCommand.MESSAGE_USAGE));
+    }
 
-        // Unexpected prefix without contact index
+    @Test
+    public void parse_invalidPrefix_failure() {
         assertParseFailure(parser, "Followup A z/invalid",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddFollowupCommand.MESSAGE_USAGE));
->>>>>>> Stashed changes
+        assertParseFailure(parser, "Followup A z/invalid ci/1",
+                FollowupDescription.MESSAGE_CONSTRAINTS);
     }
 }

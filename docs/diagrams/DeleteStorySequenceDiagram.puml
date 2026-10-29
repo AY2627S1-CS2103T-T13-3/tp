@@ -1,0 +1,76 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":DeleteStoryCommandParser" as DeleteStoryCommandParser LOGIC_COLOR
+participant "d:DeleteStoryCommand" as DeleteStoryCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("deletestory 1")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("deletestory 1")
+activate AddressBookParser
+
+create DeleteStoryCommandParser
+AddressBookParser -> DeleteStoryCommandParser
+activate DeleteStoryCommandParser
+
+DeleteStoryCommandParser --> AddressBookParser
+deactivate DeleteStoryCommandParser
+
+AddressBookParser -> DeleteStoryCommandParser : parse("1")
+activate DeleteStoryCommandParser
+
+create DeleteStoryCommand
+DeleteStoryCommandParser -> DeleteStoryCommand
+activate DeleteStoryCommand
+
+DeleteStoryCommand --> DeleteStoryCommandParser :
+deactivate DeleteStoryCommand
+
+DeleteStoryCommandParser --> AddressBookParser : d
+deactivate DeleteStoryCommandParser
+'Hidden arrow to position the destroy marker below the end of the activation bar.
+DeleteStoryCommandParser -[hidden]-> AddressBookParser
+destroy DeleteStoryCommandParser
+
+AddressBookParser --> LogicManager : d
+deactivate AddressBookParser
+
+LogicManager -> DeleteStoryCommand : execute(m)
+activate DeleteStoryCommand
+
+DeleteStoryCommand -> Model : getFilteredStoryList()
+activate Model
+
+Model --> DeleteStoryCommand : lastShownList
+deactivate Model
+
+DeleteStoryCommand -> Model : deleteStory(storyToDelete)
+activate Model
+
+Model --> DeleteStoryCommand
+deactivate Model
+
+create CommandResult
+DeleteStoryCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> DeleteStoryCommand
+deactivate CommandResult
+
+DeleteStoryCommand --> LogicManager : r
+deactivate DeleteStoryCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml

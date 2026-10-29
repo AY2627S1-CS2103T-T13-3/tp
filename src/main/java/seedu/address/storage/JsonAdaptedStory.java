@@ -58,7 +58,7 @@ class JsonAdaptedStory {
      * Converts a Story into a Jackson-friendly object.
      */
     public JsonAdaptedStory(Story source) {
-        name = source.getName().fullName;
+        name = source.getName().toString();
 
         source.getTags().stream()
                 .map(JsonAdaptedTag::new)

@@ -14,7 +14,7 @@ public class ListFollowupsCommandParser implements Parser<ListFollowupsCommand> 
 
     @Override
     public ListFollowupsCommand parse(String args) throws ParseException {
-        // No arguments: list all stories
+        // No arguments: list all followups
         if (args.trim().isEmpty()) {
             return new ListFollowupsCommand();
         }

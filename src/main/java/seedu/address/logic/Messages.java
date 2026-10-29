@@ -23,6 +23,7 @@ public class Messages {
     public static final String MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX = "The followup index provided is invalid.";
     public static final String MESSAGE_CONTACTS_LISTED_OVERVIEW = "%1$d contact(s) listed!";
     public static final String MESSAGE_STORIES_LISTED_OVERVIEW = "%1$d story(ies) listed!";
+    public static final String MESSAGE_FOLLOWUPS_LISTED_OVERVIEW = "%1$d followup(s) listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
                 "Multiple values specified for the following single-valued field(s): ";
 
@@ -81,11 +82,15 @@ public class Messages {
      */
     public static String format(Story story) {
         final StringBuilder builder = new StringBuilder();
-        builder.append(story.getName())
-                .append("; Tags: ");
-        story.getTags().forEach(builder::append);
-        builder.append("; Contacts: ");
-        story.getContacts().forEach(contact -> builder.append("[").append(contact).append("]"));
+        builder.append(story.getName());
+        if (!story.getTags().isEmpty()) {
+            builder.append("; Tags: ");
+            story.getTags().forEach(builder::append);
+        }
+        if (!story.getContacts().isEmpty()) {
+            builder.append("; Contacts: ");
+            story.getContacts().forEach(contact -> builder.append("[").append(contact).append("]"));
+        }
         return builder.toString();
     }
 

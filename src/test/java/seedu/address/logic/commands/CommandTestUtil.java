@@ -50,11 +50,11 @@ public class CommandTestUtil {
     public static final String TAG_DESC_FRIEND = " " + PREFIX_TAG + VALID_TAG_FRIEND;
     public static final String TAG_DESC_HUSBAND = " " + PREFIX_TAG + VALID_TAG_HUSBAND;
 
-    public static final String INVALID_NAME_DESC = " " + PREFIX_NAME + "James&"; // '&' not allowed in names
+    public static final String INVALID_NAME_DESC = " " + PREFIX_NAME; // empty string not allowed for names
     public static final String INVALID_PHONE_DESC = " " + PREFIX_PHONE + "911a"; // 'a' not allowed in phones
     public static final String INVALID_EMAIL_DESC = " " + PREFIX_EMAIL + "bob!yahoo"; // missing '@' symbol
     public static final String INVALID_ADDRESS_DESC = " " + PREFIX_ADDRESS; // empty string not allowed for addresses
-    public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + "hubby*"; // '*' not allowed in tags
+    public static final String INVALID_TAG_DESC = " " + PREFIX_TAG + " " + PREFIX_TAG; // empty tag not allowed
 
     public static final String PREAMBLE_WHITESPACE = "\t  \r  \n";
     public static final String PREAMBLE_NON_EMPTY = "NonEmptyPreamble";
@@ -83,8 +83,8 @@ public class CommandTestUtil {
     public static final String TAG_DESC_SINGAPORE = " " + PREFIX_TAG + VALID_STORYTAG_SINGAPORE;
     public static final String TAG_DESC_MALAYSIA = " " + PREFIX_TAG + VALID_STORYTAG_MALAYSIA;
 
-    public static final String INVALID_STORYNAME_DESC = " " + PREFIX_NAME + "Scandal&"; // '&' not allowed in names
-    public static final String INVALID_STORYTAG_DESC = " " + PREFIX_TAG + "China*"; // '*' not allowed in tags
+    public static final String INVALID_STORYNAME_DESC = " " + PREFIX_NAME; // empty string not allowed for story names
+    public static final String INVALID_STORYTAG_DESC = " " + PREFIX_TAG + " " + PREFIX_TAG; // empty tag not allowed
 
     public static final EditStoryCommand.EditStoryDescriptor DESC_CRIME;
     public static final EditStoryCommand.EditStoryDescriptor DESC_FRAUD;
@@ -148,7 +148,7 @@ public class CommandTestUtil {
         assertTrue(targetIndex.getZeroBased() < model.getFilteredContactList().size());
 
         Contact contact = model.getFilteredContactList().get(targetIndex.getZeroBased());
-        final String[] splitName = contact.getName().fullName.split("\\s+");
+        final String[] splitName = contact.getName().toString().split("\\s+");
         model.updateFilteredContactList(new NameContainsKeywordsPredicate(List.of(splitName[0])));
 
         assertEquals(1, model.getFilteredContactList().size());

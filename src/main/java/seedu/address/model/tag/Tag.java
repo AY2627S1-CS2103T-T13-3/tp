@@ -9,10 +9,11 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
  */
 public class Tag {
 
-    public static final String MESSAGE_CONSTRAINTS = "Tag names should be alphanumeric";
-    public static final String VALIDATION_REGEX = "\\p{Alnum}+";
+    public static final String MESSAGE_CONSTRAINTS =
+            "Tag names can take any values except forward slash (/), and should not be blank";
+    public static final String VALIDATION_REGEX = "[^\\s/][^/]*";
 
-    public final String tagName;
+    private final String tagName;
 
     /**
      * Constructs a {@code Tag}.
@@ -23,6 +24,13 @@ public class Tag {
         requireNonNull(tagName);
         checkArgument(isValidTagName(tagName), MESSAGE_CONSTRAINTS);
         this.tagName = tagName;
+    }
+
+    /**
+     * Returns the tag name.
+     */
+    public String getName() {
+        return tagName;
     }
 
     /**

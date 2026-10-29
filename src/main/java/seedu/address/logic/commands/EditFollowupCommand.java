@@ -3,7 +3,6 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_FOLLOWUPS;
 
 import java.util.List;
 import java.util.Objects;
@@ -23,7 +22,7 @@ import seedu.address.model.followup.FollowupDescription;
 
 
 /** Edits the details of an existing followup in the address book. */
-public class EditFollowupCommand extends Command {
+public class EditFollowupCommand extends AddressBookMutatingCommand {
     public static final String COMMAND_WORD = "editfollowup";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Edits the followup identified "
             + "by the index number used in the displayed followup list. "
@@ -64,14 +63,12 @@ public class EditFollowupCommand extends Command {
             }
             updatedContact = lastShownContacts.get(contactIndex.getZeroBased()).getName();
         }
-        Followup editedFollowup = new Followup(
-                editFollowupDescriptor.getDescription().orElse(followupToEdit.getDescription()), updatedContact);
+        Followup editedFollowup = editFollowupDescriptor.createEditedFollowup(followupToEdit, updatedContact);
         if (!followupToEdit.equals(editedFollowup) && model.hasFollowup(editedFollowup)) {
             throw new CommandException(MESSAGE_DUPLICATE_FOLLOWUP);
         }
 
         model.setFollowup(followupToEdit, editedFollowup);
-        model.updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
         return new CommandResult(String.format(MESSAGE_EDIT_FOLLOWUP_SUCCESS, Messages.format(editedFollowup)));
     }
 
@@ -124,6 +121,18 @@ public class EditFollowupCommand extends Command {
 
         public Optional<Index> getContactIndex() {
             return Optional.ofNullable(contactIndex);
+        }
+
+        /**
+         * Creates and returns a {@code Followup} with the details of {@code followupToEdit}
+         * edited with this descriptor's fields and the resolved {@code updatedContact}.
+         */
+        public Followup createEditedFollowup(Followup followupToEdit, Name updatedContact) {
+            assert followupToEdit != null;
+            assert updatedContact != null;
+
+            FollowupDescription updatedDescription = getDescription().orElse(followupToEdit.getDescription());
+            return new Followup(updatedDescription, updatedContact);
         }
 
         @Override

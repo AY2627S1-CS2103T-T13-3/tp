@@ -19,6 +19,7 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_STORY;
 import static seedu.address.testutil.TypicalStories.getTypicalAddressBook;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -127,9 +128,31 @@ public class EditStoryCommandTest {
                 String.format(EditStoryCommand.MESSAGE_EDIT_STORY_SUCCESS, Messages.format(editedStory));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        showStoryAtIndex(expectedModel, INDEX_FIRST_STORY);
         expectedModel.setStory(model.getFilteredStoryList().get(0), editedStory);
 
         assertCommandSuccess(editStoryCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_filteredList_preservesMatchingStory() {
+        Story storyInFilteredList = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        model.updateFilteredStoryList(s -> s.getName().equals(storyInFilteredList.getName()));
+        assertEquals(1, model.getFilteredStoryList().size());
+
+        Story editedStory = new StoryBuilder(storyInFilteredList).withTags(VALID_STORYTAG_MALAYSIA).build();
+        EditStoryCommand editStoryCommand = new EditStoryCommand(INDEX_FIRST_STORY,
+                new EditStoryDescriptorBuilder().withTags(VALID_STORYTAG_MALAYSIA).build());
+
+        String expectedMessage =
+                String.format(EditStoryCommand.MESSAGE_EDIT_STORY_SUCCESS, Messages.format(editedStory));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.updateFilteredStoryList(s -> s.getName().equals(storyInFilteredList.getName()));
+        expectedModel.setStory(model.getFilteredStoryList().get(0), editedStory);
+
+        assertCommandSuccess(editStoryCommand, model, expectedMessage, expectedModel);
+        assertEquals(List.of(editedStory), model.getFilteredStoryList());
     }
 
     @Test

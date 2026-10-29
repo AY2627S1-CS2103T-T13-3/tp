@@ -130,16 +130,16 @@ public class AssignCommandTest {
     }
 
     @Test
-    public void execute_alreadyAssignedContactAndStory_success() {
+    public void execute_alreadyAssignedContactAndStory_throwsCommandException() {
         Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
         Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
         model.assignStory(contact, story);
 
         AssignCommand assignCommand = new AssignCommand(INDEX_FIRST_STORY, INDEX_FIRST_CONTACT);
-        expectedModel.assignStory(contact, story);
 
-        String expectedMessage = String.format(AssignCommand.MESSAGE_SUCCESS, contact.getName(), story.getName());
-        assertCommandSuccess(assignCommand, model, expectedMessage, expectedModel);
+        String expectedMessage = String.format(AssignCommand.MESSAGE_ALREADY_ASSIGNED,
+                contact.getName(), story.getName());
+        assertCommandFailure(assignCommand, model, expectedMessage);
     }
 
     @Test

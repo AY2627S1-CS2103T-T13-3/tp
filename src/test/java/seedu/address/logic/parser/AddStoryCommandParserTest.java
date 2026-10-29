@@ -54,11 +54,6 @@ public class AddStoryCommandParserTest {
             "Local Elections 2026"
         };
 
-<<<<<<< Updated upstream
-        // single character story name
-        Story singleCharStory = new Story(new StoryName("A"), new HashSet<>());
-        assertParseSuccess(parser, "A", new AddStoryCommand(singleCharStory));
-=======
         String[] tagArguments = {
             "",
             " t/urgent",
@@ -73,7 +68,6 @@ public class AddStoryCommandParserTest {
             Set.of(new Tag("urgent"), new Tag("breaking")),
             Set.of(new Tag("urgent"), new Tag("breaking"))
         };
->>>>>>> Stashed changes
 
         // All pairs of (StoryName, Tag) partitions
         for (int i = 0; i < storyNames.length; i++) {
@@ -103,15 +97,6 @@ public class AddStoryCommandParserTest {
         assertParseFailure(parser, "    t/urgent t/breaking",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
 
-<<<<<<< Updated upstream
-    @Test
-    public void parse_invalidArgs_throwsParseException() {
-        // Non-alphanumeric story name
-        assertParseFailure(parser, "Invalid@Story", StoryName.MESSAGE_CONSTRAINTS);
-
-        // Valid story name but invalid tag
-        assertParseFailure(parser, "Valid Story t/invalid#tag", Tag.MESSAGE_CONSTRAINTS);
-=======
         // SN_INV2: Forward slash in story name
         assertParseFailure(parser, "Invalid/Story", StoryName.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "Budget / 2026", StoryName.MESSAGE_CONSTRAINTS);
@@ -129,6 +114,5 @@ public class AddStoryCommandParserTest {
         // Valid tag followed by invalid tag in isolation
         assertParseFailure(parser, "Valid Story t/urgent t/   ", Tag.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "Valid Story t/urgent t/invalid/tag", Tag.MESSAGE_CONSTRAINTS);
->>>>>>> Stashed changes
     }
 }

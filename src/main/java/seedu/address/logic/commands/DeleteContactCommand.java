@@ -14,7 +14,7 @@ import seedu.address.model.contact.Contact;
 /**
  * Deletes a contact identified using its displayed index from the address book.
  */
-public class DeleteContactCommand extends Command {
+public class DeleteContactCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "deletecontact";
 

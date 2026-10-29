@@ -52,14 +52,14 @@ public class ContactCard extends UiPart<Region> {
         super(FXML);
         this.contact = contact;
         id.setText(displayedIndex + ". ");
-        name.setText(contact.getName().fullName);
-        phone.setText(contact.getPhone().value);
-        address.setText(contact.getAddress().value);
-        email.setText(contact.getEmail().value);
+        name.setText(contact.getName().toString());
+        phone.setText(contact.getPhone().toString());
+        address.setText(contact.getAddress().toString());
+        email.setText(contact.getEmail().toString());
         contact.getTags().stream()
-                .sorted(Comparator.comparing(tag -> tag.tagName))
+                .sorted(Comparator.comparing(tag -> tag.getName()))
                 .forEach(tag -> {
-                    Label label = new Label(tag.tagName);
+                    Label label = new Label(tag.getName());
                     label.setWrapText(true);
                     label.setMinWidth(0);
                     label.setMinHeight(Region.USE_PREF_SIZE);

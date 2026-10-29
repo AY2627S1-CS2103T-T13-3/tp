@@ -3,6 +3,8 @@ package seedu.address.model.followup;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
+import seedu.address.commons.util.StringUtil;
+
 /**
  * Represents a Story's name in the address book.
  * Guarantees: immutable; is valid as declared in {@link #isValidDescription(String)}
@@ -10,13 +12,13 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class FollowupDescription {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Descriptions should only contain alphanumeric characters and spaces, and should not be blank";
+            "Descriptions can take any values except forward slash (/), and should not be blank";
 
     /*
-     * The first character of the name must not be a whitespace,
-     * otherwise " " (a blank string) becomes a valid input.
+     * The first character of the description must not be a whitespace or forward slash,
+     * and the description must not contain any forward slash.
      */
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} ]*";
+    public static final String VALIDATION_REGEX = "[^\\s/][^/]*";
 
     public final String description;
 
@@ -36,6 +38,20 @@ public class FollowupDescription {
      */
     public static boolean isValidDescription(String test) {
         return test.matches(VALIDATION_REGEX);
+    }
+
+    /**
+     * Returns true if the description matches the given keyword.
+     */
+    public boolean isMatching(String keyword) {
+        return StringUtil.containsWordIgnoreCase(description, keyword);
+    }
+
+    /**
+     * Returns true if the description matches the given keyword.
+     */
+    public boolean isDescriptionMatching(String keyword) {
+        return isMatching(keyword);
     }
 
 

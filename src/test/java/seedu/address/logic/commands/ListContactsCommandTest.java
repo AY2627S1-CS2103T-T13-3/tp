@@ -23,6 +23,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.story.Story;
+import seedu.address.testutil.ContactBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for ListContactsCommand.
@@ -41,13 +42,17 @@ public class ListContactsCommandTest {
 
     @Test
     public void execute_listIsNotFiltered_showsSameList() {
-        assertCommandSuccess(new ListContactsCommand(), model, ListContactsCommand.MESSAGE_SUCCESS, expectedModel);
+        String expectedMessage = String.format(ListContactsCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredContactList().size());
+        assertCommandSuccess(new ListContactsCommand(), model, expectedMessage, expectedModel);
     }
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
         showContactAtIndex(model, INDEX_FIRST_CONTACT);
-        assertCommandSuccess(new ListContactsCommand(), model, ListContactsCommand.MESSAGE_SUCCESS, expectedModel);
+        String expectedMessage = String.format(ListContactsCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredContactList().size());
+        assertCommandSuccess(new ListContactsCommand(), model, expectedMessage, expectedModel);
     }
 
     @Test
@@ -60,9 +65,11 @@ public class ListContactsCommandTest {
         Story assignedStory = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredContactList(p -> assignedStory.isAssigned(p));
+        expectedModel.updateFilteredContactList(p -> assignedStory.isAssigned(p),
+                String.format("Filtered by story: \"%s\"", assignedStory.getName()));
 
-        String expectedMessage = "Listed contacts assigned to " + assignedStory.getName();
+        String expectedMessage = String.format(ListContactsCommand.MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,
+                1, assignedStory.getName());
 
         assertCommandSuccess(new ListContactsCommand(INDEX_FIRST_STORY), model, expectedMessage, expectedModel);
 
@@ -74,13 +81,35 @@ public class ListContactsCommandTest {
     public void execute_validStoryIndexNoAssignments_showsEmptyList() {
         Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
-        expectedModel.updateFilteredContactList(p -> false);
+        expectedModel.updateFilteredContactList(p -> false,
+                String.format("Filtered by story: \"%s\"", story.getName()));
 
-        String expectedMessage = "Listed contacts assigned to " + story.getName();
+        String expectedMessage = String.format(ListContactsCommand.MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,
+                0, story.getName());
 
         assertCommandSuccess(new ListContactsCommand(INDEX_FIRST_STORY), model, expectedMessage, expectedModel);
 
         assertTrue(model.getFilteredContactList().isEmpty());
+    }
+
+    @Test
+    public void execute_editContactAfterListContacts_contactRemainsInFilteredList() throws Exception {
+        Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        model.assignStory(contact, story);
+
+        ListContactsCommand listContactsCommand = new ListContactsCommand(INDEX_FIRST_STORY);
+        listContactsCommand.execute(model);
+        assertEquals(1, model.getFilteredContactList().size());
+
+        // Edit the contact's phone while under listcontacts filter
+        Contact contactToEdit = model.getFilteredContactList().get(0);
+        Contact editedContact = new ContactBuilder(contactToEdit).withPhone("98765432").build();
+        model.setContact(contactToEdit, editedContact);
+
+        // The edited contact must still be present in the filtered contact list!
+        assertEquals(1, model.getFilteredContactList().size());
+        assertEquals(editedContact.getName(), model.getFilteredContactList().get(0).getName());
     }
 
     @Test

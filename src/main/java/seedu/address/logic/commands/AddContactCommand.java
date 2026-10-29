@@ -14,13 +14,13 @@ import seedu.address.model.Model;
 import seedu.address.model.contact.Contact;
 
 /**
- * Adds a contact to the address book.
+ * Adds a contact to PressMemo.
  */
-public class AddContactCommand extends Command {
+public class AddContactCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "addcontact";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a contact to the address book. "
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a contact to PressMemo. "
             + "Parameters: "
             + PREFIX_NAME + "NAME "
             + PREFIX_PHONE + "PHONE "
@@ -36,7 +36,7 @@ public class AddContactCommand extends Command {
             + PREFIX_TAG + "owesMoney";
 
     public static final String MESSAGE_SUCCESS = "New contact added: %1$s";
-    public static final String MESSAGE_DUPLICATE_CONTACT = "This contact already exists in the address book.";
+    public static final String MESSAGE_DUPLICATE_CONTACT = "This contact already exists in PressMemo.";
 
     private final Contact toAdd;
 

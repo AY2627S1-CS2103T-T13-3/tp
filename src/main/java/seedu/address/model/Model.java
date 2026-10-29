@@ -3,6 +3,7 @@ package seedu.address.model;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.contact.Contact;
@@ -17,6 +18,9 @@ public interface Model {
     Predicate<Contact> PREDICATE_SHOW_ALL_CONTACTS = unused -> true;
     Predicate<Story> PREDICATE_SHOW_ALL_STORIES = unused -> true;
     Predicate<Followup> PREDICATE_SHOW_ALL_FOLLOWUPS = unused -> true;
+
+    /** Default filter status when all items are shown. */
+    String FILTER_STATUS_ALL = "All";
 
     /**
      * Returns the user prefs.
@@ -119,8 +123,8 @@ public interface Model {
     boolean hasFollowup(Followup followup);
 
     /**
-     * Adds the given story.
-     * {@code story} must not already exist in the address book.
+     * Adds the given followup.
+     * {@code followup} must not already exist in the address book.
      */
     void addFollowup(Followup followup);
 
@@ -139,7 +143,7 @@ public interface Model {
     /** Returns an unmodifiable view of the filtered story list */
     ObservableList<Story> getFilteredStoryList();
 
-    /** Returns an unmodifiable view of the filtered story list */
+    /** Returns an unmodifiable view of the filtered followup list */
     ObservableList<Followup> getFilteredFollowupList();
 
     /**
@@ -149,14 +153,44 @@ public interface Model {
     void updateFilteredContactList(Predicate<Contact> predicate);
 
     /**
+     * Updates the filter of the filtered contact list to filter by the given {@code predicate}
+     * with the specified {@code filterStatus} description.
+     * @throws NullPointerException if {@code predicate} or {@code filterStatus} is null.
+     */
+    void updateFilteredContactList(Predicate<Contact> predicate, String filterStatus);
+
+    /**
      * Updates the filter of the filtered story list to filter by the given {@code predicate}.
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredStoryList(Predicate<Story> predicate);
 
     /**
+     * Updates the filter of the filtered story list to filter by the given {@code predicate}
+     * with the specified {@code filterStatus} description.
+     * @throws NullPointerException if {@code predicate} or {@code filterStatus} is null.
+     */
+    void updateFilteredStoryList(Predicate<Story> predicate, String filterStatus);
+
+    /**
      * Updates the filter of the filtered followup list to filter by the given {@code predicate}.
      * @throws NullPointerException if {@code predicate} is null.
      */
     void updateFilteredFollowupList(Predicate<Followup> predicate);
+
+    /**
+     * Updates the filter of the filtered followup list to filter by the given {@code predicate}
+     * with the specified {@code filterStatus} description.
+     * @throws NullPointerException if {@code predicate} or {@code filterStatus} is null.
+     */
+    void updateFilteredFollowupList(Predicate<Followup> predicate, String filterStatus);
+
+    /** Returns the filter status property of the contact list. */
+    ObservableValue<String> getContactFilterStatusProperty();
+
+    /** Returns the filter status property of the story list. */
+    ObservableValue<String> getStoryFilterStatusProperty();
+
+    /** Returns the filter status property of the followup list. */
+    ObservableValue<String> getFollowupFilterStatusProperty();
 }

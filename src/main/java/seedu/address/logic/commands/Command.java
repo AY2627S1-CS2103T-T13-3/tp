@@ -9,6 +9,13 @@ import seedu.address.model.Model;
 public abstract class Command {
 
     /**
+     * Returns whether successfully executing this command changes persistent address book data.
+     */
+    public boolean modifiesAddressBook() {
+        return false;
+    }
+
+    /**
      * Returns whether successfully executing this command changes user preferences.
      */
     public boolean modifiesUserPrefs() {

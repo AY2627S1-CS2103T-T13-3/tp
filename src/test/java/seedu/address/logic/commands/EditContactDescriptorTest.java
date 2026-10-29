@@ -14,6 +14,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.EditContactCommand.EditContactDescriptor;
+import seedu.address.model.contact.Contact;
 import seedu.address.testutil.EditContactDescriptorBuilder;
 
 public class EditContactDescriptorTest {
@@ -81,6 +82,24 @@ public class EditContactDescriptorTest {
         // different tags -> returns false
         editedAmy = new EditContactDescriptorBuilder(DESC_AMY).withTags(VALID_TAG_HUSBAND).build();
         assertFalse(DESC_AMY.equals(editedAmy));
+    }
+
+    @Test
+    public void createEditedContact() {
+        EditContactDescriptor descriptor = new EditContactDescriptorBuilder(DESC_BOB).build();
+        Contact editedContact = descriptor.createEditedContact(seedu.address.testutil.TypicalContacts.ALICE);
+
+        assertEquals(new seedu.address.model.contact.Name(VALID_NAME_BOB), editedContact.getName());
+        assertEquals(new seedu.address.model.contact.Phone(VALID_PHONE_BOB), editedContact.getPhone());
+        assertEquals(new seedu.address.model.contact.Email(VALID_EMAIL_BOB), editedContact.getEmail());
+        assertEquals(new seedu.address.model.contact.Address(VALID_ADDRESS_BOB), editedContact.getAddress());
+        assertEquals(descriptor.getTags().get(), editedContact.getTags());
+        assertEquals(seedu.address.testutil.TypicalContacts.ALICE.getStories(), editedContact.getStories());
+
+        // empty descriptor preserves original contact details
+        EditContactDescriptor emptyDescriptor = new EditContactDescriptor();
+        Contact untouchedContact = emptyDescriptor.createEditedContact(seedu.address.testutil.TypicalContacts.ALICE);
+        assertEquals(seedu.address.testutil.TypicalContacts.ALICE, untouchedContact);
     }
 
     @Test

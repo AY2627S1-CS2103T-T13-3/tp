@@ -34,6 +34,13 @@ public class Followup {
     }
 
     /**
+     * Returns true if the followup's description matches the given keyword.
+     */
+    public boolean isDescriptionMatching(String keyword) {
+        return description.isMatching(keyword);
+    }
+
+    /**
      * Returns the {@code Name} of the linked contact
      */
     public Name getContact() {
@@ -48,20 +55,14 @@ public class Followup {
     }
 
     /**
-     * Returns true if both followups have the same name.
-     * This defines a weaker notion of equality between two followups.
+     * Returns true if both followups are semantically equal.
      */
     public boolean isSameFollowup(Followup otherFollowup) {
-        if (otherFollowup == this) {
-            return true;
-        }
-
-        return otherFollowup != null
-                && otherFollowup.getDescription().equals(getDescription());
+        return equals(otherFollowup);
     }
 
     /**
-     * Returns true if both followups have the same identity and data fields.
+     * Returns true if both followups have the same identity, data, and linked-contact fields.
      * This defines a stronger notion of equality between two followups.
      */
     @Override

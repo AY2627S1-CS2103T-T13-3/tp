@@ -3,6 +3,8 @@ package seedu.address.model.contact;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
+import seedu.address.commons.util.StringUtil;
+
 /**
  * Represents a Contact's name in the address book.
  * Guarantees: immutable; is valid as declared in {@link #isValidName(String)}
@@ -10,15 +12,15 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Name {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Names should only contain alphanumeric characters and spaces, and should not be blank";
+            "Names can take any values except forward slash (/), and should not be blank";
 
     /*
-     * The first character of the name must not be a whitespace,
-     * otherwise " " (a blank string) becomes a valid input.
+     * The first character of the name must not be a whitespace or forward slash,
+     * and the name must not contain any forward slash.
      */
-    public static final String VALIDATION_REGEX = "[\\p{Alnum}][\\p{Alnum} ]*";
+    public static final String VALIDATION_REGEX = "[^\\s/][^/]*";
 
-    public final String fullName;
+    private final String fullName;
 
     /**
      * Constructs a {@code Name}.
@@ -36,6 +38,20 @@ public class Name {
      */
     public static boolean isValidName(String test) {
         return test.matches(VALIDATION_REGEX);
+    }
+
+    /**
+     * Returns true if the name matches the given keyword.
+     */
+    public boolean isMatching(String keyword) {
+        return StringUtil.containsWordIgnoreCase(fullName, keyword);
+    }
+
+    /**
+     * Returns true if the name matches the given keyword.
+     */
+    public boolean isNameMatching(String keyword) {
+        return isMatching(keyword);
     }
 
 

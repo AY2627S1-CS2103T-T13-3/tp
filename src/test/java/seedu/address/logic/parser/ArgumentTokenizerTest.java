@@ -3,7 +3,6 @@ package seedu.address.logic.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -66,9 +65,10 @@ public class ArgumentTokenizerTest {
     }
 
     @Test
-    public void tokenize_invalidPrefixThrows() throws ParseException {
+    public void tokenize_slashInPreamble_success() {
         String argsString = "  some random string /t tag with leading and trailing spaces ";
-        assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(argsString));
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString);
+        assertPreamblePresent(argMultimap, argsString.trim());
     }
 
     @Test
@@ -135,9 +135,13 @@ public class ArgumentTokenizerTest {
     }
 
     @Test
-    public void tokenize_argumentsJoined_throws() throws ParseException {
+    public void tokenize_multipleArgumentsJoined() {
         String argsString = "SomePreambleStringp/ pSlash joinedt/joined t/ not joinedQ/joined";
-        assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(argsString, pSlash, tSlash, qSlash));
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString, pSlash, tSlash, qSlash);
+        assertPreamblePresent(argMultimap, "SomePreambleStringp/ pSlash joinedt/joined");
+        assertArgumentAbsent(argMultimap, pSlash);
+        assertArgumentPresent(argMultimap, tSlash, "not joinedQ/joined");
+        assertArgumentAbsent(argMultimap, qSlash);
     }
 
     @Test

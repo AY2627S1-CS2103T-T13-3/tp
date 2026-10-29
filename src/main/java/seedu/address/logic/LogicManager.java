@@ -5,6 +5,7 @@ import java.nio.file.AccessDeniedException;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
@@ -52,8 +53,9 @@ public class LogicManager implements Logic {
         commandResult = command.execute(model);
 
         try {
-            storage.saveAddressBook(model.getAddressBook());
-            storage.saveStories(model.getAddressBook());
+            if (command.modifiesAddressBook()) {
+                storage.saveAddressBook(model.getAddressBook());
+            }
             if (command.modifiesUserPrefs()) {
                 storage.saveUserPrefs(model.getUserPrefs());
             }
@@ -79,6 +81,21 @@ public class LogicManager implements Logic {
     @Override
     public ObservableList<Followup> getFilteredFollowupList() {
         return model.getFilteredFollowupList();
+    }
+
+    @Override
+    public ObservableValue<String> getContactFilterStatusProperty() {
+        return model.getContactFilterStatusProperty();
+    }
+
+    @Override
+    public ObservableValue<String> getStoryFilterStatusProperty() {
+        return model.getStoryFilterStatusProperty();
+    }
+
+    @Override
+    public ObservableValue<String> getFollowupFilterStatusProperty() {
+        return model.getFollowupFilterStatusProperty();
     }
 
     @Override

@@ -25,7 +25,7 @@ class JsonAdaptedStoryName {
      * Converts a StoryName into a Jackson-friendly object.
      */
     public JsonAdaptedStoryName(StoryName source) {
-        this.name = source.fullName;
+        this.name = source.toString();
     }
 
     @JsonProperty("name")
