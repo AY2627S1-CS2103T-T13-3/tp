@@ -145,6 +145,18 @@ public class ArgumentTokenizerTest {
     }
 
     @Test
+    public void instantiation() {
+        org.junit.jupiter.api.Assertions.assertNotNull(new ArgumentTokenizer());
+    }
+
+    @Test
+    public void tokenize_prefixWithoutSlash_throwsAssertionError() {
+        Prefix invalidPrefixWithoutSlash = new Prefix("noslash");
+        org.junit.jupiter.api.Assertions.assertThrows(AssertionError.class, () ->
+                ArgumentTokenizer.tokenize("some input", invalidPrefixWithoutSlash));
+    }
+
+    @Test
     public void equalsMethod() {
         Prefix aaa = new Prefix("aaa");
 

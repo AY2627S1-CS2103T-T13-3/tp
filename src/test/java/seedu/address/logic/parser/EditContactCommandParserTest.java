@@ -72,9 +72,17 @@ public class EditContactCommandParserTest {
     public void parse_invalidPreamble_failure() {
         // negative index
         assertParseFailure(parser, "-5" + NAME_DESC_AMY, MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "-1" + NAME_DESC_AMY, MESSAGE_INVALID_FORMAT);
 
         // zero index
         assertParseFailure(parser, "0" + NAME_DESC_AMY, MESSAGE_INVALID_FORMAT);
+
+        // integer overflow
+        assertParseFailure(parser, "2147483648" + NAME_DESC_AMY, MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, Long.MAX_VALUE + NAME_DESC_AMY, MESSAGE_INVALID_FORMAT);
+
+        // non-integer preamble
+        assertParseFailure(parser, "abc" + NAME_DESC_AMY, MESSAGE_INVALID_FORMAT);
 
         // invalid arguments being parsed as preamble
         assertParseFailure(parser, "1 some random string", MESSAGE_INVALID_FORMAT);

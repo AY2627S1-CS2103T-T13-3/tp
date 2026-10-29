@@ -18,6 +18,25 @@ import seedu.address.testutil.EditStoryDescriptorBuilder;
 public class EditStoryDescriptorTest {
 
     @Test
+    public void isAnyFieldEdited() {
+        EditStoryDescriptor descriptor = new EditStoryDescriptor();
+        assertFalse(descriptor.isAnyFieldEdited());
+
+        // Name only
+        descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).build();
+        assertTrue(descriptor.isAnyFieldEdited());
+
+        // Tags only
+        descriptor = new EditStoryDescriptorBuilder().withTags(VALID_STORYTAG_MALAYSIA).build();
+        assertTrue(descriptor.isAnyFieldEdited());
+
+        // Both name and tags
+        descriptor = new EditStoryDescriptorBuilder()
+                .withName(VALID_STORYNAME_FRAUD).withTags(VALID_STORYTAG_MALAYSIA).build();
+        assertTrue(descriptor.isAnyFieldEdited());
+    }
+
+    @Test
     public void equals() {
         // same values -> returns true
         EditStoryDescriptor descriptorWithSameValues = new EditStoryDescriptor(DESC_CRIME);

@@ -4,7 +4,7 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -16,51 +16,103 @@ import seedu.address.model.tag.Tag;
 
 public class AddStoryCommandParserTest {
 
-    private AddStoryCommandParser parser = new AddStoryCommandParser();
+    private final AddStoryCommandParser parser = new AddStoryCommandParser();
 
+    /**
+     * Equivalence Partitions for AddStoryCommand:
+     * 1. StoryName (Preamble):
+     *    - SN1: Single char ("A")
+     *    - SN2: Typical name ("Breaking News")
+     *    - SN3: Punctuation/Symbols & Numbers ("Budget 2026: Politics & Tech!")
+     *    - SN4: Padded whitespace ("   Local Elections 2026   ")
+     *    Invalid:
+     *    - SN_INV1: Empty / whitespace string
+     *    - SN_INV2: Forward slash in story name
+     *
+     * 2. Tag (t/):
+     *    - T1: Omitted (no tags)
+     *    - T2: Single tag ("t/urgent")
+     *    - T3: Multiple unique tags ("t/urgent t/breaking")
+     *    - T4: Duplicate tags ("t/urgent t/breaking t/urgent" -> deduplicated)
+     *    Invalid:
+     *    - T_INV1: Empty tag value ("t/")
+     *    - T_INV2: Whitespace tag ("t/   ")
+     *    - T_INV3: Forward slash in tag ("t/urgent/tag")
+     */
     @Test
-    public void parse_validArgs_returnsAddStoryCommand() {
-        Story expectedStory = new Story(new StoryName("Breaking News"), new HashSet<>());
-        assertParseSuccess(parser, "Breaking News", new AddStoryCommand(expectedStory));
+    public void parse_allPairsCombinations_success() {
+        String[] storyNames = {
+            "A",
+            "Breaking News",
+            "Budget 2026: Politics & Tech!",
+            "   Local Elections 2026   "
+        };
+        String[] trimmedStoryNames = {
+            "A",
+            "Breaking News",
+            "Budget 2026: Politics & Tech!",
+            "Local Elections 2026"
+        };
 
-        // Story name with symbols and punctuation
-        Story expectedStoryWithSymbols = new Story(new StoryName("Budget 2026: Politics & Tech!"), new HashSet<>());
-        assertParseSuccess(parser, "Budget 2026: Politics & Tech!", new AddStoryCommand(expectedStoryWithSymbols));
+        String[] tagArguments = {
+            "",
+            " t/urgent",
+            " t/urgent t/breaking",
+            " t/urgent t/breaking t/urgent"
+        };
 
-        // single character story name
-        Story singleCharStory = new Story(new StoryName("A"), new HashSet<>());
-        assertParseSuccess(parser, "A", new AddStoryCommand(singleCharStory));
+        @SuppressWarnings("unchecked")
+        Set<Tag>[] expectedTags = new Set[] {
+            Collections.emptySet(),
+            Set.of(new Tag("urgent")),
+            Set.of(new Tag("urgent"), new Tag("breaking")),
+            Set.of(new Tag("urgent"), new Tag("breaking"))
+        };
 
-        // story name with single tag
-        Story storyWithTag = new Story(new StoryName("Breaking News"), Set.of(new Tag("urgent")));
-        assertParseSuccess(parser, "Breaking News t/urgent", new AddStoryCommand(storyWithTag));
-
-        // story name with multiple tags and duplicates (deduplicated)
-        Story storyWithMultipleTags = new Story(new StoryName("Breaking News"),
-                Set.of(new Tag("urgent"), new Tag("breaking")));
-        assertParseSuccess(parser, "Breaking News t/urgent t/breaking t/urgent",
-                new AddStoryCommand(storyWithMultipleTags));
+        // All pairs of (StoryName, Tag) partitions
+        for (int i = 0; i < storyNames.length; i++) {
+            for (int j = 0; j < tagArguments.length; j++) {
+                String input = storyNames[i] + tagArguments[j];
+                Story expectedStory = new Story(new StoryName(trimmedStoryNames[i]), expectedTags[j]);
+                assertParseSuccess(parser, input, new AddStoryCommand(expectedStory));
+            }
+        }
     }
 
+    /**
+     * Isolated negative test cases covering each invalid equivalence partition in isolation
+     * according to Heuristic 2 (no more than one invalid input per test case).
+     */
     @Test
-    public void parse_emptyArgs_throwsParseException() {
+    public void parse_edgeCaseIsolatedInvalidInputs_failure() {
+        // SN_INV1: Empty or whitespace-only preamble
+        assertParseFailure(parser, "",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
         assertParseFailure(parser, "     ",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
 
-        // tags provided but empty preamble
+        // SN_INV1 with valid tags: Empty preamble with tags
         assertParseFailure(parser, " t/urgent",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
-    }
+        assertParseFailure(parser, "    t/urgent t/breaking",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
 
-    @Test
-    public void parse_invalidArgs_throwsParseException() {
-        // Invalid tag (spaces only)
+        // SN_INV2: Forward slash in story name
+        assertParseFailure(parser, "Invalid/Story", StoryName.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "Budget / 2026", StoryName.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "Invalid/Story t/urgent", StoryName.MESSAGE_CONSTRAINTS);
+
+        // T_INV1: Empty tag value
+        assertParseFailure(parser, "Valid Story t/", Tag.MESSAGE_CONSTRAINTS);
+
+        // T_INV2: Whitespace only tag value
         assertParseFailure(parser, "Valid Story t/   ", Tag.MESSAGE_CONSTRAINTS);
 
-        // Story name with forward slash triggers story name constraint error
-        assertParseFailure(parser, "Invalid/Story", StoryName.MESSAGE_CONSTRAINTS);
-
-        // Valid story name but invalid tag containing forward slash
+        // T_INV3: Tag containing forward slash
         assertParseFailure(parser, "Valid Story t/invalid/tag", Tag.MESSAGE_CONSTRAINTS);
+
+        // Valid tag followed by invalid tag in isolation
+        assertParseFailure(parser, "Valid Story t/urgent t/   ", Tag.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "Valid Story t/urgent t/invalid/tag", Tag.MESSAGE_CONSTRAINTS);
     }
 }

@@ -143,6 +143,19 @@ public class AssignCommandTest {
     }
 
     @Test
+    public void execute_boundaryMaxIntegerIndices_failure() {
+        Index maxIndex = Index.fromOneBased(Integer.MAX_VALUE);
+
+        // Max contact index
+        AssignCommand maxContactCommand = new AssignCommand(INDEX_FIRST_STORY, maxIndex);
+        assertCommandFailure(maxContactCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+
+        // Max story index
+        AssignCommand maxStoryCommand = new AssignCommand(maxIndex, INDEX_FIRST_CONTACT);
+        assertCommandFailure(maxStoryCommand, model, Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+    }
+
+    @Test
     public void equals() {
         AssignCommand command = new AssignCommand(STORY_INDEX, CONTACT_INDEX);
 

@@ -148,6 +148,19 @@ public class UnassignCommandTest {
     }
 
     @Test
+    public void execute_boundaryMaxIntegerIndices_failure() {
+        Index maxIndex = Index.fromOneBased(Integer.MAX_VALUE);
+
+        // Max contact index
+        UnassignCommand maxContactCommand = new UnassignCommand(INDEX_FIRST_STORY, maxIndex);
+        assertCommandFailure(maxContactCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+
+        // Max story index
+        UnassignCommand maxStoryCommand = new UnassignCommand(maxIndex, INDEX_FIRST_CONTACT);
+        assertCommandFailure(maxStoryCommand, model, Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+    }
+
+    @Test
     public void equals() {
         UnassignCommand command = new UnassignCommand(STORY_INDEX, CONTACT_INDEX);
 

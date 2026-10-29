@@ -20,6 +20,32 @@ import seedu.address.testutil.EditContactDescriptorBuilder;
 public class EditContactDescriptorTest {
 
     @Test
+    public void isAnyFieldEdited() {
+        EditContactDescriptor descriptor = new EditContactDescriptor();
+        assertFalse(descriptor.isAnyFieldEdited());
+
+        // Name only
+        descriptor = new EditContactDescriptorBuilder().withName(VALID_NAME_BOB).build();
+        assertTrue(descriptor.isAnyFieldEdited());
+
+        // Phone only
+        descriptor = new EditContactDescriptorBuilder().withPhone(VALID_PHONE_BOB).build();
+        assertTrue(descriptor.isAnyFieldEdited());
+
+        // Email only
+        descriptor = new EditContactDescriptorBuilder().withEmail(VALID_EMAIL_BOB).build();
+        assertTrue(descriptor.isAnyFieldEdited());
+
+        // Address only
+        descriptor = new EditContactDescriptorBuilder().withAddress(VALID_ADDRESS_BOB).build();
+        assertTrue(descriptor.isAnyFieldEdited());
+
+        // Tags only
+        descriptor = new EditContactDescriptorBuilder().withTags(VALID_TAG_HUSBAND).build();
+        assertTrue(descriptor.isAnyFieldEdited());
+    }
+
+    @Test
     public void equals() {
         // same values -> returns true
         EditContactDescriptor descriptorWithSameValues = new EditContactDescriptor(DESC_AMY);

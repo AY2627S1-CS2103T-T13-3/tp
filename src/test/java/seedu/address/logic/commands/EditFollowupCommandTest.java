@@ -79,6 +79,16 @@ public class EditFollowupCommandTest {
                 Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX);
         assertCommandFailure(new EditFollowupCommand(Index.fromOneBased(1), descriptor), model,
                 Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+
+        // Boundary max integer index for followup
+        assertCommandFailure(new EditFollowupCommand(Index.fromOneBased(Integer.MAX_VALUE), descriptor), model,
+                Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX);
+
+        // Boundary max integer index for contact
+        EditFollowupDescriptor maxContactDescriptor = new EditFollowupDescriptor();
+        maxContactDescriptor.setContactIndex(Index.fromOneBased(Integer.MAX_VALUE));
+        assertCommandFailure(new EditFollowupCommand(Index.fromOneBased(1), maxContactDescriptor), model,
+                Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
     }
 
     @Test
