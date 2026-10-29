@@ -8,28 +8,28 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.FindFollowupCommand;
+import seedu.address.logic.commands.FindFollowupsCommand;
 import seedu.address.model.followup.FollowupDescriptionContainsKeywordsPredicate;
 
-public class FindFollowupCommandParserTest {
+public class FindFollowupsCommandParserTest {
 
-    private final FindFollowupCommandParser parser =
-            new FindFollowupCommandParser();
+    private final FindFollowupsCommandParser parser =
+            new FindFollowupsCommandParser();
 
     @Test
     public void parse_emptyArg_throwsParseException() {
         assertParseFailure(parser, "     ",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        FindFollowupCommand.MESSAGE_USAGE));
+                        FindFollowupsCommand.MESSAGE_USAGE));
 
         assertParseFailure(parser, "",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        FindFollowupCommand.MESSAGE_USAGE));
+                        FindFollowupsCommand.MESSAGE_USAGE));
     }
 
     @Test
-    public void parse_validArgs_returnsFindFollowupCommand() {
-        FindFollowupCommand expectedCommand = new FindFollowupCommand(
+    public void parse_validArgs_returnsFindFollowupsCommand() {
+        FindFollowupsCommand expectedCommand = new FindFollowupsCommand(
                 new FollowupDescriptionContainsKeywordsPredicate(
                         List.of("interview", "meeting")));
 
@@ -43,8 +43,8 @@ public class FindFollowupCommandParserTest {
     }
 
     @Test
-    public void parse_singleKeyword_returnsFindFollowupCommand() {
-        FindFollowupCommand expectedCommand = new FindFollowupCommand(
+    public void parse_singleKeyword_returnsFindFollowupsCommand() {
+        FindFollowupsCommand expectedCommand = new FindFollowupsCommand(
                 new FollowupDescriptionContainsKeywordsPredicate(
                         List.of("interview")));
 
