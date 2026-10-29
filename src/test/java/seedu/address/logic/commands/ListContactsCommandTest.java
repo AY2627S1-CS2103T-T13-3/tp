@@ -64,7 +64,8 @@ public class ListContactsCommandTest {
         Story assignedStory = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredContactList(p -> assignedStory.isAssigned(p));
+        expectedModel.updateFilteredContactList(p -> assignedStory.isAssigned(p),
+                String.format("Filtered by story: \"%s\"", assignedStory.getName()));
 
         String expectedMessage = String.format(ListContactsCommand.MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,
                 1, assignedStory.getName());
@@ -79,7 +80,8 @@ public class ListContactsCommandTest {
     public void execute_validStoryIndexNoAssignments_showsEmptyList() {
         Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
-        expectedModel.updateFilteredContactList(p -> false);
+        expectedModel.updateFilteredContactList(p -> false,
+                String.format("Filtered by story: \"%s\"", story.getName()));
 
         String expectedMessage = String.format(ListContactsCommand.MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,
                 0, story.getName());

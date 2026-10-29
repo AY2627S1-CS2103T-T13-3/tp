@@ -120,6 +120,18 @@ PressMemo provides separate commands for displaying both lists, displaying conta
 
 For the filtered commands, indices are taken from the **currently displayed lists**, not necessarily the full lists. If no contacts or stories match a filter, the relevant panel becomes empty.
 
+<div markdown="block" class="alert alert-info">
+
+**:information_source: Visual Filter Status Indicators:**<br>
+
+Each panel header (**CONTACTS**, **STORIES**, and **FOLLOW-UPS**) displays an active filter indicator badge next to the panel header:
+* **`[All]`** (subtle badge): Indicates the panel displays all items without any filter applied.
+* **`[Filtered: "..."]`** or **`[Filtered by ...: "..."]`** (vibrant amber badge): Indicates a filter or search query is currently active on that panel (e.g., `[Filtered by story: "Investigation"]` or `[Filtered: "John"]`).
+* Hovering your mouse over the badge displays the complete filter description as a tooltip if the text is truncated on narrow windows.
+
+This visual badge ensures you always know whether the displayed index numbers (e.g., `1`, `2`, `3`) correspond to the complete list or a filtered subset, eliminating index ambiguity!
+</div>
+
 ### Listing all contacts and stories: `list`
 
 Displays all contacts and stories, removing any active contact and story filters.

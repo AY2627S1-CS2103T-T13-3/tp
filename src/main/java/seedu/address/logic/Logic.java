@@ -2,6 +2,7 @@ package seedu.address.logic;
 
 import java.util.Map;
 
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.logic.commands.CommandResult;
@@ -32,6 +33,16 @@ public interface Logic {
 
     /** Returns an unmodifiable view of the filtered list of followups */
     ObservableList<Followup> getFilteredFollowupList();
+
+    /** Returns the filter status property of the contact list. */
+    ObservableValue<String> getContactFilterStatusProperty();
+
+    /** Returns the filter status property of the story list. */
+    ObservableValue<String> getStoryFilterStatusProperty();
+
+    /** Returns the filter status property of the followup list. */
+    ObservableValue<String> getFollowupFilterStatusProperty();
+
     /**
      * Returns the user prefs' GUI settings.
      */

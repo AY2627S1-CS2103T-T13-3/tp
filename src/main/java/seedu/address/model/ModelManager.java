@@ -3,17 +3,23 @@ package seedu.address.model;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.contact.Contact;
+import seedu.address.model.contact.NameContainsKeywordsPredicate;
 import seedu.address.model.followup.Followup;
+import seedu.address.model.followup.FollowupDescriptionContainsKeywordsPredicate;
 import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryNameContainsKeywordsPredicate;
 
 /**
  * Represents the in-memory model of the address book data.
@@ -26,6 +32,9 @@ public class ModelManager implements Model {
     private final FilteredList<Contact> filteredContacts;
     private final FilteredList<Story> filteredStories;
     private final FilteredList<Followup> filteredFollowups;
+    private final SimpleStringProperty contactFilterStatus = new SimpleStringProperty(FILTER_STATUS_ALL);
+    private final SimpleStringProperty storyFilterStatus = new SimpleStringProperty(FILTER_STATUS_ALL);
+    private final SimpleStringProperty followupFilterStatus = new SimpleStringProperty(FILTER_STATUS_ALL);
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -84,6 +93,9 @@ public class ModelManager implements Model {
     @Override
     public void setAddressBook(ReadOnlyAddressBook addressBook) {
         this.addressBook.resetData(addressBook);
+        updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
+        updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
+        updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
     }
 
     @Override
@@ -187,7 +199,29 @@ public class ModelManager implements Model {
     @Override
     public void updateFilteredContactList(Predicate<Contact> predicate) {
         requireNonNull(predicate);
+        updateFilteredContactList(predicate, deriveContactFilterStatus(predicate));
+    }
+
+    @Override
+    public void updateFilteredContactList(Predicate<Contact> predicate, String filterStatus) {
+        requireAllNonNull(predicate, filterStatus);
         filteredContacts.setPredicate(predicate);
+        contactFilterStatus.set(filterStatus);
+    }
+
+    private String deriveContactFilterStatus(Predicate<Contact> predicate) {
+        if (predicate.equals(PREDICATE_SHOW_ALL_CONTACTS)) {
+            return FILTER_STATUS_ALL;
+        }
+        if (predicate instanceof NameContainsKeywordsPredicate namePredicate) {
+            return formatFilteredKeywords(namePredicate.getKeywords());
+        }
+        return "Filtered";
+    }
+
+    @Override
+    public ObservableValue<String> getContactFilterStatusProperty() {
+        return contactFilterStatus;
     }
 
     //=========== Filtered Story List Accessors =============================================================
@@ -203,7 +237,29 @@ public class ModelManager implements Model {
     @Override
     public void updateFilteredStoryList(Predicate<Story> predicate) {
         requireNonNull(predicate);
+        updateFilteredStoryList(predicate, deriveStoryFilterStatus(predicate));
+    }
+
+    @Override
+    public void updateFilteredStoryList(Predicate<Story> predicate, String filterStatus) {
+        requireAllNonNull(predicate, filterStatus);
         filteredStories.setPredicate(predicate);
+        storyFilterStatus.set(filterStatus);
+    }
+
+    private String deriveStoryFilterStatus(Predicate<Story> predicate) {
+        if (predicate.equals(PREDICATE_SHOW_ALL_STORIES)) {
+            return FILTER_STATUS_ALL;
+        }
+        if (predicate instanceof StoryNameContainsKeywordsPredicate storyPredicate) {
+            return formatFilteredKeywords(storyPredicate.getKeywords());
+        }
+        return "Filtered";
+    }
+
+    @Override
+    public ObservableValue<String> getStoryFilterStatusProperty() {
+        return storyFilterStatus;
     }
 
     @Override
@@ -225,7 +281,33 @@ public class ModelManager implements Model {
     @Override
     public void updateFilteredFollowupList(Predicate<Followup> predicate) {
         requireNonNull(predicate);
+        updateFilteredFollowupList(predicate, deriveFollowupFilterStatus(predicate));
+    }
+
+    @Override
+    public void updateFilteredFollowupList(Predicate<Followup> predicate, String filterStatus) {
+        requireAllNonNull(predicate, filterStatus);
         filteredFollowups.setPredicate(predicate);
+        followupFilterStatus.set(filterStatus);
+    }
+
+    private String deriveFollowupFilterStatus(Predicate<Followup> predicate) {
+        if (predicate.equals(PREDICATE_SHOW_ALL_FOLLOWUPS)) {
+            return FILTER_STATUS_ALL;
+        }
+        if (predicate instanceof FollowupDescriptionContainsKeywordsPredicate followupPredicate) {
+            return formatFilteredKeywords(followupPredicate.getKeywords());
+        }
+        return "Filtered";
+    }
+
+    @Override
+    public ObservableValue<String> getFollowupFilterStatusProperty() {
+        return followupFilterStatus;
+    }
+
+    private static String formatFilteredKeywords(List<String> keywords) {
+        return String.format("Filtered: \"%s\"", String.join(" ", keywords));
     }
 
     //=========== Object Overrides ==========================================================================

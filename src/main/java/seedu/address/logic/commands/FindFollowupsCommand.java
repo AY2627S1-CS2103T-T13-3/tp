@@ -32,7 +32,8 @@ public class FindFollowupsCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
 
-        model.updateFilteredFollowupList(predicate);
+        model.updateFilteredFollowupList(predicate,
+                String.format("Filtered: \"%s\"", String.join(" ", predicate.getKeywords())));
 
         return new CommandResult(
                 String.format(Messages.MESSAGE_FOLLOWUPS_LISTED_OVERVIEW,

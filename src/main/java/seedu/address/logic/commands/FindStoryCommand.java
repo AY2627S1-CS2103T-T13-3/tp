@@ -28,7 +28,8 @@ public class FindStoryCommand extends Command {
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
-        model.updateFilteredStoryList(predicate);
+        model.updateFilteredStoryList(predicate,
+                String.format("Filtered: \"%s\"", String.join(" ", predicate.getKeywords())));
         return new CommandResult(
                 String.format(Messages.MESSAGE_STORIES_LISTED_OVERVIEW, model.getFilteredStoryList().size()));
     }

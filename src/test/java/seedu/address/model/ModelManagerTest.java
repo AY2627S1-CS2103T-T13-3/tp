@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_CONTACTS;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_FOLLOWUPS;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_STORIES;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalContacts.ALICE;
 import static seedu.address.testutil.TypicalContacts.BENSON;
@@ -132,5 +134,41 @@ public class ModelManagerTest {
         UserPrefs differentUserPrefs = new UserPrefs();
         differentUserPrefs.setGuiSettings(new GuiSettings(1, 2, 3, 4));
         assertFalse(modelManager.equals(new ModelManager(addressBook, differentUserPrefs)));
+    }
+
+    @Test
+    public void getContactFilterStatusProperty_defaultAndUpdates_success() {
+        ModelManager modelManager = new ModelManager();
+        assertEquals(Model.FILTER_STATUS_ALL, modelManager.getContactFilterStatusProperty().getValue());
+
+        modelManager.updateFilteredContactList(c -> true, "Filtered by story: \"Story\"");
+        assertEquals("Filtered by story: \"Story\"", modelManager.getContactFilterStatusProperty().getValue());
+
+        modelManager.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
+        assertEquals(Model.FILTER_STATUS_ALL, modelManager.getContactFilterStatusProperty().getValue());
+    }
+
+    @Test
+    public void getStoryFilterStatusProperty_defaultAndUpdates_success() {
+        ModelManager modelManager = new ModelManager();
+        assertEquals(Model.FILTER_STATUS_ALL, modelManager.getStoryFilterStatusProperty().getValue());
+
+        modelManager.updateFilteredStoryList(s -> true, "Filtered by contact: \"Alex\"");
+        assertEquals("Filtered by contact: \"Alex\"", modelManager.getStoryFilterStatusProperty().getValue());
+
+        modelManager.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
+        assertEquals(Model.FILTER_STATUS_ALL, modelManager.getStoryFilterStatusProperty().getValue());
+    }
+
+    @Test
+    public void getFollowupFilterStatusProperty_defaultAndUpdates_success() {
+        ModelManager modelManager = new ModelManager();
+        assertEquals(Model.FILTER_STATUS_ALL, modelManager.getFollowupFilterStatusProperty().getValue());
+
+        modelManager.updateFilteredFollowupList(f -> true, "Filtered by contact: \"Alex\"");
+        assertEquals("Filtered by contact: \"Alex\"", modelManager.getFollowupFilterStatusProperty().getValue());
+
+        modelManager.updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
+        assertEquals(Model.FILTER_STATUS_ALL, modelManager.getFollowupFilterStatusProperty().getValue());
     }
 }
