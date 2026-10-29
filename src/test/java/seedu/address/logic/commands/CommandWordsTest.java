@@ -1,7 +1,9 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -43,6 +45,23 @@ public class CommandWordsTest {
     }
 
     @Test
+    public void getCommandInfo() {
+        CommandInfo info = CommandWords.getCommandInfo(AddContactCommand.COMMAND_WORD);
+        assertNotNull(info);
+        assertEquals(AddContactCommand.COMMAND_WORD, info.getCommandWord());
+        assertTrue(info.isAssignable());
+        assertNotNull(info.getParser());
+
+        CommandInfo shortcutInfo = CommandWords.getCommandInfo(ShortcutCommand.COMMAND_WORD);
+        assertNotNull(shortcutInfo);
+        assertEquals(ShortcutCommand.COMMAND_WORD, shortcutInfo.getCommandWord());
+        assertFalse(shortcutInfo.isAssignable());
+        assertNotNull(shortcutInfo.getParser());
+
+        assertNull(CommandWords.getCommandInfo("unknown"));
+    }
+
+    @Test
     public void getCommandInfos() {
         List<CommandInfo> infos = CommandWords.getCommandInfos();
         assertNotNull(infos);
@@ -52,7 +71,14 @@ public class CommandWordsTest {
             assertNotNull(info.getCommandWord());
             assertNotNull(info.getFormat());
             assertNotNull(info.getDescription());
+            assertNotNull(info.getParser());
             assertTrue(CommandWords.isCommandWord(info.getCommandWord()));
+            if (info.getCommandWord().equals(ShortcutCommand.COMMAND_WORD)
+                    || info.getCommandWord().equals(UnshortcutCommand.COMMAND_WORD)) {
+                assertFalse(info.isAssignable());
+            } else {
+                assertTrue(info.isAssignable());
+            }
         }
     }
 }
