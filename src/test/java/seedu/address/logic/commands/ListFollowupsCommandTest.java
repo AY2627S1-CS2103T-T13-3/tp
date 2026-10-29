@@ -60,13 +60,17 @@ public class ListFollowupsCommandTest {
 
     @Test
     public void execute_listIsNotFiltered_showsSameList() {
-        assertCommandSuccess(new ListFollowupsCommand(), model, ListFollowupsCommand.MESSAGE_SUCCESS, expectedModel);
+        String expectedMessage = String.format(ListFollowupsCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredFollowupList().size());
+        assertCommandSuccess(new ListFollowupsCommand(), model, expectedMessage, expectedModel);
     }
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
         model.updateFilteredFollowupList(followup -> false);
-        assertCommandSuccess(new ListFollowupsCommand(), model, ListFollowupsCommand.MESSAGE_SUCCESS, expectedModel);
+        String expectedMessage = String.format(ListFollowupsCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredFollowupList().size());
+        assertCommandSuccess(new ListFollowupsCommand(), model, expectedMessage, expectedModel);
     }
 
     @Test
@@ -74,7 +78,8 @@ public class ListFollowupsCommandTest {
         Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
         expectedModel.updateFilteredFollowupList(followup -> followup.isFor(contact));
 
-        String expectedMessage = "Listed followups assigned to " + contact.getName();
+        String expectedMessage = String.format(ListFollowupsCommand.MESSAGE_LIST_ASSIGNED_FOLLOWUPS_SUCCESS,
+                1, contact.getName());
 
         assertCommandSuccess(new ListFollowupsCommand(INDEX_FIRST_CONTACT), model, expectedMessage, expectedModel);
         assertEquals(1, model.getFilteredFollowupList().size());
@@ -88,7 +93,8 @@ public class ListFollowupsCommandTest {
         Contact contact = model.getFilteredContactList().get(danielIndex.getZeroBased());
         expectedModel.updateFilteredFollowupList(followup -> followup.isFor(contact));
 
-        String expectedMessage = "Listed followups assigned to " + contact.getName();
+        String expectedMessage = String.format(ListFollowupsCommand.MESSAGE_LIST_ASSIGNED_FOLLOWUPS_SUCCESS,
+                0, contact.getName());
 
         assertCommandSuccess(new ListFollowupsCommand(danielIndex), model, expectedMessage, expectedModel);
         assertTrue(model.getFilteredFollowupList().isEmpty());

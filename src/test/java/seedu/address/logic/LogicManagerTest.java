@@ -83,7 +83,10 @@ public class LogicManagerTest {
     @Test
     public void execute_validCommand_success() throws Exception {
         String listCommand = ListCommand.COMMAND_WORD;
-        assertCommandSuccess(listCommand, ListCommand.MESSAGE_SUCCESS, model);
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
+                model.getFilteredContactList().size(),
+                model.getFilteredStoryList().size());
+        assertCommandSuccess(listCommand, expectedMessage, model);
     }
 
     @Test
@@ -100,7 +103,10 @@ public class LogicManagerTest {
 
         CommandResult result = logic.execute("ls");
 
-        assertEquals(ListCommand.MESSAGE_SUCCESS, result.getFeedbackToUser());
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
+                model.getFilteredContactList().size(),
+                model.getFilteredStoryList().size());
+        assertEquals(expectedMessage, result.getFeedbackToUser());
     }
 
     @Test

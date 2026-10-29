@@ -32,14 +32,20 @@ public class ListCommandTest {
 
     @Test
     public void execute_listIsNotFiltered_showsSameList() {
-        assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredContactList().size(),
+                expectedModel.getFilteredStoryList().size());
+        assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
     }
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
         showContactAtIndex(model, INDEX_FIRST_CONTACT);
         model.updateFilteredStoryList(story -> false);
-        assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredContactList().size(),
+                expectedModel.getFilteredStoryList().size());
+        assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
     }
 
     @Test

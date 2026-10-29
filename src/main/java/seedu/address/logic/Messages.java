@@ -23,6 +23,7 @@ public class Messages {
     public static final String MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX = "The followup index provided is invalid.";
     public static final String MESSAGE_CONTACTS_LISTED_OVERVIEW = "%1$d contact(s) listed!";
     public static final String MESSAGE_STORIES_LISTED_OVERVIEW = "%1$d story(ies) listed!";
+    public static final String MESSAGE_FOLLOWUPS_LISTED_OVERVIEW = "%1$d followup(s) listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
                 "Multiple values specified for the following single-valued field(s): ";
 

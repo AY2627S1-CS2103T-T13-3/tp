@@ -20,7 +20,9 @@ import seedu.address.model.story.Story;
 public class ListContactsCommand extends Command {
 
     public static final String COMMAND_WORD = "listcontacts";
-    public static final String MESSAGE_SUCCESS = "Listed all contacts.";
+    public static final String MESSAGE_SUCCESS = "Listed all %1$d contact(s).";
+    public static final String MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS =
+            "Listed %1$d contact(s) assigned to %2$s";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists contacts in the address book.\n"
             + "Parameters: [si/STORY_INDEX]\n"
@@ -43,7 +45,8 @@ public class ListContactsCommand extends Command {
         // No index: display all contacts
         if (storyIndex.isEmpty()) {
             model.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
-            return new CommandResult(MESSAGE_SUCCESS);
+            return new CommandResult(String.format(MESSAGE_SUCCESS,
+                    model.getFilteredContactList().size()));
         }
 
         // Index provided: identify the story
@@ -62,7 +65,9 @@ public class ListContactsCommand extends Command {
                 contact -> selectedStory.isAssigned(contact));
 
         return new CommandResult(
-                "Listed contacts assigned to " + selectedStory.getName());
+                String.format(MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,
+                        model.getFilteredContactList().size(),
+                        selectedStory.getName()));
     }
 
     @Override

@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.Messages.MESSAGE_FOLLOWUPS_LISTED_OVERVIEW;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalFollowups.FOLLOWUP_A;
@@ -51,7 +52,7 @@ public class FindFollowupCommandTest {
         FindFollowupCommand command = new FindFollowupCommand(predicate);
         expectedModel.updateFilteredFollowupList(predicate);
 
-        assertCommandSuccess(command, model, "1 followup(s) listed!", expectedModel);
+        assertCommandSuccess(command, model, String.format(MESSAGE_FOLLOWUPS_LISTED_OVERVIEW, 1), expectedModel);
         assertEquals(List.of(FOLLOWUP_B), model.getFilteredFollowupList());
     }
 
@@ -63,7 +64,7 @@ public class FindFollowupCommandTest {
         FindFollowupCommand command = new FindFollowupCommand(predicate);
         expectedModel.updateFilteredFollowupList(predicate);
 
-        assertCommandSuccess(command, model, "2 followup(s) listed!", expectedModel);
+        assertCommandSuccess(command, model, String.format(MESSAGE_FOLLOWUPS_LISTED_OVERVIEW, 2), expectedModel);
         assertEquals(List.of(FOLLOWUP_A, FOLLOWUP_C), model.getFilteredFollowupList());
     }
 
@@ -75,7 +76,7 @@ public class FindFollowupCommandTest {
         FindFollowupCommand command = new FindFollowupCommand(predicate);
         expectedModel.updateFilteredFollowupList(predicate);
 
-        assertCommandSuccess(command, model, "0 followup(s) listed!", expectedModel);
+        assertCommandSuccess(command, model, String.format(MESSAGE_FOLLOWUPS_LISTED_OVERVIEW, 0), expectedModel);
         assertEquals(List.of(), model.getFilteredFollowupList());
     }
 
