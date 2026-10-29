@@ -52,6 +52,7 @@ public class FollowupTest {
         assertEquals(followup.hashCode(), copy.hashCode());
         assertFalse(followup.equals(null));
         assertFalse(followup.equals(description));
+        // different linked contact -> returns false
         assertFalse(followup.equals(new Followup(description, BOB.getName())));
         assertFalse(followup.equals(new Followup(new FollowupDescription("Send notes"), ALICE.getName())));
     }
