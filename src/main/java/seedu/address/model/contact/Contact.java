@@ -88,7 +88,7 @@ public class Contact {
     /**
      * Assigns a story to this Contact, but does not assign this Contact to the story.
      * Does nothing and if the story has already been assigned.
-     * @return  An updated Contact with the assigned story
+     * @return A Contact with the story unassigned, or this Contact if it was not assigned.
      */
     public Contact assign(Story story) {
         if (isAssigned(story)) {
