@@ -17,15 +17,15 @@ This guide describes the features implemented for PressMemo v1.4.
 1. Ensure that Java `25` or later is installed on your computer.<br>
    **Mac users:** Ensure you have the precise JDK version prescribed [here](https://se-education.org/guides/tutorials/javaInstallationMac.html).
 
-1. Download the PressMemo `.jar` file from [here](https://github.com/AY2627S1-CS2103T-T13-3/tp/releases).
+2. Download the PressMemo `.jar` file from [here](https://github.com/AY2627S1-CS2103T-T13-3/tp/releases).
 
-1. Copy the file to a folder you can write to as the _home folder_ for PressMemo.
+3. Copy the file to a folder you can write to as the _home folder_ for PressMemo.
 
-1. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar pressmemo.jar`.<br>
+4. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar pressmemo.jar`.<br>
    A GUI with the **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels similar to the one below should appear in a few seconds. On the first run, the app contains sample contacts, stories and follow-ups.<br>
    ![Ui](images/Ui.png)
 
-1. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to open the help window.<br>
+5. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to open the help window.<br>
    Some example commands you can try:
 
     * `list` : Displays all contacts, stories and follow-ups.
@@ -42,7 +42,7 @@ This guide describes the features implemented for PressMemo v1.4.
 
     * `exit` : Exits the app.
 
-1. Refer to the [Features](#features) section below for details of each command.
+6. Refer to the [Features](#features) section below for details of each command.
 
 --------------------------------------------------------------------------------------------------------------------
 ## Features
@@ -84,17 +84,17 @@ Shows a message explaining how to access the help page.
 
 Format: `help`
 
-You can also open the help panel from the **Help** menu. For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
+You can also open the help window from the **Help** menu or by pressing `F1`. For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
 
 ### Adding a contact: `addcontact`
 
-Adds a contact to the address book.
+Adds a contact to PressMemo.
 
 Format: `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
 
 * All four fields (`n/`, `p/`, `e/`, and `a/`) are required and cannot be blank.
-* Names contain only letters, digits, and spaces. A contact with exactly the same name already in the address book cannot be added.
-* Phone numbers contain at least three digits and no other characters. Emails must have a valid `local-part@domain` format.
+* Names contain only letters, digits, and spaces. A contact with exactly the same name already in PressMemo cannot be added.
+* Phone numbers contain at least three digits and no other characters. Emails must have a valid `word@word` format.
 * Tag names contain only letters and digits, without spaces.
 * Adding a contact shows the full contact list.
 
@@ -164,7 +164,7 @@ Examples:
 
 ### Editing a contact: `editcontact`
 
-Edits an existing contact in the address book.
+Edits an existing contact in PressMemo.
 
 Format: `editcontact INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
 
@@ -200,7 +200,7 @@ Examples:
 
 ### Deleting a contact: `deletecontact`
 
-Deletes the specified contact from the address book.
+Deletes the specified contact from PressMemo.
 
 Format: `deletecontact INDEX`
 
@@ -210,12 +210,13 @@ Format: `deletecontact INDEX`
 * Deleting a contact also removes their assignments from stories and deletes all follow-ups linked to them. The stories themselves remain.
 
 Examples:
-* `list` followed by `deletecontact 2` deletes the 2nd contact in the address book.
+* `list` followed by `deletecontact 2` deletes the 2nd contact in PressMemo.
 * `findcontact Betsy` followed by `deletecontact 1` deletes the 1st contact in the results of the `findcontact` command.
 
 ## Adding a story: `addstory`
 
 - **Objective:** Adds a story to PressMemo
+![addstory](images/addstory-example.png)
 
 ### Usage / Command Format
 
@@ -250,21 +251,49 @@ Examples:
 | :------------------------------------------ | :----------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
 | Error: there is already a story named {xxx} | Trying to add a story named {xxx} when {xxx} already exists in PressMemo | delete the existing story named {xxx} first<br><br>OR<br><br>use a different story name |
 
-### Locating stories by name: `findstory`
+## Filter stories by name: `findstories`
 
-Finds stories whose names contain any of the given keywords.
+- **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and displays them in the story panel.
+![findstories](images/findstories-example.png)
 
-Format: `findstory STORY_NAME [MORE_KEYWORDS]`
+### Usage / Command Format
 
-* The search is case-insensitive and considers only story names.
-* Only full words match; for example, `House` does not match `Housing`.
-* Stories matching at least one keyword are returned (an `OR` search).
-* The search replaces the current story filter without changing the contact list. Use `liststories` to show all stories again.
+`findstories STORY_NAME [MORE_KEYWORDS]...`
 
-Examples:
+### Parameters & Constraints
 
-* `findstory Housing` returns stories with `Housing` as a word in their name.
-* `findstory housing education` returns stories containing either `housing` or `education` in their name.
+| Parameter       | Type   | Description                                      | Examples   |
+| :-------------- | :----- | :----------------------------------------------- | :--------- |
+| `STORY_NAME`    | `word` | First keyword to search for in story names       | wumpus     |
+| `MORE_KEYWORDS` | `word` | Additional keywords to search for in story names | the smelly |
+
+> **Tip / Note:**
+> * `findstories` is case-insensitive (e.g., `wumpus` matches `WumPuS`).
+> * Only full words will be matched (e.g., `wump` will not match `wumpus`).
+> * The order of the keywords does not matter.
+> * All stories matching at least one keyword are returned (e.g. `wumpus smelly` matches `find wumpus` and `something smelly`) 
+> * The **STORIES** panel is updated without changing the **CONTACTS** or **FOLLOW-UPS** panels.
+> * To display all stories again, use `liststories` or `list`.
+
+### Examples
+
+* **Example 1: Single keyword search**
+  * **Input / Action:** `findstories wumpus`
+  * **Expected Outcome:** Displays all stories with `wummpus` as a word in their name. A message in the console indicates the number of matches found.
+
+* **Example 2: Multiple keywords search**
+  * **Input / Action:** `findstories wumpus smelly`
+  * **Expected Outcome:** Displays all stories whose names contain either `wumpus` or `smelly`. A message in the console indicates the number of matches found.
+
+* **Example 3: Search with no matches**
+  * **Input / Action:** `findstories wompusDoesNotExist` when there is no story whose name contains `wompusDoesNotExist`
+  * **Expected Outcome:** The story panel displays no stories. A message in the console indicates that no matches were found.
+
+### Common Errors & Troubleshooting
+
+| Error Message / Symptom                                    | Cause                                                                           | How to Fix                                                                   |
+| :--------------------------------------------------------- | :------------------------------------------------------------------------------ | :--------------------------------------------------------------------------- |
+| `0 story(ies) listed!` when matching stories were expected | Search keywords were partial words (e.g., `wump` instead of `wumpus`)           | Ensure full words are used in the search keyword, e.g., `findstories wumpus` |
 
 ### Assigning a contact to a story: `assign`
 
@@ -296,19 +325,31 @@ Examples:
 
 * `unassign ci/1 si/1` removes the assignment between the 1st displayed contact and the 1st displayed story.
 
-### Deleting a story: `deletestory`
+## Deleting a story: `deletestory`
 
-Deletes the specified story from PressMemo.
+- **Objective:** Deletes the specified story from PressMemo.
+![deletestory](images/deletestory-example.png)
 
-Format: `deletestory INDEX`
+### Usage / Command Format
 
-* The index refers to the number in the displayed story list, including a filtered list, and must be a positive integer.
-* Deleting a story also removes its assignments from contacts. The contacts themselves remain.
+`deletestory INDEX`
 
-Examples:
+### Parameters & Constraints
 
-* `liststories` followed by `deletestory 2` deletes the 2nd story in the full story list.
-* `liststories ci/1` followed by `deletestory 1` deletes the 1st story assigned to the 1st displayed contact, provided there is a result.
+| Parameter | Type          | Description                                                        | Examples |
+| :-------- | :------------ | :----------------------------------------------------------------- | :------- |
+| `INDEX`   | `Story Index` | 1-based index of the story to delete from the displayed story list | `1`      |
+
+> **Tip / Note:**
+> * Deleting a story automatically unassigns it from all contacts originally assigned to it. The contacts themselves remain in PressMemo.
+> * Follow-ups are unaffected.
+> * Deletion cannot be undone.
+
+### Examples
+
+* **Example 1: Deleting a story from the full story list**
+  * **Input / Action:** `deletestory 2`
+  * **Expected Outcome:** Deletes the 2nd story from the story panel. Identifying information about the recently-deleted story is displayed in the console.
 
 ### Adding a follow-up: `addfollowup`
 
@@ -321,7 +362,7 @@ Format: `addfollowup DESCRIPTION ci/CONTACT_INDEX`
 * `ci/CONTACT_INDEX` refers to the contact's number in the currently displayed contact list. The index must be a positive integer within that list.
 * An identical description cannot be added twice for the same contact. Description comparison is case-sensitive.
 * Follow-ups belong to contacts, not directly to stories; deleting a story does not remove a contact's follow-ups.
-* There is currently no command to edit, search, or separately list follow-ups; view them in the **FOLLOW-UPS** panel.
+* Use `listfollowups` to show all follow-ups or filter follow-ups by assigned contact in the **FOLLOW-UPS** panel.
 * Editing a contact's name updates their follow-up references. Deleting a contact also removes their follow-ups.
 * New reminders appear in the **FOLLOW-UPS** panel.
 
@@ -342,6 +383,36 @@ Format: `deletefollowup INDEX`
 Examples:
 * `deletefollowup 1`
 * `deletefollowup 3`
+
+## Listing follow-ups: `listfollowups`
+
+- **Objective:** Displays follow-ups in the follow-ups panel, optionally filtering them by assigned contact.
+![listfollowups](images/listfollowups-example.png)
+
+### Usage / Command Format
+
+`listfollowups [ci/CONTACT_INDEX]`
+
+### Parameters & Constraints
+
+| Parameter          | Type            | Description                                       | Examples |
+| :----------------- | :-------------- | :------------------------------------------------ | :------- |
+| `ci/CONTACT_INDEX` | `Contact Index` | to display only follow-ups linked to this contact | 1        |
+
+> **Tip / Note:**
+> * If `ci/CONTACT_INDEX` is omitted, `listfollowups` displays all follow-ups in PressMemo.
+> * If `ci/CONTACT_INDEX` is provided, `listfollowups` displays only follow-ups linked to that contact.
+> * `listfollowups` only updates the **FOLLOW-UPS** panel; the **CONTACTS** and **STORIES** panels remain unchanged.
+
+### Examples
+
+* **Example 1: List all follow-ups**
+  * **Input / Action:** `listfollowups`
+  * **Expected Outcome:** All follow-ups from PressMemo are displayed in the **FOLLOW-UPS** panel.
+
+* **Example 2: List follow-ups for a specific contact**
+  * **Input / Action:** `listfollowups ci/1`
+  * **Expected Outcome:** Displays only follow-ups linked to the first displayed contact in the **FOLLOW-UPS** panel. 
 
 ### Managing command shortcuts: `shortcut`
 
@@ -409,21 +480,6 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 
 --------------------------------------------------------------------------------------------------------------------
 
-## Common Errors and Troubleshooting
-
-| Error Messages / Symptoms                                                                                                                                                                                                               | Causes                                                                                                                                                                                                                                     | How to Fix                                                                                                                                                       |
-| :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `The contact index provided is invalid.`<br><br>`The story index provided is invalid.`<br><br>`The followup index provided is invalid.`                                                                                                 | The Contact Index, Story Index, or Followup Index provided is greater than the number of items currently displayed in the corresponding panel (or the panel is empty).                                                                     | Check the index numbers displayed in the corresponding panel (Contacts, Stories, or Follow-ups). Run `list`, to show all items, if the item you need is missing. |
-| `Index must be a positive integer.`<br><br>`Invalid command format!`                                                                                                                                                                    | The Contact Index, Story Index, or Followup Index is not a positive integer.                                                                                                                                                               | Ensure the index is a  positive integer with no signs, decimals, or letters.                                                                                     |
-| `Names should only contain alphanumeric characters and spaces, and should not be blank`<br><br>`Descriptions should only contain alphanumeric characters and spaces, and should not be blank`<br><br>`Tag names should be alphanumeric` | The provided value or preamble is not a valid `user string` or `word`, or a value is missing.<br><br>Most preambles and values have to be valid `user string`s.<br><br>Some commands require preamble and some values to be valid `word`s. | Ensure the value is a valid `user string` or `word`, as required.                                                                                                |
-| `Invalid command format!`                                                                                                                                                                                                               | Unexpected text was entered as preamble after the command word and before prefixes.                                                                                                                                                        | Remove any non-space text between the command word and the first prefix.                                                                                         |
-| `Invalid command format!`                                                                                                                                                                                                               | The command expects a preamble after the command word and before prefixes, but none was entered.                                                                                                                                           | Provide the required preamble text immediately after the command word and before any prefixes.                                                                   |
-| `Multiple values specified for the following single-valued value(s): [PREFIX]`                                                                                                                                                          | A prefix was provided multiple times in the same command, even though at most one is supported.                                                                                                                                            | Remove duplicate prefixes.                                                                                                                                       |
-| `Invalid command format!`<br><br>`At least one value must be provided.`                                                                                                                                                                 | One or more compulsory prefixes were omitted                                                                                                                                                                                               | Include all mandatory prefixes and their values as indicated in the command usage message.                                                                       |
-| `Unknown command.`                                                                                                                                                                                                                      | The command word was mistyped, or uses incorrect casing.<br>command words are case-sensitive.                                                                                                                                              | Enter a valid command word in lowercase (e.g., `addcontact`, `addstory`, `findstories`). Type `help` to view all available commands.                             |
-
----
-
 ## FAQ
 
 **Q**: How do I transfer my data to another computer?<br>
@@ -452,9 +508,10 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 | **Delete story**                  | `deletestory INDEX`<br> e.g., `deletestory 2`                                                                                                                                       |
 | **Edit**                          | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`                                          |
 | **Find**                          | `findcontact KEYWORD [MORE_KEYWORDS]`<br> e.g., `findcontact James Jake`                                                                                                            |
-| **Find story**                    | `findstory STORY_NAME [MORE_KEYWORDS]`<br> e.g., `findstory Housing Investigation`                                                                                                  |
+| **Find stories**                  | `findstories STORY_NAME [MORE_KEYWORDS]...`<br> e.g., `findstories Housing Investigation`                                                                                           |
 | **List all contacts and stories** | `list` (clears both filters)                                                                                                                                                        |
 | **List contacts**                 | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)                                        |
+| **List follow-ups**               | `listfollowups [ci/CONTACT_INDEX]`<br> e.g., `listfollowups` (all follow-ups) or `listfollowups ci/1` (follow-ups for contact 1)                   |
 | **List stories**                  | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)                                         |
 | **Manage shortcuts**              | `shortcut [s/SHORTCUT c/COMMAND_WORD]`<br> e.g., `shortcut` or `shortcut s/ls c/list`                                                                                               |
 | **Remove shortcut**               | `unshortcut SHORTCUT`<br> e.g., `unshortcut ls`                                                                                                                                     |

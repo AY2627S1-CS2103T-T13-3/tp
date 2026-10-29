@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_CONTACT;
@@ -40,16 +41,20 @@ public class ListStoriesCommandTest {
 
     @Test
     public void execute_listIsNotFiltered_showsSameList() {
+        String expectedMessage = String.format(ListStoriesCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredStoryList().size());
         assertCommandSuccess(new ListStoriesCommand(), model,
-                ListStoriesCommand.MESSAGE_SUCCESS, expectedModel);
+                expectedMessage, expectedModel);
     }
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
         model.updateFilteredStoryList(story -> false);
 
+        String expectedMessage = String.format(ListStoriesCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredStoryList().size());
         assertCommandSuccess(new ListStoriesCommand(), model,
-                ListStoriesCommand.MESSAGE_SUCCESS, expectedModel);
+                expectedMessage, expectedModel);
     }
 
     @Test
@@ -67,8 +72,8 @@ public class ListStoriesCommandTest {
         expectedModel.updateFilteredStoryList(
                 s -> s.isAssigned(assignedContact));
 
-        String expectedMessage = "Listed stories assigned to "
-                + assignedContact.getName();
+        String expectedMessage = String.format(ListStoriesCommand.MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,
+                1, assignedContact.getName());
 
         assertCommandSuccess(
                 new ListStoriesCommand(INDEX_FIRST_CONTACT),
@@ -86,8 +91,8 @@ public class ListStoriesCommandTest {
 
         expectedModel.updateFilteredStoryList(story -> false);
 
-        String expectedMessage = "Listed stories assigned to "
-                + contact.getName();
+        String expectedMessage = String.format(ListStoriesCommand.MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,
+                0, contact.getName());
 
         assertCommandSuccess(
                 new ListStoriesCommand(INDEX_FIRST_CONTACT),
@@ -128,5 +133,35 @@ public class ListStoriesCommandTest {
         // different indices -> returns false
         assertFalse(listStoriesWithIndex.equals(new ListStoriesCommand(INDEX_SECOND_CONTACT)));
         assertFalse(listStories.equals(listStoriesWithIndex));
+    }
+
+    @Test
+    public void constructor_nullIndex_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new ListStoriesCommand(null));
+    }
+
+    @Test
+    public void execute_nullModel_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new ListStoriesCommand().execute(null));
+        assertThrows(NullPointerException.class, () -> new ListStoriesCommand(INDEX_FIRST_CONTACT).execute(null));
+    }
+
+    @Test
+    public void hashCodeMethod() {
+        ListStoriesCommand listStories1 = new ListStoriesCommand();
+        ListStoriesCommand listStories2 = new ListStoriesCommand();
+        assertEquals(listStories1.hashCode(), listStories2.hashCode());
+
+        ListStoriesCommand listStoriesWithIndex1 = new ListStoriesCommand(INDEX_FIRST_CONTACT);
+        ListStoriesCommand listStoriesWithIndex2 = new ListStoriesCommand(INDEX_FIRST_CONTACT);
+        assertEquals(listStoriesWithIndex1.hashCode(), listStoriesWithIndex2.hashCode());
+    }
+
+    @Test
+    public void toStringMethod() {
+        ListStoriesCommand listStories = new ListStoriesCommand(INDEX_FIRST_CONTACT);
+        String expected = ListStoriesCommand.class.getCanonicalName()
+                + "{contactIndex=Optional[" + INDEX_FIRST_CONTACT + "]}";
+        assertEquals(expected, listStories.toString());
     }
 }

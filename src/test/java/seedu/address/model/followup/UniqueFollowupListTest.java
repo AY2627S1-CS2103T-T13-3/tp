@@ -123,12 +123,17 @@ public class UniqueFollowupListTest {
     }
 
     @Test
-    public void setFollowups_duplicateDescriptions_throwsDuplicateFollowupException() {
+    public void setFollowups_duplicateFollowups_throwsDuplicateFollowupException() {
         followups.add(notes);
         assertThrows(DuplicateFollowupException.class, () -> followups.setFollowups(List.of(interview, interview)));
-        assertThrows(DuplicateFollowupException.class, () -> followups.setFollowups(
-                List.of(interview, notes, interviewWithBob)));
         assertEquals(List.of(notes), followups.asUnmodifiableObservableList());
+    }
+
+    @Test
+    public void setFollowups_duplicateDescriptionsDiffContacts_accepts() {
+        followups.setFollowups(List.of(interview, notes, interviewWithBob));
+        assertTrue(followups.contains(interview));
+        assertTrue(followups.contains(interviewWithBob));
     }
 
     @Test

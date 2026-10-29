@@ -36,7 +36,7 @@ The following provides a quick overview of the main components and their interac
 
 **Main components of the architecture**
 
-**`Main`** (consisting of classes [`Main`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
+**`Main`** (consisting of classes [`Main`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
 * At app launch, it initializes the other components in the correct sequence, and connects them up with each other.
 * At shut down, it shuts down the other components and invokes cleanup methods where necessary.
 
@@ -125,14 +125,14 @@ How the parsing works:
 * All `XYZCommandParser` classes, such as `AddCommandParser` and `DeleteCommandParser`, implement the `Parser` interface so they can be treated similarly where appropriate, for example during testing.
 
 ### Model component
-**API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
+**API** : [`Model.java`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/model/Model.java)
 
 <img src="images/ModelClassDiagram.png" width="450" />
 
 
 The `Model` component,
 
-* stores the address book data:
+* stores the PressMemo data:
   * all `Contact` objects (which are contained in a `UniqueContactList` object).
   * all `Story` objects (which are contained in a `UniqueStoryList` object).
   * all `Followup` objects (which are contained in a `UniqueFollowupList` object).
@@ -144,12 +144,12 @@ The `Model` component,
 
 ### Storage component
 
-**API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
+**API** : [`Storage.java`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/storage/Storage.java)
 
 <img src="images/StorageClassDiagram.png" width="550" />
 
 The `Storage` component,
-* can save address book data, story data, follow-up data, and user preference data in JSON format, and read them back into corresponding objects.
+* can save contact data, story data, follow-up data, and user preference data in JSON format, and read them back into corresponding objects.
 * is implemented by `StorageManager`, which delegates the actual JSON file access to `JsonAddressBookStorage`, `JsonStoryStorage`, and `JsonUserPrefsStorage`.
 * uses JSON-adapted classes to serialize and deserialize contacts, stories, follow-ups, and their associations.
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`).
@@ -160,10 +160,63 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Implementation**
+# **Implementation**
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Assign feature
+
+#### Feature Specification
+
+The assign feature establishes a bidirectional link between an existing contact and an existing story in PressMemo.
+
+* **Command format:** `assign ci/CONTACT_INDEX si/STORY_INDEX`
+  * `ci/CONTACT_INDEX`: A 1-based positive integer specifying the contact from the currently displayed contact list.
+  * `si/STORY_INDEX`: A 1-based positive integer specifying the story from the currently displayed story list.
+  * Parameter order is flexible (e.g., `assign si/1 ci/1` is equally valid).
+
+* **Output & Feedback:**
+  * Success: Returns `Assigned [Contact Name] to [Story Name]` and displays the updated associations in both panels.
+  * Invalid command format: Displays the command usage guidance with examples.
+  * Invalid index: Displays an error message indicating that the contact or story index is invalid.
+
+* **Edge Case Behaviour:**
+  * **Filtered lists:** Indices always refer to the displayed contact and story lists at the moment of command execution, not the unfiltered master lists.
+  * **Already assigned:** If the specified contact is already assigned to the story, the operation is idempotent; the association is retained without creating duplicates.
+  * **Missing / out-of-bounds indices:** An invalid index triggers a `CommandException` before any state changes are applied to either entity.
+
+* **Side Effects:**
+  * Creates a bidirectional reference: adds the story name to the contact's assigned stories set, and adds the contact name to the story's assigned contacts set.
+  * Automatically resets list filters via `Model#updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)` and `Model#updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES)` so that both updated entities are visible immediately in the UI.
+
+#### Model Execution Details
+
+Unlike creation or deletion commands where parsing constitutes the primary logic flow, the assign command's core complexity lies in the `Model` component, which maintains immutability and bidirectional consistency across `Person` and `Story` instances.
+
+When `AssignCommand#execute(model)` is invoked:
+1. `AssignCommand` retrieves the target `Person` and `Story` from the filtered lists using the provided indices.
+2. `AssignCommand` calls `Model#assignStory(target, story)`.
+3. `ModelManager` delegates this call to `AddressBook#assignStory(target, story)`.
+4. `AddressBook` invokes `target.assign(story)`, returning a new immutable `Person` containing the updated story set.
+5. `AddressBook` invokes `story.assign(target)`, returning a new immutable `Story` containing the updated person set.
+6. `AddressBook` replaces the old `Person` and `Story` in `UniquePersonList` and `UniqueStoryList` with their updated immutable counterparts.
+7. `AssignCommand` resets the filtered contact and story lists so the updated entries are reflected across the interface.
+
+The sequence diagram below illustrates the interactions within the `Model` component during the execution of `assign ci/1 si/1`:
+
+![AssignSequenceDiagram](images/AssignSequenceDiagram.png)
+
+#### Design considerations:
+
+**Aspect: How associations between contacts and stories are stored:**
+
+* **Alternative 1 (current choice):** Bidirectional references inside `Person` and `Story` models.
+  * Pros: Direct and efficient lookups when rendering contact cards and story cards in the UI without requiring joint table queries or complex searches.
+  * Cons: Both entities must be updated concurrently in `AddressBook` whenever an assignment, unassignment, contact edit, or story edit occurs.
+
+* **Alternative 2:** Separate association list or join table in `AddressBook`.
+  * Pros: Decouples `Person` and `Story` models from referencing each other directly.
+  * Cons: Increases overhead for looking up relationships and requires managing a separate association list during serialization and deserialization.
 ## `addstory`
 
 - **Objective:** Adds a story to PressMemo
@@ -171,7 +224,7 @@ This section describes some noteworthy details on how certain features are imple
 ### API
 
 * **Command:** `addstory STORY_NAME [t/TAG]…`
-* **Parameters**: refer to [user guide](docs/UserGuide.md)
+* **Parameters**: refer to [user guide](UserGuide.md#adding-a-story-addstory)
 * **Description:**
 	* Adds a story with the specified name and (optionally) tags to ArchiveStoryList
 * **Preconditions:** 
@@ -191,8 +244,95 @@ This section describes some noteworthy details on how certain features are imple
 4. `AddStoryCommandParser` parses the story name and tags and creates an `AddStoryCommand` object.
 5. `LogicManager` executes the `AddStoryCommand` object.
 6. `AddStoryCommand` verifies that the specified story name is not the name of any existing story in ArchiveStoryList.
-7. `AddStoryCommand` requests `Model` to add a new `Story` object with no assigned contacts and with the specified name and tags to the address book.
+7. `AddStoryCommand` requests `Model` to add a new `Story` object with no assigned contacts and with the specified name and tags to PressMemo.
 8. `Model` sets `ActiveStoryList` to `ArchiveStoryList`.  
+9. `UI` updates the story panel accordingly. 
+
+## `findstories`
+
+- **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and updates the `ActiveStoryList`.
+
+### API
+
+* **Command:** `findstories STORY_NAME [MORE_KEYWORDS]...`
+* **Parameters**: refer to [user guide](UserGuide.md#locating-stories-by-name-findstories)
+* **Description:**
+	* Set the Active Story List to contain exactly the stories from the Archive Story List whose names contain at least one of the specified keywords.
+* **Preconditions:** 
+	* At least one keyword is provided in the command arguments.
+* **Postconditions:** 
+	* ActiveStoryList contains exactly the stories from ArchiveStoryList whose names match at least one keyword in a case-insensitive, full-word comparison.
+	* ArchiveStoryList is unchanged.
+* **Exceptions:** 
+	* if no keywords are provided: displays error message for ParseException (invalid command format)
+
+### Implementation details
+
+The sequence diagram below illustrates the interactions within the Model component when the user executes a `findstories` command.
+
+<!-- Note: FindStorySequenceDiagram.puml is located in docs/diagrams/FindStorySequenceDiagram.puml -->
+
+#### Execution flow
+
+- The user enters a `findstories` command. The command arguments are parsed by `AddressBookParser` and `FindStoryCommandParser`, which instantiates a `FindStoryCommand`. When executed, the command updates the filtered story list in `Model`, displaying matching stories in the GUI.
+1. The user enters the `findstories` command as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates a `FindStoryCommandParser` to parse the command arguments.
+4. `FindStoryCommandParser` parses the arguments into keywords and creates a `FindStoryCommand` object.
+5. `LogicManager` executes the `FindStoryCommand` object.
+6. `FindStoryCommand` requests `Model` to update the filter predicate of the `ActiveStoryList` to match at least one of the provided keywords.
+7. `Model` updates the `ActiveStoryList`.
+8. `FindStoryCommand` returns a `CommandResult` containing the number of matching stories.
+9. `UI` updates the story panel accordingly. 
+
+### Design Considerations
+
+- **Aspect: Matching mechanism for story names**
+
+|          | Chosen                                                                                                                                                         | Alternative                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **Pros** | **Whole-word matching** avoids false positives on accidental substring matches (e.g., searching for "ad" will not match "broadcast"), ensuring high precision. | **Substring matching** allows partial matches without requiring complete words. |
+| **Cons** | Users must type full words; partial terms will not return results.                                                                                             | May return many irrelevant stories containing common character sequences.       |
+
+- **Aspect: Multiple keywords combination logic**
+
+|          | Chosen                                                                                                      | Alternative                                                                                                             |
+| -------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Pros** | **Disjunctive / OR search** allows flexible exploratory queries across multiple topics in a single command. | **Conjunctive / AND search** returns strictly targeted results matching every keyword.                                  |
+| **Cons** | Results may be broader than intended if common words are included.                                          | Less flexible when looking for possible matches across multiple topics; yields zero results if even one keyword misses. |
+
+## `listfollowups`
+
+- **Objective:** Lists all follow-ups in PressMemo, or filters the follow-ups assigned to a specified contact in the Active Contact List.
+
+### API
+
+* **Command:** `listfollowups [ci/CONTACT_INDEX]`
+* **Parameters**: refer to [user guide](UserGuide.md#listing-follow-ups-listfollowups)
+* **Description:**
+	* Updates the ActiveFollowupList to display either all follow-ups from the ArchiveFollowupList or only those associated with the contact identified by `CONTACT_INDEX`.
+* **Preconditions:** 
+	* If `ci/CONTACT_INDEX` is specified, `CONTACT_INDEX` must be valid
+* **Postconditions:** 
+	* ActiveFollowupList is updated:
+		* If no `ci/CONTACT_INDEX` is provided, ActiveFollowupList = ArchiveFollowupList
+		* If `CONTACT_INDEX` is provided, ActiveFollowupList displays only followups linked to the contact identified by `CONTACT_INDEX`
+- ArchiveFollowupList is unchanged.
+
+### Implementation details
+
+The sequence diagram below illustrates the interactions within the Logic and Model components when the user executes `listfollowups ci/1`.
+
+#### Execution flow
+
+1. The user enters `listfollowups` as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates an `ListFollowupsCommandParser` to parse the command arguments.
+4. `ListFollowupsCommandParser` parses the story name and tags and creates a `ListFollowupsCommand` object.
+5. `LogicManager` executes the `ListFollowupsCommand` object.
+6. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the ActiveContactList from `Model` and obtains the Contact corresponding to `CONTACT_INDEX`
+7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` request Model to update the filter predicate of ActiveFollowupList to match Followups linked to the specified Contact. Else, `ListFollowupsCommand` request Model to update ActiveFollowupList to include the whole ArchiveFollowupList
+8. `UI` updates the followup panel accordingly.
 
 ### \[Proposed\] Undo/redo feature
 
@@ -319,49 +459,50 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-## User Stories
-
-| Priority | As a …​ | I want to …​ | So that I can…​ |
-| -------- | ------- | ------------ | ---------------- |
-| `* * *` | investigative journalist | add a new contact with basic details | build a database of sources |
-| `* * *` | investigative journalist | view all active contacts | quickly browse my source network |
-| `* * *` | investigative journalist | edit a contact's details | keep my database accurate without recreating contacts |
-| `* * *` | investigative journalist | delete a contact | remove obsolete contacts from my database |
-| `* * *` | journalist with frequent story assignments | add a story | record a new story assignment |
-| `* * *` | journalist working on several assignments | view all stories | keep track of stories I have worked on |
-| `* * *` | journalist covering a developing story | edit a story's name | keep the story title current and relevant |
-| `* * *` | journalist with obsolete assignments | delete a story | remove cancelled, shelved, or irrelevant stories without deleting their contacts |
-| `* * *` | journalist liaising with several contacts for a story | assign a contact to a story | record the sources involved in that story |
-| `* * *` | journalist correcting a source assignment | unassign a contact from a story | remove an irrelevant or incorrect association while retaining the contact |
-| `* * *` | journalist managing a story | list contacts assigned to a story | know which sources are needed for that story |
-| `* * *` | journalist reviewing a source | view the stories associated with a contact | track the history of stories for which I have liaised with that source |
-| `* *` | investigative journalist covering a breaking story | search contacts using multiple keywords, locations, and tags | retrieve relevant witnesses and sources quickly |
-| `* *` | journalist seeking a particular source | search contacts by role | find relevant witnesses, experts, officials, or other source types |
-| `* *` | journalist managing international correspondence | search contacts by location or region | find people who are directly connected to the relevant area |
-| `* *` | journalist seeking different perspectives | search contacts by profession | find sources with relevant expertise |
-| `* *` | journalist covering stories in various sectors | search contacts by industry | find people with direct knowledge of the relevant industry |
-| `* *` | journalist covering stories involving stakeholders | search contacts by organisation | find people who directly represent the relevant organisation |
-| `* *` | journalist receiving a call | search contacts by phone number | identify whether the caller is an existing contact |
-| `* *` | journalist receiving an email | search contacts by email address | identify whether the sender is an existing contact |
-| `* *` | journalist communicating across regions | search contacts by language | identify people I can communicate with in the required language |
-| `* *` | senior journalist | assign a role to a contact | record the type of liaison or source relationship involved |
-| `* *` | journalist communicating with different contacts | record a contact's preferred contact method | know the best way to reach each source |
-| `* *` | journalist managing sources known by different names | record a contact's alias | identify the same contact when a different name is used |
-| `* *` | journalist adding a new source | receive a duplicate-contact warning | avoid creating records with an existing phone number or email address |
-| `* *` | journalist who often contacts certain sources | mark a contact as a favourite | access frequently used contacts more easily |
-| `* *` | journalist with inactive sources | archive and restore contacts | keep inactive records available without cluttering the active list |
-| `* *` | journalist managing multiple stories | assign and update a story priority | identify work that requires attention first |
-| `* *` | reporter speaking to a source | append a timestamped note to a contact | keep a chronological record of statements and interactions |
-| `* *` | busy reporter managing several leads | schedule a follow-up or deadline | avoid missing promised callbacks, interviews, or verification work |
-| `* *` | busy reporter | view pending follow-ups and deadlines | see upcoming work in chronological order and recognise overdue items |
-| `*` | time-pressured reporter using the terminal | use command aliases and tab completion | query and record information without typing full commands or memorising IDs |
-| `*` | investigative journalist sharing a screen or working in public | use a redacted display mode | protect confidential identities and contact details from shoulder-surfing |
-| `*` | journalist handing a story to desk editors | export filtered source dossiers as Markdown or plain text | let editors and fact-checkers verify attribution without access to my command-line setup |
+| Priority | As a …​                                                        | I want to …​                                                 | So that I can…​                                                                          |
+| -------- | -------------------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `* * *`  | investigative journalist                                       | add a new contact with basic details                         | build a database of sources                                                              |
+| `* * *`  | investigative journalist                                       | view all active contacts                                     | quickly browse my source network                                                         |
+| `* * *`  | investigative journalist                                       | edit a contact's details                                     | keep my database accurate without recreating contacts                                    |
+| `* * *`  | investigative journalist                                       | delete a contact                                             | remove obsolete contacts from my database                                                |
+| `* * *`  | journalist with frequent story assignments                     | add a story                                                  | record a new story                                                                       |
+| `* * *`  | journalist working on different types of stories               | add tags to stories                                          | categorise different types of stories                                                    |
+| `* * *`  | journalist working on several assignments                      | view all stories                                             | keep track of stories I have worked on                                                   |
+| `* * *`  | journalist covering a developing story                         | edit a story's name                                          | keep the story title current and relevant                                                |
+| `* * *`  | journalist with obsolete assignments                           | delete a story                                               | remove cancelled, shelved, or irrelevant stories without deleting their contacts         |
+| `* * *`  | journalist working on many stories simultaneously              | find stories by keywords                                     | quickly locate stories among a huge list                                                 |
+| `* * *`  | journalist liaising with several contacts for a story          | assign a contact to a story                                  | record the sources involved in that story                                                |
+| `* * *`  | journalist correcting a source assignment                      | unassign a contact from a story                              | remove an irrelevant or incorrect association while retaining the contact                |
+| `* * *`  | journalist managing a story                                    | list contacts assigned to a story                            | know which sources are needed for that story                                             |
+| `* * *`  | journalist reviewing a source                                  | view the stories associated with a contact                   | track the history of stories for which I have liaised with that source                   |
+| `* *`    | investigative journalist covering a breaking story             | search contacts using multiple keywords, locations, and tags | retrieve relevant witnesses and sources quickly                                          |
+| `* *`    | journalist seeking a particular source                         | search contacts by role                                      | find relevant witnesses, experts, officials, or other source types                       |
+| `* *`    | journalist managing international correspondence               | search contacts by location or region                        | find people who are directly connected to the relevant area                              |
+| `* *`    | journalist seeking different perspectives                      | search contacts by profession                                | find sources with relevant expertise                                                     |
+| `* *`    | journalist covering stories in various sectors                 | search contacts by industry                                  | find people with direct knowledge of the relevant industry                               |
+| `* *`    | journalist covering stories involving stakeholders             | search contacts by organisation                              | find people who directly represent the relevant organisation                             |
+| `* *`    | journalist receiving a call                                    | search contacts by phone number                              | identify whether the caller is an existing contact                                       |
+| `* *`    | journalist receiving an email                                  | search contacts by email address                             | identify whether the sender is an existing contact                                       |
+| `* *`    | journalist communicating across regions                        | search contacts by language                                  | identify people I can communicate with in the required language                          |
+| `* *`    | senior journalist                                              | assign a role to a contact                                   | record the type of liaison or source relationship involved                               |
+| `* *`    | journalist communicating with different contacts               | record a contact's preferred contact method                  | know the best way to reach each source                                                   |
+| `* *`    | journalist managing sources known by different names           | record a contact's alias                                     | identify the same contact when a different name is used                                  |
+| `* *`    | journalist adding a new source                                 | receive a duplicate-contact warning                          | avoid creating records with an existing phone number or email address                    |
+| `* *`    | journalist who often contacts certain sources                  | mark a contact as a favourite                                | access frequently used contacts more easily                                              |
+| `* *`    | journalist with inactive sources                               | archive and restore contacts                                 | keep inactive records available without cluttering the active list                       |
+| `* *`    | journalist managing multiple stories                           | assign and update a story priority                           | identify work that requires attention first                                              |
+| `* *`    | reporter speaking to a source                                  | append a timestamped note to a contact                       | keep a chronological record of statements and interactions                               |
+| `* *`    | busy reporter managing several leads                           | schedule a follow-up or deadline                             | avoid missing promised callbacks, interviews, or verification work                       |
+| `* *`    | busy reporter                                                  | view pending follow-ups and deadlines                        | see upcoming work in chronological order and recognise overdue items                     |
+| `* *`    | busy reporter liaising with multiple contacts                  | view the follow-ups for a particuluar contact                | track upcoming tasks and meetings involving that specific person                         |
+| `*`      | time-pressured reporter using the terminal                     | use command aliases and tab completion                       | query and record information without typing full commands or memorising IDs              |
+| `*`      | investigative journalist sharing a screen or working in public | use a redacted display mode                                  | protect confidential identities and contact details from shoulder-surfing                |
+| `*`      | journalist handing a story to desk editors                     | export filtered source dossiers as Markdown or plain text    | let editors and fact-checkers verify attribution without access to my command-line setup |
 
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is `PressMemo` and the **Actor** is the `user`, unless specified otherwise)
 
 #### Use Case: UC1 - Add Contact
 
@@ -426,7 +567,7 @@ Actor: User
 
 Guarantees:
 
-- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the contacts that match the specified filter
+- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the stories that match the specified filter
 - The ActiveContactList  and contact panel remain unchanged
 
 ##### MSS:
@@ -482,52 +623,121 @@ Use case ends
 - System informs the user that the contact is already assigned to the specified story
 - Use case ends
 
-#### Use Case: UC5 – Add Story
+#### Use Case: UC5 - Add Story
 
 Actor: User
 
+##### Guarantees:
+
+- At the end of MSS, the new story is added to the ArchiveStoryList and displayed in the story panel
+- At the end of MSS, ActiveStoryList is updated to show all stories (ActiveStoryList = ArchiveStoryList)
+
 ##### MSS:
 
-1. User enters the add story command with the story information.
-2. System parses the command.
-3. System validates the provided story information.
-4. System adds the new story.
-5. System saves the updated data to storage.
-6. System displays a success message.
+1. User requests to add a story by providing the story name and optional tags
+2. System adds the story to the ArchiveStoryList
+3. System updates the ActiveStoryList and story panel to display all stories
+4. System informs the user in the console that the story has been added successfully
 
 Use case ends.
 
 ##### Extensions:
 
-3a. User provides invalid or missing story information.
+1a. Crucial details are missing or format is invalid (e.g. blank story name or invalid tag format).
 
-- System informs the user that the provided information is invalid.
+- System informs the user in the console of the invalid command format.
 - Use case ends.
 
-4a. A story with the same name already exists.
+1b. A story with the same name already exists in the ArchiveStoryList.
 
-- System informs the user that the story already exists.
+- System informs the user in the console that the story already exists.
 - Use case ends.
 
-#### **Use case:  UC6 – Delete a contact**
+#### Use Case: UC6 - Delete a contact
 
 Actor: User
 
-**MSS**
+##### MSS:
 
 1. User requests to list contacts
-2. AddressBook shows a list of contacts
+2. PressMemo shows a list of contacts
 3. User requests to delete a specific contact in the list
-4. AddressBook deletes the contact
-  Use case ends.
+4. PressMemo deletes the contact
 
-**Extensions**
-
-- 2a. The list is empty.
 Use case ends.
-- 3a. The given index is invalid.
-  - 3a1. AddressBook shows an error message.
-  Use case resumes at step 2.
+
+##### Extensions:
+
+2a. The list is empty.
+
+- Use case ends.
+
+3a. The given index is invalid (not positive integer or larger than the number of contacts displayed)
+
+- PressMemo shows an error message.
+- Use case resumes at step 2.
+
+#### Use Case: UC8 - Find stories by keywords
+
+Actor: User
+
+##### Guarantees:
+
+- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the stories from the ArchiveStoryList whose names contain at least one of the specified keywords (case-insensitive, whole-word match)
+- The ActiveContactList, ActiveFollowupList, and ArchiveStoryList remain unchanged
+
+##### MSS:
+
+1. User request to find stories, providing one or more search keywords
+2. System filters stories whose names contain at least one of the specified keywords
+3. System updates the ActiveStoryList and story panel to display the matching stories
+4. System informs the user in the console of the number of matching stories listed
+
+Use case ends.
+
+##### Extensions:
+
+1a. User does not provide any keywords (empty search query).
+
+- System informs the user in the console of the invalid command format.
+- Use case ends.
+
+2a. No stories match the specified keywords.
+
+- System updates the story panel to display an empty list.
+- System informs the user in the console that 0 stories are matched.
+- Use case ends.
+
+#### Use Case: UC9 - List follow-ups
+
+Actor: User
+
+##### Guarantees:
+
+- At the end of MSS and Ext. 2a, the ActiveFollowupList is updated to show either all follow-ups from the ArchiveFollowupList (if no contact index is specified) or only the follow-ups associated with the specified contact in the ActiveContactList
+- ActiveContactList, ActiveStoryList, and all archive lists remain unchanged
+
+##### MSS:
+
+1. User requests to list follow-ups, optionally specifying a contact index
+2. If a contact index was specified, System filters the follow-ups to include only those associated with the specified contact
+3. System updates the ActiveFollowupList and followup panel to display the follow-ups
+4. System informs the user in the console that the follow-ups have been listed successfully
+
+Use case ends.
+
+##### Extensions:
+
+1a. User specifies an invalid contact index  (not positive integer or larger than the number of contacts displayed).
+
+- System informs the user in the console of the invalid index.
+- Use case ends.
+
+2a. There are no follow-ups associated with the specified contact.
+
+- 2a1. System updates the followup panel to display an empty list.
+- 2a2. System informs the user in the console that no followups have been matched.
+- Use case ends.
 
 ### Non-Functional Requirements
 
