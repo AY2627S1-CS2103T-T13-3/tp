@@ -35,7 +35,7 @@ class JsonAdaptedFollowup {
      */
     public JsonAdaptedFollowup(Followup source) {
         description = source.getDescription().description;
-        contact = source.getContact().fullName;
+        contact = source.getContact().toString();
     }
 
     /**

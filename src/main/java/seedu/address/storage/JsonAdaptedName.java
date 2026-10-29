@@ -26,7 +26,7 @@ class JsonAdaptedName {
      * Converts a Name into a Jackson-friendly object.
      */
     public JsonAdaptedName(Name source) {
-        this.name = source.fullName;
+        this.name = source.toString();
     }
 
     @JsonProperty("name")

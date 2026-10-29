@@ -57,7 +57,7 @@ public class JsonSerializableAddressBookTest {
                 null,
                 List.of(new JsonAdaptedFollowup(
                         VALID_DESCRIPTION,
-                        TypicalContacts.ALICE.getName().fullName)));
+                        TypicalContacts.ALICE.getName().toString())));
 
         Followup expected = new Followup(
                 new FollowupDescription(VALID_DESCRIPTION),
@@ -97,10 +97,10 @@ public class JsonSerializableAddressBookTest {
                 List.of(
                         new JsonAdaptedFollowup(
                                 VALID_DESCRIPTION,
-                                TypicalContacts.ALICE.getName().fullName),
+                                TypicalContacts.ALICE.getName().toString()),
                         new JsonAdaptedFollowup(
                                 VALID_DESCRIPTION,
-                                TypicalContacts.ALICE.getName().fullName)));
+                                TypicalContacts.ALICE.getName().toString())));
 
         assertThrows(IllegalValueException.class,
                 JsonSerializableAddressBook.MESSAGE_DUPLICATE_FOLLOWUP,
