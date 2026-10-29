@@ -24,22 +24,36 @@ public class FindFollowupCommandParserTest {
 
         assertParseFailure(parser, "",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+<<<<<<< Updated upstream:src/test/java/seedu/address/logic/parser/FindFollowupCommandParserTest.java
                         FindFollowupCommand.MESSAGE_USAGE));
+=======
+                        FindFollowupsCommand.MESSAGE_USAGE));
+
+        assertParseFailure(parser, "\t \r \n",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                        FindFollowupsCommand.MESSAGE_USAGE));
+>>>>>>> Stashed changes:src/test/java/seedu/address/logic/parser/FindFollowupsCommandParserTest.java
     }
 
     @Test
     public void parse_validArgs_returnsFindFollowupCommand() {
         FindFollowupCommand expectedCommand = new FindFollowupCommand(
                 new FollowupDescriptionContainsKeywordsPredicate(
-                        List.of("interview", "meeting")));
+                        List.of("interview", "meeting", "call")));
 
         // Normal input
-        assertParseSuccess(parser, "interview meeting", expectedCommand);
+        assertParseSuccess(parser, "interview meeting call", expectedCommand);
 
-        // Extra whitespace
+        // Extra whitespace (tabs, newlines, carriage returns)
         assertParseSuccess(parser,
-                " \n interview \n \t meeting \t",
+                " \n interview \n \t meeting \r call \t",
                 expectedCommand);
+
+        // Symbols and numbers
+        FindFollowupsCommand symbolCommand = new FindFollowupsCommand(
+                new FollowupDescriptionContainsKeywordsPredicate(
+                        List.of("10am", "urgent!", "hospital#2")));
+        assertParseSuccess(parser, "10am urgent! hospital#2", symbolCommand);
     }
 
     @Test
@@ -49,5 +63,6 @@ public class FindFollowupCommandParserTest {
                         List.of("interview")));
 
         assertParseSuccess(parser, "interview", expectedCommand);
+        assertParseSuccess(parser, "   interview   ", expectedCommand);
     }
 }

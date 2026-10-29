@@ -7,6 +7,7 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.DeleteContactCommand;
 
 /**
@@ -18,19 +19,49 @@ import seedu.address.logic.commands.DeleteContactCommand;
  */
 public class DeleteContactCommandParserTest {
 
-    private DeleteContactCommandParser parser = new DeleteContactCommandParser();
+    private final DeleteContactCommandParser parser = new DeleteContactCommandParser();
 
     @Test
     public void parse_validArgs_returnsDeleteCommand() {
+        // Min valid index
         assertParseSuccess(parser, "1", new DeleteContactCommand(INDEX_FIRST_CONTACT));
+
+        // Arbitrary valid index
+        assertParseSuccess(parser, "2", new DeleteContactCommand(Index.fromOneBased(2)));
+
+        // Max integer boundary
+        assertParseSuccess(parser, String.valueOf(Integer.MAX_VALUE),
+                new DeleteContactCommand(Index.fromOneBased(Integer.MAX_VALUE)));
+
+        // Whitespace padded
+        assertParseSuccess(parser, "   1   ", new DeleteContactCommand(INDEX_FIRST_CONTACT));
     }
 
     @Test
     public void parse_invalidArgs_throwsParseException() {
-        assertParseFailure(
-                parser,
-                "a",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteContactCommand.MESSAGE_USAGE)
-        );
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, DeleteContactCommand.MESSAGE_USAGE);
+
+        // Non-numeric strings
+        assertParseFailure(parser, "a", expectedMessage);
+        assertParseFailure(parser, "abc", expectedMessage);
+
+        // Empty / whitespace
+        assertParseFailure(parser, "", expectedMessage);
+        assertParseFailure(parser, "     ", expectedMessage);
+
+        // Multiple tokens
+        assertParseFailure(parser, "1 2", expectedMessage);
+        assertParseFailure(parser, "1 abc", expectedMessage);
+
+        // Boundary non-positive (0)
+        assertParseFailure(parser, "0", expectedMessage);
+
+        // Negative values
+        assertParseFailure(parser, "-1", expectedMessage);
+        assertParseFailure(parser, "-10", expectedMessage);
+
+        // Integer overflow
+        assertParseFailure(parser, "2147483648", expectedMessage);
+        assertParseFailure(parser, Long.toString(Long.MAX_VALUE), expectedMessage);
     }
 }

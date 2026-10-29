@@ -22,14 +22,26 @@ public class ShortcutCommandParserTest {
         assertEquals(new ShortcutCommand(), parser.parse("   "));
     }
 
+    /**
+     * All-Pairs combinations of valid shortcut partitions and command partitions:
+     * - Shortcut (s/): letter ("a"), symbol ("!"), number ("1"), word ("ls")
+     * - Command (c/): "list", "find", "help", "delete"
+     * - Prefix order: standard (s/ then c/) and reverse (c/ then s/)
+     */
     @Test
     public void parse_validArguments_returnsAssignmentCommand() throws Exception {
         assertEquals(new ShortcutCommand("ls", "list"), parser.parse(" s/ls c/list"));
         // reverse prefix order
         assertEquals(new ShortcutCommand("ls", "list"), parser.parse(" c/list s/ls"));
-        // single-character and symbol tokens
-        assertEquals(new ShortcutCommand("1", "list"), parser.parse(" s/1 c/list"));
+
+        // letter shortcut
+        assertEquals(new ShortcutCommand("a", "list"), parser.parse(" s/a c/list"));
+        // symbol shortcut
         assertEquals(new ShortcutCommand("!", "find"), parser.parse(" s/! c/find"));
+        // digit shortcut
+        assertEquals(new ShortcutCommand("1", "delete"), parser.parse(" s/1 c/delete"));
+        // word shortcut
+        assertEquals(new ShortcutCommand("h", "help"), parser.parse(" c/help s/h"));
     }
 
     @Test

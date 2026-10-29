@@ -17,23 +17,33 @@ public class FindContactsCommandParserTest {
 
     @Test
     public void parse_emptyArg_throwsParseException() {
-        assertParseFailure(
-                parser,
-                "     ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        FindContactsCommand.MESSAGE_USAGE)
-        );
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                FindContactsCommand.MESSAGE_USAGE);
+        assertParseFailure(parser, "     ", expectedMessage);
+        assertParseFailure(parser, "", expectedMessage);
+        assertParseFailure(parser, "\t \n \r", expectedMessage);
     }
 
     @Test
     public void parse_validArgs_returnsFindCommand() {
-        // no leading and trailing whitespaces
-        FindContactsCommand expectedFindContactsCommand =
-                new FindContactsCommand(new NameContainsKeywordsPredicate(List.of("Alice", "Bob")));
-        assertParseSuccess(parser, "Alice Bob", expectedFindContactsCommand);
+        // Single keyword
+        FindContactsCommand singleKeywordCommand =
+                new FindContactsCommand(new NameContainsKeywordsPredicate(List.of("Alice")));
+        assertParseSuccess(parser, "Alice", singleKeywordCommand);
+        assertParseSuccess(parser, "  Alice  ", singleKeywordCommand);
 
-        // multiple whitespaces between keywords
-        assertParseSuccess(parser, " \n Alice \n \t Bob  \t", expectedFindContactsCommand);
+        // Multiple keywords without leading and trailing whitespaces
+        FindContactsCommand expectedFindContactsCommand =
+                new FindContactsCommand(new NameContainsKeywordsPredicate(List.of("Alice", "Bob", "Carol")));
+        assertParseSuccess(parser, "Alice Bob Carol", expectedFindContactsCommand);
+
+        // Multiple whitespaces between keywords (tabs, newlines)
+        assertParseSuccess(parser, " \n Alice \n \t Bob \r Carol \t", expectedFindContactsCommand);
+
+        // Keywords with symbols or numbers
+        FindContactsCommand symbolCommand =
+                new FindContactsCommand(new NameContainsKeywordsPredicate(List.of("Alice-Bob", "Dr.", "123")));
+        assertParseSuccess(parser, "Alice-Bob Dr. 123", symbolCommand);
     }
 
 }

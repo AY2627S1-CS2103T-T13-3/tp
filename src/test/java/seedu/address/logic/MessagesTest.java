@@ -65,20 +65,41 @@ public class MessagesTest {
     }
 
     @Test
+    public void instantiation() {
+        org.junit.jupiter.api.Assertions.assertNotNull(new Messages());
+    }
+
+    @Test
     public void getErrorMessageForDuplicatePrefixes() {
         Prefix p1 = new Prefix("n/");
         Prefix p2 = new Prefix("p/");
-        String message = Messages.getErrorMessageForDuplicatePrefixes(p1, p2);
+        Prefix p3 = new Prefix("e/");
+
+        // Single prefix
+        String singleMessage = Messages.getErrorMessageForDuplicatePrefixes(p1);
+        assertTrue(singleMessage.contains(Messages.MESSAGE_DUPLICATE_FIELDS));
+        assertTrue(singleMessage.contains("n/"));
+
+        // Multiple prefixes
+        String message = Messages.getErrorMessageForDuplicatePrefixes(p1, p2, p3);
         assertTrue(message.contains(Messages.MESSAGE_DUPLICATE_FIELDS));
         assertTrue(message.contains("n/"));
         assertTrue(message.contains("p/"));
+        assertTrue(message.contains("e/"));
     }
 
     @Test
     public void getErrorMessageForInvalidPrefixes() {
         Prefix[] expectedPrefixes = new Prefix[] { new Prefix("n/"), new Prefix("p/") };
+
+        // Multiple invalid indices
         String message = Messages.getErrorMessageForInvalidPrefixes(expectedPrefixes, List.of(1, 2));
         assertTrue(message.contains("1") && message.contains("2"));
         assertTrue(message.contains("n/") && message.contains("p/"));
+
+        // Single invalid index
+        String singleMessage = Messages.getErrorMessageForInvalidPrefixes(expectedPrefixes, List.of(1));
+        assertTrue(singleMessage.contains("1"));
+        assertTrue(singleMessage.contains("n/"));
     }
 }

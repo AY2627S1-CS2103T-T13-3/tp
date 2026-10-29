@@ -56,9 +56,17 @@ public class EditStoryCommandParserTest {
     public void parse_invalidPreamble_failure() {
         // negative index
         assertParseFailure(parser, "-5" + NAME_DESC_CRIME, MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "-1" + NAME_DESC_CRIME, MESSAGE_INVALID_FORMAT);
 
         // zero index
         assertParseFailure(parser, "0" + NAME_DESC_CRIME, MESSAGE_INVALID_FORMAT);
+
+        // boundary integer overflow
+        assertParseFailure(parser, "2147483648" + NAME_DESC_CRIME, MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, Long.toString(Long.MAX_VALUE) + NAME_DESC_CRIME, MESSAGE_INVALID_FORMAT);
+
+        // non-integer string
+        assertParseFailure(parser, "abc" + NAME_DESC_CRIME, MESSAGE_INVALID_FORMAT);
 
         // invalid arguments being parsed as preamble
         assertParseFailure(parser, "1 some random string", MESSAGE_INVALID_FORMAT);
@@ -70,7 +78,12 @@ public class EditStoryCommandParserTest {
     @Test
     public void parse_invalidValue_failure() {
         assertParseFailure(parser, "1" + INVALID_STORYNAME_DESC, StoryName.MESSAGE_CONSTRAINTS); // invalid name
+        assertParseFailure(parser, "1 n/", StoryName.MESSAGE_CONSTRAINTS); // empty name
+        assertParseFailure(parser, "1 n/   ", StoryName.MESSAGE_CONSTRAINTS); // whitespace name
+        assertParseFailure(parser, "1 n/Story/1", StoryName.MESSAGE_CONSTRAINTS); // slash in name
+
         assertParseFailure(parser, "1" + INVALID_STORYTAG_DESC, Tag.MESSAGE_CONSTRAINTS); // invalid tag
+        assertParseFailure(parser, "1 t/tag/1", Tag.MESSAGE_CONSTRAINTS); // slash in tag
 
         // while parsing {@code PREFIX_TAG} alone will reset the tags of the {@code Story} being edited,
         // parsing it together with a valid tag results in error
@@ -156,29 +169,84 @@ public class EditStoryCommandParserTest {
         EditStoryCommand expectedCommand = new EditStoryCommand(targetIndex, descriptor);
 
         assertParseSuccess(parser, userInput, expectedCommand);
+        assertParseSuccess(parser, targetIndex.getOneBased() + " t/   ", expectedCommand);
     }
 
+    /**
+     * Covers pairwise combinations of valid partitions for EditStoryCommand:
+     * - Index: 1 (min), 2 (typical), Integer.MAX_VALUE (boundary max)
+     * - Name: omitted, single-char ("A"), typical ("Crime"), complex ("Election 2026!")
+     * - Tags: omitted, reset ("t/"), single ("t/urgent"), multiple ("t/urgent t/breaking")
+     * - Prefix order: name then tags, tags then name
+     */
     @Test
     public void parse_pairwiseNameAndTags_success() {
-        Index targetIndex = INDEX_FIRST_STORY;
+        Index firstIndex = INDEX_FIRST_STORY;
+        Index secondIndex = INDEX_SECOND_STORY;
+        Index maxIndex = Index.fromOneBased(Integer.MAX_VALUE);
 
-        // StoryName + single tag
-        EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder()
-                .withName("A").withTags("urgent").build();
-        assertParseSuccess(parser, targetIndex.getOneBased() + " n/A t/urgent",
-                new EditStoryCommand(targetIndex, descriptor));
+        // Pair 1: Index 1, Name omitted, Tag single
+        EditStoryDescriptor desc1 = new EditStoryDescriptorBuilder().withTags("urgent").build();
+        assertParseSuccess(parser, firstIndex.getOneBased() + " t/urgent",
+                new EditStoryCommand(firstIndex, desc1));
 
-        // StoryName + multiple tags
-        descriptor = new EditStoryDescriptorBuilder()
-                .withName(VALID_STORYNAME_CRIME).withTags("urgent", "breaking").build();
-        assertParseSuccess(parser, targetIndex.getOneBased() + NAME_DESC_CRIME + " t/urgent t/breaking",
-                new EditStoryCommand(targetIndex, descriptor));
+        // Pair 2: Index 1, Name single-char, Tag multiple
+        EditStoryDescriptor desc2 = new EditStoryDescriptorBuilder()
+                .withName("A").withTags("urgent", "breaking").build();
+        assertParseSuccess(parser, firstIndex.getOneBased() + " n/A t/urgent t/breaking",
+                new EditStoryCommand(firstIndex, desc2));
 
-        // StoryName + reset tags
-        descriptor = new EditStoryDescriptorBuilder()
+        // Pair 3: Index 1, Name typical, Tag reset
+        EditStoryDescriptor desc3 = new EditStoryDescriptorBuilder()
                 .withName(VALID_STORYNAME_CRIME).withTags().build();
-        assertParseSuccess(parser, targetIndex.getOneBased() + NAME_DESC_CRIME + TAG_EMPTY,
-                new EditStoryCommand(targetIndex, descriptor));
+        assertParseSuccess(parser, firstIndex.getOneBased() + NAME_DESC_CRIME + TAG_EMPTY,
+                new EditStoryCommand(firstIndex, desc3));
+
+        // Pair 4: Index 2, Name complex, Tag omitted
+        EditStoryDescriptor desc4 = new EditStoryDescriptorBuilder()
+                .withName("Election 2026!").build();
+        assertParseSuccess(parser, secondIndex.getOneBased() + " n/Election 2026!",
+                new EditStoryCommand(secondIndex, desc4));
+
+        // Pair 5: Index 2, Name omitted, Tag multiple
+        EditStoryDescriptor desc5 = new EditStoryDescriptorBuilder()
+                .withTags("urgent", "breaking").build();
+        assertParseSuccess(parser, secondIndex.getOneBased() + " t/urgent t/breaking",
+                new EditStoryCommand(secondIndex, desc5));
+
+        // Pair 6: Index 2, Name single-char, Tag reset
+        EditStoryDescriptor desc6 = new EditStoryDescriptorBuilder()
+                .withName("A").withTags().build();
+        assertParseSuccess(parser, secondIndex.getOneBased() + " n/A" + TAG_EMPTY,
+                new EditStoryCommand(secondIndex, desc6));
+
+        // Pair 7: Index 2, Name typical, Tag single (reversed prefix order: tag then name)
+        EditStoryDescriptor desc7 = new EditStoryDescriptorBuilder()
+                .withName(VALID_STORYNAME_CRIME).withTags("urgent").build();
+        assertParseSuccess(parser, secondIndex.getOneBased() + " t/urgent" + NAME_DESC_CRIME,
+                new EditStoryCommand(secondIndex, desc7));
+
+        // Pair 8: Boundary max integer Index, Name complex, Tag single
+        EditStoryDescriptor desc8 = new EditStoryDescriptorBuilder()
+                .withName("Budget 2026: Politics & Tech!").withTags("breaking").build();
+        assertParseSuccess(parser, Integer.MAX_VALUE + " n/Budget 2026: Politics & Tech! t/breaking",
+                new EditStoryCommand(maxIndex, desc8));
+
+        // Pair 9: Boundary max integer Index, Name omitted, Tag reset
+        EditStoryDescriptor desc9 = new EditStoryDescriptorBuilder().withTags().build();
+        assertParseSuccess(parser, Integer.MAX_VALUE + TAG_EMPTY,
+                new EditStoryCommand(maxIndex, desc9));
+
+        // Pair 10: Boundary max integer Index, Name typical, Tag multiple
+        EditStoryDescriptor desc10 = new EditStoryDescriptorBuilder()
+                .withName(VALID_STORYNAME_CRIME).withTags("urgent", "breaking").build();
+        assertParseSuccess(parser, Integer.MAX_VALUE + NAME_DESC_CRIME + " t/urgent t/breaking",
+                new EditStoryCommand(maxIndex, desc10));
+
+        // Pair 11: Boundary max integer Index, Name single-char, Tag omitted
+        EditStoryDescriptor desc11 = new EditStoryDescriptorBuilder().withName("A").build();
+        assertParseSuccess(parser, Integer.MAX_VALUE + " n/A",
+                new EditStoryCommand(maxIndex, desc11));
     }
 
     @Test

@@ -17,16 +17,31 @@ public class FindStoryCommandParserTest {
 
     @Test
     public void parse_emptyArg_throwsParseException() {
-        assertParseFailure(parser, "     ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindStoryCommand.MESSAGE_USAGE));
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindStoryCommand.MESSAGE_USAGE);
+        assertParseFailure(parser, "     ", expectedMessage);
+        assertParseFailure(parser, "", expectedMessage);
+        assertParseFailure(parser, "\t \r \n", expectedMessage);
     }
 
     @Test
     public void parse_validArgs_returnsFindStoryCommand() {
-        FindStoryCommand expectedCommand = new FindStoryCommand(
-                new StoryNameContainsKeywordsPredicate(List.of("Housing", "Investigation")));
+        // Single keyword
+        FindStoryCommand singleKeywordCommand = new FindStoryCommand(
+                new StoryNameContainsKeywordsPredicate(List.of("Housing")));
+        assertParseSuccess(parser, "Housing", singleKeywordCommand);
+        assertParseSuccess(parser, "   Housing   ", singleKeywordCommand);
 
-        assertParseSuccess(parser, "Housing Investigation", expectedCommand);
-        assertParseSuccess(parser, " \n Housing \n \t Investigation  \t", expectedCommand);
+        // Multiple keywords
+        FindStoryCommand expectedCommand = new FindStoryCommand(
+                new StoryNameContainsKeywordsPredicate(List.of("Housing", "Investigation", "Scandal")));
+        assertParseSuccess(parser, "Housing Investigation Scandal", expectedCommand);
+
+        // Whitespace variations (newlines, tabs)
+        assertParseSuccess(parser, " \n Housing \n \t Investigation \r Scandal \t", expectedCommand);
+
+        // Keywords with symbols or numbers
+        FindStoryCommand symbolCommand = new FindStoryCommand(
+                new StoryNameContainsKeywordsPredicate(List.of("2026", "Budget!", "COVID-19")));
+        assertParseSuccess(parser, "2026 Budget! COVID-19", symbolCommand);
     }
 }
