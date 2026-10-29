@@ -11,6 +11,8 @@ import seedu.address.model.Model;
 public class ClearCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "clear";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Clears all entries from PressMemo.\n"
+            + "Example: " + COMMAND_WORD;
     public static final String MESSAGE_SUCCESS = "PressMemo has been cleared!";
 
 
