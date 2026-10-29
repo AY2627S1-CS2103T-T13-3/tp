@@ -23,6 +23,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.story.Story;
+import seedu.address.testutil.ContactBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for ListContactsCommand.
@@ -89,6 +90,26 @@ public class ListContactsCommandTest {
         assertCommandSuccess(new ListContactsCommand(INDEX_FIRST_STORY), model, expectedMessage, expectedModel);
 
         assertTrue(model.getFilteredContactList().isEmpty());
+    }
+
+    @Test
+    public void execute_editContactAfterListContacts_contactRemainsInFilteredList() throws Exception {
+        Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        model.assignStory(contact, story);
+
+        ListContactsCommand listContactsCommand = new ListContactsCommand(INDEX_FIRST_STORY);
+        listContactsCommand.execute(model);
+        assertEquals(1, model.getFilteredContactList().size());
+
+        // Edit the contact's phone while under listcontacts filter
+        Contact contactToEdit = model.getFilteredContactList().get(0);
+        Contact editedContact = new ContactBuilder(contactToEdit).withPhone("98765432").build();
+        model.setContact(contactToEdit, editedContact);
+
+        // The edited contact must still be present in the filtered contact list!
+        assertEquals(1, model.getFilteredContactList().size());
+        assertEquals(editedContact.getName(), model.getFilteredContactList().get(0).getName());
     }
 
     @Test

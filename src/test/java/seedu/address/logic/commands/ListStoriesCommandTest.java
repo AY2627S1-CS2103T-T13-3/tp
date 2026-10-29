@@ -8,9 +8,12 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
+import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_STORY;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_CONTACT;
 import static seedu.address.testutil.TypicalStories.STORY_A;
 import static seedu.address.testutil.TypicalStories.STORY_B;
+
+import java.util.Collections;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -101,6 +104,26 @@ public class ListStoriesCommandTest {
                 model, expectedMessage, expectedModel);
 
         assertTrue(model.getFilteredStoryList().isEmpty());
+    }
+
+    @Test
+    public void execute_editStoryAfterListStories_storyRemainsInFilteredList() throws Exception {
+        Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        model.assignStory(contact, story);
+
+        ListStoriesCommand listStoriesCommand = new ListStoriesCommand(INDEX_FIRST_CONTACT);
+        listStoriesCommand.execute(model);
+        assertEquals(1, model.getFilteredStoryList().size());
+
+        // Edit the story's tags while under liststories filter
+        Story storyToEdit = model.getFilteredStoryList().get(0);
+        Story editedStory = new Story(storyToEdit.getName(), Collections.emptySet(), storyToEdit.getContacts());
+        model.setStory(storyToEdit, editedStory);
+
+        // The edited story must still be present in the filtered story list!
+        assertEquals(1, model.getFilteredStoryList().size());
+        assertEquals(editedStory.getName(), model.getFilteredStoryList().get(0).getName());
     }
 
     @Test

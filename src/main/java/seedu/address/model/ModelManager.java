@@ -183,7 +183,6 @@ public class ModelManager implements Model {
     @Override
     public void deleteFollowup(Followup followup) {
         addressBook.removeFollowup(followup);
-        updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
     }
     //=========== Filtered Contact List Accessors =============================================================
 
@@ -325,6 +324,7 @@ public class ModelManager implements Model {
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredContacts.equals(otherModelManager.filteredContacts)
-                && filteredStories.equals(otherModelManager.filteredStories);
+                && filteredStories.equals(otherModelManager.filteredStories)
+                && filteredFollowups.equals(otherModelManager.filteredFollowups);
     }
 }
