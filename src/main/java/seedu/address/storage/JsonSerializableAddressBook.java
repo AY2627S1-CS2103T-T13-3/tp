@@ -13,6 +13,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.followup.Followup;
+import seedu.address.model.story.Story;
 
 /**
  * An Immutable AddressBook that is serializable to JSON format.
@@ -24,10 +25,13 @@ class JsonSerializableAddressBook {
             "Contacts list contains duplicate contact(s).";
     public static final String MESSAGE_DUPLICATE_FOLLOWUP =
             "Followups list contains duplicate followup(s).";
+    public static final String MESSAGE_DUPLICATE_STORY =
+            "Stories list contains duplicate story(s).";
     public static final String MESSAGE_INVALID_CONTACT =
             "Followup refers to a nonexistent contact.";
 
     private final List<JsonAdaptedContact> contacts = new ArrayList<>();
+    private final List<JsonAdaptedStory> stories = new ArrayList<>();
     private final List<JsonAdaptedFollowup> followups = new ArrayList<>();
 
     /**
@@ -36,9 +40,13 @@ class JsonSerializableAddressBook {
     @JsonCreator
     public JsonSerializableAddressBook(
             @JsonProperty("contacts") List<JsonAdaptedContact> contacts,
+            @JsonProperty("stories") List<JsonAdaptedStory> stories,
             @JsonProperty("followups") List<JsonAdaptedFollowup> followups) {
         if (contacts != null) {
             this.contacts.addAll(contacts);
+        }
+        if (stories != null) {
+            this.stories.addAll(stories);
         }
         if (followups != null) {
             this.followups.addAll(followups);
@@ -51,6 +59,10 @@ class JsonSerializableAddressBook {
     public JsonSerializableAddressBook(ReadOnlyAddressBook source) {
         contacts.addAll(source.getContactList().stream()
                 .map(JsonAdaptedContact::new)
+                .collect(Collectors.toList()));
+
+        stories.addAll(source.getStoryList().stream()
+                .map(JsonAdaptedStory::new)
                 .collect(Collectors.toList()));
 
         followups.addAll(source.getFollowupList().stream()
@@ -76,6 +88,18 @@ class JsonSerializableAddressBook {
                 throw new IllegalValueException(MESSAGE_DUPLICATE_CONTACT);
             }
             addressBook.addContact(contact);
+        }
+
+        for (JsonAdaptedStory jsonAdaptedStory : stories) {
+            if (jsonAdaptedStory == null) {
+                throw new IllegalValueException("Invalid story.");
+            }
+
+            Story story = jsonAdaptedStory.toModelType();
+            if (addressBook.hasStory(story)) {
+                throw new IllegalValueException(MESSAGE_DUPLICATE_STORY);
+            }
+            addressBook.addStory(story);
         }
 
         List<Followup> modelFollowups = new ArrayList<>();

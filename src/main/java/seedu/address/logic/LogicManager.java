@@ -53,7 +53,6 @@ public class LogicManager implements Logic {
 
         try {
             storage.saveAddressBook(model.getAddressBook());
-            storage.saveStories(model.getAddressBook());
             if (command.modifiesUserPrefs()) {
                 storage.saveUserPrefs(model.getUserPrefs());
             }

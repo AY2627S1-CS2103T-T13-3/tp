@@ -3,7 +3,6 @@ package seedu.address;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -22,7 +21,6 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.util.SampleDataUtil;
 import seedu.address.storage.JsonAddressBookStorage;
-import seedu.address.storage.JsonStoryStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.Storage;
 import seedu.address.storage.StorageManager;
@@ -39,8 +37,6 @@ public class MainApp extends Application {
     private static final Logger logger = LogsCenter.getLogger(MainApp.class);
     private static final Path USER_PREFS_FILE_PATH = Paths.get("preferences.json");
     private static final Path ADDRESS_BOOK_FILE_PATH = Paths.get("data", "addressbook.json");
-    private static final Path STORY_FILE_PATH =
-            Paths.get("data", "stories.json");
 
     protected Ui ui;
     protected Logic logic;
@@ -57,11 +53,8 @@ public class MainApp extends Application {
         JsonAddressBookStorage addressBookStorage =
                 new JsonAddressBookStorage(ADDRESS_BOOK_FILE_PATH);
 
-        JsonStoryStorage storyStorage =
-                new JsonStoryStorage(STORY_FILE_PATH);
-
         storage = new StorageManager(
-                addressBookStorage, storyStorage, userPrefsStorage);
+                addressBookStorage, userPrefsStorage);
 
         model = initModelManager(storage, userPrefs);
 
@@ -93,21 +86,7 @@ public class MainApp extends Application {
             initialData = new AddressBook();
         }
 
-        // Load stories from the separate JSON file
-        AddressBook addressBook = new AddressBook(initialData);
-
-        logger.info("Using story data file : " + storage.getStoryFilePath());
-
-        try {
-            addressBook.setStories(storage.readStories().orElseGet(() -> List.of(SampleDataUtil.getSampleStories())));
-        } catch (DataLoadingException e) {
-            logger.warning("Story data file at " + storage.getStoryFilePath()
-                    + " could not be loaded."
-                    + " Will be starting with an empty story list.");
-            addressBook.setStories(List.of());
-        }
-
-        return new ModelManager(addressBook, userPrefs);
+        return new ModelManager(initialData, userPrefs);
     }
 
     /**
