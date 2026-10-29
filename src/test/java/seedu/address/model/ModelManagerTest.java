@@ -17,6 +17,8 @@ import org.junit.jupiter.api.Test;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.contact.NameContainsKeywordsPredicate;
 import seedu.address.model.contact.exceptions.ContactNotFoundException;
+import seedu.address.model.followup.Followup;
+import seedu.address.model.followup.FollowupDescription;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
 import seedu.address.model.story.exceptions.StoryNotFoundException;
@@ -127,6 +129,13 @@ public class ModelManagerTest {
 
         // resets modelManager to initial state for upcoming tests
         modelManager.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
+
+        // different filteredFollowupList -> returns false
+        Followup followup = new Followup(new FollowupDescription("Call"), ALICE.getName());
+        modelManager.addFollowup(followup);
+        ModelManager otherModelManager = new ModelManager(modelManager.getAddressBook(), userPrefs);
+        modelManager.updateFilteredFollowupList(unused -> false);
+        assertFalse(modelManager.equals(otherModelManager));
 
         // different userPrefs -> returns false
         UserPrefs differentUserPrefs = new UserPrefs();

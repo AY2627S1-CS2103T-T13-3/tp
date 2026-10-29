@@ -3,7 +3,6 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_STORIES;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -75,7 +74,6 @@ public class EditStoryCommand extends Command {
         }
 
         model.setStory(storyToEdit, editedStory);
-        model.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
         return new CommandResult(String.format(MESSAGE_EDIT_STORY_SUCCESS, Messages.format(editedStory)));
     }
 

@@ -13,6 +13,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.contact.Contact;
+import seedu.address.model.contact.Name;
 
 /**
  * Lists followups in PressMemo to the user.
@@ -59,10 +60,11 @@ public class ListFollowupsCommand extends Command {
         }
 
         Contact selectedContact = lastShownContactList.get(index);
+        Name contactName = selectedContact.getName();
 
         // Display only followups assigned to this contact
         model.updateFilteredFollowupList(
-                followup -> followup.isFor(selectedContact));
+                followup -> followup.getContact().equals(contactName));
 
         return new CommandResult(
                 String.format(MESSAGE_LIST_ASSIGNED_FOLLOWUPS_SUCCESS,

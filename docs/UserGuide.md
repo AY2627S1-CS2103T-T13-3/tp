@@ -174,7 +174,7 @@ Format: `editcontact INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]â€¦â€
 * When editing tags, all of the contact's existing tags are removed; adding tags is not cumulative.
 * To remove all of a contact's tags, enter `t/` without a tag after it.
 * The same field restrictions as `addcontact` apply. You cannot change a contact's name to another existing contact's name.
-* Editing shows the full contact list. Editing a contact, including changing their name, preserves their story assignments and updates associated follow-up references.
+* Editing preserves the current contact list filter instead of resetting to all contacts. Editing a contact, including changing their name, preserves their story assignments and updates associated follow-up references.
 
 Examples:
 *  `editcontact 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st contact to be `91234567` and `johndoe@example.com` respectively.

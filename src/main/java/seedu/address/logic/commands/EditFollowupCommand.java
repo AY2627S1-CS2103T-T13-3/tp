@@ -3,7 +3,6 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_FOLLOWUPS;
 
 import java.util.List;
 import java.util.Objects;
@@ -71,7 +70,6 @@ public class EditFollowupCommand extends Command {
         }
 
         model.setFollowup(followupToEdit, editedFollowup);
-        model.updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
         return new CommandResult(String.format(MESSAGE_EDIT_FOLLOWUP_SUCCESS, Messages.format(editedFollowup)));
     }
 
