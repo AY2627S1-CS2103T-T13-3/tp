@@ -36,7 +36,7 @@ public class AssignCommand extends Command {
     private final Index contactIndex;
     /**
      * @param storyIndex of the story in the filtered story list to assign contact to
-     * @param contactIndex of the contact in the filtered story list to assign to story
+     * @param contactIndex of the contact in the filtered contact list to assign to story
      */
     public AssignCommand(Index storyIndex, Index contactIndex) {
         requireNonNull(storyIndex);

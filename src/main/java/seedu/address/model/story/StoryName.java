@@ -21,9 +21,9 @@ public class StoryName {
     public final String fullName;
 
     /**
-     * Constructs a {@code Name}.
+     * Constructs a {@code StoryName}.
      *
-     * @param name A valid name.
+     * @param name A valid story name.
      */
     public StoryName(String name) {
         requireNonNull(name);

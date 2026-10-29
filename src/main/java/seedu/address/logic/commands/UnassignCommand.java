@@ -36,7 +36,7 @@ public class UnassignCommand extends Command {
     private final Index contactIndex;
     /**
      * @param storyIndex of the story in the filtered story list to unassign contact from
-     * @param contactIndex of the contact in the filtered story list to unassign from story
+     * @param contactIndex of the contact in the filtered contact list to unassign from story
      */
     public UnassignCommand(Index storyIndex, Index contactIndex) {
         requireNonNull(storyIndex);

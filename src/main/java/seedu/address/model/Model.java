@@ -139,7 +139,7 @@ public interface Model {
     /** Returns an unmodifiable view of the filtered story list */
     ObservableList<Story> getFilteredStoryList();
 
-    /** Returns an unmodifiable view of the filtered story list */
+    /** Returns an unmodifiable view of the filtered followup list */
     ObservableList<Followup> getFilteredFollowupList();
 
     /**
