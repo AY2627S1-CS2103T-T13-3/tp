@@ -1,5 +1,6 @@
 package seedu.address.model.contact;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -13,6 +14,10 @@ public class NameContainsKeywordsPredicate implements Predicate<Contact> {
 
     public NameContainsKeywordsPredicate(List<String> keywords) {
         this.keywords = keywords;
+    }
+
+    public List<String> getKeywords() {
+        return Collections.unmodifiableList(keywords);
     }
 
     @Override

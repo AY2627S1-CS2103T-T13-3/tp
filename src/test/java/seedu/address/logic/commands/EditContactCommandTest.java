@@ -15,6 +15,8 @@ import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_CONTACT;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
@@ -101,9 +103,30 @@ public class EditContactCommandTest {
                 String.format(EditContactCommand.MESSAGE_EDIT_CONTACT_SUCCESS, Messages.format(editedContact));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        showContactAtIndex(expectedModel, INDEX_FIRST_CONTACT);
         expectedModel.setContact(model.getFilteredContactList().get(0), editedContact);
 
         assertCommandSuccess(editContactCommand, model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_filteredList_preservesMatchingContact() {
+        showContactAtIndex(model, INDEX_FIRST_CONTACT);
+
+        Contact contactInFilteredList = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Contact editedContact = new ContactBuilder(contactInFilteredList).withPhone(VALID_PHONE_BOB).build();
+        EditContactCommand editContactCommand = new EditContactCommand(INDEX_FIRST_CONTACT,
+                new EditContactDescriptorBuilder().withPhone(VALID_PHONE_BOB).build());
+
+        String expectedMessage =
+                String.format(EditContactCommand.MESSAGE_EDIT_CONTACT_SUCCESS, Messages.format(editedContact));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        showContactAtIndex(expectedModel, INDEX_FIRST_CONTACT);
+        expectedModel.setContact(model.getFilteredContactList().get(0), editedContact);
+
+        assertCommandSuccess(editContactCommand, model, expectedMessage, expectedModel);
+        assertEquals(List.of(editedContact), model.getFilteredContactList());
     }
 
     @Test

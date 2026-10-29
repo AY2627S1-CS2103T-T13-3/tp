@@ -5,10 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.testutil.Assert.assertThrows;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+
+import seedu.address.logic.parser.exceptions.ParseException;
 
 public class CommandWordsTest {
 
@@ -80,5 +84,36 @@ public class CommandWordsTest {
                 assertTrue(info.isAssignable());
             }
         }
+    }
+
+    @Test
+    public void zeroArgumentCommands_parsing() throws ParseException {
+        // Clear command
+        CommandInfo clearInfo = CommandWords.getCommandInfo(ClearCommand.COMMAND_WORD);
+        assertTrue(clearInfo.parse("") instanceof ClearCommand);
+        assertTrue(clearInfo.parse("   ") instanceof ClearCommand);
+        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, ClearCommand.MESSAGE_USAGE), ()
+                -> clearInfo.parse(" 123"));
+
+        // Exit command
+        CommandInfo exitInfo = CommandWords.getCommandInfo(ExitCommand.COMMAND_WORD);
+        assertTrue(exitInfo.parse("") instanceof ExitCommand);
+        assertTrue(exitInfo.parse("   ") instanceof ExitCommand);
+        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, ExitCommand.MESSAGE_USAGE), ()
+                -> exitInfo.parse(" 123"));
+
+        // List command
+        CommandInfo listInfo = CommandWords.getCommandInfo(ListCommand.COMMAND_WORD);
+        assertTrue(listInfo.parse("") instanceof ListCommand);
+        assertTrue(listInfo.parse("   ") instanceof ListCommand);
+        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE), ()
+                -> listInfo.parse(" 123"));
+
+        // Help command
+        CommandInfo helpInfo = CommandWords.getCommandInfo(HelpCommand.COMMAND_WORD);
+        assertTrue(helpInfo.parse("") instanceof HelpCommand);
+        assertTrue(helpInfo.parse("   ") instanceof HelpCommand);
+        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), ()
+                -> helpInfo.parse(" 123"));
     }
 }

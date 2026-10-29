@@ -16,6 +16,10 @@ public class FollowupDescriptionContainsKeywordsPredicate
         this.keywords = List.copyOf(keywords);
     }
 
+    public List<String> getKeywords() {
+        return keywords;
+    }
+
     @Override
     public boolean test(Followup followup) {
         return keywords.stream()

@@ -24,6 +24,8 @@ public class ShortcutCommand extends Command {
     public static final String MESSAGE_SUCCESS = "Shortcut '%s' assigned to command '%s'.";
     public static final String MESSAGE_NO_SHORTCUTS = "No command shortcuts assigned.";
     public static final String MESSAGE_SHORTCUTS_HEADER = "Command shortcuts:\n";
+    public static final String MESSAGE_SHORTCUT_REPLACED =
+            "Warning: Existing shortcut '%s' for command '%s' was removed.";
     public static final String MESSAGE_INVALID_SHORTCUT = "Shortcut '%s' is invalid. Shortcuts must start with a "
             + "lowercase letter and contain only lowercase letters and digits.";
     public static final String MESSAGE_RESERVED_SHORTCUT = "'%s' is a built-in command word and cannot be used as "
@@ -58,8 +60,18 @@ public class ShortcutCommand extends Command {
         }
 
         validateAssignment();
+
+        String warning = model.getShortcuts().entrySet().stream()
+                .filter(entry -> entry.getValue().equals(commandWord))
+                .filter(entry -> !entry.getKey().equals(shortcut))
+                .map(entry -> "\n" + String.format(MESSAGE_SHORTCUT_REPLACED,
+                        entry.getKey(), commandWord))
+                .findFirst()
+                .orElse("");
+
         model.assignShortcut(shortcut, commandWord);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, shortcut, commandWord));
+
+        return new CommandResult(String.format(MESSAGE_SUCCESS, shortcut, commandWord) + warning);
     }
 
     private void validateAssignment() throws CommandException {

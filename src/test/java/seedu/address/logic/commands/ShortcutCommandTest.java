@@ -35,14 +35,49 @@ public class ShortcutCommandTest {
     }
 
     @Test
-    public void execute_assignReplacementShortcut_oldShortcutRemoved() throws Exception {
+    public void execute_assignReplacementShortcut_oldShortcutRemovedWithWarning() throws Exception {
         Model model = new ModelManager();
         new ShortcutCommand("l", "list").execute(model);
 
-        new ShortcutCommand("ls", "list").execute(model);
+        CommandResult result = new ShortcutCommand("ls", "list").execute(model);
 
+        String expectedMessage = String.format(ShortcutCommand.MESSAGE_SUCCESS, "ls", "list")
+                + "\n" + String.format(ShortcutCommand.MESSAGE_SHORTCUT_REPLACED, "l", "list");
+
+        assertEquals(expectedMessage, result.getFeedbackToUser());
         assertEquals(1, model.getShortcuts().size());
         assertEquals("list", model.getShortcuts().get("ls"));
+        assertFalse(model.getShortcuts().containsKey("l"));
+    }
+
+    @Test
+    public void execute_reassignShortcutToExistingCommand_displaysWarning() throws Exception {
+        Model model = new ModelManager();
+        new ShortcutCommand("lc", "listcontacts").execute(model);
+        new ShortcutCommand("ls", "liststories").execute(model);
+
+        CommandResult result = new ShortcutCommand("lc", "liststories").execute(model);
+
+        String expectedMessage = String.format(ShortcutCommand.MESSAGE_SUCCESS, "lc", "liststories")
+                + "\n" + String.format(ShortcutCommand.MESSAGE_SHORTCUT_REPLACED, "ls", "liststories");
+
+        assertEquals(expectedMessage, result.getFeedbackToUser());
+        assertEquals("liststories", model.getShortcuts().get("lc"));
+        assertFalse(model.getShortcuts().containsKey("ls"));
+    }
+
+    @Test
+    public void execute_assignSameShortcutAgain_noWarning() throws Exception {
+        Model model = new ModelManager();
+        new ShortcutCommand("ls", "liststories").execute(model);
+
+        CommandResult result = new ShortcutCommand("ls", "liststories").execute(model);
+
+        String expectedMessage = String.format(ShortcutCommand.MESSAGE_SUCCESS, "ls", "liststories");
+
+        assertEquals(expectedMessage, result.getFeedbackToUser());
+        assertEquals(1, model.getShortcuts().size());
+        assertEquals("liststories", model.getShortcuts().get("ls"));
     }
 
     @Test

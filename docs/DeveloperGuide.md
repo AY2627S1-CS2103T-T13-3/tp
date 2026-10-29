@@ -90,6 +90,7 @@ The `UI` component,
 
 * executes user commands using the `Logic` component.
 * listens for changes to `Model` data so that the UI can be updated with the modified data.
+* binds visual filter status indicators (`contactFilterIndicator`, `storyFilterIndicator`, `followupFilterIndicator`) directly to the observable filter status properties exposed by `Logic`, dynamically updating styled status badges (`[All]` vs `[Filtered: ...]`) across the panel headers.
 * keeps a reference to the `Logic` component, because the `UI` relies on the `Logic` to execute commands.
 * depends on some classes in the `Model` component because it displays `Contact`, `Story` and `Followup` objects from the model.
 
@@ -139,6 +140,7 @@ The `Model` component,
 * stores the `Contact` objects selected by the current filter, such as search results, in a separate _filtered_ list.
   * It exposes this list as an unmodifiable `ObservableList<Contact>` that the UI can observe and bind to, so the UI updates when the list changes.
   * It does the same for `Story`, `Followup`
+* maintains observable filter status properties (`getContactFilterStatusProperty()`, `getStoryFilterStatusProperty()`, `getFollowupFilterStatusProperty()`) that reflect whether each panel displays all entries (`"All"`) or active filter/search criteria (e.g. `"Filtered: \"keyword\""` or `"Filtered by story: \"Investigation\""`).
 * stores a `UserPrefs` object that represents the user’s preferences (GUI settings and command shortcuts). This is exposed to the outside as a `ReadOnlyUserPrefs` object.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 

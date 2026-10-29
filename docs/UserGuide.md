@@ -62,8 +62,8 @@ This guide describes the features implemented for PressMemo v1.4.
 * Each command only accepts its specified prefixes.<br>
   For example, if the command specifies `ci/CONTACT_INDEX`, `n/NAME` will result in an error.
 * The `/` character is reserved for prefixes and cannot be used in command words, preambles and fields.
-* Extraneous parameters for commands that take no parameters, such as `help`, `exit`, `clear`, and `list`, are ignored.<br>
-  For example, `help 123` is interpreted as `help`.
+* Extraneous parameters for commands that take no parameters, such as `help`, `exit`, `clear`, and `list`, are not allowed.<br>
+  For example, `help 123` will result in an error.
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </div>
 
@@ -120,6 +120,18 @@ PressMemo provides separate commands for displaying both lists, displaying conta
 
 For the filtered commands, indices are taken from the **currently displayed lists**, not necessarily the full lists. If no contacts or stories match a filter, the relevant panel becomes empty.
 
+<div markdown="block" class="alert alert-info">
+
+**:information_source: Visual Filter Status Indicators:**<br>
+
+Each panel header (**CONTACTS**, **STORIES**, and **FOLLOW-UPS**) displays an active filter indicator badge next to the panel header:
+* **`[All]`** (subtle badge): Indicates the panel displays all items without any filter applied.
+* **`[Filtered: "..."]`** or **`[Filtered by ...: "..."]`** (vibrant amber badge): Indicates a filter or search query is currently active on that panel (e.g., `[Filtered by story: "Investigation"]` or `[Filtered: "John"]`).
+* Hovering your mouse over the badge displays the complete filter description as a tooltip if the text is truncated on narrow windows.
+
+This visual badge ensures you always know whether the displayed index numbers (e.g., `1`, `2`, `3`) correspond to the complete list or a filtered subset, eliminating index ambiguity!
+</div>
+
 ### Listing all contacts and stories: `list`
 
 Displays all contacts and stories, removing any active contact and story filters.
@@ -128,7 +140,7 @@ Format: `list`
 
 * `list` resets the **CONTACTS** and **STORIES** panels together.
 * It does not reset or separately list the follow-ups; those remain visible in the **FOLLOW-UPS** panel.
-* `list` has no filtering parameters; extra arguments are ignored. Use `listcontacts` or `liststories` to filter one panel.
+* `list` has no filtering parameters; extra arguments will result in an error. Use `listcontacts` or `liststories` to filter one panel.
 
 Example:
 * `findcontact John` followed by `list` restores both lists in full.
@@ -174,7 +186,7 @@ Format: `editcontact INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]â€¦â€
 * When editing tags, all of the contact's existing tags are removed; adding tags is not cumulative.
 * To remove all of a contact's tags, enter `t/` without a tag after it.
 * The same field restrictions as `addcontact` apply. You cannot change a contact's name to another existing contact's name.
-* Editing shows the full contact list. Editing a contact, including changing their name, preserves their story assignments and updates associated follow-up references.
+* Editing preserves the current contact list filter instead of resetting to all contacts. Editing a contact, including changing their name, preserves their story assignments and updates associated follow-up references.
 
 Examples:
 *  `editcontact 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st contact to be `91234567` and `johndoe@example.com` respectively.
