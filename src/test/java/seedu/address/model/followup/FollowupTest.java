@@ -39,7 +39,7 @@ public class FollowupTest {
     public void isSameFollowup() {
         assertTrue(followup.isSameFollowup(followup));
         assertTrue(followup.isSameFollowup(new Followup(description, ALICE.getName())));
-        assertTrue(followup.isSameFollowup(new Followup(description, BOB.getName())));
+        assertFalse(followup.isSameFollowup(new Followup(description, BOB.getName())));
         assertFalse(followup.isSameFollowup(null));
         assertFalse(followup.isSameFollowup(new Followup(new FollowupDescription("Send notes"), ALICE.getName())));
     }

@@ -48,8 +48,7 @@ public class Followup {
     }
 
     /**
-     * Returns true if both followups have the same name.
-     * This defines a weaker notion of equality between two followups.
+     * Returns true if both followups are semantically equal.
      */
     public boolean isSameFollowup(Followup otherFollowup) {
         if (otherFollowup == this) {
@@ -57,7 +56,8 @@ public class Followup {
         }
 
         return otherFollowup != null
-                && otherFollowup.getDescription().equals(getDescription());
+                && description.equals(otherFollowup.description)
+                && contact.equals(otherFollowup.contact);
     }
 
     /**
