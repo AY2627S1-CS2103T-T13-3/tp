@@ -47,7 +47,6 @@ public class ListCommandTest {
         showContactAtIndex(model, INDEX_FIRST_CONTACT);
         model.updateFilteredStoryList(story -> false);
         model.updateFilteredFollowupList(followup -> false);
-        assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
                 expectedModel.getFilteredContactList().size(),
                 expectedModel.getFilteredStoryList().size(),

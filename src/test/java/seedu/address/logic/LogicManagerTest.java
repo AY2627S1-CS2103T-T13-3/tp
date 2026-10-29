@@ -85,7 +85,9 @@ public class LogicManagerTest {
         String listCommand = ListCommand.COMMAND_WORD;
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
                 model.getFilteredContactList().size(),
-                model.getFilteredStoryList().size());
+                model.getFilteredStoryList().size(),
+                model.getFilteredFollowupList().size()
+        );
         assertCommandSuccess(listCommand, expectedMessage, model);
     }
 
@@ -105,7 +107,9 @@ public class LogicManagerTest {
 
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
                 model.getFilteredContactList().size(),
-                model.getFilteredStoryList().size());
+                model.getFilteredStoryList().size(),
+                model.getFilteredFollowupList().size()
+        );
         assertEquals(expectedMessage, result.getFeedbackToUser());
     }
 
