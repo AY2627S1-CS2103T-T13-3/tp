@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
@@ -22,6 +21,8 @@ import seedu.address.logic.parser.exceptions.ParseException;
 public class MainWindow extends UiPart<Stage> {
 
     private static final String FXML = "MainWindow.fxml";
+    private static final double HELP_EXPANSION_THRESHOLD_WIDTH = 1000;
+    private static final double HELP_EXPANDED_WIDTH = 1050;
 
     private final Logger logger = LogsCenter.getLogger(getClass());
 
@@ -131,8 +132,9 @@ public class MainWindow extends UiPart<Stage> {
     public void handleHelp() {
         boolean isVisible = helpPanelPlaceholder.isVisible();
         if (!isVisible) {
-            if (!primaryStage.isMaximized() && !primaryStage.isFullScreen() && primaryStage.getWidth() < 1000) {
-                primaryStage.setWidth(Math.min(Screen.getPrimary().getVisualBounds().getWidth(), 1050));
+            if (!primaryStage.isMaximized() && !primaryStage.isFullScreen()
+                    && primaryStage.getWidth() < HELP_EXPANSION_THRESHOLD_WIDTH) {
+                primaryStage.setWidth(Math.min(UiUtil.getPrimaryScreenWidth(), HELP_EXPANDED_WIDTH));
             }
         }
         helpPanelPlaceholder.setVisible(!isVisible);
