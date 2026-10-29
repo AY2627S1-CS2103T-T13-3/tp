@@ -23,6 +23,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
+import seedu.address.model.util.SampleDataUtil;
 
 public class JsonAddressBookStorageTest {
 
@@ -116,6 +117,24 @@ public class JsonAddressBookStorageTest {
 
         assertEquals(original.getContactList(), readBack.getContactList());
         assertEquals(original.getFollowupList(), readBack.getFollowupList());
+    }
+
+    @Test
+    public void readAndSaveAddressBook_withStoriesAndAssignments_success() throws Exception {
+        Path filePath = testFolder.resolve("TempAddressBook.json");
+        AddressBook original = new AddressBook(SampleDataUtil.getSampleAddressBook());
+        JsonAddressBookStorage storage = new JsonAddressBookStorage(filePath);
+
+        storage.saveAddressBook(original);
+        ReadOnlyAddressBook readBack = storage.readAddressBook().orElseThrow();
+
+        assertEquals(original.getStoryList(), readBack.getStoryList());
+        assertEquals(
+                original.getStoryList().stream().map(story -> story.getContacts()).toList(),
+                readBack.getStoryList().stream().map(story -> story.getContacts()).toList());
+        assertEquals(
+                original.getContactList().stream().map(contact -> contact.getStories()).toList(),
+                readBack.getContactList().stream().map(contact -> contact.getStories()).toList());
     }
 
     @Test
