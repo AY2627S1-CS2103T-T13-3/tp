@@ -11,6 +11,8 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_STORYTAG_MALAYS
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.EditStoryCommand.EditStoryDescriptor;
+import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryName;
 import seedu.address.testutil.EditStoryDescriptorBuilder;
 
 public class EditStoryDescriptorTest {
@@ -41,6 +43,21 @@ public class EditStoryDescriptorTest {
         // different tags -> returns false
         editedCrime = new EditStoryDescriptorBuilder(DESC_CRIME).withTags(VALID_STORYTAG_MALAYSIA).build();
         assertFalse(DESC_CRIME.equals(editedCrime));
+    }
+
+    @Test
+    public void createEditedStory() {
+        EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder(DESC_FRAUD).build();
+        Story editedStory = descriptor.createEditedStory(seedu.address.testutil.TypicalStories.STORY_A);
+
+        assertEquals(new StoryName(VALID_STORYNAME_FRAUD), editedStory.getName());
+        assertEquals(descriptor.getTags().get(), editedStory.getTags());
+        assertEquals(seedu.address.testutil.TypicalStories.STORY_A.getContacts(), editedStory.getContacts());
+
+        // empty descriptor preserves original story details
+        EditStoryDescriptor emptyDescriptor = new EditStoryDescriptor();
+        Story untouchedStory = emptyDescriptor.createEditedStory(seedu.address.testutil.TypicalStories.STORY_A);
+        assertEquals(seedu.address.testutil.TypicalStories.STORY_A, untouchedStory);
     }
 
     @Test

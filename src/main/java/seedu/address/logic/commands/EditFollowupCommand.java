@@ -64,8 +64,7 @@ public class EditFollowupCommand extends AddressBookMutatingCommand {
             }
             updatedContact = lastShownContacts.get(contactIndex.getZeroBased()).getName();
         }
-        Followup editedFollowup = new Followup(
-                editFollowupDescriptor.getDescription().orElse(followupToEdit.getDescription()), updatedContact);
+        Followup editedFollowup = editFollowupDescriptor.createEditedFollowup(followupToEdit, updatedContact);
         if (!followupToEdit.equals(editedFollowup) && model.hasFollowup(editedFollowup)) {
             throw new CommandException(MESSAGE_DUPLICATE_FOLLOWUP);
         }
@@ -124,6 +123,18 @@ public class EditFollowupCommand extends AddressBookMutatingCommand {
 
         public Optional<Index> getContactIndex() {
             return Optional.ofNullable(contactIndex);
+        }
+
+        /**
+         * Creates and returns a {@code Followup} with the details of {@code followupToEdit}
+         * edited with this descriptor's fields and the resolved {@code updatedContact}.
+         */
+        public Followup createEditedFollowup(Followup followupToEdit, Name updatedContact) {
+            assert followupToEdit != null;
+            assert updatedContact != null;
+
+            FollowupDescription updatedDescription = getDescription().orElse(followupToEdit.getDescription());
+            return new Followup(updatedDescription, updatedContact);
         }
 
         @Override

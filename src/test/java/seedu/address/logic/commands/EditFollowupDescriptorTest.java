@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.EditFollowupCommand.EditFollowupDescriptor;
+import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
 
 public class EditFollowupDescriptorTest {
@@ -56,6 +57,25 @@ public class EditFollowupDescriptorTest {
         EditFollowupDescriptor differentContact = new EditFollowupDescriptor(descriptor);
         differentContact.setContactIndex(Index.fromOneBased(2));
         assertFalse(descriptor.equals(differentContact));
+    }
+
+    @Test
+    public void createEditedFollowup() {
+        Followup original = new Followup(
+                new FollowupDescription("Call"), seedu.address.testutil.TypicalContacts.ALICE.getName());
+
+        EditFollowupDescriptor descriptor = new EditFollowupDescriptor();
+        descriptor.setDescription(new FollowupDescription("Email"));
+
+        Followup edited = descriptor.createEditedFollowup(
+                original, seedu.address.testutil.TypicalContacts.BENSON.getName());
+        assertEquals(new FollowupDescription("Email"), edited.getDescription());
+        assertEquals(seedu.address.testutil.TypicalContacts.BENSON.getName(), edited.getContact());
+
+        // empty descriptor preserves original followup description
+        EditFollowupDescriptor emptyDescriptor = new EditFollowupDescriptor();
+        Followup untouched = emptyDescriptor.createEditedFollowup(original, original.getContact());
+        assertEquals(original, untouched);
     }
 
     @Test

@@ -68,7 +68,7 @@ public class EditStoryCommand extends AddressBookMutatingCommand {
         }
 
         Story storyToEdit = lastShownList.get(index.getZeroBased());
-        Story editedStory = createEditedStory(storyToEdit, editStoryDescriptor);
+        Story editedStory = editStoryDescriptor.createEditedStory(storyToEdit);
 
         if (!storyToEdit.isSameStory(editedStory) && model.hasStory(editedStory)) {
             throw new CommandException(MESSAGE_DUPLICATE_STORY);
@@ -77,23 +77,6 @@ public class EditStoryCommand extends AddressBookMutatingCommand {
         model.setStory(storyToEdit, editedStory);
         model.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
         return new CommandResult(String.format(MESSAGE_EDIT_STORY_SUCCESS, Messages.format(editedStory)));
-    }
-
-    /**
-     * Creates and returns a {@code Story} with the details of {@code StoryToEdit}
-     * edited with {@code editStoryDescriptor}.
-     */
-    private static Story createEditedStory(Story storyToEdit, EditStoryDescriptor editStoryDescriptor) {
-        assert storyToEdit != null;
-
-        StoryName updatedName = editStoryDescriptor.getName().orElse(storyToEdit.getName());
-        Set<Tag> updatedTags = editStoryDescriptor.getTags().orElse(storyToEdit.getTags());
-
-        return new Story(
-                updatedName,
-                updatedTags,
-                storyToEdit.getContacts()
-        );
     }
 
     @Override
@@ -168,6 +151,23 @@ public class EditStoryCommand extends AddressBookMutatingCommand {
          */
         public Optional<Set<Tag>> getTags() {
             return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
+        }
+
+        /**
+         * Creates and returns a {@code Story} with the details of {@code storyToEdit}
+         * edited with this descriptor's fields.
+         */
+        public Story createEditedStory(Story storyToEdit) {
+            assert storyToEdit != null;
+
+            StoryName updatedName = getName().orElse(storyToEdit.getName());
+            Set<Tag> updatedTags = getTags().orElse(storyToEdit.getTags());
+
+            return new Story(
+                    updatedName,
+                    updatedTags,
+                    storyToEdit.getContacts()
+            );
         }
 
         @Override
