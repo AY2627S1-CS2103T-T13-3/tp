@@ -9,7 +9,6 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalContacts.ALICE;
 import static seedu.address.testutil.TypicalContacts.BOB;
 import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
-import static seedu.address.testutil.TypicalFollowups.FOLLOWUP_A;
 
 import java.util.Collection;
 import java.util.List;
