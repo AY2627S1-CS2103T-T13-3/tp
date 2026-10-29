@@ -153,6 +153,19 @@ class JsonSerializableAddressBook {
      * Ensures all Contact-Story assignments are unique, reciprocal, and refer to existing entities.
      */
     private void validateContactStoryRelationships(AddressBook addressBook) throws IllegalValueException {
+        validateNoDuplicateAssignments(addressBook);
+
+        Set<ContactStoryAssignment> contactAssignments = getAssignmentsFromContacts(addressBook);
+        Set<ContactStoryAssignment> storyAssignments = getAssignmentsFromStories(addressBook);
+
+        validateAssignmentReferencesExist(addressBook, contactAssignments, storyAssignments);
+        validateAssignmentsAreReciprocal(contactAssignments, storyAssignments);
+    }
+
+    /**
+     * Ensures contacts and stories do not contain duplicate assignment references.
+     */
+    private void validateNoDuplicateAssignments(AddressBook addressBook) throws IllegalValueException {
         boolean hasDuplicateAssignedStories = addressBook.getContactList().stream()
                 .anyMatch(contact -> containsDuplicates(contact.getStories()));
         if (hasDuplicateAssignedStories) {
@@ -164,15 +177,20 @@ class JsonSerializableAddressBook {
         if (hasDuplicateAssignedContacts) {
             throw new IllegalValueException(MESSAGE_DUPLICATE_STORY_CONTACT_ASSIGNMENT);
         }
+    }
 
+    /**
+     * Ensures every assignment refers to an existing contact and story.
+     */
+    private void validateAssignmentReferencesExist(AddressBook addressBook,
+            Set<ContactStoryAssignment> contactAssignments, Set<ContactStoryAssignment> storyAssignments)
+            throws IllegalValueException {
         Set<Name> contactNames = addressBook.getContactList().stream()
                 .map(Contact::getName)
                 .collect(Collectors.toSet());
         Set<StoryName> storyNames = addressBook.getStoryList().stream()
                 .map(Story::getName)
                 .collect(Collectors.toSet());
-        Set<ContactStoryAssignment> contactAssignments = getAssignmentsFromContacts(addressBook);
-        Set<ContactStoryAssignment> storyAssignments = getAssignmentsFromStories(addressBook);
 
         boolean contactReferencesMissingStory = contactAssignments.stream()
                 .anyMatch(assignment -> !storyNames.contains(assignment.storyName()));
@@ -185,7 +203,13 @@ class JsonSerializableAddressBook {
         if (storyReferencesMissingContact) {
             throw new IllegalValueException(MESSAGE_STORY_REFERS_TO_NONEXISTENT_CONTACT);
         }
+    }
 
+    /**
+     * Ensures contacts and stories describe the same assignments.
+     */
+    private void validateAssignmentsAreReciprocal(Set<ContactStoryAssignment> contactAssignments,
+            Set<ContactStoryAssignment> storyAssignments) throws IllegalValueException {
         if (!contactAssignments.equals(storyAssignments)) {
             throw new IllegalValueException(MESSAGE_INCONSISTENT_CONTACT_STORY_ASSIGNMENT);
         }
