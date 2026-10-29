@@ -1,0 +1,82 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant "a:AssignCommand" as AssignCommand LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant ":AddressBook" as AddressBook MODEL_COLOR
+participant "target:Person" as TargetPerson MODEL_COLOR
+participant "story:Story" as TargetStory MODEL_COLOR
+participant "assignedPerson:Person" as AssignedPerson MODEL_COLOR
+participant "assignedStory:Story" as AssignedStory MODEL_COLOR
+participant ":UniquePersonList" as UniquePersonList MODEL_COLOR
+participant ":UniqueStoryList" as UniqueStoryList MODEL_COLOR
+end box
+
+[-> AssignCommand : execute(model)
+activate AssignCommand
+
+AssignCommand -> ModelManager : assignStory(target, story)
+activate ModelManager
+
+ModelManager -> AddressBook : assignStory(target, story)
+activate AddressBook
+
+AddressBook -> TargetPerson : assign(story)
+activate TargetPerson
+
+create AssignedPerson
+TargetPerson -> AssignedPerson
+activate AssignedPerson
+AssignedPerson --> TargetPerson
+deactivate AssignedPerson
+
+TargetPerson --> AddressBook : assignedPerson
+deactivate TargetPerson
+
+AddressBook -> TargetStory : assign(target)
+activate TargetStory
+
+create AssignedStory
+TargetStory -> AssignedStory
+activate AssignedStory
+AssignedStory --> TargetStory
+deactivate AssignedStory
+
+TargetStory --> AddressBook : assignedStory
+deactivate TargetStory
+
+AddressBook -> UniquePersonList : setPerson(target, assignedPerson)
+activate UniquePersonList
+UniquePersonList --> AddressBook
+deactivate UniquePersonList
+
+AddressBook -> UniqueStoryList : setStory(story, assignedStory)
+activate UniqueStoryList
+UniqueStoryList --> AddressBook
+deactivate UniqueStoryList
+
+AddressBook --> ModelManager
+deactivate AddressBook
+
+ModelManager --> AssignCommand
+deactivate ModelManager
+
+AssignCommand -> ModelManager : updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)
+activate ModelManager
+ModelManager --> AssignCommand
+deactivate ModelManager
+
+AssignCommand -> ModelManager : updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES)
+activate ModelManager
+ModelManager --> AssignCommand
+deactivate ModelManager
+
+[<-- AssignCommand : result
+deactivate AssignCommand
+
+@enduml
