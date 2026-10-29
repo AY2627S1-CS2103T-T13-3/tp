@@ -8,6 +8,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
@@ -253,5 +254,26 @@ public class ParserUtilTest {
         Set<Tag> expectedTagSet = Set.of(new Tag(VALID_TAG_1), new Tag(VALID_TAG_2));
 
         assertEquals(expectedTagSet, actualTagSet);
+    }
+
+    @Test
+    public void parseTagsForEdit_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseTagsForEdit(null));
+    }
+
+    @Test
+    public void parseTagsForEdit_noValues_returnsEmptyOptional() throws Exception {
+        assertEquals(Optional.empty(), ParserUtil.parseTagsForEdit(List.of()));
+    }
+
+    @Test
+    public void parseTagsForEdit_emptyValue_returnsEmptyTagSet() throws Exception {
+        assertEquals(Optional.of(Set.of()), ParserUtil.parseTagsForEdit(List.of("")));
+    }
+
+    @Test
+    public void parseTagsForEdit_validValues_returnsTagSet() throws Exception {
+        assertEquals(Optional.of(Set.of(new Tag(VALID_TAG_1), new Tag(VALID_TAG_2))),
+                ParserUtil.parseTagsForEdit(List.of(VALID_TAG_1, VALID_TAG_2)));
     }
 }
