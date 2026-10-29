@@ -260,6 +260,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         return new ToStringBuilder(this)
                 .add("contacts", contacts)
                 .add("stories", stories)
+                .add("followups", followups)
                 .toString();
     }
 
@@ -284,11 +285,13 @@ public class AddressBook implements ReadOnlyAddressBook {
             return false;
         }
 
-        return contacts.equals(otherAddressBook.contacts) && stories.equals(otherAddressBook.stories);
+        return contacts.equals(otherAddressBook.contacts)
+                && stories.equals(otherAddressBook.stories)
+                && followups.equals(otherAddressBook.followups);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(contacts, stories);
+        return Objects.hash(contacts, stories, followups);
     }
 }
