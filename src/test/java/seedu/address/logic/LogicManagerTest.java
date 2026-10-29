@@ -87,6 +87,13 @@ public class LogicManagerTest {
     }
 
     @Test
+    public void execute_readOnlyCommand_addressBookNotSaved() throws Exception {
+        logic.execute(ListCommand.COMMAND_WORD);
+
+        assertFalse(Files.exists(temporaryFolder.resolve("addressBook.json")));
+    }
+
+    @Test
     public void execute_addStory_storySavedInAddressBookFile() throws Exception {
         logic.execute(AddStoryCommand.COMMAND_WORD + " Investigative Story");
 
@@ -103,6 +110,7 @@ public class LogicManagerTest {
 
         UserPrefs savedPrefs = userPrefsStorage.readUserPrefs().orElseThrow();
         assertEquals("list", savedPrefs.getShortcuts().get("ls"));
+        assertFalse(Files.exists(temporaryFolder.resolve("addressBook.json")));
     }
 
     @Test

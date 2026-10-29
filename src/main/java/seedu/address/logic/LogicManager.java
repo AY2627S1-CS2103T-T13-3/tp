@@ -52,7 +52,9 @@ public class LogicManager implements Logic {
         commandResult = command.execute(model);
 
         try {
-            storage.saveAddressBook(model.getAddressBook());
+            if (command.modifiesAddressBook()) {
+                storage.saveAddressBook(model.getAddressBook());
+            }
             if (command.modifiesUserPrefs()) {
                 storage.saveUserPrefs(model.getUserPrefs());
             }
