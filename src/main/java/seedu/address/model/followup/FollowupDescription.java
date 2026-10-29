@@ -3,6 +3,8 @@ package seedu.address.model.followup;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.commons.util.AppUtil.checkArgument;
 
+import seedu.address.commons.util.StringUtil;
+
 /**
  * Represents a Story's name in the address book.
  * Guarantees: immutable; is valid as declared in {@link #isValidDescription(String)}
@@ -36,6 +38,20 @@ public class FollowupDescription {
      */
     public static boolean isValidDescription(String test) {
         return test.matches(VALIDATION_REGEX);
+    }
+
+    /**
+     * Returns true if the description matches the given keyword.
+     */
+    public boolean isMatching(String keyword) {
+        return StringUtil.containsWordIgnoreCase(description, keyword);
+    }
+
+    /**
+     * Returns true if the description matches the given keyword.
+     */
+    public boolean isDescriptionMatching(String keyword) {
+        return isMatching(keyword);
     }
 
 

@@ -51,6 +51,13 @@ public class Story {
     }
 
     /**
+     * Returns true if the story's name matches the given keyword.
+     */
+    public boolean isNameMatching(String keyword) {
+        return name.isMatching(keyword);
+    }
+
+    /**
      * Returns an immutable list of contacts, which throws {@code UnsupportedOperationException}
      * if modification is attempted.
      */

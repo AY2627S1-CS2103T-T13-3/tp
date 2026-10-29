@@ -56,4 +56,15 @@ public class FollowupTest {
         assertFalse(followup.equals(new Followup(description, BOB.getName())));
         assertFalse(followup.equals(new Followup(new FollowupDescription("Send notes"), ALICE.getName())));
     }
+
+    @Test
+    public void isDescriptionMatching() {
+        // matches description keyword
+        assertTrue(followup.isDescriptionMatching("Arrange"));
+        assertTrue(followup.isDescriptionMatching("interview")); // case-insensitive
+
+        // does not match
+        assertFalse(followup.isDescriptionMatching("Meeting"));
+        assertFalse(followup.isDescriptionMatching("Arr"));
+    }
 }

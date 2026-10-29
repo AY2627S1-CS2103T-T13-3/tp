@@ -144,4 +144,17 @@ public class ContactTest {
         assertTrue(p1.isAssigned(a));
         assertFalse(p1.isAssigned(b));
     }
+
+    @Test
+    public void isNameMatching() {
+        Contact contact = new ContactBuilder().withName("Alice Pauline").build();
+
+        // matches name keyword
+        assertTrue(contact.isNameMatching("Alice"));
+        assertTrue(contact.isNameMatching("pauline")); // case-insensitive
+
+        // does not match
+        assertFalse(contact.isNameMatching("Bob"));
+        assertFalse(contact.isNameMatching("Ali"));
+    }
 }
