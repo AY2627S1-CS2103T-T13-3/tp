@@ -61,22 +61,17 @@ public class ShortcutCommand extends Command {
 
         validateAssignment();
 
-        String existingShortcut = model.getShortcuts().entrySet().stream()
-                .filter(entry -> entry.getValue().equals(commandWord)
-                        && !entry.getKey().equals(shortcut))
-                .map(Map.Entry::getKey)
+        String warning = model.getShortcuts().entrySet().stream()
+                .filter(entry -> entry.getValue().equals(commandWord))
+                .filter(entry -> !entry.getKey().equals(shortcut))
+                .map(entry -> "\n" + String.format(MESSAGE_SHORTCUT_REPLACED,
+                        entry.getKey(), commandWord))
                 .findFirst()
-                .orElse(null);
+                .orElse("");
 
         model.assignShortcut(shortcut, commandWord);
 
-        String message = String.format(MESSAGE_SUCCESS, shortcut, commandWord);
-        if (existingShortcut != null) {
-            message += "\n" + String.format(MESSAGE_SHORTCUT_REPLACED,
-                    existingShortcut, commandWord);
-        }
-
-        return new CommandResult(message);
+        return new CommandResult(String.format(MESSAGE_SUCCESS, shortcut, commandWord) + warning);
     }
 
     private void validateAssignment() throws CommandException {
