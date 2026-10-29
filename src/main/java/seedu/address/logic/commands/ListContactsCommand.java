@@ -13,7 +13,6 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.story.Story;
-import seedu.address.model.story.StoryName;
 
 /**
  * Lists contacts in PressMemo to the user.
@@ -60,11 +59,10 @@ public class ListContactsCommand extends Command {
         }
 
         Story selectedStory = lastShownStoryList.get(index);
-        StoryName storyName = selectedStory.getName();
 
         // Display only contacts assigned to this story
         model.updateFilteredContactList(
-                contact -> contact.getStories().contains(storyName));
+                contact -> selectedStory.isAssigned(contact));
 
         return new CommandResult(
                 String.format(MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,

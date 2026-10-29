@@ -13,6 +13,8 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_CONTACT;
 import static seedu.address.testutil.TypicalStories.STORY_A;
 import static seedu.address.testutil.TypicalStories.STORY_B;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +25,6 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.story.Story;
-import seedu.address.model.story.StoryName;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for ListStoriesCommand.
@@ -113,10 +114,9 @@ public class ListStoriesCommandTest {
         listStoriesCommand.execute(model);
         assertEquals(1, model.getFilteredStoryList().size());
 
-        // Edit the story's name while under liststories filter
+        // Edit the story's tags while under liststories filter
         Story storyToEdit = model.getFilteredStoryList().get(0);
-        Story editedStory = new Story(new StoryName("Brand New Story Name"), storyToEdit.getTags(),
-                storyToEdit.getContacts());
+        Story editedStory = new Story(storyToEdit.getName(), Collections.emptySet(), storyToEdit.getContacts());
         model.setStory(storyToEdit, editedStory);
 
         // The edited story must still be present in the filtered story list!

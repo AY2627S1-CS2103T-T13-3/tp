@@ -22,8 +22,8 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
-import seedu.address.model.contact.Name;
 import seedu.address.model.story.Story;
+import seedu.address.testutil.ContactBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for ListContactsCommand.
@@ -100,11 +100,9 @@ public class ListContactsCommandTest {
         listContactsCommand.execute(model);
         assertEquals(1, model.getFilteredContactList().size());
 
-        // Edit the contact's name while under listcontacts filter
+        // Edit the contact's phone while under listcontacts filter
         Contact contactToEdit = model.getFilteredContactList().get(0);
-        Contact editedContact = new Contact(new Name("New Name"), contactToEdit.getPhone(),
-                contactToEdit.getEmail(), contactToEdit.getAddress(), contactToEdit.getTags(),
-                contactToEdit.getStories());
+        Contact editedContact = new ContactBuilder(contactToEdit).withPhone("98765432").build();
         model.setContact(contactToEdit, editedContact);
 
         // The edited contact must still be present in the filtered contact list!
