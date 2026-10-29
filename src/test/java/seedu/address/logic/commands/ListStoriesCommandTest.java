@@ -70,7 +70,8 @@ public class ListStoriesCommandTest {
 
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.updateFilteredStoryList(
-                s -> s.isAssigned(assignedContact));
+                s -> s.isAssigned(assignedContact),
+                String.format("Filtered by contact: \"%s\"", assignedContact.getName()));
 
         String expectedMessage = String.format(ListStoriesCommand.MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,
                 1, assignedContact.getName());
@@ -89,7 +90,8 @@ public class ListStoriesCommandTest {
         Contact contact = model.getFilteredContactList().get(
                 INDEX_FIRST_CONTACT.getZeroBased());
 
-        expectedModel.updateFilteredStoryList(story -> false);
+        expectedModel.updateFilteredStoryList(story -> false,
+                String.format("Filtered by contact: \"%s\"", contact.getName()));
 
         String expectedMessage = String.format(ListStoriesCommand.MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,
                 0, contact.getName());

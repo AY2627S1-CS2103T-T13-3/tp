@@ -3,8 +3,12 @@ package seedu.address.ui;
 import java.nio.file.Path;
 import java.util.logging.Logger;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import seedu.address.commons.core.GuiSettings;
@@ -13,6 +17,7 @@ import seedu.address.logic.Logic;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.Model;
 
 /**
  * The Main Window. Provides the basic application layout containing
@@ -60,6 +65,15 @@ public class MainWindow extends UiPart<Stage> {
 
     @FXML
     private StackPane helpPanelPlaceholder;
+
+    @FXML
+    private Label contactFilterIndicator;
+
+    @FXML
+    private Label storyFilterIndicator;
+
+    @FXML
+    private Label followupFilterIndicator;
 
     /**
      * Creates a {@code MainWindow} with the given {@code Stage}, {@code Logic},
@@ -111,6 +125,40 @@ public class MainWindow extends UiPart<Stage> {
             helpPanelPlaceholder.setManaged(false);
         });
         helpPanelPlaceholder.getChildren().add(helpPanel.getRoot());
+
+        setupFilterIndicators();
+    }
+
+    /**
+     * Configures the filter indicator badges for the contact, story, and followup panels.
+     */
+    private void setupFilterIndicators() {
+        setupFilterIndicator(contactFilterIndicator, logic.getContactFilterStatusProperty());
+        setupFilterIndicator(storyFilterIndicator, logic.getStoryFilterStatusProperty());
+        setupFilterIndicator(followupFilterIndicator, logic.getFollowupFilterStatusProperty());
+    }
+
+    /**
+     * Binds the text and style of {@code indicator} to {@code statusProperty}.
+     */
+    private void setupFilterIndicator(Label indicator, ObservableValue<String> statusProperty) {
+        indicator.textProperty().bind(
+                Bindings.createStringBinding(() -> "[" + statusProperty.getValue() + "]", statusProperty));
+        Tooltip tooltip = new Tooltip();
+        tooltip.textProperty().bind(statusProperty);
+        indicator.setTooltip(tooltip);
+
+        statusProperty.addListener((obs, oldVal, newVal) -> updateFilterBadgeStyle(indicator, newVal));
+        updateFilterBadgeStyle(indicator, statusProperty.getValue());
+    }
+
+    /**
+     * Updates the CSS style class of {@code indicator} based on whether {@code status} is "All" or a filter.
+     */
+    private void updateFilterBadgeStyle(Label indicator, String status) {
+        indicator.getStyleClass().removeAll("filter-status-all", "filter-status-filtered");
+        String styleClass = Model.FILTER_STATUS_ALL.equals(status) ? "filter-status-all" : "filter-status-filtered";
+        indicator.getStyleClass().add(styleClass);
     }
 
     /**
