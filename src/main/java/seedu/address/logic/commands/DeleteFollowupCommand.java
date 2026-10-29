@@ -14,7 +14,7 @@ import seedu.address.model.followup.Followup;
 /**
  * Deletes a followup identified using its displayed index from the address book.
  */
-public class DeleteFollowupCommand extends Command {
+public class DeleteFollowupCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "deletefollowup";
 

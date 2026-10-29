@@ -19,7 +19,7 @@ import seedu.address.model.story.Story;
 /**
  * Unassigns a contact from a story.
  */
-public class UnassignCommand extends Command {
+public class UnassignCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "unassign";
     public static final String MESSAGE_NOT_ASSIGNED = "%s is not assigned to %s.";
