@@ -15,6 +15,7 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
 import seedu.address.testutil.TypicalContacts;
+import seedu.address.testutil.TypicalStories;
 
 public class JsonSerializableAddressBookTest {
 
@@ -53,6 +54,7 @@ public class JsonSerializableAddressBookTest {
     public void toModelType_validFollowups_success() throws Exception {
         JsonSerializableAddressBook data = new JsonSerializableAddressBook(
                 List.of(new JsonAdaptedContact(TypicalContacts.ALICE)),
+                null,
                 List.of(new JsonAdaptedFollowup(
                         VALID_DESCRIPTION,
                         TypicalContacts.ALICE.getName().fullName)));
@@ -68,6 +70,7 @@ public class JsonSerializableAddressBookTest {
     public void toModelType_missingFollowups_success() throws Exception {
         JsonSerializableAddressBook data = new JsonSerializableAddressBook(
                 List.of(new JsonAdaptedContact(TypicalContacts.ALICE)),
+                null,
                 null);
 
         assertEquals(List.of(), data.toModelType().getFollowupList());
@@ -77,6 +80,7 @@ public class JsonSerializableAddressBookTest {
     public void toModelType_invalidFollowupContact_throwsIllegalValueException() {
         JsonSerializableAddressBook data = new JsonSerializableAddressBook(
                 List.of(new JsonAdaptedContact(TypicalContacts.ALICE)),
+                null,
                 List.of(new JsonAdaptedFollowup(
                         VALID_DESCRIPTION, "Unknown Contact")));
 
@@ -89,6 +93,7 @@ public class JsonSerializableAddressBookTest {
     public void toModelType_duplicateFollowups_throwsIllegalValueException() {
         JsonSerializableAddressBook data = new JsonSerializableAddressBook(
                 List.of(new JsonAdaptedContact(TypicalContacts.ALICE)),
+                null,
                 List.of(
                         new JsonAdaptedFollowup(
                                 VALID_DESCRIPTION,
@@ -99,6 +104,36 @@ public class JsonSerializableAddressBookTest {
 
         assertThrows(IllegalValueException.class,
                 JsonSerializableAddressBook.MESSAGE_DUPLICATE_FOLLOWUP,
+                data::toModelType);
+    }
+
+    @Test
+    public void toModelType_validStories_success() throws Exception {
+        JsonSerializableAddressBook data = new JsonSerializableAddressBook(
+                null,
+                List.of(new JsonAdaptedStory(TypicalStories.STORY_A)),
+                null);
+
+        assertEquals(List.of(TypicalStories.STORY_A), data.toModelType().getStoryList());
+    }
+
+    @Test
+    public void toModelType_missingStories_success() throws Exception {
+        JsonSerializableAddressBook data = new JsonSerializableAddressBook(null, null, null);
+
+        assertEquals(List.of(), data.toModelType().getStoryList());
+    }
+
+    @Test
+    public void toModelType_duplicateStories_throwsIllegalValueException() {
+        JsonAdaptedStory story = new JsonAdaptedStory(TypicalStories.STORY_A);
+        JsonSerializableAddressBook data = new JsonSerializableAddressBook(
+                null,
+                List.of(story, story),
+                null);
+
+        assertThrows(IllegalValueException.class,
+                JsonSerializableAddressBook.MESSAGE_DUPLICATE_STORY,
                 data::toModelType);
     }
 }
