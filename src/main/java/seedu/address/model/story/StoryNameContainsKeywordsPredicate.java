@@ -3,7 +3,6 @@ package seedu.address.model.story;
 import java.util.List;
 import java.util.function.Predicate;
 
-import seedu.address.commons.util.StringUtil;
 import seedu.address.commons.util.ToStringBuilder;
 
 /**
@@ -19,7 +18,7 @@ public class StoryNameContainsKeywordsPredicate implements Predicate<Story> {
     @Override
     public boolean test(Story story) {
         return keywords.stream()
-                .anyMatch(keyword -> StringUtil.containsWordIgnoreCase(story.getName().fullName, keyword));
+                .anyMatch(story::isNameMatching);
     }
 
     @Override

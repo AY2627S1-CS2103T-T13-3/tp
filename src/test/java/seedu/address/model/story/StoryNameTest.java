@@ -61,4 +61,23 @@ public class StoryNameTest {
         // different values -> returns false
         assertFalse(storyName.equals(new StoryName("Other Valid Story")));
     }
+
+    @Test
+    public void isMatching() {
+        StoryName storyName = new StoryName("Breaking News");
+
+        // matching keyword -> returns true
+        assertTrue(storyName.isMatching("Breaking"));
+        assertTrue(storyName.isMatching("breaking")); // case-insensitive
+        assertTrue(storyName.isMatching("News"));
+        assertTrue(storyName.isNameMatching("Breaking"));
+
+        // non-matching keyword -> returns false
+        assertFalse(storyName.isMatching("Sports"));
+        assertFalse(storyName.isNameMatching("Sports"));
+
+        // partial word matching -> returns false
+        assertFalse(storyName.isMatching("Break"));
+        assertFalse(storyName.isNameMatching("Break"));
+    }
 }

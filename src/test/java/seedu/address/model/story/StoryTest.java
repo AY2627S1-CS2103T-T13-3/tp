@@ -69,4 +69,17 @@ public class StoryTest {
         assertTrue(s1.isAssigned(a));
         assertFalse(s1.isAssigned(b));
     }
+
+    @Test
+    public void isNameMatching() {
+        Story story = new Story(new StoryName("Tech News"), Set.of());
+
+        // matches name keyword
+        assertTrue(story.isNameMatching("Tech"));
+        assertTrue(story.isNameMatching("news")); // case-insensitive
+
+        // does not match
+        assertFalse(story.isNameMatching("Sports"));
+        assertFalse(story.isNameMatching("Te"));
+    }
 }

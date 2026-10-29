@@ -34,6 +34,13 @@ public class Followup {
     }
 
     /**
+     * Returns true if the followup's description matches the given keyword.
+     */
+    public boolean isDescriptionMatching(String keyword) {
+        return description.isMatching(keyword);
+    }
+
+    /**
      * Returns the {@code Name} of the linked contact
      */
     public Name getContact() {

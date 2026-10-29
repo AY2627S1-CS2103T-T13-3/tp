@@ -65,4 +65,23 @@ public class NameTest {
         // different values -> returns false
         assertFalse(name.equals(new Name("Other Valid Name")));
     }
+
+    @Test
+    public void isMatching() {
+        Name name = new Name("Alice Bob");
+
+        // matching keyword -> returns true
+        assertTrue(name.isMatching("Alice"));
+        assertTrue(name.isMatching("alice")); // case insensitive
+        assertTrue(name.isMatching("Bob"));
+        assertTrue(name.isNameMatching("Alice"));
+
+        // non-matching keyword -> returns false
+        assertFalse(name.isMatching("Carol"));
+        assertFalse(name.isNameMatching("Carol"));
+
+        // partial word matching -> returns false
+        assertFalse(name.isMatching("Ali"));
+        assertFalse(name.isNameMatching("Ali"));
+    }
 }

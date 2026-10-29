@@ -72,6 +72,13 @@ public class Contact {
     }
 
     /**
+     * Returns true if the contact's name matches the given keyword.
+     */
+    public boolean isNameMatching(String keyword) {
+        return name.isMatching(keyword);
+    }
+
+    /**
      * Returns whether the story has been assigned to this Contact
      */
     public boolean isAssigned(Story story) {

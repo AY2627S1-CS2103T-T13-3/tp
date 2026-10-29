@@ -47,4 +47,23 @@ public class FollowupDescriptionTest {
         assertFalse(description.equals(new FollowupDescription("Call Bob")));
         assertFalse(description.equals(new FollowupDescription("call Alice")));
     }
+
+    @Test
+    public void isMatching() {
+        FollowupDescription description = new FollowupDescription("Schedule interview");
+
+        // matching keyword -> returns true
+        assertTrue(description.isMatching("Schedule"));
+        assertTrue(description.isMatching("schedule")); // case-insensitive
+        assertTrue(description.isMatching("interview"));
+        assertTrue(description.isDescriptionMatching("Schedule"));
+
+        // non-matching keyword -> returns false
+        assertFalse(description.isMatching("Meeting"));
+        assertFalse(description.isDescriptionMatching("Meeting"));
+
+        // partial word matching -> returns false
+        assertFalse(description.isMatching("inter"));
+        assertFalse(description.isDescriptionMatching("inter"));
+    }
 }
