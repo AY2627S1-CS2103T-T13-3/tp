@@ -37,7 +37,7 @@ public class UniqueFollowupList implements Iterable<Followup> {
      */
     public boolean contains(Followup toCheck) {
         requireNonNull(toCheck);
-        return internalList.stream().anyMatch(toCheck::equals);
+        return internalList.stream().anyMatch(toCheck::isSameFollowup);
     }
 
     /**
