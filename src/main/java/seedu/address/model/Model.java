@@ -119,8 +119,8 @@ public interface Model {
     boolean hasFollowup(Followup followup);
 
     /**
-     * Adds the given story.
-     * {@code story} must not already exist in the address book.
+     * Adds the given followup.
+     * {@code followup} must not already exist in the address book.
      */
     void addFollowup(Followup followup);
 
@@ -139,7 +139,7 @@ public interface Model {
     /** Returns an unmodifiable view of the filtered story list */
     ObservableList<Story> getFilteredStoryList();
 
-    /** Returns an unmodifiable view of the filtered story list */
+    /** Returns an unmodifiable view of the filtered followup list */
     ObservableList<Followup> getFilteredFollowupList();
 
     /**
