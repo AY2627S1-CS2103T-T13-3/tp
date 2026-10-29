@@ -1,6 +1,8 @@
 package seedu.address.testutil;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import seedu.address.model.contact.Address;
@@ -8,6 +10,7 @@ import seedu.address.model.contact.Contact;
 import seedu.address.model.contact.Email;
 import seedu.address.model.contact.Name;
 import seedu.address.model.contact.Phone;
+import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -26,6 +29,7 @@ public class ContactBuilder {
     private Email email;
     private Address address;
     private Set<Tag> tags;
+    private List<StoryName> stories;
 
     /**
      * Creates a {@code ContactBuilder} with the default details.
@@ -36,6 +40,7 @@ public class ContactBuilder {
         email = new Email(DEFAULT_EMAIL);
         address = new Address(DEFAULT_ADDRESS);
         tags = new HashSet<>();
+        stories = new ArrayList<>();
     }
 
     /**
@@ -47,6 +52,7 @@ public class ContactBuilder {
         email = contactToCopy.getEmail();
         address = contactToCopy.getAddress();
         tags = new HashSet<>(contactToCopy.getTags());
+        stories = new ArrayList<>(contactToCopy.getStories());
     }
 
     /**
@@ -90,7 +96,7 @@ public class ContactBuilder {
     }
 
     public Contact build() {
-        return new Contact(name, phone, email, address, tags);
+        return new Contact(name, phone, email, address, tags, stories);
     }
 
 }

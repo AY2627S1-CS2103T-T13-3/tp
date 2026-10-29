@@ -27,8 +27,12 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
+import seedu.address.model.followup.Followup;
+import seedu.address.model.followup.FollowupDescription;
+import seedu.address.model.story.Story;
 import seedu.address.testutil.ContactBuilder;
 import seedu.address.testutil.EditContactDescriptorBuilder;
+import seedu.address.testutil.StoryBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for EditContactCommand.
@@ -277,5 +281,48 @@ public class EditContactCommandTest {
         Index maxIntIndex = Index.fromOneBased(Integer.MAX_VALUE);
         EditContactCommand editContactMaxIndex = new EditContactCommand(maxIntIndex, descriptor);
         assertCommandFailure(editContactMaxIndex, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void execute_editContactName_updatesStoryAndFollowupFilters() {
+        Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Story story = new StoryBuilder().build();
+        model.addStory(story);
+        model.assignStory(contact, story);
+
+        Contact contactToEdit = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Followup followup = new Followup(new FollowupDescription("Follow up"), contactToEdit.getName());
+        model.addFollowup(followup);
+
+        model.updateFilteredStoryList(
+                s -> s.isAssigned(contactToEdit),
+                String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, contactToEdit.getName()));
+        model.updateFilteredFollowupList(
+                f -> f.isFor(contactToEdit),
+                String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, contactToEdit.getName()));
+
+        EditContactDescriptor descriptor = new EditContactDescriptorBuilder().withName(VALID_NAME_BOB).build();
+        EditContactCommand editContactCommand = new EditContactCommand(INDEX_FIRST_CONTACT, descriptor);
+
+        Contact editedContact = new ContactBuilder(contactToEdit).withName(VALID_NAME_BOB).build();
+        String expectedMessage =
+                String.format(EditContactCommand.MESSAGE_EDIT_CONTACT_SUCCESS, Messages.format(editedContact));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.updateFilteredStoryList(
+                s -> s.isAssigned(contactToEdit),
+                String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, contactToEdit.getName()));
+        expectedModel.updateFilteredFollowupList(
+                f -> f.isFor(contactToEdit),
+                String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, contactToEdit.getName()));
+        expectedModel.setContact(contactToEdit, editedContact);
+
+        assertCommandSuccess(editContactCommand, model, expectedMessage, expectedModel);
+
+        String expectedStatus = String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, editedContact.getName());
+        assertEquals(expectedStatus, model.getStoryFilterStatusProperty().getValue());
+        assertEquals(1, model.getFilteredStoryList().size());
+        assertEquals(expectedStatus, model.getFollowupFilterStatusProperty().getValue());
+        assertEquals(1, model.getFilteredFollowupList().size());
     }
 }
