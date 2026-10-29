@@ -5,8 +5,8 @@ import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.contact.Contact;
 import seedu.address.model.followup.Followup;
-import seedu.address.model.person.Person;
 import seedu.address.model.story.Story;
 
 /**
@@ -14,7 +14,7 @@ import seedu.address.model.story.Story;
  */
 public interface Model {
     /** {@code Predicate} that always evaluates to true */
-    Predicate<Person> PREDICATE_SHOW_ALL_PERSONS = unused -> true;
+    Predicate<Contact> PREDICATE_SHOW_ALL_CONTACTS = unused -> true;
     Predicate<Story> PREDICATE_SHOW_ALL_STORIES = unused -> true;
     Predicate<Followup> PREDICATE_SHOW_ALL_FOLLOWUPS = unused -> true;
 
@@ -51,15 +51,15 @@ public interface Model {
     ReadOnlyAddressBook getAddressBook();
 
     /**
-     * Returns true if a person with the same identity as {@code person} exists in the address book.
+     * Returns true if a contact with the same identity as {@code contact} exists in the address book.
      */
-    boolean hasPerson(Person person);
+    boolean hasContact(Contact contact);
 
     /**
-     * Deletes the given person.
-     * The person must exist in the address book.
+     * Deletes the given contact.
+     * The contact must exist in the address book.
      */
-    void deletePerson(Person target);
+    void deleteContact(Contact target);
 
     /**
      * Deletes the given story.
@@ -68,17 +68,18 @@ public interface Model {
     default void deleteStory(Story target) {}
 
     /**
-     * Adds the given person.
-     * {@code person} must not already exist in the address book.
+     * Adds the given contact.
+     * {@code contact} must not already exist in the address book.
      */
-    void addPerson(Person person);
+    void addContact(Contact contact);
 
     /**
-     * Replaces the given person {@code target} with {@code editedPerson}.
+     * Replaces the given contact {@code target} with {@code editedContact}.
      * {@code target} must exist in the address book.
-     * The person identity of {@code editedPerson} must not be the same as another existing person in the address book.
+     * The contact identity of {@code editedContact} must not be the same as another existing contact in the address
+     * book.
      */
-    void setPerson(Person target, Person editedPerson);
+    void setContact(Contact target, Contact editedContact);
 
     /**
      * Returns true if a story with the same identity as {@code story} exists in the address book.
@@ -92,18 +93,25 @@ public interface Model {
     void addStory(Story story);
 
     /**
+     * Replaces the given story {@code target} with {@code editedStory}.
+     * {@code target} must exist in the address book.
+     * The story identity of {@code editedStory} must not be the same as another existing story in the address book.
+     */
+    void setStory(Story target, Story editedStory);
+
+    /**
      * Assigns the given contact to the given story
      * {@code target} must exist in the address book.
      * {@code story} must exist in the address book.
      */
-    void assignStory(Person target, Story story);
+    void assignStory(Contact target, Story story);
 
     /**
      * Unassigns the given contact from the given story
      * {@code target} must exist in the address book.
      * {@code story} must exist in the address book.
      */
-    void unassignStory(Person target, Story story);
+    void unassignStory(Contact target, Story story);
 
     /**
      * Returns true if a followup with the same identity as {@code followup} exists in the address book.
@@ -122,8 +130,11 @@ public interface Model {
      */
     void deleteFollowup(Followup followup);
 
-    /** Returns an unmodifiable view of the filtered person list */
-    ObservableList<Person> getFilteredPersonList();
+    /** Replaces an existing followup with the given edited followup. */
+    void setFollowup(Followup target, Followup editedFollowup);
+
+    /** Returns an unmodifiable view of the filtered contact list */
+    ObservableList<Contact> getFilteredContactList();
 
     /** Returns an unmodifiable view of the filtered story list */
     ObservableList<Story> getFilteredStoryList();
@@ -132,10 +143,10 @@ public interface Model {
     ObservableList<Followup> getFilteredFollowupList();
 
     /**
-     * Updates the filter of the filtered person list to filter by the given {@code predicate}.
+     * Updates the filter of the filtered contact list to filter by the given {@code predicate}.
      * @throws NullPointerException if {@code predicate} is null.
      */
-    void updateFilteredPersonList(Predicate<Person> predicate);
+    void updateFilteredContactList(Predicate<Contact> predicate);
 
     /**
      * Updates the filter of the filtered story list to filter by the given {@code predicate}.

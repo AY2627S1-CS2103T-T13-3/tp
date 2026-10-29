@@ -337,7 +337,7 @@
     -fx-text-fill: white;
 }
 
-#filterField, #personListPanel, #personWebpage {
+#filterField, #contactListPanel, #contactWebpage {
     -fx-effect: innershadow(gaussian, black, 10, 0, 0, 0);
 }
 
@@ -375,4 +375,58 @@
 #contactCount {
     -fx-opacity: 0.9;
 }
+
+/* Help Panel Styling */
+.help-close-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #b0b0b0;
+    -fx-font-size: 11pt;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 0 4 0 4;
+}
+
+.help-close-button:hover {
+    -fx-text-fill: #ff6b6b;
+}
+
+.help-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.help-scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.help-command-card {
+    -fx-background-color: #262626;
+    -fx-border-color: #383838;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 6 8 6 8;
+}
+
+.help-command-name {
+    -fx-font-family: "Segoe UI Bold";
+    -fx-font-size: 10.5pt;
+    -fx-text-fill: #54c7ec;
+}
+
+.help-command-format {
+    -fx-font-family: "Consolas", monospace;
+    -fx-font-size: 9pt;
+    -fx-text-fill: #d8d8d8;
+    -fx-background-color: #1b1b1b;
+    -fx-padding: 3 5 3 5;
+    -fx-background-radius: 3;
+}
+
+.help-command-desc {
+    -fx-font-size: 9pt;
+    -fx-text-fill: #aaaaaa;
+}
+
 

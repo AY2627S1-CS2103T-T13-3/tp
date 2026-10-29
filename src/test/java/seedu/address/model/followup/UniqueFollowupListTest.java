@@ -4,8 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalPersons.ALICE;
-import static seedu.address.testutil.TypicalPersons.BOB;
+import static seedu.address.testutil.TypicalContacts.ALICE;
+import static seedu.address.testutil.TypicalContacts.BOB;
 
 import java.util.Arrays;
 import java.util.List;
@@ -123,12 +123,17 @@ public class UniqueFollowupListTest {
     }
 
     @Test
-    public void setFollowups_duplicateDescriptions_throwsDuplicateFollowupException() {
+    public void setFollowups_duplicateFollowups_throwsDuplicateFollowupException() {
         followups.add(notes);
         assertThrows(DuplicateFollowupException.class, () -> followups.setFollowups(List.of(interview, interview)));
-        assertThrows(DuplicateFollowupException.class, () -> followups.setFollowups(
-                List.of(interview, notes, interviewWithBob)));
         assertEquals(List.of(notes), followups.asUnmodifiableObservableList());
+    }
+
+    @Test
+    public void setFollowups_duplicateDescriptionsDiffContacts_accepts() {
+        followups.setFollowups(List.of(interview, notes, interviewWithBob));
+        assertTrue(followups.contains(interview));
+        assertTrue(followups.contains(interviewWithBob));
     }
 
     @Test

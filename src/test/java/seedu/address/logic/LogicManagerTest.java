@@ -2,24 +2,28 @@ package seedu.address.logic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalPersons.AMY;
+import static seedu.address.testutil.TypicalContacts.AMY;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import seedu.address.logic.commands.AddCommand;
+import seedu.address.commons.core.GuiSettings;
+import seedu.address.logic.commands.AddContactCommand;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.ShortcutCommand;
@@ -31,12 +35,13 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.UserPrefs;
-import seedu.address.model.person.Person;
+import seedu.address.model.contact.Contact;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonStoryStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
 import seedu.address.storage.StorageManager;
-import seedu.address.testutil.PersonBuilder;
+import seedu.address.testutil.ContactBuilder;
+import seedu.address.testutil.StoryBuilder;
 
 public class LogicManagerTest {
     private static final IOException DUMMY_IO_EXCEPTION = new IOException("dummy IO exception");
@@ -71,14 +76,19 @@ public class LogicManagerTest {
 
     @Test
     public void execute_commandExecutionError_throwsCommandException() {
-        String deleteCommand = "delete 9";
-        assertCommandException(deleteCommand, MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        String deleteCommand = "deletecontact 9";
+        assertCommandException(deleteCommand, MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
     }
 
     @Test
     public void execute_validCommand_success() throws Exception {
         String listCommand = ListCommand.COMMAND_WORD;
-        assertCommandSuccess(listCommand, ListCommand.MESSAGE_SUCCESS, model);
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
+                model.getFilteredContactList().size(),
+                model.getFilteredStoryList().size(),
+                model.getFilteredFollowupList().size()
+        );
+        assertCommandSuccess(listCommand, expectedMessage, model);
     }
 
     @Test
@@ -95,7 +105,12 @@ public class LogicManagerTest {
 
         CommandResult result = logic.execute("ls");
 
-        assertEquals(ListCommand.MESSAGE_SUCCESS, result.getFeedbackToUser());
+        String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
+                model.getFilteredContactList().size(),
+                model.getFilteredStoryList().size(),
+                model.getFilteredFollowupList().size()
+        );
+        assertEquals(expectedMessage, result.getFeedbackToUser());
     }
 
     @Test
@@ -164,8 +179,113 @@ public class LogicManagerTest {
     }
 
     @Test
-    public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
-        assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredPersonList().remove(0));
+    public void execute_invalidCommands_doesNotPersistData() {
+        assertParseException("unknownCommand", MESSAGE_UNKNOWN_COMMAND);
+        assertCommandException("deletecontact 1", MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+
+        assertFalse(Files.exists(temporaryFolder.resolve("addressBook.json")));
+        assertFalse(Files.exists(temporaryFolder.resolve("stories.json")));
+        assertFalse(Files.exists(temporaryFolder.resolve("userPrefs.json")));
+    }
+
+    @Test
+    public void execute_removedShortcut_throwsParseException() throws Exception {
+        logic.execute("shortcut s/ls c/list");
+        logic.execute("unshortcut ls");
+
+        assertParseException("ls", MESSAGE_UNKNOWN_COMMAND);
+    }
+
+    @Test
+    public void execute_assignOrUnassignEmptyContactList_throwsCommandException() {
+        model.addStory(new StoryBuilder().build());
+
+        assertCommandException("assign ci/1 si/1", MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        assertCommandException("unassign ci/1 si/1", MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void execute_assignOrUnassignEmptyStoryList_throwsCommandException() {
+        model.addContact(AMY);
+
+        assertCommandException("assign ci/1 si/1", MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        assertCommandException("unassign ci/1 si/1", MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void execute_assignOrUnassignIndexJustPastEnd_throwsCommandException() {
+        model.addContact(AMY);
+        model.addStory(new StoryBuilder().build());
+
+        assertCommandException("assign ci/2 si/1", MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        assertCommandException("unassign ci/2 si/1", MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        assertCommandException("assign ci/1 si/2", MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        assertCommandException("unassign ci/1 si/2", MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void execute_storyStorageThrowsIoException_preservesCauseAndSkipsUserPrefs() {
+        assertStoryStorageFailure(DUMMY_IO_EXCEPTION, LogicManager.FILE_OPS_ERROR_FORMAT);
+    }
+
+    @Test
+    public void execute_storyStorageThrowsAccessDeniedException_preservesCauseAndSkipsUserPrefs() {
+        assertStoryStorageFailure(DUMMY_AD_EXCEPTION, LogicManager.FILE_OPS_PERMISSION_ERROR_FORMAT);
+    }
+
+    /** Verifies that a failure saving stories stops persistence and retains the original cause. */
+    private void assertStoryStorageFailure(IOException failure, String messageFormat) {
+        JsonAddressBookStorage addressBookStorage =
+                new JsonAddressBookStorage(temporaryFolder.resolve("addressBook.json"));
+        JsonStoryStorage failingStoryStorage = new JsonStoryStorage(temporaryFolder.resolve("stories.json")) {
+            @Override
+            public void saveStories(ReadOnlyAddressBook addressBook) throws IOException {
+                throw failure;
+            }
+        };
+        JsonUserPrefsStorage unexpectedUserPrefsStorage =
+                new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json")) {
+                    @Override
+                    public void saveUserPrefs(ReadOnlyUserPrefs userPrefs) {
+                        throw new AssertionError("Preferences must not be saved after story storage fails.");
+                    }
+                };
+        logic = new LogicManager(model,
+                new StorageManager(addressBookStorage, failingStoryStorage, unexpectedUserPrefsStorage));
+
+        CommandException exception = org.junit.jupiter.api.Assertions.assertThrows(CommandException.class, ()
+                -> logic.execute("shortcut s/ls c/list"));
+
+        assertEquals(String.format(messageFormat, failure.getMessage()), exception.getMessage());
+        assertSame(failure, exception.getCause());
+        assertEquals("list", model.getShortcuts().get("ls"));
+    }
+
+    @Test
+    public void getFilteredContactList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredContactList().remove(0));
+    }
+
+    @Test
+    public void getFilteredStoryList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredStoryList().remove(0));
+    }
+
+    @Test
+    public void getFilteredFollowupList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredFollowupList().remove(0));
+    }
+
+    @Test
+    public void guiSettings_getAndSet_success() {
+        GuiSettings guiSettings = new GuiSettings(1, 2, 3, 4);
+        logic.setGuiSettings(guiSettings);
+        assertEquals(guiSettings, logic.getGuiSettings());
+    }
+
+    @Test
+    public void getShortcuts_returnsCorrectShortcuts() {
+        assertEquals(model.getShortcuts(), logic.getShortcuts());
     }
 
     /**
@@ -250,11 +370,11 @@ public class LogicManagerTest {
         logic = new LogicManager(model, storage);
 
         // Triggers the saveAddressBook method by executing an add command
-        String addCommand = AddCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY
+        String addCommand = AddContactCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY
                 + EMAIL_DESC_AMY + ADDRESS_DESC_AMY;
-        Person expectedPerson = new PersonBuilder(AMY).withTags().build();
+        Contact expectedContact = new ContactBuilder(AMY).withTags().build();
         ModelManager expectedModel = new ModelManager();
-        expectedModel.addPerson(expectedPerson);
+        expectedModel.addContact(expectedContact);
         assertCommandFailure(addCommand, CommandException.class, expectedMessage, expectedModel);
     }
 }

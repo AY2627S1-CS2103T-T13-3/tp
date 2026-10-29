@@ -1,7 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
+import static seedu.address.model.Model.PREDICATE_SHOW_ALL_CONTACTS;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,14 +15,16 @@ import seedu.address.model.Model;
 import seedu.address.model.story.Story;
 
 /**
- * Lists contacts in the address book to the user.
+ * Lists contacts in PressMemo to the user.
  */
 public class ListContactsCommand extends Command {
 
     public static final String COMMAND_WORD = "listcontacts";
-    public static final String MESSAGE_SUCCESS = "Listed all contacts.";
+    public static final String MESSAGE_SUCCESS = "Listed all %1$d contact(s).";
+    public static final String MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS =
+            "Listed %1$d contact(s) assigned to %2$s";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists contacts in the address book.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists contacts in PressMemo.\n"
             + "Parameters: [si/STORY_INDEX]\n"
             + "Example: " + COMMAND_WORD + " si/1";
 
@@ -42,8 +44,9 @@ public class ListContactsCommand extends Command {
 
         // No index: display all contacts
         if (storyIndex.isEmpty()) {
-            model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
-            return new CommandResult(MESSAGE_SUCCESS);
+            model.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
+            return new CommandResult(String.format(MESSAGE_SUCCESS,
+                    model.getFilteredContactList().size()));
         }
 
         // Index provided: identify the story
@@ -58,11 +61,13 @@ public class ListContactsCommand extends Command {
         Story selectedStory = lastShownStoryList.get(index);
 
         // Display only contacts assigned to this story
-        model.updateFilteredPersonList(
-                person -> selectedStory.isAssigned(person));
+        model.updateFilteredContactList(
+                contact -> selectedStory.isAssigned(contact));
 
         return new CommandResult(
-                "Listed contacts assigned to " + selectedStory.getName());
+                String.format(MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,
+                        model.getFilteredContactList().size(),
+                        selectedStory.getName()));
     }
 
     @Override

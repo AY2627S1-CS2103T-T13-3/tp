@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -8,15 +9,17 @@ import seedu.address.model.Model;
 import seedu.address.model.story.Story;
 
 /**
- * Adds a story to the address book.
+ * Adds a story to PressMemo.
  */
 public class AddStoryCommand extends Command {
 
     public static final String COMMAND_WORD = "addstory";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a story to the address book.\n"
-            + "Parameters: NAME\n"
-            + "Example: " + COMMAND_WORD + " hello";
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a story to PressMemo.\n"
+            + "Parameters: NAME "
+            + "[" + PREFIX_TAG + "TAG]...\n"
+            + "Example: " + COMMAND_WORD + " hello"
+            + PREFIX_TAG + " Singapore";
 
     public static final String MESSAGE_SUCCESS = "Story \"%1$s\" has been added.";
     public static final String MESSAGE_DUPLICATE_STORY = "Error: there is already a story named \"%1$s\"!";

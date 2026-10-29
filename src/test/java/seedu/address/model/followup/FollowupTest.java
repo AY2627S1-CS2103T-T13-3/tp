@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
-import static seedu.address.testutil.TypicalPersons.ALICE;
-import static seedu.address.testutil.TypicalPersons.BOB;
+import static seedu.address.testutil.TypicalContacts.ALICE;
+import static seedu.address.testutil.TypicalContacts.BOB;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.testutil.PersonBuilder;
+import seedu.address.testutil.ContactBuilder;
 
 public class FollowupTest {
 
@@ -31,7 +31,7 @@ public class FollowupTest {
     @Test
     public void isFor_matchesContactByName() {
         assertTrue(followup.isFor(ALICE));
-        assertTrue(followup.isFor(new PersonBuilder(ALICE).withPhone("91234567").build()));
+        assertTrue(followup.isFor(new ContactBuilder(ALICE).withPhone("91234567").build()));
         assertFalse(followup.isFor(BOB));
     }
 
@@ -39,7 +39,7 @@ public class FollowupTest {
     public void isSameFollowup() {
         assertTrue(followup.isSameFollowup(followup));
         assertTrue(followup.isSameFollowup(new Followup(description, ALICE.getName())));
-        assertTrue(followup.isSameFollowup(new Followup(description, BOB.getName())));
+        assertFalse(followup.isSameFollowup(new Followup(description, BOB.getName())));
         assertFalse(followup.isSameFollowup(null));
         assertFalse(followup.isSameFollowup(new Followup(new FollowupDescription("Send notes"), ALICE.getName())));
     }

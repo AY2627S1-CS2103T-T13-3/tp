@@ -10,18 +10,18 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.contact.Contact;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
-import seedu.address.model.person.Person;
 
 /**
- * Adds a followup to a contact in the address book.
+ * Adds a followup to a contact in PressMemo.
  */
 public class AddFollowupCommand extends Command {
 
     public static final String COMMAND_WORD = "addfollowup";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a followup to a contact in the address book.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a followup to a contact in PressMemo.\n"
             + "Parameters: DESCRIPTION "
             + PREFIX_CONTACTINDEX + "CONTACT INDEX"
             + "Example: " + COMMAND_WORD + " meeting " + PREFIX_CONTACTINDEX + "1";
@@ -47,13 +47,13 @@ public class AddFollowupCommand extends Command {
     @Override
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
-        List<Person> lastShownContactList = model.getFilteredPersonList();
+        List<Contact> lastShownContactList = model.getFilteredContactList();
 
         if (contactIndex.getZeroBased() >= lastShownContactList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+            throw new CommandException(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
         }
 
-        Person target = lastShownContactList.get(contactIndex.getZeroBased());
+        Contact target = lastShownContactList.get(contactIndex.getZeroBased());
         Followup followupToAdd = new Followup(followupDescription, target.getName());
 
         if (model.hasFollowup(followupToAdd)) {

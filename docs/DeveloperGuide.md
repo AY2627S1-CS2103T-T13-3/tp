@@ -36,7 +36,7 @@ The following provides a quick overview of the main components and their interac
 
 **Main components of the architecture**
 
-**`Main`** (consisting of classes [`Main`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
+**`Main`** (consisting of classes [`Main`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/Main.java) and [`MainApp`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/MainApp.java)) is in charge of the app launch and shut down.
 * At app launch, it initializes the other components in the correct sequence, and connects them up with each other.
 * At shut down, it shuts down the other components and invokes cleanup methods where necessary.
 
@@ -51,7 +51,7 @@ The bulk of the app's work is done by the following four components:
 
 **How the architecture components interact with each other**
 
-The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `delete 1`.
+The *Sequence Diagram* below shows how the components interact with each other for the scenario where the user issues the command `deletecontact 1`.
 
 <img src="images/ArchitectureSequenceDiagram.png" width="574" />
 
@@ -72,25 +72,26 @@ The **API** of this component is specified in [`Ui.java`](https://github.com/AY2
 
 ![Structure of the UI Component](images/UiClassDiagram.png)
 
-The UI consists of a `MainWindow` and its parts, such as `CommandBox`, `ResultDisplay`, `PersonListPanel`, and `StatusBarFooter`. All of these, including `MainWindow`, inherit from the abstract `UiPart` class, which captures common behavior among classes that represent visible GUI parts.
+The UI consists of a `MainWindow` and its parts, such as `CommandBox`, `ResultDisplay`, `ContactListPanel`, `HelpPanel`, and `StatusBarFooter`. All of these, including `MainWindow`, inherit from the abstract `UiPart` class, which captures common behavior among classes that represent visible GUI parts.
 For example, [`MainWindow.fxml`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/resources/view/MainWindow.fxml) specifies the layout of [`MainWindow`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/ui/MainWindow.java).
 
-The `UI` component uses the JavaFX UI framework. Its layouts are defined in `.fxml` files in `src/main/resources/view`. [`MainWindow.fxml`](https://github.com/AY2627S1-CS2103T-T13-3/tp/blob/64f6b41/src/main/resources/view/MainWindow.fxml) places **CONTACTS** and **STORIES** side by side, with **FOLLOW-UPS** beneath them. The command box and result display sit above the panels, and the status bar sits below them. [`MainWindow.fillInnerParts()`](https://github.com/AY2627S1-CS2103T-T13-3/tp/blob/64f6b41/src/main/java/seedu/address/ui/MainWindow.java) creates each part and inserts its root into the corresponding FXML placeholder.
+The `UI` component uses the JavaFX UI framework. Its layouts are defined in `.fxml` files in `src/main/resources/view`. [`MainWindow.fxml`](https://github.com/AY2627S1-CS2103T-T13-3/tp/blob/64f6b41/src/main/resources/view/MainWindow.fxml) places **CONTACTS** and **STORIES** side by side, with **FOLLOW-UPS** beneath them, alongside an embedded, collapsible `HelpPanel` on the right. The command box and result display sit above the panels, and the status bar sits below them. [`MainWindow.fillInnerParts()`](https://github.com/AY2627S1-CS2103T-T13-3/tp/blob/64f6b41/src/main/java/seedu/address/ui/MainWindow.java) creates each part and inserts its root into the corresponding FXML placeholder.
 
-There are three list panels:
+There are three list panels and a collapsible help panel:
 
 Panel | Card and layout | Displayed information
 ------|-----------------|----------------------
-`PersonListPanel` | `PersonCard`, `PersonListCard.fxml` | Displayed index, name, contact details, tags, and assigned story names. Displays `Stories: (none)` when unassigned.
+`ContactListPanel` | `ContactCard`, `ContactListCard.fxml` | Displayed index, name, contact details, tags, and assigned story names. Displays `Stories: (none)` when unassigned.
 `StoryListPanel` | `StoryCard`, `StoryListCard.fxml` | Displayed index, story name, tags, assigned contact count, and contact names. Displays `Contacts: (none)` when unassigned.
 `FollowupListPanel` | `FollowupCard`, `FollowupListCard.fxml` | Displayed index, follow-up description, and contact name. Followups for the same contact are shown together by default.
+`HelpPanel` | `HelpPanel.fxml` | Available built-in commands with syntax and descriptions. Can be toggled open/closed via `help`.
 
 The `UI` component,
 
 * executes user commands using the `Logic` component.
 * listens for changes to `Model` data so that the UI can be updated with the modified data.
 * keeps a reference to the `Logic` component, because the `UI` relies on the `Logic` to execute commands.
-* depends on some classes in the `Model` component because it displays `Person`, `Story` and `Followup` objects from the model.
+* depends on some classes in the `Model` component because it displays `Contact`, `Story` and `Followup` objects from the model.
 
 ### Logic component
 
@@ -100,9 +101,9 @@ Here's a (partial) class diagram of the `Logic` component:
 
 <img src="images/LogicClassDiagram.png" width="550"/>
 
-The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("delete 1")` API call as an example.
+The sequence diagram below illustrates the interactions within the `Logic` component, taking `execute("deletecontact 1")` API call as an example.
 
-![Interactions Inside the Logic Component for the `delete 1` Command](images/DeleteSequenceDiagram.png)
+![Interactions Inside the Logic Component for the `deletecontact 1` Command](images/DeleteSequenceDiagram.png)
 
 <div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X), but due to a limitation of PlantUML, it continues to the end of the diagram.
 </div>
@@ -111,7 +112,7 @@ How the `Logic` component works:
 
 1. When `Logic` is called upon to execute a command, the command is passed to an `AddressBookParser` object, which in turn creates a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
 1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which is executed by the `LogicManager`.
-1. The command can communicate with the `Model` when it is executed (e.g. to delete a person).<br>
+1. The command can communicate with the `Model` when it is executed (e.g. to delete a contact).<br>
    Note that although this is shown as a single step in the diagram above for simplicity, the code can require several interactions between the command object and the `Model` to complete the operation.
 1. The result of the command execution is encapsulated as a `CommandResult` object which is returned from `Logic`.
 
@@ -124,31 +125,31 @@ How the parsing works:
 * All `XYZCommandParser` classes, such as `AddCommandParser` and `DeleteCommandParser`, implement the `Parser` interface so they can be treated similarly where appropriate, for example during testing.
 
 ### Model component
-**API** : [`Model.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/model/Model.java)
+**API** : [`Model.java`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/model/Model.java)
 
 <img src="images/ModelClassDiagram.png" width="450" />
 
 
 The `Model` component,
 
-* stores the address book data:
-  * all `Person` objects (which are contained in a `UniquePersonList` object).
+* stores the PressMemo data:
+  * all `Contact` objects (which are contained in a `UniqueContactList` object).
   * all `Story` objects (which are contained in a `UniqueStoryList` object).
   * all `Followup` objects (which are contained in a `UniqueFollowupList` object).
-* stores the `Person` objects selected by the current filter, such as search results, in a separate _filtered_ list. 
-  * It exposes this list as an unmodifiable `ObservableList<Person>` that the UI can observe and bind to, so the UI updates when the list changes.
+* stores the `Contact` objects selected by the current filter, such as search results, in a separate _filtered_ list.
+  * It exposes this list as an unmodifiable `ObservableList<Contact>` that the UI can observe and bind to, so the UI updates when the list changes.
   * It does the same for `Story`, `Followup`
 * stores a `UserPrefs` object that represents the user’s preferences (GUI settings and command shortcuts). This is exposed to the outside as a `ReadOnlyUserPrefs` object.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
 
 ### Storage component
 
-**API** : [`Storage.java`](https://github.com/se-edu/addressbook-level3/tree/master/src/main/java/seedu/address/storage/Storage.java)
+**API** : [`Storage.java`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/storage/Storage.java)
 
 <img src="images/StorageClassDiagram.png" width="550" />
 
 The `Storage` component,
-* can save address book data, story data, follow-up data, and user preference data in JSON format, and read them back into corresponding objects.
+* can save contact data, story data, follow-up data, and user preference data in JSON format, and read them back into corresponding objects.
 * is implemented by `StorageManager`, which delegates the actual JSON file access to `JsonAddressBookStorage`, `JsonStoryStorage`, and `JsonUserPrefsStorage`.
 * uses JSON-adapted classes to serialize and deserialize contacts, stories, follow-ups, and their associations.
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`).
@@ -159,7 +160,7 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 --------------------------------------------------------------------------------------------------------------------
 
-## **Implementation**
+# **Implementation**
 
 This section describes some noteworthy details on how certain features are implemented.
 
@@ -216,6 +217,122 @@ The sequence diagram below illustrates the interactions within the `Model` compo
 * **Alternative 2:** Separate association list or join table in `AddressBook`.
   * Pros: Decouples `Person` and `Story` models from referencing each other directly.
   * Cons: Increases overhead for looking up relationships and requires managing a separate association list during serialization and deserialization.
+## `addstory`
+
+- **Objective:** Adds a story to PressMemo
+
+### API
+
+* **Command:** `addstory STORY_NAME [t/TAG]…`
+* **Parameters**: refer to [user guide](UserGuide.md#adding-a-story-addstory)
+* **Description:**
+	* Adds a story with the specified name and (optionally) tags to ArchiveStoryList
+* **Preconditions:** 
+	* `STORY_NAME` is not the name of any existing story in ArchiveStoryList
+* **Postconditions:** 
+	* A story with the specified name and tags is added to the ArchiveStoryList
+	* ActiveStoryList = ArchiveStoryList 
+* **Exceptions:** 
+	* if `STORY_NAME` is the name of some existing story in ArchiveStoryList: displays error message for CommandException (duplicate story) 
+
+### Implementation details
+
+#### Execution flow
+1. The user enters the `addstory` command as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates an `AddStoryCommandParser` to parse the command arguments.
+4. `AddStoryCommandParser` parses the story name and tags and creates an `AddStoryCommand` object.
+5. `LogicManager` executes the `AddStoryCommand` object.
+6. `AddStoryCommand` verifies that the specified story name is not the name of any existing story in ArchiveStoryList.
+7. `AddStoryCommand` requests `Model` to add a new `Story` object with no assigned contacts and with the specified name and tags to PressMemo.
+8. `Model` sets `ActiveStoryList` to `ArchiveStoryList`.  
+9. `UI` updates the story panel accordingly. 
+
+## `findstories`
+
+- **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and updates the `ActiveStoryList`.
+
+### API
+
+* **Command:** `findstories STORY_NAME [MORE_KEYWORDS]...`
+* **Parameters**: refer to [user guide](UserGuide.md#locating-stories-by-name-findstories)
+* **Description:**
+	* Set the Active Story List to contain exactly the stories from the Archive Story List whose names contain at least one of the specified keywords.
+* **Preconditions:** 
+	* At least one keyword is provided in the command arguments.
+* **Postconditions:** 
+	* ActiveStoryList contains exactly the stories from ArchiveStoryList whose names match at least one keyword in a case-insensitive, full-word comparison.
+	* ArchiveStoryList is unchanged.
+* **Exceptions:** 
+	* if no keywords are provided: displays error message for ParseException (invalid command format)
+
+### Implementation details
+
+The sequence diagram below illustrates the interactions within the Model component when the user executes a `findstories` command.
+
+<!-- Note: FindStorySequenceDiagram.puml is located in docs/diagrams/FindStorySequenceDiagram.puml -->
+
+#### Execution flow
+
+- The user enters a `findstories` command. The command arguments are parsed by `AddressBookParser` and `FindStoryCommandParser`, which instantiates a `FindStoryCommand`. When executed, the command updates the filtered story list in `Model`, displaying matching stories in the GUI.
+1. The user enters the `findstories` command as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates a `FindStoryCommandParser` to parse the command arguments.
+4. `FindStoryCommandParser` parses the arguments into keywords and creates a `FindStoryCommand` object.
+5. `LogicManager` executes the `FindStoryCommand` object.
+6. `FindStoryCommand` requests `Model` to update the filter predicate of the `ActiveStoryList` to match at least one of the provided keywords.
+7. `Model` updates the `ActiveStoryList`.
+8. `FindStoryCommand` returns a `CommandResult` containing the number of matching stories.
+9. `UI` updates the story panel accordingly. 
+
+### Design Considerations
+
+- **Aspect: Matching mechanism for story names**
+
+|          | Chosen                                                                                                                                                         | Alternative                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **Pros** | **Whole-word matching** avoids false positives on accidental substring matches (e.g., searching for "ad" will not match "broadcast"), ensuring high precision. | **Substring matching** allows partial matches without requiring complete words. |
+| **Cons** | Users must type full words; partial terms will not return results.                                                                                             | May return many irrelevant stories containing common character sequences.       |
+
+- **Aspect: Multiple keywords combination logic**
+
+|          | Chosen                                                                                                      | Alternative                                                                                                             |
+| -------- | ----------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| **Pros** | **Disjunctive / OR search** allows flexible exploratory queries across multiple topics in a single command. | **Conjunctive / AND search** returns strictly targeted results matching every keyword.                                  |
+| **Cons** | Results may be broader than intended if common words are included.                                          | Less flexible when looking for possible matches across multiple topics; yields zero results if even one keyword misses. |
+
+## `listfollowups`
+
+- **Objective:** Lists all follow-ups in PressMemo, or filters the follow-ups assigned to a specified contact in the Active Contact List.
+
+### API
+
+* **Command:** `listfollowups [ci/CONTACT_INDEX]`
+* **Parameters**: refer to [user guide](UserGuide.md#listing-follow-ups-listfollowups)
+* **Description:**
+	* Updates the ActiveFollowupList to display either all follow-ups from the ArchiveFollowupList or only those associated with the contact identified by `CONTACT_INDEX`.
+* **Preconditions:** 
+	* If `ci/CONTACT_INDEX` is specified, `CONTACT_INDEX` must be valid
+* **Postconditions:** 
+	* ActiveFollowupList is updated:
+		* If no `ci/CONTACT_INDEX` is provided, ActiveFollowupList = ArchiveFollowupList
+		* If `CONTACT_INDEX` is provided, ActiveFollowupList displays only followups linked to the contact identified by `CONTACT_INDEX`
+- ArchiveFollowupList is unchanged.
+
+### Implementation details
+
+The sequence diagram below illustrates the interactions within the Logic and Model components when the user executes `listfollowups ci/1`.
+
+#### Execution flow
+
+1. The user enters `listfollowups` as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates an `ListFollowupsCommandParser` to parse the command arguments.
+4. `ListFollowupsCommandParser` parses the story name and tags and creates a `ListFollowupsCommand` object.
+5. `LogicManager` executes the `ListFollowupsCommand` object.
+6. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the ActiveContactList from `Model` and obtains the Contact corresponding to `CONTACT_INDEX`
+7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` request Model to update the filter predicate of ActiveFollowupList to match Followups linked to the specified Contact. Else, `ListFollowupsCommand` request Model to update ActiveFollowupList to include the whole ArchiveFollowupList
+8. `UI` updates the followup panel accordingly.
 
 ### \[Proposed\] Undo/redo feature
 
@@ -235,11 +352,11 @@ Step 1. The user launches the application for the first time. The `VersionedAddr
 
 ![UndoRedoState0](images/UndoRedoState0.png)
 
-Step 2. The user executes `delete 5` command to delete the 5th person in the address book. The `delete` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `delete 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
+Step 2. The user executes `deletecontact 5` command to delete the 5th contact in the address book. The `deletecontact` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `deletecontact 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
 
 ![UndoRedoState1](images/UndoRedoState1.png)
 
-Step 3. The user executes `add n/David …​` to add a new person. The `add` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
+Step 3. The user executes `addcontact n/David …​` to add a new contact. The `addcontact` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
 
 ![UndoRedoState2](images/UndoRedoState2.png)
 
@@ -247,7 +364,7 @@ Step 3. The user executes `add n/David …​` to add a new person. The `add` co
 
 </div>
 
-Step 4. The user now decides that adding the person was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
+Step 4. The user now decides that adding the contact was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
 
 ![UndoRedoState3](images/UndoRedoState3.png)
 
@@ -278,7 +395,7 @@ Step 5. The user then decides to execute the command `list`. Commands that do no
 
 ![UndoRedoState4](images/UndoRedoState4.png)
 
-Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `add n/David …​` command. This is the behavior that most modern desktop applications follow.
+Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `addcontact n/David …​` command. This is the behavior that most modern desktop applications follow.
 
 ![UndoRedoState5](images/UndoRedoState5.png)
 
@@ -296,7 +413,7 @@ The following activity diagram summarizes what happens when a user executes a ne
 
 * **Alternative 2:** Individual command knows how to undo/redo by
   itself.
-  * Pros: Will use less memory (e.g. for `delete`, just save the person being deleted).
+  * Pros: Will use less memory (e.g. for `deletecontact`, just save the contact being deleted).
   * Cons: We must ensure that the implementation of each individual command is correct.
 
 _{more aspects and alternatives to be added}_
@@ -342,49 +459,50 @@ _{Explain here how the data archiving feature will be implemented}_
 
 Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unlikely to have) - `*`
 
-## User Stories
-
-| Priority | As a …​ | I want to …​ | So that I can…​ |
-| -------- | ------- | ------------ | ---------------- |
-| `* * *` | investigative journalist | add a new contact with basic details | build a database of sources |
-| `* * *` | investigative journalist | view all active contacts | quickly browse my source network |
-| `* * *` | investigative journalist | edit a contact's details | keep my database accurate without recreating contacts |
-| `* * *` | investigative journalist | delete a contact | remove obsolete contacts from my database |
-| `* * *` | journalist with frequent story assignments | add a story | record a new story assignment |
-| `* * *` | journalist working on several assignments | view all stories | keep track of stories I have worked on |
-| `* * *` | journalist covering a developing story | edit a story's name | keep the story title current and relevant |
-| `* * *` | journalist with obsolete assignments | delete a story | remove cancelled, shelved, or irrelevant stories without deleting their contacts |
-| `* * *` | journalist liaising with several contacts for a story | assign a contact to a story | record the sources involved in that story |
-| `* * *` | journalist correcting a source assignment | unassign a contact from a story | remove an irrelevant or incorrect association while retaining the contact |
-| `* * *` | journalist managing a story | list contacts assigned to a story | know which sources are needed for that story |
-| `* * *` | journalist reviewing a source | view the stories associated with a contact | track the history of stories for which I have liaised with that source |
-| `* *` | investigative journalist covering a breaking story | search contacts using multiple keywords, locations, and tags | retrieve relevant witnesses and sources quickly |
-| `* *` | journalist seeking a particular source | search contacts by role | find relevant witnesses, experts, officials, or other source types |
-| `* *` | journalist managing international correspondence | search contacts by location or region | find people who are directly connected to the relevant area |
-| `* *` | journalist seeking different perspectives | search contacts by profession | find sources with relevant expertise |
-| `* *` | journalist covering stories in various sectors | search contacts by industry | find people with direct knowledge of the relevant industry |
-| `* *` | journalist covering stories involving stakeholders | search contacts by organisation | find people who directly represent the relevant organisation |
-| `* *` | journalist receiving a call | search contacts by phone number | identify whether the caller is an existing contact |
-| `* *` | journalist receiving an email | search contacts by email address | identify whether the sender is an existing contact |
-| `* *` | journalist communicating across regions | search contacts by language | identify people I can communicate with in the required language |
-| `* *` | senior journalist | assign a role to a contact | record the type of liaison or source relationship involved |
-| `* *` | journalist communicating with different contacts | record a contact's preferred contact method | know the best way to reach each source |
-| `* *` | journalist managing sources known by different names | record a contact's alias | identify the same person when a different name is used |
-| `* *` | journalist adding a new source | receive a duplicate-contact warning | avoid creating records with an existing phone number or email address |
-| `* *` | journalist who often contacts certain sources | mark a contact as a favourite | access frequently used contacts more easily |
-| `* *` | journalist with inactive sources | archive and restore contacts | keep inactive records available without cluttering the active list |
-| `* *` | journalist managing multiple stories | assign and update a story priority | identify work that requires attention first |
-| `* *` | reporter speaking to a source | append a timestamped note to a contact | keep a chronological record of statements and interactions |
-| `* *` | busy reporter managing several leads | schedule a follow-up or deadline | avoid missing promised callbacks, interviews, or verification work |
-| `* *` | busy reporter | view pending follow-ups and deadlines | see upcoming work in chronological order and recognise overdue items |
-| `*` | time-pressured reporter using the terminal | use command aliases and tab completion | query and record information without typing full commands or memorising IDs |
-| `*` | investigative journalist sharing a screen or working in public | use a redacted display mode | protect confidential identities and personal details from shoulder-surfing |
-| `*` | journalist handing a story to desk editors | export filtered source dossiers as Markdown or plain text | let editors and fact-checkers verify attribution without access to my command-line setup |
+| Priority | As a …​                                                        | I want to …​                                                 | So that I can…​                                                                          |
+| -------- | -------------------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `* * *`  | investigative journalist                                       | add a new contact with basic details                         | build a database of sources                                                              |
+| `* * *`  | investigative journalist                                       | view all active contacts                                     | quickly browse my source network                                                         |
+| `* * *`  | investigative journalist                                       | edit a contact's details                                     | keep my database accurate without recreating contacts                                    |
+| `* * *`  | investigative journalist                                       | delete a contact                                             | remove obsolete contacts from my database                                                |
+| `* * *`  | journalist with frequent story assignments                     | add a story                                                  | record a new story                                                                       |
+| `* * *`  | journalist working on different types of stories               | add tags to stories                                          | categorise different types of stories                                                    |
+| `* * *`  | journalist working on several assignments                      | view all stories                                             | keep track of stories I have worked on                                                   |
+| `* * *`  | journalist covering a developing story                         | edit a story's name                                          | keep the story title current and relevant                                                |
+| `* * *`  | journalist with obsolete assignments                           | delete a story                                               | remove cancelled, shelved, or irrelevant stories without deleting their contacts         |
+| `* * *`  | journalist working on many stories simultaneously              | find stories by keywords                                     | quickly locate stories among a huge list                                                 |
+| `* * *`  | journalist liaising with several contacts for a story          | assign a contact to a story                                  | record the sources involved in that story                                                |
+| `* * *`  | journalist correcting a source assignment                      | unassign a contact from a story                              | remove an irrelevant or incorrect association while retaining the contact                |
+| `* * *`  | journalist managing a story                                    | list contacts assigned to a story                            | know which sources are needed for that story                                             |
+| `* * *`  | journalist reviewing a source                                  | view the stories associated with a contact                   | track the history of stories for which I have liaised with that source                   |
+| `* *`    | investigative journalist covering a breaking story             | search contacts using multiple keywords, locations, and tags | retrieve relevant witnesses and sources quickly                                          |
+| `* *`    | journalist seeking a particular source                         | search contacts by role                                      | find relevant witnesses, experts, officials, or other source types                       |
+| `* *`    | journalist managing international correspondence               | search contacts by location or region                        | find people who are directly connected to the relevant area                              |
+| `* *`    | journalist seeking different perspectives                      | search contacts by profession                                | find sources with relevant expertise                                                     |
+| `* *`    | journalist covering stories in various sectors                 | search contacts by industry                                  | find people with direct knowledge of the relevant industry                               |
+| `* *`    | journalist covering stories involving stakeholders             | search contacts by organisation                              | find people who directly represent the relevant organisation                             |
+| `* *`    | journalist receiving a call                                    | search contacts by phone number                              | identify whether the caller is an existing contact                                       |
+| `* *`    | journalist receiving an email                                  | search contacts by email address                             | identify whether the sender is an existing contact                                       |
+| `* *`    | journalist communicating across regions                        | search contacts by language                                  | identify people I can communicate with in the required language                          |
+| `* *`    | senior journalist                                              | assign a role to a contact                                   | record the type of liaison or source relationship involved                               |
+| `* *`    | journalist communicating with different contacts               | record a contact's preferred contact method                  | know the best way to reach each source                                                   |
+| `* *`    | journalist managing sources known by different names           | record a contact's alias                                     | identify the same contact when a different name is used                                  |
+| `* *`    | journalist adding a new source                                 | receive a duplicate-contact warning                          | avoid creating records with an existing phone number or email address                    |
+| `* *`    | journalist who often contacts certain sources                  | mark a contact as a favourite                                | access frequently used contacts more easily                                              |
+| `* *`    | journalist with inactive sources                               | archive and restore contacts                                 | keep inactive records available without cluttering the active list                       |
+| `* *`    | journalist managing multiple stories                           | assign and update a story priority                           | identify work that requires attention first                                              |
+| `* *`    | reporter speaking to a source                                  | append a timestamped note to a contact                       | keep a chronological record of statements and interactions                               |
+| `* *`    | busy reporter managing several leads                           | schedule a follow-up or deadline                             | avoid missing promised callbacks, interviews, or verification work                       |
+| `* *`    | busy reporter                                                  | view pending follow-ups and deadlines                        | see upcoming work in chronological order and recognise overdue items                     |
+| `* *`    | busy reporter liaising with multiple contacts                  | view the follow-ups for a particuluar contact                | track upcoming tasks and meetings involving that specific person                         |
+| `*`      | time-pressured reporter using the terminal                     | use command aliases and tab completion                       | query and record information without typing full commands or memorising IDs              |
+| `*`      | investigative journalist sharing a screen or working in public | use a redacted display mode                                  | protect confidential identities and contact details from shoulder-surfing                |
+| `*`      | journalist handing a story to desk editors                     | export filtered source dossiers as Markdown or plain text    | let editors and fact-checkers verify attribution without access to my command-line setup |
 
 
 ### Use cases
 
-(For all use cases below, the **System** is the `AddressBook` and the **Actor** is the `user`, unless specified otherwise)
+(For all use cases below, the **System** is `PressMemo` and the **Actor** is the `user`, unless specified otherwise)
 
 #### Use Case: UC1 - Add Contact
 
@@ -449,7 +567,7 @@ Actor: User
 
 Guarantees:
 
-- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the contacts that match the specified filter
+- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the stories that match the specified filter
 - The ActiveContactList  and contact panel remain unchanged
 
 ##### MSS:
@@ -505,52 +623,121 @@ Use case ends
 - System informs the user that the contact is already assigned to the specified story
 - Use case ends
 
-#### Use Case: UC5 – Add Story
+#### Use Case: UC5 - Add Story
 
 Actor: User
 
+##### Guarantees:
+
+- At the end of MSS, the new story is added to the ArchiveStoryList and displayed in the story panel
+- At the end of MSS, ActiveStoryList is updated to show all stories (ActiveStoryList = ArchiveStoryList)
+
 ##### MSS:
 
-1. User enters the add story command with the story information.
-2. System parses the command.
-3. System validates the provided story information.
-4. System adds the new story.
-5. System saves the updated data to storage.
-6. System displays a success message.
+1. User requests to add a story by providing the story name and optional tags
+2. System adds the story to the ArchiveStoryList
+3. System updates the ActiveStoryList and story panel to display all stories
+4. System informs the user in the console that the story has been added successfully
 
 Use case ends.
 
 ##### Extensions:
 
-3a. User provides invalid or missing story information.
+1a. Crucial details are missing or format is invalid (e.g. blank story name or invalid tag format).
 
-- System informs the user that the provided information is invalid.
+- System informs the user in the console of the invalid command format.
 - Use case ends.
 
-4a. A story with the same name already exists.
+1b. A story with the same name already exists in the ArchiveStoryList.
 
-- System informs the user that the story already exists.
+- System informs the user in the console that the story already exists.
 - Use case ends.
 
-#### **Use case:  UC6 – Delete a person**
+#### Use Case: UC6 - Delete a contact
 
 Actor: User
 
-**MSS**
+##### MSS:
 
 1. User requests to list contacts
-2. AddressBook shows a list of contacts
+2. PressMemo shows a list of contacts
 3. User requests to delete a specific contact in the list
-4. AddressBook deletes the contact
-  Use case ends.
+4. PressMemo deletes the contact
 
-**Extensions**
-
-- 2a. The list is empty.
 Use case ends.
-- 3a. The given index is invalid.
-  - 3a1. AddressBook shows an error message.
-  Use case resumes at step 2.
+
+##### Extensions:
+
+2a. The list is empty.
+
+- Use case ends.
+
+3a. The given index is invalid (not positive integer or larger than the number of contacts displayed)
+
+- PressMemo shows an error message.
+- Use case resumes at step 2.
+
+#### Use Case: UC8 - Find stories by keywords
+
+Actor: User
+
+##### Guarantees:
+
+- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the stories from the ArchiveStoryList whose names contain at least one of the specified keywords (case-insensitive, whole-word match)
+- The ActiveContactList, ActiveFollowupList, and ArchiveStoryList remain unchanged
+
+##### MSS:
+
+1. User request to find stories, providing one or more search keywords
+2. System filters stories whose names contain at least one of the specified keywords
+3. System updates the ActiveStoryList and story panel to display the matching stories
+4. System informs the user in the console of the number of matching stories listed
+
+Use case ends.
+
+##### Extensions:
+
+1a. User does not provide any keywords (empty search query).
+
+- System informs the user in the console of the invalid command format.
+- Use case ends.
+
+2a. No stories match the specified keywords.
+
+- System updates the story panel to display an empty list.
+- System informs the user in the console that 0 stories are matched.
+- Use case ends.
+
+#### Use Case: UC9 - List follow-ups
+
+Actor: User
+
+##### Guarantees:
+
+- At the end of MSS and Ext. 2a, the ActiveFollowupList is updated to show either all follow-ups from the ArchiveFollowupList (if no contact index is specified) or only the follow-ups associated with the specified contact in the ActiveContactList
+- ActiveContactList, ActiveStoryList, and all archive lists remain unchanged
+
+##### MSS:
+
+1. User requests to list follow-ups, optionally specifying a contact index
+2. If a contact index was specified, System filters the follow-ups to include only those associated with the specified contact
+3. System updates the ActiveFollowupList and followup panel to display the follow-ups
+4. System informs the user in the console that the follow-ups have been listed successfully
+
+Use case ends.
+
+##### Extensions:
+
+1a. User specifies an invalid contact index  (not positive integer or larger than the number of contacts displayed).
+
+- System informs the user in the console of the invalid index.
+- Use case ends.
+
+2a. There are no follow-ups associated with the specified contact.
+
+- 2a1. System updates the followup panel to display an empty list.
+- 2a2. System informs the user in the console that no followups have been matched.
+- Use case ends.
 
 ### Non-Functional Requirements
 
@@ -568,23 +755,63 @@ Use case ends.
 
 ### Glossary
 
-* **Active Contact List**: The list of contacts currently displayed in the Contact Panel. Contacts in this list can be referenced using their ContactIndex.
-* **Active Story List**: The list of stories currently displayed in the Story Panel. Stories in this list can be referenced using their StoryIndex.
-* **Archive Contact List**: The list containing all contacts stored in PressMemo, including contacts that are not currently displayed in the Active Contact List.
-* **Archive Story List**: The list containing all stories stored in PressMemo, including stories that are not currently displayed in the Active Story List.
+#### UI Components
+
+![Ui](images/Ui-labelled.png)
+
+| Number | Component name | Definition                                                                     |
+| ------ | -------------- | ------------------------------------------------------------------------------ |
+| 0      | console        | interface for inputting `command`s and viewing `response`s                     |
+| 1      | command bar    | widget for inputting `command`s                                                |
+| 2      | message panel  | widget that displays the response to the most recently input `command`, if any |
+| 3      | contact panel  | widget that displays the `Active Contact List`                                 |
+| 4      | story panel    | widget that displays the `Active Story List`                                   |
+| 5      | followup panel | widget that displays the `Active Followup List`                                |
+| 6      | help panel     | toggle-able widget that displays the `help info` when active                   |
+
+#### Input data types
+
+| Input type     | Definition                                                                                                                                                           | Format/s                                                                                                                                                                                                  | Examples                   |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| user string    | A typed unit of text input from the user.<br><br>Behaviour for invalid `user string`s is unspecified, and may result in unexpected behaviour such as error messages. | Valid `user string`s comprise only alphanumeric characters and/or spaces (U+0020). It must contain at least 1 alphanumeric character.<br><br>Any spaces at the start or end of`user string`s are ignored. | wumpus<br><br>wumpus farts |
+| word           | A `user string` that does not contain spaces                                                                                                                         | Does not contain spaces.                                                                                                                                                                                  | wumpus<br><br>wumpusfarts  |
+| Contact Index  | A `word` representing the 1-based position of a `Contact` in the `Active Contact List`, used to identify that Contact in `command`s                                  | Integer between and including 1 and the number of `Contact`s in the `Active Contact List`.<br><br>If the `Active Contact List` is empty, there is no valid `Contact Index`                                | 1                          |
+| Story Index    | A `word` representing the 1-based position of a `Story` in the `Active Story List`, used to identify that `Story` in `command`s                                      | Integer between and including 1 and the number of `Story`s in the `Active Story List`<br><br>If the `Active Story List` is empty, there is no valid `Story Index`                                         | 2                          |
+| Followup Index | A `word` representing the 1-based position of a `Followup` in the `Active Followup List`, used to identify that `Followup` in `command`s                             | Integer between and including 1 and the number of `Followup`s in the `Active Followup List`<br><br>If the `Active Followup List` is empty, there is no valid `Followup Index`                             | 1                          |
+
+#### Command format
+
+| Input type    | Definition                                                                                                                                       | Format/s                                                                                                                                                                                                          | Examples                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| command       | A single instruction from the user.<br>A user inputs a `command` using the `command bar`.<br>                                                    | A `command` comprises: a `command name` or `shortcut` followed by a `preamble`, and then a `argument list`.<br><br>`command name` is mandatory while the other parts may be optional (depending on the `command`) | editstory<br><br>1 n/ find wumpus |
+| command name  | A `word` specifying the type/ class of a `command`.                                                                                              | Must be space-separated from the `preamble` (or `argument list` if there is no `preamble`)<br>                                                                                                                    | editstory                         |
+| shortcut      | A `word` alias for a `command name`, defined by the user.<br><br>Using a shortcut in a command is equivalent to using the aliased `command name` | Must be space-separated from the `preamble` (or `argument list` if there is no `preamble`)<br><br>A shortcut must be defined by the user (using the `shortcut` command) before it can be used                     | ls                                |
+| preamble      | A `user string` specifying some behaviour of a command.                                                                                          | Must be space-separated from the `argument name` (and `argument list`, if any)                                                                                                                                    | 1<br><br>smelly wumpus            |
+| argument list | A list of `argument`s that specifies the behaviour of a `command`.                                                                               | The order of `argument`s does not matter; every permutation of the same `argument`s produces the same outcome                                                                                                     | n/ find wumpus t/ smelly          |
+| argument      | A specification of an aspect of a `command`                                                                                                      | Comprises a `prefix`, followed by a `field`.<br><br>`prefix` is mandatory while `field` may be optional (depending on the `command` and `argument`)                                                               | n/find wumpus<br><br>t/           |
+| prefix        | Identifies the aspect of a `command` specified by an `argument`                                                                                  | Comprises a `word` followed by a forward slash (U+002F).<br><br>Must be space-separated from any previous item.                                                                                                   | n/<br><br>ci/                     |
+| field         | A `user string` that provides information for an `argument`                                                                                      | Must follow a `prefix`                                                                                                                                                                                            | find wumpus                       |
+
+#### Domain terms
+
+* **Contact**: A contact whose information is stored in PressMemo, including a name, phone number, and email address. A contact can optionally include any number of **tags**.
+* **Story**: A news story or topic managed in PressMemo that may be linked to one or more Contacts. A Story can optionally include any number of **tags**.
+* **Follow-up**: An action item, task or upcoming event related to a Contact. Each followup is described by a **description**. 
 * **Assign**: To create a link between an existing Contact and an existing Story.
 * **Assigned Contact**: A Contact that has been linked to a particular Story.
-* **Command**: A text instruction entered by the user to perform an action in PressMemo. The first String is the command name, followed by any fields or arguments required by that command.
-* **Contact**: A person whose information is stored in PressMemo, including a name, phone number, and optional email address.
-* **ContactIndex**: The 1-based position of a Contact in the Active Contact List, used to identify that Contact in commands.
-* **Contact Panel**: The part of the PressMemo interface that displays the Active Contact List.
-* **Data File**: The local JSON file used by PressMemo to store application data between sessions.
-* **Filter**: A condition used to narrow down the Contacts or Stories displayed to the user.
-* **Story**: A news story or topic managed in PressMemo that may be linked to one or more Contacts.
-* **StoryIndex**: The 1-based position of a Story in the Active Story List, used to identify that Story in commands.
-* **Story Panel**: The part of the PressMemo interface that displays the Active Story List.
-* **String**: A sequence of characters used as input in PressMemo commands. Strings containing spaces should be enclosed in double quotation marks (`"..."`). Use `\"` to represent a double quotation mark inside a quoted String.
+* **Assigned Story**: A Story that has been linked to a particular Contact.
 * **Unassign**: To remove the link between a Contact and a Story without deleting either the Contact or the Story.
+
+#### Solution-specific terms
+
+* **Data Files**: The local JSON files used by PressMemo to store application data between sessions.
+* **Active Contact List**: The list of contacts currently displayed in the Contact Panel. Contacts in this list can be referenced using their ContactIndex.
+* **Active Story List**: The list of stories currently displayed in the Story Panel. Stories in this list can be referenced using their StoryIndex.
+* **Active Followup List**: The list of follow-ups currently displayed in the Story Panel. Stories in this list can be referenced using their StoryIndex.
+* **Archive Contact List**: The list containing all contacts stored in PressMemo, including contacts that are not currently displayed in the Active Contact List.
+* **Archive Story List**: The list containing all stories stored in PressMemo, including stories that are not currently displayed in the Active Story List.
+* **Archive Followup List**: The list containing all follow-ups stored in PressMemo, including stories that are not currently displayed in the Active Story List.
+* **Filter**: A condition used to select a subset of Contacts, Stories or Follow-ups displayed to the user.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -615,19 +842,19 @@ testers are expected to do more *exploratory* testing.
 
 1. _{ more test cases …​ }_
 
-### Deleting a person
+### Deleting a contact
 
-1. Deleting a person while all persons are being shown
+1. Deleting a contact while all contacts are being shown
 
-   1. Prerequisites: List all persons using the `list` command, with multiple persons in the list.
+   1. Prerequisites: List all contacts using the `list` command, with multiple contacts in the list.
 
-   1. Test case: `delete 1`<br>
+   1. Test case: `deletecontact 1`<br>
       Expected: The first contact is deleted from the list. The status message shows the deleted contact's details.
 
-   1. Test case: `delete 0`<br>
-      Expected: No person is deleted. The status message shows error details.
+   1. Test case: `deletecontact 0`<br>
+      Expected: No contact is deleted. The status message shows error details.
 
-   1. Other incorrect delete commands to try: `delete`, `delete x`, `...` (where x is larger than the list size)<br>
+   1. Other incorrect delete commands to try: `deletecontact`, `deletecontact x`, `...` (where x is larger than the list size)<br>
       Expected: Similar to previous.
 
 1. _{ more test cases …​ }_

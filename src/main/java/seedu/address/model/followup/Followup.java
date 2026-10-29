@@ -5,8 +5,8 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 import java.util.Objects;
 
 import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.model.person.Name;
-import seedu.address.model.person.Person;
+import seedu.address.model.contact.Contact;
+import seedu.address.model.contact.Name;
 
 /**
  * Represents a Followup in the address book.
@@ -43,13 +43,12 @@ public class Followup {
     /**
      * Returns whether the contact is linked to this Followup
      */
-    public boolean isFor(Person contact) {
+    public boolean isFor(Contact contact) {
         return this.contact.equals(contact.getName());
     }
 
     /**
-     * Returns true if both followups have the same name.
-     * This defines a weaker notion of equality between two followups.
+     * Returns true if both followups are semantically equal.
      */
     public boolean isSameFollowup(Followup otherFollowup) {
         if (otherFollowup == this) {
@@ -57,7 +56,8 @@ public class Followup {
         }
 
         return otherFollowup != null
-                && otherFollowup.getDescription().equals(getDescription());
+                && description.equals(otherFollowup.description)
+                && contact.equals(otherFollowup.contact);
     }
 
     /**
