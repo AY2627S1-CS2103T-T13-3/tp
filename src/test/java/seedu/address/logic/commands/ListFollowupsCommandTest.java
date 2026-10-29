@@ -25,6 +25,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
+import seedu.address.testutil.ContactBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) and unit tests for ListFollowupsCommand.
@@ -100,6 +101,24 @@ public class ListFollowupsCommandTest {
 
         assertCommandSuccess(new ListFollowupsCommand(danielIndex), model, expectedMessage, expectedModel);
         assertTrue(model.getFilteredFollowupList().isEmpty());
+    }
+
+    @Test
+    public void execute_editContactNameAfterListFollowups_updatesFilterAndAssignedFollowupsRemain() throws Exception {
+        ListFollowupsCommand listFollowupsCommand = new ListFollowupsCommand(INDEX_FIRST_CONTACT);
+        listFollowupsCommand.execute(model);
+        assertEquals(1, model.getFilteredFollowupList().size());
+
+        // Edit the contact's name
+        Contact contactToEdit = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Contact editedContact = new ContactBuilder(contactToEdit).withName("Renamed Contact").build();
+        model.setContact(contactToEdit, editedContact);
+
+        // Filter status and filtered followups should be updated
+        String expectedStatus = String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, editedContact.getName());
+        assertEquals(expectedStatus, model.getFollowupFilterStatusProperty().getValue());
+        assertEquals(1, model.getFilteredFollowupList().size());
+        assertEquals(editedContact.getName(), model.getFilteredFollowupList().get(0).getContact());
     }
 
     @Test

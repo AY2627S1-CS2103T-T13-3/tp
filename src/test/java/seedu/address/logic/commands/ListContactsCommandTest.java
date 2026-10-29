@@ -23,6 +23,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryName;
 import seedu.address.testutil.ContactBuilder;
 
 /**
@@ -110,6 +111,48 @@ public class ListContactsCommandTest {
         // The edited contact must still be present in the filtered contact list!
         assertEquals(1, model.getFilteredContactList().size());
         assertEquals(editedContact.getName(), model.getFilteredContactList().get(0).getName());
+    }
+
+    @Test
+    public void execute_editContactNameAfterListContacts_contactRemainsInFilteredList() throws Exception {
+        Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        model.assignStory(contact, story);
+
+        ListContactsCommand listContactsCommand = new ListContactsCommand(INDEX_FIRST_STORY);
+        listContactsCommand.execute(model);
+        assertEquals(1, model.getFilteredContactList().size());
+
+        // Edit the contact's name while under listcontacts filter
+        Contact contactToEdit = model.getFilteredContactList().get(0);
+        Contact editedContact = new ContactBuilder(contactToEdit).withName("New Contact Name").build();
+        model.setContact(contactToEdit, editedContact);
+
+        // The edited contact must still be present in the filtered contact list!
+        assertEquals(1, model.getFilteredContactList().size());
+        assertEquals(editedContact.getName(), model.getFilteredContactList().get(0).getName());
+    }
+
+    @Test
+    public void execute_editStoryNameAfterListContacts_updatesFilterAndAssignedContactsRemain() throws Exception {
+        Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
+        Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        model.assignStory(contact, story);
+
+        ListContactsCommand listContactsCommand = new ListContactsCommand(INDEX_FIRST_STORY);
+        listContactsCommand.execute(model);
+        assertEquals(1, model.getFilteredContactList().size());
+
+        // Edit the story's name
+        Story storyToEdit = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        Story editedStory = new Story(new StoryName("Renamed Story"), storyToEdit.getTags(), storyToEdit.getContacts());
+        model.setStory(storyToEdit, editedStory);
+
+        // Filter status and filtered contacts should be updated
+        String expectedStatus = String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, editedStory.getName());
+        assertEquals(expectedStatus, model.getContactFilterStatusProperty().getValue());
+        assertEquals(1, model.getFilteredContactList().size());
+        assertEquals(contact.getName(), model.getFilteredContactList().get(0).getName());
     }
 
     @Test

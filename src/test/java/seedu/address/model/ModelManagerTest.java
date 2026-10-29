@@ -17,6 +17,7 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.GuiSettings;
+import seedu.address.model.contact.Contact;
 import seedu.address.model.contact.NameContainsKeywordsPredicate;
 import seedu.address.model.contact.exceptions.ContactNotFoundException;
 import seedu.address.model.followup.Followup;
@@ -25,6 +26,7 @@ import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
 import seedu.address.model.story.exceptions.StoryNotFoundException;
 import seedu.address.testutil.AddressBookBuilder;
+import seedu.address.testutil.ContactBuilder;
 
 public class ModelManagerTest {
 
@@ -179,5 +181,97 @@ public class ModelManagerTest {
 
         modelManager.updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
         assertEquals(Model.FILTER_STATUS_ALL, modelManager.getFollowupFilterStatusProperty().getValue());
+    }
+
+    @Test
+    public void setContact_nameChangedWhenFilteredByContact_updatesStoryAndFollowupFilters() {
+        ModelManager modelManager = new ModelManager();
+        Contact contact = new ContactBuilder().withName("Alice Pauline").build();
+        Story story = new Story(new StoryName("Alpha Story"), Set.of(), List.of(contact.getName()));
+        Followup followup = new Followup(new FollowupDescription("Call back"), contact.getName());
+
+        modelManager.addContact(contact);
+        modelManager.addStory(story);
+        modelManager.addFollowup(followup);
+
+        String initialStatus = String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, contact.getName());
+        modelManager.updateFilteredStoryList(s -> s.isAssigned(contact), initialStatus);
+        modelManager.updateFilteredFollowupList(f -> f.isFor(contact), initialStatus);
+
+        assertEquals(1, modelManager.getFilteredStoryList().size());
+        assertEquals(1, modelManager.getFilteredFollowupList().size());
+
+        Contact editedContact = new ContactBuilder(contact).withName("Alicia Pauline").build();
+        modelManager.setContact(contact, editedContact);
+
+        String expectedStatus = String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, editedContact.getName());
+        assertEquals(expectedStatus, modelManager.getStoryFilterStatusProperty().getValue());
+        assertEquals(1, modelManager.getFilteredStoryList().size());
+        assertEquals(story.getName(), modelManager.getFilteredStoryList().get(0).getName());
+
+        assertEquals(expectedStatus, modelManager.getFollowupFilterStatusProperty().getValue());
+        assertEquals(1, modelManager.getFilteredFollowupList().size());
+        assertEquals(followup.getDescription(), modelManager.getFilteredFollowupList().get(0).getDescription());
+    }
+
+    @Test
+    public void setContact_nameChangedWhenFilteredByDifferentContact_preservesFilters() {
+        ModelManager modelManager = new ModelManager();
+        Contact contact = new ContactBuilder().withName("Alice Pauline").build();
+        Contact otherContact = new ContactBuilder().withName("Bob Choo").build();
+
+        modelManager.addContact(contact);
+        modelManager.addContact(otherContact);
+
+        String bobStatus = String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, otherContact.getName());
+        modelManager.updateFilteredStoryList(s -> s.isAssigned(otherContact), bobStatus);
+        modelManager.updateFilteredFollowupList(f -> f.isFor(otherContact), bobStatus);
+
+        Contact editedContact = new ContactBuilder(contact).withName("Alicia Pauline").build();
+        modelManager.setContact(contact, editedContact);
+
+        assertEquals(bobStatus, modelManager.getStoryFilterStatusProperty().getValue());
+        assertEquals(bobStatus, modelManager.getFollowupFilterStatusProperty().getValue());
+    }
+
+    @Test
+    public void setStory_nameChangedWhenFilteredByStory_updatesContactFilter() {
+        ModelManager modelManager = new ModelManager();
+        Contact contact = new ContactBuilder().withName("Alice Pauline").build();
+        Story story = new Story(new StoryName("Alpha Story"), Set.of(), List.of(contact.getName()));
+
+        modelManager.addContact(contact);
+        modelManager.addStory(story);
+
+        String initialStatus = String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, story.getName());
+        modelManager.updateFilteredContactList(c -> story.isAssigned(c), initialStatus);
+
+        assertEquals(1, modelManager.getFilteredContactList().size());
+
+        Story editedStory = new Story(new StoryName("Beta Story"), Set.of(), List.of(contact.getName()));
+        modelManager.setStory(story, editedStory);
+
+        String expectedStatus = String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, editedStory.getName());
+        assertEquals(expectedStatus, modelManager.getContactFilterStatusProperty().getValue());
+        assertEquals(1, modelManager.getFilteredContactList().size());
+        assertEquals(contact.getName(), modelManager.getFilteredContactList().get(0).getName());
+    }
+
+    @Test
+    public void setStory_nameChangedWhenFilteredByDifferentStory_preservesFilters() {
+        ModelManager modelManager = new ModelManager();
+        Story story = new Story(new StoryName("Alpha Story"), Set.of());
+        Story otherStory = new Story(new StoryName("Other Story"), Set.of());
+
+        modelManager.addStory(story);
+        modelManager.addStory(otherStory);
+
+        String otherStatus = String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, otherStory.getName());
+        modelManager.updateFilteredContactList(c -> otherStory.isAssigned(c), otherStatus);
+
+        Story editedStory = new Story(new StoryName("Beta Story"), Set.of());
+        modelManager.setStory(story, editedStory);
+
+        assertEquals(otherStatus, modelManager.getContactFilterStatusProperty().getValue());
     }
 }

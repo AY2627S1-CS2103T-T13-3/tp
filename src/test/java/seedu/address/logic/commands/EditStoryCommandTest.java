@@ -31,9 +31,11 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.contact.Contact;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
+import seedu.address.testutil.ContactBuilder;
 import seedu.address.testutil.EditStoryDescriptorBuilder;
 import seedu.address.testutil.StoryBuilder;
 
@@ -279,5 +281,39 @@ public class EditStoryCommandTest {
         EditStoryCommand editStoryCommand = new EditStoryCommand(maxIntIndex, descriptor);
 
         assertCommandFailure(editStoryCommand, model, MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+    }
+
+    @Test
+    public void execute_editStoryName_updatesContactFilter() {
+        Story storyToEdit = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+        Contact contact = new ContactBuilder().withName("Alice Pauline").build();
+        model.addContact(contact);
+        model.assignStory(contact, storyToEdit);
+
+        Story assignedStory = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
+
+        model.updateFilteredContactList(
+                c -> assignedStory.isAssigned(c),
+                String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, assignedStory.getName()));
+
+        EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).build();
+        EditStoryCommand editStoryCommand = new EditStoryCommand(INDEX_FIRST_STORY, descriptor);
+
+        Story editedStory = new Story(new StoryName(VALID_STORYNAME_FRAUD),
+                assignedStory.getTags(), assignedStory.getContacts());
+        String expectedMessage = String.format(EditStoryCommand.MESSAGE_EDIT_STORY_SUCCESS,
+                Messages.format(editedStory));
+
+        Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
+        expectedModel.updateFilteredContactList(
+                c -> assignedStory.isAssigned(c),
+                String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, assignedStory.getName()));
+        expectedModel.setStory(assignedStory, editedStory);
+
+        assertCommandSuccess(editStoryCommand, model, expectedMessage, expectedModel);
+
+        String expectedStatus = String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, editedStory.getName());
+        assertEquals(expectedStatus, model.getContactFilterStatusProperty().getValue());
+        assertEquals(1, model.getFilteredContactList().size());
     }
 }

@@ -22,6 +22,12 @@ public interface Model {
     /** Default filter status when all items are shown. */
     String FILTER_STATUS_ALL = "All";
 
+    /** Format string for filter status when items are filtered by a contact. */
+    String FILTER_STATUS_BY_CONTACT_FORMAT = "Filtered by contact: \"%s\"";
+
+    /** Format string for filter status when items are filtered by a story. */
+    String FILTER_STATUS_BY_STORY_FORMAT = "Filtered by story: \"%s\"";
+
     /**
      * Returns the user prefs.
      */

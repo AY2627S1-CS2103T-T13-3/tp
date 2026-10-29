@@ -63,7 +63,7 @@ public class ListContactsCommand extends Command {
         // Display only contacts assigned to this story
         model.updateFilteredContactList(
                 contact -> selectedStory.isAssigned(contact),
-                String.format("Filtered by story: \"%s\"", selectedStory.getName()));
+                String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, selectedStory.getName()));
 
         return new CommandResult(
                 String.format(MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,
