@@ -469,12 +469,12 @@ PressMemo automatically saves contact, story, assignment, and follow-up records 
 
 ### Editing the data files
 
-PressMemo saves contacts, their story assignments, and follow-up reminders in `data/addressbook.json`. Stories and their contact assignments are saved in `data/stories.json`. User preferences and custom shortcuts are saved in `preferences.json`. These paths are relative to the folder from which you launch the app. If you follow the Quick start instructions, this is the JAR file's folder. The files are loaded on startup.
+PressMemo saves contacts, stories, their assignments, and follow-up reminders together in `data/addressbook.json`. User preferences and custom shortcuts are saved in `preferences.json`. These paths are relative to the folder from which you launch the app. If you follow the Quick start instructions, this is the JAR file's folder. The files are loaded on startup.
 
 Advanced users can update records directly by editing these JSON files while the app is closed. Back up all files before editing.
 
 <div markdown="span" class="alert alert-warning"> **Caution:**
-If the contact file is invalid or cannot be read, PressMemo starts with an empty contact list. If the story file is invalid or cannot be read, it starts with an empty story list. A missing contact file results in sample contacts; a missing story file results in an empty story list. An invalid file may be overwritten after the next successful command, so restore your backup before running commands.<br>
+If the address book file is invalid or cannot be read, PressMemo starts with empty contact, story, and follow-up lists. A missing address book file results in sample data. An invalid file may be overwritten after the next successful command, so restore your backup before running commands.<br>
 Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data files only if you are confident that you can update them correctly.
 </div>
 
@@ -483,7 +483,7 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 ## FAQ
 
 **Q**: How do I transfer my data to another computer?<br>
-**A**: Close PressMemo on both computers. Copy `data/addressbook.json` and `data/stories.json` from your old launch folder to the new one. Copy `preferences.json` too if you want to retain custom shortcuts and GUI settings. Back up existing files before replacing them.
+**A**: Close PressMemo on both computers. Copy `data/addressbook.json` from your old launch folder to the new one. Copy `preferences.json` too if you want to retain custom shortcuts and GUI settings. Back up existing files before replacing them.
 
 --------------------------------------------------------------------------------------------------------------------
 

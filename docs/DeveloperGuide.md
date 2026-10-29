@@ -149,8 +149,8 @@ The `Model` component,
 <img src="images/StorageClassDiagram.png" width="550" />
 
 The `Storage` component,
-* can save contact data, story data, follow-up data, and user preference data in JSON format, and read them back into corresponding objects.
-* is implemented by `StorageManager`, which delegates the actual JSON file access to `JsonAddressBookStorage`, `JsonStoryStorage`, and `JsonUserPrefsStorage`.
+* can save contact, story, and follow-up data together in one JSON file, while saving user preference data in a separate JSON file, and read them back into corresponding objects.
+* is implemented by `StorageManager`, which delegates the actual JSON file access to `JsonAddressBookStorage` and `JsonUserPrefsStorage`.
 * uses JSON-adapted classes to serialize and deserialize contacts, stories, follow-ups, and their associations.
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`).
 
