@@ -77,7 +77,7 @@ public class EditContactCommand extends Command {
         }
 
         Contact contactToEdit = lastShownList.get(index.getZeroBased());
-        Contact editedContact = createEditedContact(contactToEdit, editContactDescriptor);
+        Contact editedContact = editContactDescriptor.createEditedContact(contactToEdit);
 
         if (!contactToEdit.isSameContact(editedContact) && model.hasContact(editedContact)) {
             throw new CommandException(MESSAGE_DUPLICATE_CONTACT);
@@ -86,29 +86,6 @@ public class EditContactCommand extends Command {
         model.setContact(contactToEdit, editedContact);
         model.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
         return new CommandResult(String.format(MESSAGE_EDIT_CONTACT_SUCCESS, Messages.format(editedContact)));
-    }
-
-    /**
-     * Creates and returns a {@code Contact} with the details of {@code contactToEdit}
-     * edited with {@code editContactDescriptor}.
-     */
-    private static Contact createEditedContact(Contact contactToEdit, EditContactDescriptor editContactDescriptor) {
-        assert contactToEdit != null;
-
-        Name updatedName = editContactDescriptor.getName().orElse(contactToEdit.getName());
-        Phone updatedPhone = editContactDescriptor.getPhone().orElse(contactToEdit.getPhone());
-        Email updatedEmail = editContactDescriptor.getEmail().orElse(contactToEdit.getEmail());
-        Address updatedAddress = editContactDescriptor.getAddress().orElse(contactToEdit.getAddress());
-        Set<Tag> updatedTags = editContactDescriptor.getTags().orElse(contactToEdit.getTags());
-
-        return new Contact(
-                updatedName,
-                updatedPhone,
-                updatedEmail,
-                updatedAddress,
-                updatedTags,
-                contactToEdit.getStories()
-        );
     }
 
     @Override
@@ -213,6 +190,29 @@ public class EditContactCommand extends Command {
          */
         public Optional<Set<Tag>> getTags() {
             return (tags != null) ? Optional.of(Collections.unmodifiableSet(tags)) : Optional.empty();
+        }
+
+        /**
+         * Creates and returns a {@code Contact} with the details of {@code contactToEdit}
+         * edited with this descriptor's fields.
+         */
+        public Contact createEditedContact(Contact contactToEdit) {
+            assert contactToEdit != null;
+
+            Name updatedName = getName().orElse(contactToEdit.getName());
+            Phone updatedPhone = getPhone().orElse(contactToEdit.getPhone());
+            Email updatedEmail = getEmail().orElse(contactToEdit.getEmail());
+            Address updatedAddress = getAddress().orElse(contactToEdit.getAddress());
+            Set<Tag> updatedTags = getTags().orElse(contactToEdit.getTags());
+
+            return new Contact(
+                    updatedName,
+                    updatedPhone,
+                    updatedEmail,
+                    updatedAddress,
+                    updatedTags,
+                    contactToEdit.getStories()
+            );
         }
 
         @Override
