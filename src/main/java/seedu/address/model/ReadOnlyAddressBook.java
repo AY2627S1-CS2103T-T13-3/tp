@@ -23,8 +23,8 @@ public interface ReadOnlyAddressBook {
     ObservableList<Story> getStoryList();
 
     /**
-     * Returns an unmodifiable view of the stories list.
-     * This list will not contain any duplicate stories.
+     * Returns an unmodifiable view of the followups list.
+     * This list will not contain any duplicate followups.
      */
     ObservableList<Followup> getFollowupList();
 

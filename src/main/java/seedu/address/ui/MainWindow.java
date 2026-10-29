@@ -107,7 +107,6 @@ public class MainWindow extends UiPart<Stage> {
         storyListPanel = new StoryListPanel(logic.getFilteredStoryList());
         storyListPanelPlaceholder.getChildren().add(storyListPanel.getRoot());
 
-        // TODO: replace placeholder after add followup feature implemented
         followupListPanel = new FollowupListPanel(logic.getFilteredFollowupList());
         followupListPanelPlaceholder.getChildren().add(followupListPanel.getRoot());
 

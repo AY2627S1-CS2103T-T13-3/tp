@@ -47,7 +47,7 @@ public class AddressBook implements ReadOnlyAddressBook {
 
     /**
      * Replaces the contents of the story list with {@code stories}.
-     * {@code contacts} must not contain duplicate contacts.
+     * {@code stories} must not contain duplicate stories.
      */
     public void setStories(List<Story> stories) {
         this.stories.setStories(stories);
