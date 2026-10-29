@@ -92,6 +92,16 @@ public class ContactTest {
         // different tags -> returns false
         editedAlice = new ContactBuilder(ALICE).withTags(VALID_TAG_HUSBAND).build();
         assertFalse(ALICE.equals(editedAlice));
+
+        // different assigned stories -> returns false
+        Story story = new Story(new StoryName("test"), Set.of());
+        editedAlice = ALICE.assign(story);
+        assertFalse(ALICE.equals(editedAlice));
+
+        // same assigned stories -> returns true
+        Contact aliceWithStoryCopy = ALICE.assign(story);
+        assertTrue(editedAlice.equals(aliceWithStoryCopy));
+        assertEquals(editedAlice.hashCode(), aliceWithStoryCopy.hashCode());
     }
 
     @Test

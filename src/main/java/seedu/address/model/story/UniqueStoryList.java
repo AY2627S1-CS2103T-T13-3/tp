@@ -5,6 +5,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -57,7 +58,7 @@ public class UniqueStoryList implements Iterable<Story> {
     public void setStory(Story target, Story editedStory) {
         requireAllNonNull(target, editedStory);
 
-        int index = internalList.indexOf(target);
+        int index = indexOfSameStory(target);
         if (index == -1) {
             throw new StoryNotFoundException();
         }
@@ -146,5 +147,15 @@ public class UniqueStoryList implements Iterable<Story> {
             }
         }
         return true;
+    }
+
+    /**
+     * Returns the index of the story with the same identity as {@code target}, or -1 if absent.
+     */
+    private int indexOfSameStory(Story target) {
+        return IntStream.range(0, internalList.size())
+                .filter(index -> internalList.get(index).isSameStory(target))
+                .findFirst()
+                .orElse(-1);
     }
 }

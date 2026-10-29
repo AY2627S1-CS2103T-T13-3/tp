@@ -61,7 +61,7 @@ public class Followup {
     }
 
     /**
-     * Returns true if both followups have the same identity and data fields.
+     * Returns true if both followups have the same identity, data, and linked-contact fields.
      * This defines a stronger notion of equality between two followups.
      */
     @Override
