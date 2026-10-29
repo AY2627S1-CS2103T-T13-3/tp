@@ -474,7 +474,7 @@ PressMemo saves contacts, stories, their assignments, and follow-up reminders to
 Advanced users can update records directly by editing these JSON files while the app is closed. Back up all files before editing.
 
 <div markdown="span" class="alert alert-warning"> **Caution:**
-If the address book file is invalid or cannot be read, PressMemo starts with empty contact, story, and follow-up lists. A missing address book file results in sample data. An invalid file may be overwritten after the next successful command, so restore your backup before running commands.<br>
+If the data file is invalid or cannot be read, PressMemo starts with empty contact, story, and follow-up lists. A missing data file results in sample data. An invalid file may be overwritten after the next successful command, so restore your backup before running commands.<br>
 Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data files only if you are confident that you can update them correctly.
 </div>
 
