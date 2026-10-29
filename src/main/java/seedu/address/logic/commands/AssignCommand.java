@@ -22,6 +22,7 @@ import seedu.address.model.story.Story;
 public class AssignCommand extends Command {
 
     public static final String COMMAND_WORD = "assign";
+    public static final String MESSAGE_ALREADY_ASSIGNED = "%s is already assigned to %s.";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Assigns a contact to the story. "
             + "Parameters: "
             + PREFIX_CONTACTINDEX + " CONTACT's INDEX "
@@ -62,6 +63,13 @@ public class AssignCommand extends Command {
 
         Contact contactToAssign = lastShownContactList.get(contactIndex.getZeroBased());
         Story storyToAssign = lastShownStoryList.get(storyIndex.getZeroBased());
+
+        if (contactToAssign.isAssigned(storyToAssign)) {
+            throw new CommandException(String.format(
+                    MESSAGE_ALREADY_ASSIGNED,
+                    contactToAssign.getName(),
+                    storyToAssign.getName()));
+        }
 
         model.assignStory(contactToAssign, storyToAssign);
         model.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
