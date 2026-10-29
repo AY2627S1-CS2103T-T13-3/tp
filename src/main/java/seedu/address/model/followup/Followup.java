@@ -57,7 +57,8 @@ public class Followup {
         }
 
         return otherFollowup != null
-                && otherFollowup.getDescription().equals(getDescription());
+                && description.equals(otherFollowup.description)
+                && contact.equals(otherFollowup.contact);
     }
 
     /**
