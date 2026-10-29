@@ -1,5 +1,8 @@
 package seedu.address.logic.commands;
 
+import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -26,6 +29,7 @@ import seedu.address.logic.parser.Parser;
 import seedu.address.logic.parser.ShortcutCommandParser;
 import seedu.address.logic.parser.UnassignCommandParser;
 import seedu.address.logic.parser.UnshortcutCommandParser;
+import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
  * Contains the command words recognised by the application.
@@ -114,27 +118,33 @@ public final class CommandWords {
             new CommandInfo(ListCommand.COMMAND_WORD,
                     "list",
                     "Lists all contacts and stories.",
-                    noArgs(ListCommand::new)),
+                    noArgs(ListCommand::new, ListCommand.MESSAGE_USAGE)),
             new CommandInfo(ClearCommand.COMMAND_WORD,
                     "clear",
                     "Clears all entries from PressMemo.",
-                    noArgs(ClearCommand::new)),
+                    noArgs(ClearCommand::new, ClearCommand.MESSAGE_USAGE)),
             new CommandInfo(HelpCommand.COMMAND_WORD,
                     "help",
                     "Toggles the help panel with commands and syntax.",
-                    noArgs(HelpCommand::new)),
+                    noArgs(HelpCommand::new, HelpCommand.MESSAGE_USAGE)),
             new CommandInfo(ExitCommand.COMMAND_WORD,
                     "exit",
                     "Exits the application.",
-                    noArgs(ExitCommand::new)));
+                    noArgs(ExitCommand::new, ExitCommand.MESSAGE_USAGE)));
 
     private static final Map<String, CommandInfo> COMMAND_INFO_MAP = COMMAND_INFOS.stream()
             .collect(Collectors.toUnmodifiableMap(CommandInfo::getCommandWord, Function.identity()));
 
     private CommandWords() {}
 
-    private static <T extends Command> Parser<T> noArgs(Supplier<T> supplier) {
-        return arguments -> supplier.get();
+    private static <T extends Command> Parser<T> noArgs(Supplier<T> supplier, String messageUsage) {
+        return arguments -> {
+            requireNonNull(arguments);
+            if (!arguments.trim().isEmpty()) {
+                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, messageUsage));
+            }
+            return supplier.get();
+        };
     }
 
     /** Returns whether {@code commandWord} can be assigned a shortcut. */
