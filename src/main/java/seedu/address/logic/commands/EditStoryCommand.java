@@ -23,7 +23,7 @@ import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
 
 /**
- * Edits the details of an existing story in the address book.
+ * Edits the details of an existing story in PressMemo.
  */
 public class EditStoryCommand extends Command {
 
@@ -41,7 +41,7 @@ public class EditStoryCommand extends Command {
 
     public static final String MESSAGE_EDIT_STORY_SUCCESS = "Edited story: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
-    public static final String MESSAGE_DUPLICATE_STORY = "This story already exists in the address book.";
+    public static final String MESSAGE_DUPLICATE_STORY = "This story already exists in PressMemo.";
 
     private final Index index;
     private final EditStoryDescriptor editStoryDescriptor;

@@ -20,7 +20,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.followup.FollowupDescriptionContainsKeywordsPredicate;
 
-public class FindFollowupCommandTest {
+public class FindFollowupsCommandTest {
 
     private final Model model =
             new ModelManager(getTypicalAddressBook(), new UserPrefs());
@@ -34,11 +34,11 @@ public class FindFollowupCommandTest {
         FollowupDescriptionContainsKeywordsPredicate secondPredicate =
                 new FollowupDescriptionContainsKeywordsPredicate(List.of("second"));
 
-        FindFollowupCommand firstCommand = new FindFollowupCommand(firstPredicate);
-        FindFollowupCommand secondCommand = new FindFollowupCommand(secondPredicate);
+        FindFollowupsCommand firstCommand = new FindFollowupsCommand(firstPredicate);
+        FindFollowupsCommand secondCommand = new FindFollowupsCommand(secondPredicate);
 
         assertTrue(firstCommand.equals(firstCommand));
-        assertTrue(firstCommand.equals(new FindFollowupCommand(firstPredicate)));
+        assertTrue(firstCommand.equals(new FindFollowupsCommand(firstPredicate)));
         assertFalse(firstCommand.equals(secondCommand));
         assertFalse(firstCommand.equals(1));
         assertFalse(firstCommand.equals(null));
@@ -49,7 +49,7 @@ public class FindFollowupCommandTest {
         FollowupDescriptionContainsKeywordsPredicate predicate =
                 new FollowupDescriptionContainsKeywordsPredicate(List.of("B"));
 
-        FindFollowupCommand command = new FindFollowupCommand(predicate);
+        FindFollowupsCommand command = new FindFollowupsCommand(predicate);
         expectedModel.updateFilteredFollowupList(predicate);
 
         assertCommandSuccess(command, model, String.format(MESSAGE_FOLLOWUPS_LISTED_OVERVIEW, 1), expectedModel);
@@ -61,7 +61,7 @@ public class FindFollowupCommandTest {
         FollowupDescriptionContainsKeywordsPredicate predicate =
                 new FollowupDescriptionContainsKeywordsPredicate(List.of("A", "C"));
 
-        FindFollowupCommand command = new FindFollowupCommand(predicate);
+        FindFollowupsCommand command = new FindFollowupsCommand(predicate);
         expectedModel.updateFilteredFollowupList(predicate);
 
         assertCommandSuccess(command, model, String.format(MESSAGE_FOLLOWUPS_LISTED_OVERVIEW, 2), expectedModel);
@@ -73,7 +73,7 @@ public class FindFollowupCommandTest {
         FollowupDescriptionContainsKeywordsPredicate predicate =
                 new FollowupDescriptionContainsKeywordsPredicate(List.of("missing"));
 
-        FindFollowupCommand command = new FindFollowupCommand(predicate);
+        FindFollowupsCommand command = new FindFollowupsCommand(predicate);
         expectedModel.updateFilteredFollowupList(predicate);
 
         assertCommandSuccess(command, model, String.format(MESSAGE_FOLLOWUPS_LISTED_OVERVIEW, 0), expectedModel);
@@ -82,14 +82,14 @@ public class FindFollowupCommandTest {
 
     @Test
     public void constructor_nullPredicate_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> new FindFollowupCommand(null));
+        assertThrows(NullPointerException.class, () -> new FindFollowupsCommand(null));
     }
 
     @Test
     public void execute_nullModel_throwsNullPointerException() {
         FollowupDescriptionContainsKeywordsPredicate predicate =
                 new FollowupDescriptionContainsKeywordsPredicate(List.of("interview"));
-        FindFollowupCommand command = new FindFollowupCommand(predicate);
+        FindFollowupsCommand command = new FindFollowupsCommand(predicate);
         assertThrows(NullPointerException.class, () -> command.execute(null));
     }
 
@@ -97,8 +97,8 @@ public class FindFollowupCommandTest {
     public void toStringMethod() {
         FollowupDescriptionContainsKeywordsPredicate predicate =
                 new FollowupDescriptionContainsKeywordsPredicate(List.of("interview"));
-        FindFollowupCommand command = new FindFollowupCommand(predicate);
-        String expected = FindFollowupCommand.class.getCanonicalName() + "{predicate=" + predicate + "}";
+        FindFollowupsCommand command = new FindFollowupsCommand(predicate);
+        String expected = FindFollowupsCommand.class.getCanonicalName() + "{predicate=" + predicate + "}";
         assertEquals(expected, command.toString());
     }
 }

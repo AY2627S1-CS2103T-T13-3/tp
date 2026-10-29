@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showContactAtIndex;
 import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalFollowups.FOLLOWUP_A;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 import static seedu.address.testutil.TypicalStories.STORY_A;
 
@@ -27,6 +28,7 @@ public class ListCommandTest {
     public void setUp() {
         model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         model.addStory(STORY_A);
+        model.addFollowup(FOLLOWUP_A);
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
     }
 
@@ -34,7 +36,9 @@ public class ListCommandTest {
     public void execute_listIsNotFiltered_showsSameList() {
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
                 expectedModel.getFilteredContactList().size(),
-                expectedModel.getFilteredStoryList().size());
+                expectedModel.getFilteredStoryList().size(),
+                expectedModel.getFilteredFollowupList().size()
+        );
         assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
     }
 
@@ -42,9 +46,13 @@ public class ListCommandTest {
     public void execute_listIsFiltered_showsEverything() {
         showContactAtIndex(model, INDEX_FIRST_CONTACT);
         model.updateFilteredStoryList(story -> false);
+        model.updateFilteredFollowupList(followup -> false);
+        assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
         String expectedMessage = String.format(ListCommand.MESSAGE_SUCCESS,
                 expectedModel.getFilteredContactList().size(),
-                expectedModel.getFilteredStoryList().size());
+                expectedModel.getFilteredStoryList().size(),
+                expectedModel.getFilteredFollowupList().size()
+        );
         assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
     }
 

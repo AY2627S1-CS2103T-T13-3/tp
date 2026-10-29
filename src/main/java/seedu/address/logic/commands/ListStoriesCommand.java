@@ -15,7 +15,7 @@ import seedu.address.model.Model;
 import seedu.address.model.contact.Contact;
 
 /**
- * Lists stories in the address book to the user.
+ * Lists stories in PressMemo to the user.
  */
 public class ListStoriesCommand extends Command {
 
@@ -24,7 +24,7 @@ public class ListStoriesCommand extends Command {
     public static final String MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS =
             "Listed %1$d story(ies) assigned to %2$s";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists stories in the address book.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists stories in PressMemo.\n"
             + "Parameters: [ci/CONTACT_INDEX]\n"
             + "Example: " + COMMAND_WORD + " ci/1";
 

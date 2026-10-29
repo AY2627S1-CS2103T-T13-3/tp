@@ -15,7 +15,7 @@ import seedu.address.model.Model;
 import seedu.address.model.contact.Contact;
 
 /**
- * Lists followups in the address book to the user.
+ * Lists followups in PressMemo to the user.
  */
 public class ListFollowupsCommand extends Command {
 
@@ -24,7 +24,7 @@ public class ListFollowupsCommand extends Command {
     public static final String MESSAGE_LIST_ASSIGNED_FOLLOWUPS_SUCCESS =
             "Listed %1$d followup(s) assigned to %2$s";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists followups in the address book.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists followups in PressMemo.\n"
             + "Parameters: [ci/CONTACT_INDEX]\n"
             + "Example: " + COMMAND_WORD + " ci/1";
 

@@ -82,11 +82,15 @@ public class Messages {
      */
     public static String format(Story story) {
         final StringBuilder builder = new StringBuilder();
-        builder.append(story.getName())
-                .append("; Tags: ");
-        story.getTags().forEach(builder::append);
-        builder.append("; Contacts: ");
-        story.getContacts().forEach(contact -> builder.append("[").append(contact).append("]"));
+        builder.append(story.getName());
+        if (!story.getTags().isEmpty()) {
+            builder.append("; Tags: ");
+            story.getTags().forEach(builder::append);
+        }
+        if (!story.getContacts().isEmpty()) {
+            builder.append("; Contacts: ");
+            story.getContacts().forEach(contact -> builder.append("[").append(contact).append("]"));
+        }
         return builder.toString();
     }
 

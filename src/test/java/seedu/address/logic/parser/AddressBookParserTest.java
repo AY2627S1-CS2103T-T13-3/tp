@@ -37,7 +37,7 @@ import seedu.address.logic.commands.EditStoryCommand;
 import seedu.address.logic.commands.EditStoryCommand.EditStoryDescriptor;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindContactsCommand;
-import seedu.address.logic.commands.FindFollowupCommand;
+import seedu.address.logic.commands.FindFollowupsCommand;
 import seedu.address.logic.commands.FindStoryCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
@@ -205,11 +205,11 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_findFollowup() throws Exception {
+    public void parseCommand_findFollowups() throws Exception {
         List<String> keywords = List.of("interview", "urgent");
-        FindFollowupCommand command = (FindFollowupCommand) parser.parseCommand(
-                FindFollowupCommand.COMMAND_WORD + " " + String.join(" ", keywords));
-        assertEquals(new FindFollowupCommand(new FollowupDescriptionContainsKeywordsPredicate(keywords)), command);
+        FindFollowupsCommand command = (FindFollowupsCommand) parser.parseCommand(
+                FindFollowupsCommand.COMMAND_WORD + " " + String.join(" ", keywords));
+        assertEquals(new FindFollowupsCommand(new FollowupDescriptionContainsKeywordsPredicate(keywords)), command);
     }
 
     @Test
