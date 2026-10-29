@@ -48,11 +48,11 @@ public class StoryCard extends UiPart<Region> {
         super(FXML);
         this.story = story;
         id.setText(displayedIndex + ". ");
-        name.setText(story.getName().fullName);
+        name.setText(story.getName().toString());
         story.getTags().stream()
-                .sorted(Comparator.comparing(tag -> tag.tagName))
+                .sorted(Comparator.comparing(tag -> tag.getName()))
                 .forEach(tag -> {
-                    Label label = new Label(tag.tagName);
+                    Label label = new Label(tag.getName());
                     label.setWrapText(true);
                     label.setMinWidth(0);
                     label.setMinHeight(Region.USE_PREF_SIZE);

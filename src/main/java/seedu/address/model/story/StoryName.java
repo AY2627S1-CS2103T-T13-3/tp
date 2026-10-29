@@ -20,7 +20,7 @@ public class StoryName {
      */
     public static final String VALIDATION_REGEX = "[^\\s/][^/]*";
 
-    public final String fullName;
+    private final String fullName;
 
     /**
      * Constructs a {@code Name}.

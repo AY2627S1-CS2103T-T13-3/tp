@@ -13,7 +13,7 @@ public class Email {
             "Emails should be of the format word@word, where word is a user string that does not contain spaces";
     public static final String VALIDATION_REGEX = "[^\\s/@]+@[^\\s/@]+";
 
-    public final String value;
+    private final String value;
 
     /**
      * Constructs an {@code Email}.
