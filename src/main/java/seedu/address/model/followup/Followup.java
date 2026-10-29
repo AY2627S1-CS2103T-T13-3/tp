@@ -51,13 +51,7 @@ public class Followup {
      * Returns true if both followups are semantically equal.
      */
     public boolean isSameFollowup(Followup otherFollowup) {
-        if (otherFollowup == this) {
-            return true;
-        }
-
-        return otherFollowup != null
-                && description.equals(otherFollowup.description)
-                && contact.equals(otherFollowup.contact);
+        return equals(otherFollowup);
     }
 
     /**
