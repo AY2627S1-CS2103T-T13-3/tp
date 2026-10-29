@@ -9,6 +9,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalContacts.ALICE;
 import static seedu.address.testutil.TypicalContacts.BOB;
 import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
+import static seedu.address.testutil.TypicalFollowups.FOLLOWUP_A;
 
 import java.util.Collection;
 import java.util.List;
@@ -93,7 +94,8 @@ public class AddressBookTest {
     @Test
     public void toStringMethod() {
         String expected = AddressBook.class.getCanonicalName() + "{contacts=" + addressBook.getContactList()
-                + ", stories=" + addressBook.getStoryList() + "}";
+                + ", stories=" + addressBook.getStoryList()
+                + ", followups=" + addressBook.getFollowupList() + "}";
         assertEquals(expected, addressBook.toString());
     }
 
