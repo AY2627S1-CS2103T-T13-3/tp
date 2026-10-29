@@ -12,7 +12,7 @@ import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.story.Story;
 
 /**
- * Panel containing the list of Storys.
+ * Panel containing the list of Stories.
  */
 public class StoryListPanel extends UiPart<Region> {
     private static final String FXML = "StoryListPanel.fxml";

@@ -17,7 +17,8 @@ import seedu.address.model.story.UniqueStoryList;
 
 /**
  * Wraps all data at the address-book level.
- * Duplicates are not allowed (by .isSameContact comparison).
+ * Duplicate contacts, stories, and followups are not allowed, based on
+ * {@code isSameContact}, {@code isSameStory}, and {@code isSameFollowup} respectively.
  */
 public class AddressBook implements ReadOnlyAddressBook {
 
@@ -28,7 +29,7 @@ public class AddressBook implements ReadOnlyAddressBook {
     public AddressBook() {}
 
     /**
-     * Creates an AddressBook using the Contacts in the {@code toBeCopied}
+     * Creates an AddressBook using the Contacts, Stories and Followups in the {@code toBeCopied}
      */
     public AddressBook(ReadOnlyAddressBook toBeCopied) {
         this();
@@ -73,8 +74,6 @@ public class AddressBook implements ReadOnlyAddressBook {
         requireNonNull(contact);
         return contacts.contains(contact);
     }
-
-    //// contact-level operations
 
     /**
      * Returns true if a story with the same identity as {@code story} exists in the address book.
@@ -178,8 +177,8 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Removes contact with {@code key} from this {@code AddressBook}.
-     * {@code key} must exist in the address book.
+     * Removes contact with {@code contactKey} from this {@code AddressBook}.
+     * {@code contactKey} must exist in the address book.
      */
     public void removeContact(Contact contactKey) {
         stories.setStories(
@@ -196,8 +195,8 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Removes story with {@code key} from this {@code AddressBook}.
-     * {@code key} must exist in the address book.
+     * Removes story with {@code storyKey} from this {@code AddressBook}.
+     * {@code storyKey} must exist in the address book.
      */
     public void removeStory(Story storyKey) {
         contacts.setContacts(
@@ -208,7 +207,7 @@ public class AddressBook implements ReadOnlyAddressBook {
         stories.remove(storyKey);
     }
 
-    //// followups
+    //// followup-level operations
 
     /**
      * Returns true if a followup with the same identity as {@code followup} exists in the address book.

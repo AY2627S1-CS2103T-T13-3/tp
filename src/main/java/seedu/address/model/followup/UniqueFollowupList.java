@@ -13,13 +13,8 @@ import seedu.address.model.followup.exceptions.FollowupNotFoundException;
 
 /**
  * A list of followups that enforces uniqueness between its elements and does not allow nulls.
- * A followup is considered unique by comparing using {@code Followup#isSameFollowup(Followup)}. As such, adding and
- * updating of
- * followups uses Followup#isSameFollowup(Followup) for equality so as to ensure that the followup being added or
- * updated is
- * unique in terms of identity in the UniqueFollowupList. However, the removal of a followup uses
- * Followup#equals(Object) so
- * as to ensure that the followup with exactly the same fields will be removed.
+ * A followup is considered unique using {@link Followup#isSameFollowup(Followup)}, which compares its description and
+ * linked contact. Adding, updating, and removing followups therefore operate on those fields.
  *
  * Supports a minimal set of list operations.
  *
