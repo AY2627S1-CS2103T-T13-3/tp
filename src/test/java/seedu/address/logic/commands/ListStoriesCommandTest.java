@@ -41,16 +41,20 @@ public class ListStoriesCommandTest {
 
     @Test
     public void execute_listIsNotFiltered_showsSameList() {
+        String expectedMessage = String.format(ListStoriesCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredStoryList().size());
         assertCommandSuccess(new ListStoriesCommand(), model,
-                ListStoriesCommand.MESSAGE_SUCCESS, expectedModel);
+                expectedMessage, expectedModel);
     }
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
         model.updateFilteredStoryList(story -> false);
 
+        String expectedMessage = String.format(ListStoriesCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredStoryList().size());
         assertCommandSuccess(new ListStoriesCommand(), model,
-                ListStoriesCommand.MESSAGE_SUCCESS, expectedModel);
+                expectedMessage, expectedModel);
     }
 
     @Test
@@ -68,8 +72,8 @@ public class ListStoriesCommandTest {
         expectedModel.updateFilteredStoryList(
                 s -> s.isAssigned(assignedContact));
 
-        String expectedMessage = "Listed stories assigned to "
-                + assignedContact.getName();
+        String expectedMessage = String.format(ListStoriesCommand.MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,
+                1, assignedContact.getName());
 
         assertCommandSuccess(
                 new ListStoriesCommand(INDEX_FIRST_CONTACT),
@@ -87,8 +91,8 @@ public class ListStoriesCommandTest {
 
         expectedModel.updateFilteredStoryList(story -> false);
 
-        String expectedMessage = "Listed stories assigned to "
-                + contact.getName();
+        String expectedMessage = String.format(ListStoriesCommand.MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,
+                0, contact.getName());
 
         assertCommandSuccess(
                 new ListStoriesCommand(INDEX_FIRST_CONTACT),

@@ -14,7 +14,7 @@ public class ListCommand extends Command {
 
     public static final String COMMAND_WORD = "list";
 
-    public static final String MESSAGE_SUCCESS = "Listed all contacts, stories and followups.";
+    public static final String MESSAGE_SUCCESS = "Listed all %1$d contact(s), %2$d story(ies) and %3$d followup(s).";
 
     @Override
     public CommandResult execute(Model model) {
@@ -22,7 +22,11 @@ public class ListCommand extends Command {
         model.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
         model.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
         model.updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
-        return new CommandResult(MESSAGE_SUCCESS);
+        return new CommandResult(String.format(MESSAGE_SUCCESS,
+                model.getFilteredContactList().size(),
+                model.getFilteredStoryList().size(),
+                model.getFilteredFollowupList().size()
+        ));
     }
 
     @Override

@@ -41,13 +41,17 @@ public class ListContactsCommandTest {
 
     @Test
     public void execute_listIsNotFiltered_showsSameList() {
-        assertCommandSuccess(new ListContactsCommand(), model, ListContactsCommand.MESSAGE_SUCCESS, expectedModel);
+        String expectedMessage = String.format(ListContactsCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredContactList().size());
+        assertCommandSuccess(new ListContactsCommand(), model, expectedMessage, expectedModel);
     }
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
         showContactAtIndex(model, INDEX_FIRST_CONTACT);
-        assertCommandSuccess(new ListContactsCommand(), model, ListContactsCommand.MESSAGE_SUCCESS, expectedModel);
+        String expectedMessage = String.format(ListContactsCommand.MESSAGE_SUCCESS,
+                expectedModel.getFilteredContactList().size());
+        assertCommandSuccess(new ListContactsCommand(), model, expectedMessage, expectedModel);
     }
 
     @Test
@@ -62,7 +66,8 @@ public class ListContactsCommandTest {
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.updateFilteredContactList(p -> assignedStory.isAssigned(p));
 
-        String expectedMessage = "Listed contacts assigned to " + assignedStory.getName();
+        String expectedMessage = String.format(ListContactsCommand.MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,
+                1, assignedStory.getName());
 
         assertCommandSuccess(new ListContactsCommand(INDEX_FIRST_STORY), model, expectedMessage, expectedModel);
 
@@ -76,7 +81,8 @@ public class ListContactsCommandTest {
 
         expectedModel.updateFilteredContactList(p -> false);
 
-        String expectedMessage = "Listed contacts assigned to " + story.getName();
+        String expectedMessage = String.format(ListContactsCommand.MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,
+                0, story.getName());
 
         assertCommandSuccess(new ListContactsCommand(INDEX_FIRST_STORY), model, expectedMessage, expectedModel);
 

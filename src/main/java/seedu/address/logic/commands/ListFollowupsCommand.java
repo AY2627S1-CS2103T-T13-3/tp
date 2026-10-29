@@ -20,7 +20,9 @@ import seedu.address.model.contact.Contact;
 public class ListFollowupsCommand extends Command {
 
     public static final String COMMAND_WORD = "listfollowups";
-    public static final String MESSAGE_SUCCESS = "Listed all followups.";
+    public static final String MESSAGE_SUCCESS = "Listed all %1$d followup(s).";
+    public static final String MESSAGE_LIST_ASSIGNED_FOLLOWUPS_SUCCESS =
+            "Listed %1$d followup(s) assigned to %2$s";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists followups in PressMemo.\n"
             + "Parameters: [ci/CONTACT_INDEX]\n"
@@ -43,7 +45,8 @@ public class ListFollowupsCommand extends Command {
         // No index: display all followups
         if (contactIndex.isEmpty()) {
             model.updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
-            return new CommandResult(MESSAGE_SUCCESS);
+            return new CommandResult(String.format(MESSAGE_SUCCESS,
+                    model.getFilteredFollowupList().size()));
         }
 
         // Index provided: identify the contact
@@ -62,7 +65,9 @@ public class ListFollowupsCommand extends Command {
                 followup -> followup.isFor(selectedContact));
 
         return new CommandResult(
-                "Listed followups assigned to " + selectedContact.getName());
+                String.format(MESSAGE_LIST_ASSIGNED_FOLLOWUPS_SUCCESS,
+                        model.getFilteredFollowupList().size(),
+                        selectedContact.getName()));
     }
 
     @Override
