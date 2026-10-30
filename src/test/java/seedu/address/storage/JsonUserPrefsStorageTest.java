@@ -5,8 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -121,4 +123,41 @@ public class JsonUserPrefsStorageTest {
         assertEquals(original, readBack);
     }
 
+    @Test
+    public void readUserPrefs_invalidShortcutsInFile_invalidShortcutsDiscarded() throws Exception {
+        String prefsWithInvalidShortcuts = "{\n"
+                + "  \"guiSettings\" : {\n"
+                + "    \"windowWidth\" : 1000.0,\n"
+                + "    \"windowHeight\" : 500.0,\n"
+                + "    \"windowCoordinates\" : {\n"
+                + "      \"x\" : 300,\n"
+                + "      \"y\" : 100\n"
+                + "    }\n"
+                + "  },\n"
+                + "  \"addressBookFilePath\" : \"data/addressbook.json\",\n"
+                + "  \"shortcuts\" : {\n"
+                + "    \"shortcutToCommandWord\" : {\n"
+                + "      \"ls\" : \"list\",\n"
+                + "      \"INVALID_UPPERCASE\" : \"list\",\n"
+                + "      \"1invalid\" : \"list\",\n"
+                + "      \"exit\" : \"list\",\n"
+                + "      \"cl\" : \"clear\",\n"
+                + "      \"invtarget\" : \"notARealCommand\",\n"
+                + "      \"invtarget2\" : \"shortcut\"\n"
+                + "    }\n"
+                + "  }\n"
+                + "}";
+
+        Path prefsFilePath = testFolder.resolve("InvalidShortcutsPrefs.json");
+        Files.writeString(prefsFilePath, prefsWithInvalidShortcuts);
+
+        JsonUserPrefsStorage jsonUserPrefsStorage = new JsonUserPrefsStorage(prefsFilePath);
+        UserPrefs readBack = jsonUserPrefsStorage.readUserPrefs().get();
+
+        Map<String, String> expectedShortcuts = Map.of(
+                "ls", "list",
+                "cl", "clear"
+        );
+        assertEquals(expectedShortcuts, readBack.getShortcuts());
+    }
 }
