@@ -76,12 +76,16 @@ This guide describes the features implemented for PressMemo v1.4.
 
 ### Viewing help: `help`
 
-Shows a message explaining how to access the help page.
-
+Toggles the help panel which lists all default commands and its command format. 
 
 Format: `help`
 
-You can also open the help window from the **Help** menu or by pressing `F1`. For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
+* If the help panel is closed, `help` opens the help panel. If the help panel is open, `help` closes the help panel.
+* Use the scrollbar on the right to find the specific command you are looking for. You may also click on one of the command panels and use the up and down arrow key to scroll down the command list.
+* You can click on the `X` button to close the help panel.
+* You can also open and close the help panel from the **Help** menu. 
+* The help panel does not display any shortcuts that you may have created for the default commands. 
+* For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
 
 ### Adding a contact: `addcontact`
 
