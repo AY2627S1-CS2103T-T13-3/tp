@@ -34,6 +34,7 @@ public class MainWindow extends UiPart<Stage> {
     private Stage primaryStage;
     private Logic logic;
     private Path dataFilePath;
+    private String initialMessage;
 
     // Independent Ui parts residing in this Ui container
     private ContactListPanel contactListPanel;
@@ -80,12 +81,21 @@ public class MainWindow extends UiPart<Stage> {
      * and the data file path to show in the status bar.
      */
     public MainWindow(Stage primaryStage, Logic logic, Path dataFilePath) {
+        this(primaryStage, logic, dataFilePath, null);
+    }
+
+    /**
+     * Creates a {@code MainWindow} with the given {@code Stage}, {@code Logic},
+     * data file path to show in the status bar, and initial message to display.
+     */
+    public MainWindow(Stage primaryStage, Logic logic, Path dataFilePath, String initialMessage) {
         super(FXML, primaryStage);
 
         // Set dependencies
         this.primaryStage = primaryStage;
         this.logic = logic;
         this.dataFilePath = dataFilePath;
+        this.initialMessage = initialMessage;
 
         // Configure the UI
         setWindowDefaultSize(logic.getGuiSettings());
@@ -112,6 +122,10 @@ public class MainWindow extends UiPart<Stage> {
 
         resultDisplay = new ResultDisplay();
         resultDisplayPlaceholder.getChildren().add(resultDisplay.getRoot());
+
+        if (initialMessage != null && !initialMessage.isBlank()) {
+            resultDisplay.setFeedbackToUser(initialMessage);
+        }
 
         StatusBarFooter statusBarFooter = new StatusBarFooter(dataFilePath);
         statusbarPlaceholder.getChildren().add(statusBarFooter.getRoot());
@@ -205,6 +219,10 @@ public class MainWindow extends UiPart<Stage> {
 
     public ContactListPanel getContactListPanel() {
         return contactListPanel;
+    }
+
+    public ResultDisplay getResultDisplay() {
+        return resultDisplay;
     }
 
     /**

@@ -3,6 +3,9 @@ package seedu.address;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -34,6 +37,11 @@ public class MainApp extends Application {
 
     public static final String VERSION = "V1.4.1";
 
+    public static final String MESSAGE_DATA_FILE_CORRUPTED = "Data file at %s could not be loaded."
+            + " Will be starting with an empty PressMemo.";
+    public static final String MESSAGE_PREFERENCES_CORRUPTED = "Preference file at %s could not be loaded."
+            + " Using default preferences.";
+
     private static final Logger logger = LogsCenter.getLogger(MainApp.class);
     private static final Path USER_PREFS_FILE_PATH = Paths.get("preferences.json");
     private static final Path ADDRESS_BOOK_FILE_PATH = Paths.get("data", "addressbook.json");
@@ -42,6 +50,7 @@ public class MainApp extends Application {
     protected Logic logic;
     protected Storage storage;
     protected Model model;
+    protected final List<String> initialLoadErrors = new ArrayList<>();
 
     @Override
     public void init() throws Exception {
@@ -60,7 +69,7 @@ public class MainApp extends Application {
 
         logic = new LogicManager(model, storage);
 
-        ui = new UiManager(logic, storage.getAddressBookFilePath());
+        ui = new UiManager(logic, storage.getAddressBookFilePath(), getInitialLoadMessage());
     }
 
     /**
@@ -68,7 +77,7 @@ public class MainApp extends Application {
      * The data from the sample address book will be used instead if {@code storage}'s address book is not found,
      * or an empty address book will be used instead if errors occur when reading {@code storage}'s address book.
      */
-    private Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
+    protected Model initModelManager(Storage storage, ReadOnlyUserPrefs userPrefs) {
         logger.info("Using data file : " + storage.getAddressBookFilePath());
 
         Optional<ReadOnlyAddressBook> addressBookOptional;
@@ -81,8 +90,10 @@ public class MainApp extends Application {
             }
             initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
         } catch (DataLoadingException e) {
-            logger.warning("Data file at " + storage.getAddressBookFilePath() + " could not be loaded."
-                    + " Will be starting with an empty PressMemo.");
+            String errorMsg = String.format(MESSAGE_DATA_FILE_CORRUPTED, storage.getAddressBookFilePath());
+            logger.warning(errorMsg);
+            initialLoadErrors.add(errorMsg);
+
             initialData = new AddressBook();
         }
 
@@ -106,9 +117,12 @@ public class MainApp extends Application {
             }
             initializedPrefs = prefsOptional.orElse(new UserPrefs());
         } catch (DataLoadingException e) {
-            logger.warning("Preference file at " + prefsFilePath + " could not be loaded."
-                    + " Using default preferences.");
-            initializedPrefs = new UserPrefs();
+            String errorMsg = String.format(MESSAGE_PREFERENCES_CORRUPTED, prefsFilePath);
+            logger.warning(errorMsg);
+            initialLoadErrors.add(errorMsg);
+            return new UserPrefs();
+
+
         }
 
         //Update prefs file in case it was missing to begin with or there are new/unused fields
@@ -119,6 +133,17 @@ public class MainApp extends Application {
         }
 
         return initializedPrefs;
+    }
+
+    public String getInitialLoadMessage() {
+        if (initialLoadErrors.isEmpty()) {
+            return null;
+        }
+        return String.join("\n", initialLoadErrors);
+    }
+
+    public List<String> getInitialLoadErrors() {
+        return Collections.unmodifiableList(initialLoadErrors);
     }
 
     @Override
