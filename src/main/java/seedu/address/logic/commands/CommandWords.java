@@ -117,7 +117,7 @@ public final class CommandWords {
                     new UnshortcutCommandParser()),
             new CommandInfo(ListCommand.COMMAND_WORD,
                     "list",
-                    "Lists all contacts and stories.",
+                    "Lists all contacts, stories and followups.",
                     noArgs(ListCommand::new, ListCommand.MESSAGE_USAGE)),
             new CommandInfo(ClearCommand.COMMAND_WORD,
                     "clear",
