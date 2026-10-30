@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.shortcut.CommandShortcutMap;
 
 /**
  * Assigns a user-defined shortcut to a command, or lists all shortcuts.
@@ -75,7 +76,7 @@ public class ShortcutCommand extends Command {
     }
 
     private void validateAssignment() throws CommandException {
-        if (!shortcut.matches("[a-z][a-z0-9]*")) {
+        if (!CommandShortcutMap.isValidShortcutPattern(shortcut)) {
             throw new CommandException(String.format(MESSAGE_INVALID_SHORTCUT, shortcut));
         }
         if (CommandWords.isCommandWord(shortcut)) {

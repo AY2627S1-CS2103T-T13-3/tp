@@ -18,16 +18,20 @@ import org.junit.jupiter.api.Test;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.contact.exceptions.ContactNotFoundException;
 import seedu.address.model.contact.exceptions.DuplicateContactException;
 import seedu.address.model.followup.Followup;
+import seedu.address.model.followup.FollowupDescription;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
 import seedu.address.model.story.exceptions.StoryNotFoundException;
 import seedu.address.testutil.ContactBuilder;
 
 public class AddressBookTest {
+
+    private static final StoryName STORY_NAME = new StoryName("Headline Story");
 
     private final AddressBook addressBook = new AddressBook();
 
@@ -116,6 +120,97 @@ public class AddressBookTest {
         assertThrows(StoryNotFoundException.class, () -> newData.removeStory(s1));
         assertTrue(newData.hasStory(s));
         assertFalse(newData.hasStory(s1));
+    }
+
+    @Test
+    public void validateRelationalIntegrity_validRelationships_success() throws Exception {
+        AddressBook ab = new AddressBook();
+        Contact contact = contactAssignedTo(STORY_NAME);
+        Story story = new Story(STORY_NAME, Set.of(), List.of(contact.getName()));
+        Followup followup = new Followup(new FollowupDescription("Call back"), contact.getName());
+
+        ab.addContact(contact);
+        ab.addStory(story);
+        ab.addFollowup(followup);
+
+        ab.validateRelationalIntegrity();
+    }
+
+    @Test
+    public void validateRelationalIntegrity_contactRefersToNonexistentStory_throwsIllegalValueException() {
+        AddressBook ab = new AddressBook();
+        Contact contact = contactAssignedTo(STORY_NAME);
+        ab.addContact(contact);
+
+        assertThrows(IllegalValueException.class,
+                AddressBook.MESSAGE_CONTACT_REFERS_TO_NONEXISTENT_STORY,
+                ab::validateRelationalIntegrity);
+    }
+
+    @Test
+    public void validateRelationalIntegrity_storyRefersToNonexistentContact_throwsIllegalValueException() {
+        AddressBook ab = new AddressBook();
+        Story story = new Story(STORY_NAME, Set.of(), List.of(ALICE.getName()));
+        ab.addStory(story);
+
+        assertThrows(IllegalValueException.class,
+                AddressBook.MESSAGE_STORY_REFERS_TO_NONEXISTENT_CONTACT,
+                ab::validateRelationalIntegrity);
+    }
+
+    @Test
+    public void validateRelationalIntegrity_inconsistentAssignments_throwsIllegalValueException() {
+        AddressBook ab = new AddressBook();
+        Contact contact = contactAssignedTo(STORY_NAME);
+        Story story = new Story(STORY_NAME, Set.of());
+        ab.addContact(contact);
+        ab.addStory(story);
+
+        assertThrows(IllegalValueException.class,
+                AddressBook.MESSAGE_INCONSISTENT_CONTACT_STORY_ASSIGNMENT,
+                ab::validateRelationalIntegrity);
+    }
+
+    @Test
+    public void validateRelationalIntegrity_duplicateAssignedStories_throwsIllegalValueException() {
+        AddressBook ab = new AddressBook();
+        Contact contact = contactAssignedTo(STORY_NAME, STORY_NAME);
+        Story story = new Story(STORY_NAME, Set.of(), List.of(contact.getName()));
+        ab.addContact(contact);
+        ab.addStory(story);
+
+        assertThrows(IllegalValueException.class,
+                AddressBook.MESSAGE_DUPLICATE_CONTACT_STORY_ASSIGNMENT,
+                ab::validateRelationalIntegrity);
+    }
+
+    @Test
+    public void validateRelationalIntegrity_duplicateAssignedContacts_throwsIllegalValueException() {
+        AddressBook ab = new AddressBook();
+        Contact contact = contactAssignedTo(STORY_NAME);
+        Story story = new Story(STORY_NAME, Set.of(), List.of(contact.getName(), contact.getName()));
+        ab.addContact(contact);
+        ab.addStory(story);
+
+        assertThrows(IllegalValueException.class,
+                AddressBook.MESSAGE_DUPLICATE_STORY_CONTACT_ASSIGNMENT,
+                ab::validateRelationalIntegrity);
+    }
+
+    @Test
+    public void validateRelationalIntegrity_followupRefersToNonexistentContact_throwsIllegalValueException() {
+        AddressBook ab = new AddressBook();
+        Followup followup = new Followup(new FollowupDescription("Call back"), ALICE.getName());
+        ab.addFollowup(followup);
+
+        assertThrows(IllegalValueException.class,
+                AddressBook.MESSAGE_INVALID_CONTACT,
+                ab::validateRelationalIntegrity);
+    }
+
+    private Contact contactAssignedTo(StoryName... stories) {
+        return new Contact(ALICE.getName(), ALICE.getPhone(), ALICE.getEmail(),
+                ALICE.getAddress(), ALICE.getTags(), List.of(stories));
     }
 
     /**
