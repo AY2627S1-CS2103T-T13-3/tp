@@ -8,16 +8,16 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import seedu.address.logic.commands.FindStoryCommand;
+import seedu.address.logic.commands.FindStoriesCommand;
 import seedu.address.model.story.StoryNameContainsKeywordsPredicate;
 
-public class FindStoryCommandParserTest {
+public class FindStoriesCommandParserTest {
 
     private final FindStoryCommandParser parser = new FindStoryCommandParser();
 
     @Test
     public void parse_emptyArg_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindStoryCommand.MESSAGE_USAGE);
+        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindStoriesCommand.MESSAGE_USAGE);
         assertParseFailure(parser, "     ", expectedMessage);
         assertParseFailure(parser, "", expectedMessage);
         assertParseFailure(parser, "\t \r \n", expectedMessage);
@@ -26,13 +26,13 @@ public class FindStoryCommandParserTest {
     @Test
     public void parse_validArgs_returnsFindStoryCommand() {
         // Single keyword
-        FindStoryCommand singleKeywordCommand = new FindStoryCommand(
+        FindStoriesCommand singleKeywordCommand = new FindStoriesCommand(
                 new StoryNameContainsKeywordsPredicate(List.of("Housing")));
         assertParseSuccess(parser, "Housing", singleKeywordCommand);
         assertParseSuccess(parser, "   Housing   ", singleKeywordCommand);
 
         // Multiple keywords
-        FindStoryCommand expectedCommand = new FindStoryCommand(
+        FindStoriesCommand expectedCommand = new FindStoriesCommand(
                 new StoryNameContainsKeywordsPredicate(List.of("Housing", "Investigation", "Scandal")));
         assertParseSuccess(parser, "Housing Investigation Scandal", expectedCommand);
 
@@ -40,7 +40,7 @@ public class FindStoryCommandParserTest {
         assertParseSuccess(parser, " \n Housing \n \t Investigation \r Scandal \t", expectedCommand);
 
         // Keywords with symbols or numbers
-        FindStoryCommand symbolCommand = new FindStoryCommand(
+        FindStoriesCommand symbolCommand = new FindStoriesCommand(
                 new StoryNameContainsKeywordsPredicate(List.of("2026", "Budget!", "COVID-19")));
         assertParseSuccess(parser, "2026 Budget! COVID-19", symbolCommand);
     }

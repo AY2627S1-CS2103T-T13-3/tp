@@ -61,9 +61,7 @@ public class ListFollowupsCommand extends Command {
         Contact selectedContact = lastShownContactList.get(index);
 
         // Display only followups assigned to this contact
-        model.updateFilteredFollowupList(
-                followup -> followup.isFor(selectedContact),
-                String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, selectedContact.getName()));
+        model.updateFilteredFollowupList(selectedContact);
 
         return new CommandResult(
                 String.format(MESSAGE_LIST_ASSIGNED_FOLLOWUPS_SUCCESS,

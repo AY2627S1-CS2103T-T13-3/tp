@@ -18,7 +18,7 @@ import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.story.StoryNameContainsKeywordsPredicate;
 
-public class FindStoryCommandTest {
+public class FindStoriesCommandTest {
     private final Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
     private final Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
 
@@ -28,11 +28,11 @@ public class FindStoryCommandTest {
                 new StoryNameContainsKeywordsPredicate(List.of("first"));
         StoryNameContainsKeywordsPredicate secondPredicate =
                 new StoryNameContainsKeywordsPredicate(List.of("second"));
-        FindStoryCommand firstCommand = new FindStoryCommand(firstPredicate);
-        FindStoryCommand secondCommand = new FindStoryCommand(secondPredicate);
+        FindStoriesCommand firstCommand = new FindStoriesCommand(firstPredicate);
+        FindStoriesCommand secondCommand = new FindStoriesCommand(secondPredicate);
 
         assertTrue(firstCommand.equals(firstCommand));
-        assertTrue(firstCommand.equals(new FindStoryCommand(firstPredicate)));
+        assertTrue(firstCommand.equals(new FindStoriesCommand(firstPredicate)));
         assertFalse(firstCommand.equals(secondCommand));
         assertFalse(firstCommand.equals(1));
         assertFalse(firstCommand.equals(null));
@@ -42,7 +42,7 @@ public class FindStoryCommandTest {
     public void execute_multipleKeywords_multipleStoriesFound() {
         StoryNameContainsKeywordsPredicate predicate =
                 new StoryNameContainsKeywordsPredicate(List.of("A", "C"));
-        FindStoryCommand command = new FindStoryCommand(predicate);
+        FindStoriesCommand command = new FindStoriesCommand(predicate);
         expectedModel.updateFilteredStoryList(predicate);
 
         assertCommandSuccess(command, model,
@@ -54,7 +54,7 @@ public class FindStoryCommandTest {
     public void execute_nonMatchingKeyword_noStoryFound() {
         StoryNameContainsKeywordsPredicate predicate =
                 new StoryNameContainsKeywordsPredicate(List.of("missing"));
-        FindStoryCommand command = new FindStoryCommand(predicate);
+        FindStoriesCommand command = new FindStoriesCommand(predicate);
         expectedModel.updateFilteredStoryList(predicate);
 
         assertCommandSuccess(command, model,
@@ -66,9 +66,9 @@ public class FindStoryCommandTest {
     public void toStringMethod() {
         StoryNameContainsKeywordsPredicate predicate =
                 new StoryNameContainsKeywordsPredicate(List.of("keyword"));
-        FindStoryCommand command = new FindStoryCommand(predicate);
+        FindStoriesCommand command = new FindStoriesCommand(predicate);
 
-        String expected = FindStoryCommand.class.getCanonicalName() + "{predicate=" + predicate + "}";
+        String expected = FindStoriesCommand.class.getCanonicalName() + "{predicate=" + predicate + "}";
         assertEquals(expected, command.toString());
     }
 }

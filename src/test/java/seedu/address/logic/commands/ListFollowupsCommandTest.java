@@ -77,8 +77,7 @@ public class ListFollowupsCommandTest {
     @Test
     public void execute_validContactIndex_showsAssignedFollowups() {
         Contact contact = model.getFilteredContactList().get(INDEX_FIRST_CONTACT.getZeroBased());
-        expectedModel.updateFilteredFollowupList(followup -> followup.isFor(contact),
-                String.format("Filtered by contact: \"%s\"", contact.getName()));
+        expectedModel.updateFilteredFollowupList(contact);
 
         String expectedMessage = String.format(ListFollowupsCommand.MESSAGE_LIST_ASSIGNED_FOLLOWUPS_SUCCESS,
                 1, contact.getName());
@@ -93,8 +92,7 @@ public class ListFollowupsCommandTest {
         // DANIEL is the 3rd contact and has no follow-ups
         Index danielIndex = Index.fromOneBased(3);
         Contact contact = model.getFilteredContactList().get(danielIndex.getZeroBased());
-        expectedModel.updateFilteredFollowupList(followup -> followup.isFor(contact),
-                String.format("Filtered by contact: \"%s\"", contact.getName()));
+        expectedModel.updateFilteredFollowupList(contact);
 
         String expectedMessage = String.format(ListFollowupsCommand.MESSAGE_LIST_ASSIGNED_FOLLOWUPS_SUCCESS,
                 0, contact.getName());

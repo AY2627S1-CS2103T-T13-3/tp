@@ -294,12 +294,8 @@ public class EditContactCommandTest {
         Followup followup = new Followup(new FollowupDescription("Follow up"), contactToEdit.getName());
         model.addFollowup(followup);
 
-        model.updateFilteredStoryList(
-                s -> s.isAssigned(contactToEdit),
-                String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, contactToEdit.getName()));
-        model.updateFilteredFollowupList(
-                f -> f.isFor(contactToEdit),
-                String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, contactToEdit.getName()));
+        model.updateFilteredStoryList(contactToEdit);
+        model.updateFilteredFollowupList(contactToEdit);
 
         EditContactDescriptor descriptor = new EditContactDescriptorBuilder().withName(VALID_NAME_BOB).build();
         EditContactCommand editContactCommand = new EditContactCommand(INDEX_FIRST_CONTACT, descriptor);
@@ -309,12 +305,8 @@ public class EditContactCommandTest {
                 String.format(EditContactCommand.MESSAGE_EDIT_CONTACT_SUCCESS, Messages.format(editedContact));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-        expectedModel.updateFilteredStoryList(
-                s -> s.isAssigned(contactToEdit),
-                String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, contactToEdit.getName()));
-        expectedModel.updateFilteredFollowupList(
-                f -> f.isFor(contactToEdit),
-                String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, contactToEdit.getName()));
+        expectedModel.updateFilteredStoryList(contactToEdit);
+        expectedModel.updateFilteredFollowupList(contactToEdit);
         expectedModel.setContact(contactToEdit, editedContact);
 
         assertCommandSuccess(editContactCommand, model, expectedMessage, expectedModel);

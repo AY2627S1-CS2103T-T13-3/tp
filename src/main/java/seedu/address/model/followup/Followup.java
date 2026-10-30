@@ -89,7 +89,7 @@ public class Followup {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .add("name", description)
+                .add("description", description)
                 .add("contact", contact)
                 .toString();
     }
