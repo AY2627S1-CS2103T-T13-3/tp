@@ -69,7 +69,7 @@ public final class CommandWords {
                     "deletestory INDEX",
                     "Deletes the story at the specified index.",
                     new DeleteStoryCommandParser()),
-            new CommandInfo(FindStoryCommand.COMMAND_WORD,
+            new CommandInfo(FindStoriesCommand.COMMAND_WORD,
                     "findstories STORY_NAME [MORE_KEYWORDS]...",
                     "Finds all stories whose names contain any of the keywords.",
                     new FindStoryCommandParser()),

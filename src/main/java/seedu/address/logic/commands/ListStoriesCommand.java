@@ -61,9 +61,7 @@ public class ListStoriesCommand extends Command {
         Contact selectedContact = lastShownContactList.get(index);
 
         // Display only stories assigned to this contact
-        model.updateFilteredStoryList(
-                story -> story.isAssigned(selectedContact),
-                String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, selectedContact.getName()));
+        model.updateFilteredStoryList(selectedContact);
 
         return new CommandResult(
                 String.format(MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,

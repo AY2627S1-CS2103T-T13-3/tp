@@ -292,9 +292,7 @@ public class EditStoryCommandTest {
 
         Story assignedStory = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
-        model.updateFilteredContactList(
-                c -> assignedStory.isAssigned(c),
-                String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, assignedStory.getName()));
+        model.updateFilteredContactList(assignedStory);
 
         EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).build();
         EditStoryCommand editStoryCommand = new EditStoryCommand(INDEX_FIRST_STORY, descriptor);
@@ -305,9 +303,7 @@ public class EditStoryCommandTest {
                 Messages.format(editedStory));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-        expectedModel.updateFilteredContactList(
-                c -> assignedStory.isAssigned(c),
-                String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, assignedStory.getName()));
+        expectedModel.updateFilteredContactList(assignedStory);
         expectedModel.setStory(assignedStory, editedStory);
 
         assertCommandSuccess(editStoryCommand, model, expectedMessage, expectedModel);

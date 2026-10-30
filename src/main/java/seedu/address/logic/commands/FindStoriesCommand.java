@@ -10,7 +10,7 @@ import seedu.address.model.story.StoryNameContainsKeywordsPredicate;
 /**
  * Finds and lists stories whose names contain any of the supplied keywords.
  */
-public class FindStoryCommand extends Command {
+public class FindStoriesCommand extends Command {
 
     public static final String COMMAND_WORD = "findstories";
 
@@ -21,7 +21,7 @@ public class FindStoryCommand extends Command {
 
     private final StoryNameContainsKeywordsPredicate predicate;
 
-    public FindStoryCommand(StoryNameContainsKeywordsPredicate predicate) {
+    public FindStoriesCommand(StoryNameContainsKeywordsPredicate predicate) {
         this.predicate = predicate;
     }
 
@@ -40,11 +40,11 @@ public class FindStoryCommand extends Command {
             return true;
         }
 
-        if (!(other instanceof FindStoryCommand otherFindStoryCommand)) {
+        if (!(other instanceof FindStoriesCommand otherFindStoriesCommand)) {
             return false;
         }
 
-        return predicate.equals(otherFindStoryCommand.predicate);
+        return predicate.equals(otherFindStoriesCommand.predicate);
     }
 
     @Override
