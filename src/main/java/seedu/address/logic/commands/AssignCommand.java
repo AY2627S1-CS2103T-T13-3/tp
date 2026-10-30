@@ -25,8 +25,8 @@ public class AssignCommand extends AddressBookMutatingCommand {
     public static final String MESSAGE_ALREADY_ASSIGNED = "%s is already assigned to %s.";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Assigns a contact to the story. "
             + "Parameters: "
-            + PREFIX_CONTACTINDEX + " CONTACT's INDEX "
-            + PREFIX_STORYINDEX + "STORY's INDEX "
+            + PREFIX_CONTACTINDEX + "CONTACT_INDEX "
+            + PREFIX_STORYINDEX + "STORY_INDEX\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_CONTACTINDEX + "1 "
             + PREFIX_STORYINDEX + "1";

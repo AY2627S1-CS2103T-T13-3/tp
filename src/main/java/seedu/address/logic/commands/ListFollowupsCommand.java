@@ -24,7 +24,7 @@ public class ListFollowupsCommand extends Command {
     public static final String MESSAGE_LIST_ASSIGNED_FOLLOWUPS_SUCCESS =
             "Listed %1$d followup(s) assigned to %2$s";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists followups in PressMemo.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists followups in PressMemo. "
             + "Parameters: [ci/CONTACT_INDEX]\n"
             + "Example: " + COMMAND_WORD + " ci/1";
 

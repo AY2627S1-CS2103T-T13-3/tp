@@ -24,7 +24,7 @@ public class ListContactsCommand extends Command {
     public static final String MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS =
             "Listed %1$d contact(s) assigned to %2$s";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists contacts in PressMemo.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Lists contacts in PressMemo. "
             + "Parameters: [si/STORY_INDEX]\n"
             + "Example: " + COMMAND_WORD + " si/1";
 

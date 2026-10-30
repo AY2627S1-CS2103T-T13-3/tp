@@ -21,9 +21,9 @@ public class AddFollowupCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "addfollowup";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a followup to a contact in PressMemo.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a followup to a contact in PressMemo. "
             + "Parameters: DESCRIPTION "
-            + PREFIX_CONTACTINDEX + "CONTACT INDEX"
+            + PREFIX_CONTACTINDEX + "CONTACT_INDEX\n"
             + "Example: " + COMMAND_WORD + " meeting " + PREFIX_CONTACTINDEX + "1";
 
     public static final String MESSAGE_SUCCESS = "Followup %1$s has been added to %2$s.";

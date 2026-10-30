@@ -14,7 +14,7 @@ public class UnshortcutCommand extends Command {
 
     public static final String COMMAND_WORD = "unshortcut";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Removes a command shortcut. "
-            + "Parameters: SHORTCUT "
+            + "Parameters: SHORTCUT\n"
             + "Example: " + COMMAND_WORD + " ls";
     public static final String MESSAGE_SUCCESS = "Shortcut '%s' removed.";
     public static final String MESSAGE_NOT_FOUND = "Shortcut '%s' does not exist.";
