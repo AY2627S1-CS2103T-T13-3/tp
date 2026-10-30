@@ -8,7 +8,7 @@ PressMemo is a **desktop application for journalists and reporters to manage con
 This guide describes the features implemented for PressMemo v1.4.
 
 * Table of Contents
-  {:toc}
+{:toc}
 
 --------------------------------------------------------------------------------------------------------------------
 
