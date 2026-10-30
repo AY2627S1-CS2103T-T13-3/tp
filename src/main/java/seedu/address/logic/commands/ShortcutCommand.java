@@ -18,8 +18,8 @@ public class ShortcutCommand extends Command {
 
     public static final String COMMAND_WORD = "shortcut";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Assigns a shortcut to a command, or lists all "
-            + "shortcuts when used without parameters. "
-            + "Parameters: " + PREFIX_SHORTCUT + "SHORTCUT " + PREFIX_COMMAND + "COMMAND_WORD "
+            + "shortcuts when used without parameters.\n"
+            + "Parameters: " + PREFIX_SHORTCUT + "SHORTCUT " + PREFIX_COMMAND + "COMMAND_WORD\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_SHORTCUT + "ls " + PREFIX_COMMAND + "list";
     public static final String MESSAGE_SUCCESS = "Shortcut '%s' assigned to command '%s'.";
     public static final String MESSAGE_NO_SHORTCUTS = "No command shortcuts assigned.";

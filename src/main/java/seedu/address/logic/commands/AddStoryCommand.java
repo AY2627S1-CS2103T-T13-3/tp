@@ -15,7 +15,7 @@ public class AddStoryCommand extends AddressBookMutatingCommand {
 
     public static final String COMMAND_WORD = "addstory";
 
-    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a story to PressMemo.\n"
+    public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a story to PressMemo. "
             + "Parameters: NAME "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " hello"

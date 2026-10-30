@@ -25,8 +25,8 @@ public class UnassignCommand extends AddressBookMutatingCommand {
     public static final String MESSAGE_NOT_ASSIGNED = "%s is not assigned to %s.";
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Unassigns a contact from the story. "
             + "Parameters: "
-            + PREFIX_CONTACTINDEX + " CONTACT's INDEX "
-            + PREFIX_STORYINDEX + "STORY's INDEX "
+            + PREFIX_CONTACTINDEX + "CONTACT_INDEX "
+            + PREFIX_STORYINDEX + "STORY_INDEX\n"
             + "Example: " + COMMAND_WORD + " "
             + PREFIX_CONTACTINDEX + "1 "
             + PREFIX_STORYINDEX + "1";
