@@ -109,6 +109,17 @@ public class JsonAdaptedContactTest {
     }
 
     @Test
+    public void toModelType_nullTag_throwsIllegalValueException() {
+        List<JsonAdaptedTag> invalidTags = new ArrayList<>(VALID_TAGS);
+        invalidTags.add(null);
+        JsonAdaptedContact contact =
+                new JsonAdaptedContact(VALID_NAME, VALID_PHONE, VALID_EMAIL, VALID_ADDRESS, invalidTags);
+
+        assertThrows(IllegalValueException.class,
+                "Contact contains an invalid tag.", contact::toModelType);
+    }
+
+    @Test
     public void toModelType_validStories_returnsContactWithStories() throws Exception {
         List<JsonAdaptedStoryName> validStories = List.of(
                 new JsonAdaptedStoryName("Housing Investigation"),

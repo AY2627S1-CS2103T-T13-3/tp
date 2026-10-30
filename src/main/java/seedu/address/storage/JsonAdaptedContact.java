@@ -91,6 +91,9 @@ class JsonAdaptedContact {
     public Contact toModelType() throws IllegalValueException {
         final List<Tag> contactTags = new ArrayList<>();
         for (JsonAdaptedTag tag : tags) {
+            if (tag == null) {
+                throw new IllegalValueException("Contact contains an invalid tag.");
+            }
             contactTags.add(tag.toModelType());
         }
 
