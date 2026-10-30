@@ -55,15 +55,14 @@ public class Followup {
     }
 
     /**
-     * Returns true if both followups are semantically equal.
+     * Returns true if both followups have the same description and linked contact.
      */
     public boolean isSameFollowup(Followup otherFollowup) {
         return equals(otherFollowup);
     }
 
     /**
-     * Returns true if both followups have the same identity, data, and linked-contact fields.
-     * This defines a stronger notion of equality between two followups.
+     * Returns true if both followups have the same description and linked contact.
      */
     @Override
     public boolean equals(Object other) {
