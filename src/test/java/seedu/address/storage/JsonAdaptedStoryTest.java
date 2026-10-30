@@ -6,6 +6,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,7 @@ import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.contact.Name;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
+import seedu.address.model.tag.Tag;
 
 /**
  * Contains unit tests for JsonAdaptedStory.
@@ -21,6 +23,8 @@ public class JsonAdaptedStoryTest {
 
     private static final String VALID_NAME = "Housing Investigation";
     private static final String INVALID_NAME = "Housing/Investigation";
+    private static final String VALID_TAG = "investigation";
+    private static final String INVALID_TAG = "investigation/local";
 
     @Test
     public void toModelType_validStoryDetails_returnsStory() throws Exception {
@@ -49,6 +53,14 @@ public class JsonAdaptedStoryTest {
     }
 
     @Test
+    public void toModelType_validTags_returnsStoryWithTags() throws Exception {
+        JsonAdaptedStory story = new JsonAdaptedStory(
+                VALID_NAME, List.of(new JsonAdaptedTag(VALID_TAG)));
+
+        assertEquals(Set.of(new Tag(VALID_TAG)), story.toModelType().getTags());
+    }
+
+    @Test
     public void toModelType_invalidName_throwsIllegalValueException() {
         JsonAdaptedStory story = new JsonAdaptedStory(INVALID_NAME, List.of());
 
@@ -66,6 +78,25 @@ public class JsonAdaptedStoryTest {
 
         assertThrows(IllegalValueException.class,
                 expectedMessage, story::toModelType);
+    }
+
+    @Test
+    public void toModelType_invalidTag_throwsIllegalValueException() {
+        JsonAdaptedStory story = new JsonAdaptedStory(
+                VALID_NAME, List.of(new JsonAdaptedTag(INVALID_TAG)));
+
+        assertThrows(IllegalValueException.class,
+                Tag.MESSAGE_CONSTRAINTS, story::toModelType);
+    }
+
+    @Test
+    public void toModelType_nullTag_throwsIllegalValueException() {
+        List<JsonAdaptedTag> invalidTags = new ArrayList<>();
+        invalidTags.add(null);
+        JsonAdaptedStory story = new JsonAdaptedStory(VALID_NAME, invalidTags);
+
+        assertThrows(IllegalValueException.class,
+                "Story contains an invalid tag.", story::toModelType);
     }
 
     @Test

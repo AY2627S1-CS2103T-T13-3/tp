@@ -5,6 +5,7 @@ import static seedu.address.testutil.Assert.assertThrows;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -123,6 +124,19 @@ public class JsonSerializableAddressBookTest {
     }
 
     @Test
+    public void toModelType_reciprocalAssignment_success() throws Exception {
+        Contact contact = contactAssignedTo(ASSIGNED_STORY_NAME);
+        Story story = new Story(ASSIGNED_STORY_NAME, Set.of(), List.of(TypicalContacts.ALICE.getName()));
+        JsonSerializableAddressBook data = new JsonSerializableAddressBook(
+                List.of(new JsonAdaptedContact(contact)), List.of(new JsonAdaptedStory(story)), null);
+
+        AddressBook addressBook = data.toModelType();
+
+        assertEquals(List.of(contact), addressBook.getContactList());
+        assertEquals(List.of(story), addressBook.getStoryList());
+    }
+
+    @Test
     public void toModelType_missingStories_success() throws Exception {
         JsonSerializableAddressBook data = new JsonSerializableAddressBook(null, null, null);
 
@@ -140,6 +154,33 @@ public class JsonSerializableAddressBookTest {
         assertThrows(IllegalValueException.class,
                 JsonSerializableAddressBook.MESSAGE_DUPLICATE_STORY,
                 data::toModelType);
+    }
+
+    @Test
+    public void toModelType_nullContactEntry_throwsIllegalValueException() {
+        List<JsonAdaptedContact> contacts = new ArrayList<>();
+        contacts.add(null);
+        JsonSerializableAddressBook data = new JsonSerializableAddressBook(contacts, null, null);
+
+        assertThrows(IllegalValueException.class, "Invalid contact.", data::toModelType);
+    }
+
+    @Test
+    public void toModelType_nullStoryEntry_throwsIllegalValueException() {
+        List<JsonAdaptedStory> stories = new ArrayList<>();
+        stories.add(null);
+        JsonSerializableAddressBook data = new JsonSerializableAddressBook(null, stories, null);
+
+        assertThrows(IllegalValueException.class, "Invalid story.", data::toModelType);
+    }
+
+    @Test
+    public void toModelType_nullFollowupEntry_throwsIllegalValueException() {
+        List<JsonAdaptedFollowup> followups = new ArrayList<>();
+        followups.add(null);
+        JsonSerializableAddressBook data = new JsonSerializableAddressBook(null, null, followups);
+
+        assertThrows(IllegalValueException.class, "Invalid followup.", data::toModelType);
     }
 
     @Test
