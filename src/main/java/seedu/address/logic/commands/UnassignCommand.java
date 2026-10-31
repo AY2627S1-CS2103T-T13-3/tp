@@ -70,8 +70,6 @@ public class UnassignCommand extends AddressBookMutatingCommand {
         }
 
         model.unassignStory(contactToUnassign, storyToUnassign);
-        model.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
-        model.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
         return new CommandResult(String.format(MESSAGE_SUCCESS, contactToUnassign.getName(),
                 storyToUnassign.getName()));
     }

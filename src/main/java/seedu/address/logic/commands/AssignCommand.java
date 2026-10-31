@@ -72,8 +72,6 @@ public class AssignCommand extends AddressBookMutatingCommand {
         }
 
         model.assignStory(contactToAssign, storyToAssign);
-        model.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
-        model.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
         return new CommandResult(String.format(MESSAGE_SUCCESS, contactToAssign.getName(), storyToAssign.getName()));
     }
 
