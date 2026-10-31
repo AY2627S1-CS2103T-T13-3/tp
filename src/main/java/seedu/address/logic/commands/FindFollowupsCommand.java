@@ -40,19 +40,6 @@ public class FindFollowupsCommand extends Command {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-
-        if (!(other instanceof FindFollowupsCommand otherCommand)) {
-            return false;
-        }
-
-        return predicate.equals(otherCommand.predicate);
-    }
-
-    @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("predicate", predicate)

@@ -5,9 +5,6 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -17,13 +14,8 @@ import javafx.collections.transformation.FilteredList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.model.contact.Contact;
-import seedu.address.model.contact.Name;
-import seedu.address.model.contact.NameContainsKeywordsPredicate;
 import seedu.address.model.followup.Followup;
-import seedu.address.model.followup.FollowupDescriptionContainsKeywordsPredicate;
 import seedu.address.model.story.Story;
-import seedu.address.model.story.StoryName;
-import seedu.address.model.story.StoryNameContainsKeywordsPredicate;
 
 /**
  * Represents the in-memory model of the address book data.
@@ -130,10 +122,9 @@ public class ModelManager implements Model {
     public void setContact(Contact target, Contact editedContact) {
         requireAllNonNull(target, editedContact);
 
-        activeStoryFilter.notifyStateChanged(target, editedContact);
-        activeFollowupFilter.notifyStateChanged(target, editedContact);
+        updateFilteredStoryList(activeStoryFilter.notifyStateChanged(target, editedContact));
+        updateFilteredFollowupList(activeFollowupFilter.notifyStateChanged(target, editedContact));
         addressBook.setContact(target, editedContact);
-
     }
 
     //=========== Story Operations ===========================================================================
@@ -154,7 +145,7 @@ public class ModelManager implements Model {
     public void setStory(Story target, Story editedStory) {
         requireAllNonNull(target, editedStory);
 
-        activeContactFilter.notifyStateChanged(target, editedStory);
+        updateFilteredContactList(activeContactFilter.notifyStateChanged(target, editedStory));
         addressBook.setStory(target, editedStory);
 
     }
@@ -293,9 +284,6 @@ public class ModelManager implements Model {
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredContacts.equals(otherModelManager.filteredContacts)
                 && filteredStories.equals(otherModelManager.filteredStories)
-                && filteredFollowups.equals(otherModelManager.filteredFollowups)
-                && activeStoryFilter.equals(otherModelManager.activeStoryFilter)
-                && activeContactFilter.equals(otherModelManager.activeContactFilter)
-                && activeFollowupFilter.equals(otherModelManager.activeFollowupFilter);
+                && filteredFollowups.equals(otherModelManager.filteredFollowups);
     }
 }

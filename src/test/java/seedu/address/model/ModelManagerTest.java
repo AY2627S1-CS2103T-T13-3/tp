@@ -108,6 +108,79 @@ public class ModelManagerTest {
     }
 
     @Test
+    public void getFilteredStoryList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredStoryList().remove(0));
+    }
+
+    @Test
+    public void getFilteredFollowupList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredFollowupList().remove(0));
+    }
+
+    @Test
+    public void updateFilteredContactList_validPredicate_filtersListAndUpdatesStatus() {
+        AddressBook addressBook = new AddressBookBuilder().withContact(ALICE).withContact(BENSON).build();
+        UserPrefs userPrefs = new UserPrefs();
+        modelManager = new ModelManager(addressBook, userPrefs);
+
+        assertEquals(List.of(ALICE, BENSON), modelManager.getFilteredContactList());
+        assertEquals(Model.FILTER_STATUS_ALL, modelManager.getContactFilterStatusProperty().getValue());
+
+        NameContainsKeywordsPredicate predicate = new NameContainsKeywordsPredicate(List.of("Alice"));
+        modelManager.updateFilteredContactList(predicate);
+
+        assertEquals(List.of(ALICE), modelManager.getFilteredContactList());
+        assertEquals(predicate.toString(), modelManager.getContactFilterStatusProperty().getValue());
+
+        modelManager.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
+        assertEquals(List.of(ALICE, BENSON), modelManager.getFilteredContactList());
+        assertEquals(Model.FILTER_STATUS_ALL, modelManager.getContactFilterStatusProperty().getValue());
+    }
+
+    @Test
+    public void updateFilteredStoryList_validPredicate_filtersListAndUpdatesStatus() {
+        Story story1 = new Story(new StoryName("Alpha"), Set.of());
+        Story story2 = new Story(new StoryName("Beta"), Set.of());
+        modelManager.addStory(story1);
+        modelManager.addStory(story2);
+
+        assertEquals(List.of(story1, story2), modelManager.getFilteredStoryList());
+        assertEquals(Model.FILTER_STATUS_ALL, modelManager.getStoryFilterStatusProperty().getValue());
+
+        Contact contact = new ContactBuilder().withName("Alex").build();
+        StoryAssignedToContactPredicate predicate = new StoryAssignedToContactPredicate(contact);
+        modelManager.updateFilteredStoryList(predicate);
+
+        assertEquals(List.of(), modelManager.getFilteredStoryList());
+        assertEquals(predicate.toString(), modelManager.getStoryFilterStatusProperty().getValue());
+
+        modelManager.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
+        assertEquals(List.of(story1, story2), modelManager.getFilteredStoryList());
+        assertEquals(Model.FILTER_STATUS_ALL, modelManager.getStoryFilterStatusProperty().getValue());
+    }
+
+    @Test
+    public void updateFilteredFollowupList_validPredicate_filtersListAndUpdatesStatus() {
+        Followup followup1 = new Followup(new FollowupDescription("Call Alice"), ALICE.getName());
+        Followup followup2 = new Followup(new FollowupDescription("Email Benson"), BENSON.getName());
+        modelManager.addFollowup(followup1);
+        modelManager.addFollowup(followup2);
+
+        assertEquals(List.of(followup1, followup2), modelManager.getFilteredFollowupList());
+        assertEquals(Model.FILTER_STATUS_ALL, modelManager.getFollowupFilterStatusProperty().getValue());
+
+        FollowupIsForContactPredicate predicate = new FollowupIsForContactPredicate(ALICE);
+        modelManager.updateFilteredFollowupList(predicate);
+
+        assertEquals(List.of(followup1), modelManager.getFilteredFollowupList());
+        assertEquals(predicate.toString(), modelManager.getFollowupFilterStatusProperty().getValue());
+
+        modelManager.updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
+        assertEquals(List.of(followup1, followup2), modelManager.getFilteredFollowupList());
+        assertEquals(Model.FILTER_STATUS_ALL, modelManager.getFollowupFilterStatusProperty().getValue());
+    }
+
+    @Test
     public void equals() {
         AddressBook addressBook = new AddressBookBuilder().withContact(ALICE).withContact(BENSON).build();
         AddressBook differentAddressBook = new AddressBook();
@@ -137,6 +210,14 @@ public class ModelManagerTest {
 
         // resets modelManager to initial state for upcoming tests
         modelManager.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
+
+        // different filteredStoryList -> returns false
+        Story story = new Story(new StoryName("Crime Investigation"), Set.of());
+        modelManager.addStory(story);
+        ModelManager storyModelManager = new ModelManager(modelManager.getAddressBook(), userPrefs);
+        modelManager.updateFilteredStoryList(new StoryAssignedToContactPredicate(ALICE));
+        assertFalse(modelManager.equals(storyModelManager));
+        modelManager.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
 
         // different filteredFollowupList -> returns false
         Followup followup = new Followup(new FollowupDescription("Call"), ALICE.getName());
@@ -213,12 +294,13 @@ public class ModelManagerTest {
         Contact editedContact = new ContactBuilder(contact).withName("Alicia Pauline").build();
         modelManager.setContact(contact, editedContact);
 
-        String expectedStatus = String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, editedContact.getName());
-        assertEquals(expectedStatus, modelManager.getStoryFilterStatusProperty().getValue());
+        String expectedStoryStatus = new StoryAssignedToContactPredicate(editedContact).toString();
+        String expectedFollowupStatus = new FollowupIsForContactPredicate(editedContact).toString();
+        assertEquals(expectedStoryStatus, modelManager.getStoryFilterStatusProperty().getValue());
         assertEquals(1, modelManager.getFilteredStoryList().size());
         assertEquals(story.getName(), modelManager.getFilteredStoryList().get(0).getName());
 
-        assertEquals(expectedStatus, modelManager.getFollowupFilterStatusProperty().getValue());
+        assertEquals(expectedFollowupStatus, modelManager.getFollowupFilterStatusProperty().getValue());
         assertEquals(1, modelManager.getFilteredFollowupList().size());
         assertEquals(followup.getDescription(), modelManager.getFilteredFollowupList().get(0).getDescription());
     }
@@ -247,7 +329,7 @@ public class ModelManagerTest {
     @Test
     public void setStory_nameChangedWhenFilteredByStory_updatesContactFilter() {
         ModelManager modelManager = new ModelManager();
-        Contact contact = new ContactBuilder().withName("Alice Pauline").build();
+        Contact contact = new ContactBuilder().withName("Alice Pauline").withStories("Alpha Story").build();
         Story story = new Story(new StoryName("Alpha Story"), Set.of(), List.of(contact.getName()));
 
         modelManager.addContact(contact);
@@ -260,7 +342,7 @@ public class ModelManagerTest {
         Story editedStory = new Story(new StoryName("Beta Story"), Set.of(), List.of(contact.getName()));
         modelManager.setStory(story, editedStory);
 
-        String expectedStatus = String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, editedStory.getName());
+        String expectedStatus = new ContactAssignedToStoryPredicate(editedStory).toString();
         assertEquals(expectedStatus, modelManager.getContactFilterStatusProperty().getValue());
         assertEquals(1, modelManager.getFilteredContactList().size());
         assertEquals(contact.getName(), modelManager.getFilteredContactList().get(0).getName());

@@ -310,7 +310,7 @@ public class EditStoryCommandTest {
 
         assertCommandSuccess(editStoryCommand, model, expectedMessage, expectedModel);
 
-        String expectedStatus = String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, editedStory.getName());
+        String expectedStatus = new ContactAssignedToStoryPredicate(editedStory).toString();
         assertEquals(expectedStatus, model.getContactFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredContactList().size());
     }

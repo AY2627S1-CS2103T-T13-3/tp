@@ -15,19 +15,6 @@ public class StoryNameContainsKeywordsPredicate extends BaseKeywordPredicate<Sto
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-
-        if (!(other instanceof StoryNameContainsKeywordsPredicate otherPredicate)) {
-            return false;
-        }
-
-        return super.equals(otherPredicate);
-    }
-
-    @Override
     public boolean matchesKeyword(Story item, String keyword) {
         return item.isNameMatching(keyword);
     }

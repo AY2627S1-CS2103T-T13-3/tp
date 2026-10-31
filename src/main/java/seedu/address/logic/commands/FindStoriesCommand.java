@@ -34,19 +34,6 @@ public class FindStoriesCommand extends Command {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-
-        if (!(other instanceof FindStoriesCommand otherFindStoriesCommand)) {
-            return false;
-        }
-
-        return predicate.equals(otherFindStoriesCommand.predicate);
-    }
-
-    @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("predicate", predicate)

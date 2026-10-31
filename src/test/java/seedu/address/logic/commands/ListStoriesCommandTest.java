@@ -142,7 +142,7 @@ public class ListStoriesCommandTest {
         model.setContact(contactToEdit, editedContact);
 
         // Filter status and filtered stories should be updated
-        String expectedStatus = String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, editedContact.getName());
+        String expectedStatus = new StoryAssignedToContactPredicate(editedContact).toString();
         assertEquals(expectedStatus, model.getStoryFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredStoryList().size());
         assertEquals(story.getName(), model.getFilteredStoryList().get(0).getName());

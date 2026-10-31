@@ -15,20 +15,6 @@ public class NameContainsKeywordsPredicate extends BaseKeywordPredicate<Contact,
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-
-        // instanceof handles nulls
-        if (!(other instanceof NameContainsKeywordsPredicate otherNameContainsKeywordsPredicate)) {
-            return false;
-        }
-
-        return super.equals(otherNameContainsKeywordsPredicate);
-    }
-
-    @Override
     public boolean matchesKeyword(Contact item, String keyword) {
         return item.isNameMatching(keyword);
     }

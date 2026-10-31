@@ -313,10 +313,11 @@ public class EditContactCommandTest {
 
         assertCommandSuccess(editContactCommand, model, expectedMessage, expectedModel);
 
-        String expectedStatus = String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, editedContact.getName());
-        assertEquals(expectedStatus, model.getStoryFilterStatusProperty().getValue());
+        String expectedStoryStatus = new StoryAssignedToContactPredicate(editedContact).toString();
+        String expectedFollowupStatus = new FollowupIsForContactPredicate(editedContact).toString();
+        assertEquals(expectedStoryStatus, model.getStoryFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredStoryList().size());
-        assertEquals(expectedStatus, model.getFollowupFilterStatusProperty().getValue());
+        assertEquals(expectedFollowupStatus, model.getFollowupFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredFollowupList().size());
     }
 }

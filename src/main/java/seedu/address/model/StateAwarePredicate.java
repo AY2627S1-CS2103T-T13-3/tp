@@ -2,6 +2,14 @@ package seedu.address.model;
 
 import java.util.function.Predicate;
 
-public abstract class StateAwarePredicate <T, U> implements Predicate<T> {
-    public void notifyStateChanged(U oldState, U newState) {};
+/**
+ * Represents a predicate that is aware of and responds to state changes of an associated entity.
+ *
+ * @param <T> Type of the item to be tested.
+ * @param <U> Type of the state object tracked by this predicate.
+ */
+public abstract class StateAwarePredicate<T, U> implements Predicate<T> {
+    public StateAwarePredicate <T, U> notifyStateChanged(U oldState, U newState) {
+        return this;
+    }
 }

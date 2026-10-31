@@ -1,20 +1,13 @@
 package seedu.address.model;
 
-import static java.util.Objects.requireNonNull;
-
 import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Predicate;
 
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.contact.Contact;
-import seedu.address.model.contact.Name;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.story.Story;
-import seedu.address.model.story.StoryName;
 
 /**
  * The API of the Model component.
@@ -26,13 +19,7 @@ public interface Model {
     StateAwarePredicate<Followup, Contact> PREDICATE_SHOW_ALL_FOLLOWUPS = new ListAllPredicate<>();
 
     /** Default filter status when all items are shown. */
-    String FILTER_STATUS_ALL = "All";
-
-    /** Format string for filter status when items are filtered by a contact. */
-    String FILTER_STATUS_BY_CONTACT_FORMAT = "Filtered by contact: \"%s\"";
-
-    /** Format string for filter status when items are filtered by a story. */
-    String FILTER_STATUS_BY_STORY_FORMAT = "Filtered by story: \"%s\"";
+    String FILTER_STATUS_ALL = new ListAllPredicate<>().toString();
 
     /**
      * Returns the user prefs.

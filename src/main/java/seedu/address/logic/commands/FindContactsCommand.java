@@ -35,20 +35,6 @@ public class FindContactsCommand extends Command {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-
-        // instanceof handles nulls
-        if (!(other instanceof FindContactsCommand otherFindContactsCommand)) {
-            return false;
-        }
-
-        return predicate.equals(otherFindContactsCommand.predicate);
-    }
-
-    @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("predicate", predicate)

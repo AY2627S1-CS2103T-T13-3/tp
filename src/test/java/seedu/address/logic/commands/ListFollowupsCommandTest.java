@@ -115,7 +115,7 @@ public class ListFollowupsCommandTest {
         model.setContact(contactToEdit, editedContact);
 
         // Filter status and filtered followups should be updated
-        String expectedStatus = String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, editedContact.getName());
+        String expectedStatus = new FollowupIsForContactPredicate(editedContact).toString();
         assertEquals(expectedStatus, model.getFollowupFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredFollowupList().size());
         assertEquals(editedContact.getName(), model.getFilteredFollowupList().get(0).getContact());
