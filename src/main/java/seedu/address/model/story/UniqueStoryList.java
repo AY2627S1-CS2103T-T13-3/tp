@@ -9,19 +9,19 @@ import java.util.stream.IntStream;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import seedu.address.model.SemanticRepresenter;
 import seedu.address.model.story.exceptions.DuplicateStoryException;
 import seedu.address.model.story.exceptions.StoryNotFoundException;
 
 /**
  * A list of stories that enforces uniqueness between its elements and does not allow nulls.
- * A story is considered unique by comparing using {@code Story#representsSameItem(Story)}. As such, adding and updating of
- * stories uses Story#representsSameItem(Story) for equality so as to ensure that the story being added or updated is
- * unique in terms of identity in the UniqueStoryList. However, the removal of a story uses Story#equals(Object) so
- * as to ensure that the story with exactly the same fields will be removed.
+ * A story is considered unique by comparing using {@code Story#representsSameItem(Story)}. As such,
+ * adding and updating of stories uses Story#representsSameItem(Story) for equality so as to ensure
+ * that the story being added or updated is unique in terms of identity in the UniqueStoryList.
+ * However, the removal of a story uses Story#equals(Object) so as to ensure that the story with
+ * exactly the same fields will be removed.
  *
- * Supports a minimal set of list operations.
- *
- * @see Story#representsSameItem(seedu.address.model.SemanticIdentifier)
+ * @see Story#representsSameItem(SemanticRepresenter)
  */
 
 public class UniqueStoryList implements Iterable<Story> {

@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 import seedu.address.commons.util.ToStringBuilder;
-import seedu.address.model.SemanticIdentifier;
+import seedu.address.model.SemanticRepresenter;
 import seedu.address.model.Titled;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.contact.Name;
@@ -20,7 +20,7 @@ import seedu.address.model.tag.Tag;
  * Represents a Story in the address book.
  * Guarantees: details are present and not null, field values are validated, immutable.
  */
-public class Story implements Titled, SemanticIdentifier {
+public class Story implements Titled, SemanticRepresenter {
 
     // Identity fields
     private final StoryName name;
@@ -130,7 +130,7 @@ public class Story implements Titled, SemanticIdentifier {
      * This defines a weaker notion of equality between two stories.
      */
     @Override
-    public boolean representsSameItem(SemanticIdentifier other) {
+    public boolean representsSameItem(SemanticRepresenter other) {
         requireAllNonNull(other);
 
         return other instanceof Story otherStory
