@@ -5,7 +5,7 @@ package seedu.address.model;
  */
 public class ListAllPredicate<T, U> extends StateAwarePredicate<T, U> {
     @Override
-    public boolean test(Object o) {
+    public boolean test(T o) {
         return true;
     }
 
