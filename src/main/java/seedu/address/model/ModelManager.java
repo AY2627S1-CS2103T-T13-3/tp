@@ -5,6 +5,7 @@ import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
@@ -38,10 +39,9 @@ public class ModelManager implements Model {
     private final SimpleStringProperty contactFilterStatus = new SimpleStringProperty(FILTER_STATUS_ALL);
     private final SimpleStringProperty storyFilterStatus = new SimpleStringProperty(FILTER_STATUS_ALL);
     private final SimpleStringProperty followupFilterStatus = new SimpleStringProperty(FILTER_STATUS_ALL);
-    private Optional<StoryName> activeStoryFilter = Optional.empty();
-    private Optional<Name> activeContactFilterForStories = Optional.empty();
-    private Optional<Name> activeContactFilterForFollowups = Optional.empty();
-
+    private StateAwarePredicate<Story, Contact> activeStoryFilter = PREDICATE_SHOW_ALL_STORIES;
+    private StateAwarePredicate<Contact, Story> activeContactFilter = PREDICATE_SHOW_ALL_CONTACTS;
+    private StateAwarePredicate<Followup, Contact> activeFollowupFilter = PREDICATE_SHOW_ALL_FOLLOWUPS;
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
@@ -130,28 +130,10 @@ public class ModelManager implements Model {
     public void setContact(Contact target, Contact editedContact) {
         requireAllNonNull(target, editedContact);
 
+        activeStoryFilter.notifyStateChanged(target, editedContact);
+        activeFollowupFilter.notifyStateChanged(target, editedContact);
         addressBook.setContact(target, editedContact);
 
-        if (!target.getName().equals(editedContact.getName())) {
-            if (activeContactFilterForStories.equals(Optional.of(target.getName()))) {
-                updateFilteredStoryList(story -> story.isAssigned(editedContact), editedContact.getName());
-            }
-
-            if (activeContactFilterForFollowups.equals(Optional.of(target.getName()))) {
-                updateFilteredFollowupList(followup -> followup.isFor(editedContact), editedContact.getName());
-            }
-
-            refreshFilteredContactListIfFilteredByStory();
-        }
-    }
-
-    private void refreshFilteredContactListIfFilteredByStory() {
-        activeStoryFilter.ifPresent(storyName ->
-                addressBook.getStoryList().stream()
-                        .filter(s -> s.getName().equals(storyName))
-                        .findFirst()
-                        .ifPresent(updatedStory ->
-                                filteredContacts.setPredicate(updatedStory::isAssigned)));
     }
 
     //=========== Story Operations ===========================================================================
@@ -172,11 +154,9 @@ public class ModelManager implements Model {
     public void setStory(Story target, Story editedStory) {
         requireAllNonNull(target, editedStory);
 
+        activeContactFilter.notifyStateChanged(target, editedStory);
         addressBook.setStory(target, editedStory);
 
-        if (activeStoryFilter.equals(Optional.of(target.getName()))) {
-            updateFilteredContactList(contact -> editedStory.isAssigned(contact), editedStory.getName());
-        }
     }
 
     @Override
@@ -227,42 +207,14 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void updateFilteredContactList(Predicate<Contact> predicate) {
+    public void updateFilteredContactList(StateAwarePredicate<Contact, Story> predicate) {
         requireNonNull(predicate);
-        activeStoryFilter = Optional.empty();
-        updateFilteredContactList(predicate, deriveContactFilterStatus(predicate));
-    }
-
-    @Override
-    public void updateFilteredContactList(Predicate<Contact> predicate, String filterStatus) {
-        requireAllNonNull(predicate, filterStatus);
-        activeStoryFilter = Optional.empty();
+        activeContactFilter = predicate;
         filteredContacts.setPredicate(predicate);
-        contactFilterStatus.set(filterStatus);
+        contactFilterStatus.set(predicate.toString());
     }
 
-    @Override
-    public void updateFilteredContactList(Predicate<Contact> predicate, StoryName storyName) {
-        requireAllNonNull(predicate, storyName);
-        activeStoryFilter = Optional.of(storyName);
-        filteredContacts.setPredicate(predicate);
-        contactFilterStatus.set(String.format(FILTER_STATUS_BY_STORY_FORMAT, storyName));
-    }
 
-    @Override
-    public Optional<StoryName> getActiveStoryFilter() {
-        return activeStoryFilter;
-    }
-
-    private String deriveContactFilterStatus(Predicate<Contact> predicate) {
-        if (predicate.equals(PREDICATE_SHOW_ALL_CONTACTS)) {
-            return FILTER_STATUS_ALL;
-        }
-        if (predicate instanceof NameContainsKeywordsPredicate namePredicate) {
-            return formatFilteredKeywords(namePredicate.getKeywords());
-        }
-        return "Filtered";
-    }
 
     @Override
     public ObservableValue<String> getContactFilterStatusProperty() {
@@ -280,41 +232,11 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void updateFilteredStoryList(Predicate<Story> predicate) {
+    public void updateFilteredStoryList(StateAwarePredicate<Story, Contact> predicate) {
         requireNonNull(predicate);
-        activeContactFilterForStories = Optional.empty();
-        updateFilteredStoryList(predicate, deriveStoryFilterStatus(predicate));
-    }
-
-    @Override
-    public void updateFilteredStoryList(Predicate<Story> predicate, String filterStatus) {
-        requireAllNonNull(predicate, filterStatus);
-        activeContactFilterForStories = Optional.empty();
+        activeStoryFilter = predicate;
         filteredStories.setPredicate(predicate);
-        storyFilterStatus.set(filterStatus);
-    }
-
-    @Override
-    public void updateFilteredStoryList(Predicate<Story> predicate, Name contactName) {
-        requireAllNonNull(predicate, contactName);
-        activeContactFilterForStories = Optional.of(contactName);
-        filteredStories.setPredicate(predicate);
-        storyFilterStatus.set(String.format(FILTER_STATUS_BY_CONTACT_FORMAT, contactName));
-    }
-
-    @Override
-    public Optional<Name> getActiveContactFilterForStories() {
-        return activeContactFilterForStories;
-    }
-
-    private String deriveStoryFilterStatus(Predicate<Story> predicate) {
-        if (predicate.equals(PREDICATE_SHOW_ALL_STORIES)) {
-            return FILTER_STATUS_ALL;
-        }
-        if (predicate instanceof StoryNameContainsKeywordsPredicate storyPredicate) {
-            return formatFilteredKeywords(storyPredicate.getKeywords());
-        }
-        return "Filtered";
+        storyFilterStatus.set(activeStoryFilter.toString());
     }
 
     @Override
@@ -339,41 +261,11 @@ public class ModelManager implements Model {
     }
 
     @Override
-    public void updateFilteredFollowupList(Predicate<Followup> predicate) {
+    public void updateFilteredFollowupList(StateAwarePredicate<Followup, Contact> predicate) {
         requireNonNull(predicate);
-        activeContactFilterForFollowups = Optional.empty();
-        updateFilteredFollowupList(predicate, deriveFollowupFilterStatus(predicate));
-    }
-
-    @Override
-    public void updateFilteredFollowupList(Predicate<Followup> predicate, String filterStatus) {
-        requireAllNonNull(predicate, filterStatus);
-        activeContactFilterForFollowups = Optional.empty();
+        activeFollowupFilter = predicate;
         filteredFollowups.setPredicate(predicate);
-        followupFilterStatus.set(filterStatus);
-    }
-
-    @Override
-    public void updateFilteredFollowupList(Predicate<Followup> predicate, Name contactName) {
-        requireAllNonNull(predicate, contactName);
-        activeContactFilterForFollowups = Optional.of(contactName);
-        filteredFollowups.setPredicate(predicate);
-        followupFilterStatus.set(String.format(FILTER_STATUS_BY_CONTACT_FORMAT, contactName));
-    }
-
-    @Override
-    public Optional<Name> getActiveContactFilterForFollowups() {
-        return activeContactFilterForFollowups;
-    }
-
-    private String deriveFollowupFilterStatus(Predicate<Followup> predicate) {
-        if (predicate.equals(PREDICATE_SHOW_ALL_FOLLOWUPS)) {
-            return FILTER_STATUS_ALL;
-        }
-        if (predicate instanceof FollowupDescriptionContainsKeywordsPredicate followupPredicate) {
-            return formatFilteredKeywords(followupPredicate.getKeywords());
-        }
-        return "Filtered";
+        followupFilterStatus.set(predicate.toString());
     }
 
     @Override
@@ -403,7 +295,7 @@ public class ModelManager implements Model {
                 && filteredStories.equals(otherModelManager.filteredStories)
                 && filteredFollowups.equals(otherModelManager.filteredFollowups)
                 && activeStoryFilter.equals(otherModelManager.activeStoryFilter)
-                && activeContactFilterForStories.equals(otherModelManager.activeContactFilterForStories)
-                && activeContactFilterForFollowups.equals(otherModelManager.activeContactFilterForFollowups);
+                && activeContactFilter.equals(otherModelManager.activeContactFilter)
+                && activeFollowupFilter.equals(otherModelManager.activeFollowupFilter);
     }
 }

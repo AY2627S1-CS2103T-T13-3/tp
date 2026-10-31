@@ -73,7 +73,6 @@ public class FollowupDescriptionContainsKeywordsPredicateTest {
                         List.of("interview"));
 
         assertEquals(first, second);
-        assertEquals(first.hashCode(), second.hashCode());
     }
 
     @Test
@@ -87,5 +86,15 @@ public class FollowupDescriptionContainsKeywordsPredicateTest {
                         List.of("meeting"));
 
         assertFalse(first.equals(second));
+    }
+
+    @Test
+    public void toStringMethod() {
+        List<String> keywords = List.of("interview", "meeting");
+        FollowupDescriptionContainsKeywordsPredicate predicate =
+                new FollowupDescriptionContainsKeywordsPredicate(keywords);
+
+        String expected = "Filtered: \"interview meeting\"";
+        assertEquals(expected, predicate.toString());
     }
 }

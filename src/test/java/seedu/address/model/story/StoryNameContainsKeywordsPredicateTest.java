@@ -50,8 +50,7 @@ public class StoryNameContainsKeywordsPredicateTest {
         List<String> keywords = List.of("housing", "investigation");
         StoryNameContainsKeywordsPredicate predicate = new StoryNameContainsKeywordsPredicate(keywords);
 
-        String expected = StoryNameContainsKeywordsPredicate.class.getCanonicalName()
-                + "{keywords=" + keywords + "}";
+        String expected = "Filtered: \"housing investigation\"";
         assertEquals(expected, predicate.toString());
     }
 }

@@ -22,6 +22,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
+import seedu.address.model.contact.ContactAssignedToStoryPredicate;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
 import seedu.address.testutil.ContactBuilder;
@@ -66,7 +67,7 @@ public class ListContactsCommandTest {
         Story assignedStory = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredContactList(assignedStory);
+        expectedModel.updateFilteredContactList(new ContactAssignedToStoryPredicate(assignedStory));
 
         String expectedMessage = String.format(ListContactsCommand.MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,
                 1, assignedStory.getName());
@@ -81,7 +82,7 @@ public class ListContactsCommandTest {
     public void execute_validStoryIndexNoAssignments_showsEmptyList() {
         Story story = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
-        expectedModel.updateFilteredContactList(story);
+        expectedModel.updateFilteredContactList(new ContactAssignedToStoryPredicate(story));
 
         String expectedMessage = String.format(ListContactsCommand.MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,
                 0, story.getName());
