@@ -40,7 +40,7 @@ public class EditStoryCommand extends AddressBookMutatingCommand {
 
     public static final String MESSAGE_EDIT_STORY_SUCCESS = "Edited story: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
-    public static final String MESSAGE_DUPLICATE_STORY = "This story already exists in PressMemo.";
+    public static final String MESSAGE_DUPLICATE_STORY = "Error: there is already a story named \"%1$s\"!";
 
     private final Index index;
     private final EditStoryDescriptor editStoryDescriptor;
@@ -70,7 +70,7 @@ public class EditStoryCommand extends AddressBookMutatingCommand {
         Story editedStory = editStoryDescriptor.createEditedStory(storyToEdit);
 
         if (!storyToEdit.representsSameItem(editedStory) && model.hasStory(editedStory)) {
-            throw new CommandException(MESSAGE_DUPLICATE_STORY);
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_STORY, editedStory.getName()));
         }
 
         model.setStory(storyToEdit, editedStory);

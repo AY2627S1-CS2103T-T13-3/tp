@@ -55,7 +55,8 @@ public class AddContactCommandTest {
 
         assertThrows(
                 CommandException.class,
-                AddContactCommand.MESSAGE_DUPLICATE_CONTACT, () -> addContactCommand.execute(modelStub)
+                String.format(AddContactCommand.MESSAGE_DUPLICATE_CONTACT, validContact.getName()), () ->
+                        addContactCommand.execute(modelStub)
         );
     }
 

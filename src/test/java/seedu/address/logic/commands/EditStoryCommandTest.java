@@ -165,7 +165,7 @@ public class EditStoryCommandTest {
         EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder(firstStory).build();
         EditStoryCommand editStoryCommand = new EditStoryCommand(INDEX_SECOND_STORY, descriptor);
 
-        assertCommandFailure(editStoryCommand, model, MESSAGE_DUPLICATE_STORY);
+        assertCommandFailure(editStoryCommand, model, String.format(MESSAGE_DUPLICATE_STORY, firstStory.getName()));
     }
 
     @Test
@@ -177,7 +177,7 @@ public class EditStoryCommandTest {
         EditStoryCommand editStoryCommand = new EditStoryCommand(INDEX_FIRST_STORY,
                 new EditStoryDescriptorBuilder(storyInList).build());
 
-        assertCommandFailure(editStoryCommand, model, MESSAGE_DUPLICATE_STORY);
+        assertCommandFailure(editStoryCommand, model, String.format(MESSAGE_DUPLICATE_STORY, storyInList.getName()));
     }
 
     @Test

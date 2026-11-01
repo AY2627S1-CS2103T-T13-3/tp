@@ -110,7 +110,8 @@ public class AddFollowupCommandTest {
     public void execute_duplicateFollowup_throwsCommandException() {
         model.addFollowup(FOLLOWUP_A);
         assertCommandFailure(new AddFollowupCommand(FOLLOWUP_A.getDescription(), INDEX_FIRST_CONTACT), model,
-                String.format(AddFollowupCommand.MESSAGE_DUPLICATE_FOLLOWUP, FOLLOWUP_A.getContact()));
+                String.format(AddFollowupCommand.MESSAGE_DUPLICATE_FOLLOWUP, FOLLOWUP_A.getDescription(),
+                        FOLLOWUP_A.getContact()));
     }
 
     @Test
