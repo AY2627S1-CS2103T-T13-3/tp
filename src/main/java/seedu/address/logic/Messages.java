@@ -44,9 +44,8 @@ public class Messages {
     /**
      * Returns an error message indicating the input segment containing an unrecognized prefix or unescaped slash.
      */
-    public static String getErrorMessageForInvalidUserString(String inputLocation, String invalidUserString) {
-        return String.format(MESSAGE_INVALID_USER_STRING, inputLocation)
-                + "\nProblematic segment: \"" + invalidUserString + "\"";
+    public static String getErrorMessageForInvalidUserString(String invalidUserString) {
+        return String.format(MESSAGE_INVALID_USER_STRING, invalidUserString);
     }
 
     /**

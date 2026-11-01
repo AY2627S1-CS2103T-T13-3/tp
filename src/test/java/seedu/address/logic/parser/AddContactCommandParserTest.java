@@ -290,19 +290,19 @@ public class AddContactCommandParserTest {
         // Name edge cases: empty, invalid name containing fslash
         assertParseFailure(parser, " n/" + validPhone + validEmail + validAddress, Name.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, " n/Al/ice" + validPhone + validEmail + validAddress,
-                Messages.getErrorMessageForInvalidUserString("the n/ argument", "Al/ice"));
+                Messages.getErrorMessageForInvalidUserString("Al/ice"));
 
         // Phone edge cases: empty, whitespace only, contains fslash
         assertParseFailure(parser, validName + " p/" + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + " p/   " + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + " p/12/34" + validEmail + validAddress,
-                Messages.getErrorMessageForInvalidUserString("the p/ argument", "12/34"));
+                Messages.getErrorMessageForInvalidUserString("12/34"));
 
         // Email edge cases: empty, whitespace only, contains fslash
         assertParseFailure(parser, validName + validPhone + " e/" + validAddress, Email.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + " e/   " + validAddress, Email.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + " e/alice/@example.com" + validAddress,
-                Messages.getErrorMessageForInvalidUserString("the e/ argument", "alice/@example.com"));
+                Messages.getErrorMessageForInvalidUserString("alice/@example.com"));
 
         // Address edge cases: empty, whitespace only
         assertParseFailure(parser, validName + validPhone + validEmail + " a/", Address.MESSAGE_CONSTRAINTS);
@@ -314,6 +314,6 @@ public class AddContactCommandParserTest {
         assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/   ",
                 Tag.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/tag/1",
-                Messages.getErrorMessageForInvalidUserString("the t/ argument", "tag/1"));
+                Messages.getErrorMessageForInvalidUserString("tag/1"));
     }
 }

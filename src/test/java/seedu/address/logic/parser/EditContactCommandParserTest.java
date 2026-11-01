@@ -88,7 +88,7 @@ public class EditContactCommandParserTest {
 
         // invalid prefix being parsed as preamble
         assertParseFailure(parser, "1 i/ string",
-                Messages.getErrorMessageForInvalidUserString("the command preamble", "1 i/ string"));
+                Messages.getErrorMessageForInvalidUserString("1 i/ string"));
     }
 
     @Test

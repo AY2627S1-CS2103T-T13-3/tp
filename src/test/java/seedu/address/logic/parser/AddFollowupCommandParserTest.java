@@ -93,11 +93,11 @@ public class AddFollowupCommandParserTest {
 
         // D_INV2: Forward slash in description
         assertParseFailure(parser, "/urgent ci/1",
-                Messages.getErrorMessageForInvalidUserString("the command preamble", "/urgent"));
+                Messages.getErrorMessageForInvalidUserString("/urgent"));
         assertParseFailure(parser, "Call Dr. Smith s/o the myth ci/1",
-                Messages.getErrorMessageForInvalidUserString("the command preamble", "Call Dr. Smith s/o the myth"));
+                Messages.getErrorMessageForInvalidUserString("Call Dr. Smith s/o the myth"));
         assertParseFailure(parser, "Interview/Investigation ci/1",
-                Messages.getErrorMessageForInvalidUserString("the command preamble", "Interview/Investigation"));
+                Messages.getErrorMessageForInvalidUserString("Interview/Investigation"));
 
         // CI_INV1: Boundary 0
         assertParseFailure(parser, "Followup A ci/0", MESSAGE_INVALID_INDEX);
@@ -129,9 +129,9 @@ public class AddFollowupCommandParserTest {
     @Test
     public void parse_invalidPrefix_failure() {
         assertParseFailure(parser, "Followup A z/invalid",
-                Messages.getErrorMessageForInvalidUserString("the command preamble", "Followup A z/invalid"));
+                Messages.getErrorMessageForInvalidUserString("Followup A z/invalid"));
         assertParseFailure(parser, "Followup A z/invalid ci/1",
-                Messages.getErrorMessageForInvalidUserString("the command preamble", "Followup A z/invalid"));
+                Messages.getErrorMessageForInvalidUserString("Followup A z/invalid"));
     }
 
     @Test

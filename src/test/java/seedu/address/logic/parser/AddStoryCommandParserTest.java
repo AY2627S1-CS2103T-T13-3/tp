@@ -96,11 +96,11 @@ public class AddStoryCommandParserTest {
 
         // SN_INV2: Forward slash in story name
         assertParseFailure(parser, "Invalid/Story",
-                Messages.getErrorMessageForInvalidUserString("the command preamble", "Invalid/Story"));
+                Messages.getErrorMessageForInvalidUserString("Invalid/Story"));
         assertParseFailure(parser, "Budget / 2026",
-                Messages.getErrorMessageForInvalidUserString("the command preamble", "Budget / 2026"));
+                Messages.getErrorMessageForInvalidUserString("Budget / 2026"));
         assertParseFailure(parser, "Invalid/Story t/urgent",
-                Messages.getErrorMessageForInvalidUserString("the command preamble", "Invalid/Story"));
+                Messages.getErrorMessageForInvalidUserString("Invalid/Story"));
 
         // T_INV1: Empty tag value
         assertParseFailure(parser, "Valid Story t/", Tag.MESSAGE_CONSTRAINTS);
@@ -110,12 +110,12 @@ public class AddStoryCommandParserTest {
 
         // T_INV3: Tag containing forward slash
         assertParseFailure(parser, "Valid Story t/invalid/tag",
-                Messages.getErrorMessageForInvalidUserString("the t/ argument", "invalid/tag"));
+                Messages.getErrorMessageForInvalidUserString("invalid/tag"));
 
         // Valid tag followed by invalid tag in isolation
         assertParseFailure(parser, "Valid Story t/urgent t/   ", Tag.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "Valid Story t/urgent t/invalid/tag",
-                Messages.getErrorMessageForInvalidUserString("the t/ argument", "invalid/tag"));
+                Messages.getErrorMessageForInvalidUserString("invalid/tag"));
     }
 
     @Test

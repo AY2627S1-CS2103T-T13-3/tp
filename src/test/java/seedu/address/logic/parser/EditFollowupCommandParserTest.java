@@ -115,7 +115,7 @@ public class EditFollowupCommandParserTest {
         assertParseFailure(parser, "1 d/", FollowupDescription.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "1 d/   ", FollowupDescription.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "1 d/Call/Tomorrow",
-                Messages.getErrorMessageForInvalidUserString("the d/ argument", "Call/Tomorrow"));
+                Messages.getErrorMessageForInvalidUserString("Call/Tomorrow"));
 
         // Invalid contact index boundaries
         assertParseFailure(parser, "1 ci/0", ParserUtil.MESSAGE_INVALID_INDEX);
