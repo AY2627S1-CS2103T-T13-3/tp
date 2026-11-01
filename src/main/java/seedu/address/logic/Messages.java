@@ -17,7 +17,8 @@ public class Messages {
 
     public static final String MESSAGE_UNKNOWN_COMMAND = "Unknown command.";
     public static final String MESSAGE_INVALID_PREFIX = "Invalid prefixes at indices: %s.\nUse valid prefixes: %s.";
-    public static final String MESSAGE_INVALID_USER_STRING = "Any forward slash must be escaped.";
+    public static final String MESSAGE_INVALID_USER_STRING = "Unrecognized prefix or unescaped forward slash. "
+            + "Use a valid command prefix, or escape a literal forward slash as \\/.";
     public static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format!\n%1$s";
     public static final String MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX = "The contact index provided is invalid.";
     public static final String MESSAGE_INVALID_STORY_DISPLAYED_INDEX = "The story index provided is invalid.";
@@ -57,6 +58,13 @@ public class Messages {
                 String.join(", ", invalidFields),
                 String.join(", ", validFields)
         );
+    }
+
+    /**
+     * Returns an error message indicating the input segment containing an unrecognized prefix or unescaped slash.
+     */
+    public static String getErrorMessageForInvalidUserString(String invalidUserString) {
+        return MESSAGE_INVALID_USER_STRING + "\nProblematic input segment: \"" + invalidUserString + "\"";
     }
 
     /**
