@@ -11,7 +11,7 @@ import seedu.address.model.tag.Tag;
 public class JsonAdaptedTagTest {
 
     private static final String VALID_TAG = "press";
-    private static final String INVALID_TAG = "press/local";
+    private static final String INVALID_TAG = "/press";
 
     @Test
     public void toModelType_validTag_returnsTag() throws Exception {

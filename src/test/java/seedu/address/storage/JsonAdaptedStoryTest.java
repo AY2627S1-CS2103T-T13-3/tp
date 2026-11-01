@@ -22,9 +22,9 @@ import seedu.address.model.tag.Tag;
 public class JsonAdaptedStoryTest {
 
     private static final String VALID_NAME = "Housing Investigation";
-    private static final String INVALID_NAME = "Housing/Investigation";
+    private static final String INVALID_NAME = "/Housing Investigation";
     private static final String VALID_TAG = "investigation";
-    private static final String INVALID_TAG = "investigation/local";
+    private static final String INVALID_TAG = "/investigation";
 
     @Test
     public void toModelType_validStoryDetails_returnsStory() throws Exception {

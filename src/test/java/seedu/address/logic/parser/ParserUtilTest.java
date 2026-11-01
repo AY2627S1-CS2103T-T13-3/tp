@@ -27,7 +27,7 @@ public class ParserUtilTest {
     private static final String INVALID_PHONE = "+651234";
     private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_EMAIL = "example.com";
-    private static final String INVALID_TAG = "friend/1";
+    private static final String INVALID_TAG = "/friend";
 
     private static final String VALID_NAME = "Rachel Walker";
     private static final String VALID_PHONE = "123456";
@@ -74,7 +74,7 @@ public class ParserUtilTest {
 
     @Test
     public void parseStoryName_blankOrInvalidValue_throwsParseException() {
-        for (String input : List.of("", WHITESPACE, "Stor/y", "Story /Name")) {
+        for (String input : List.of("", WHITESPACE, "/", "/Story")) {
             assertThrows(ParseException.class, StoryName.MESSAGE_CONSTRAINTS, () -> ParserUtil.parseStoryName(input));
         }
     }

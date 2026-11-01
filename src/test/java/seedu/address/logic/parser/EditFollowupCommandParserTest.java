@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_USER_STRING;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
@@ -115,7 +116,7 @@ public class EditFollowupCommandParserTest {
         // Invalid description
         assertParseFailure(parser, "1 d/", FollowupDescription.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "1 d/   ", FollowupDescription.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1 d/Call/Tomorrow", FollowupDescription.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "1 d/Call/Tomorrow", MESSAGE_INVALID_USER_STRING);
 
         // Invalid contact index boundaries
         assertParseFailure(parser, "1 ci/0", ParserUtil.MESSAGE_INVALID_INDEX);

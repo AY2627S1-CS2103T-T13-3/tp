@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_USER_STRING;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
@@ -98,9 +99,9 @@ public class AddStoryCommandParserTest {
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
 
         // SN_INV2: Forward slash in story name
-        assertParseFailure(parser, "Invalid/Story", StoryName.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "Budget / 2026", StoryName.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "Invalid/Story t/urgent", StoryName.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "Invalid/Story", MESSAGE_INVALID_USER_STRING);
+        assertParseFailure(parser, "Budget / 2026", MESSAGE_INVALID_USER_STRING);
+        assertParseFailure(parser, "Invalid/Story t/urgent", MESSAGE_INVALID_USER_STRING);
 
         // T_INV1: Empty tag value
         assertParseFailure(parser, "Valid Story t/", Tag.MESSAGE_CONSTRAINTS);
@@ -109,10 +110,10 @@ public class AddStoryCommandParserTest {
         assertParseFailure(parser, "Valid Story t/   ", Tag.MESSAGE_CONSTRAINTS);
 
         // T_INV3: Tag containing forward slash
-        assertParseFailure(parser, "Valid Story t/invalid/tag", Tag.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "Valid Story t/invalid/tag", MESSAGE_INVALID_USER_STRING);
 
         // Valid tag followed by invalid tag in isolation
         assertParseFailure(parser, "Valid Story t/urgent t/   ", Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "Valid Story t/urgent t/invalid/tag", Tag.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "Valid Story t/urgent t/invalid/tag", MESSAGE_INVALID_USER_STRING);
     }
 }

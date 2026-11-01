@@ -14,7 +14,7 @@ import seedu.address.model.story.StoryName;
 public class JsonAdaptedStoryNameTest {
 
     private static final String VALID_NAME = "Housing Investigation";
-    private static final String INVALID_NAME = "Housing/Investigation";
+    private static final String INVALID_NAME = "/Housing Investigation";
 
     @Test
     public void toModelType_validName_returnsStoryName() throws Exception {
