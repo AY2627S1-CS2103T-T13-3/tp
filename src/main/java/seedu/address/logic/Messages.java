@@ -70,11 +70,16 @@ public class Messages {
                 .append("; Email: ")
                 .append(contact.getEmail())
                 .append("; Address: ")
-                .append(contact.getAddress())
-                .append("; Tags: ");
-        contact.getTags().forEach(builder::append);
-        builder.append("; Stories: ");
-        contact.getStories().forEach(story -> builder.append("[").append(story).append("]"));
+                .append(contact.getAddress());
+
+        if (!contact.getTags().isEmpty()) {
+            builder.append("; Tags: ");
+            contact.getTags().forEach(builder::append);
+        }
+        if (!contact.getStories().isEmpty()) {
+            builder.append("; Stories: ");
+            contact.getStories().forEach(story -> builder.append("[").append(story).append("]"));
+        }
         return builder.toString();
     }
 
