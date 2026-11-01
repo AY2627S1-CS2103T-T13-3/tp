@@ -363,38 +363,168 @@ Examples:
   * **Input / Action:** `deletestory 2`
   * **Expected Outcome:** Deletes the 2nd story from the story panel. Identifying information about the recently-deleted story is displayed in the console.
 
-### Adding a follow-up: `addfollowup`
+## Adding a follow-up: `addfollowup`
 
-Adds a follow-up reminder linked to an existing contact.
+- **Objective:** Adds a follow-up reminder and links it to an existing contact.
 
-Format: `addfollowup DESCRIPTION ci/CONTACT_INDEX`
+### Usage / Command Format
 
-* Enter the description as plain text **before** `ci/`; do not use a prefix for it.
-* The description must begin with an alphanumeric character, contain only letters, numbers and spaces, and must not be blank.
-* `ci/CONTACT_INDEX` refers to the contact's number in the currently displayed contact list. The index must be a positive integer within that list.
-* An identical description cannot be added twice for the same contact. Description comparison is case-sensitive.
-* Follow-ups belong to contacts, not directly to stories; deleting a story does not remove a contact's follow-ups.
-* Use `listfollowups` to show all follow-ups or filter follow-ups by assigned contact in the **FOLLOW-UPS** panel.
-* Editing a contact's name updates their follow-up references. Deleting a contact also removes their follow-ups.
-* New reminders appear in the **FOLLOW-UPS** panel.
+`addfollowup DESCRIPTION ci/CONTACT_INDEX`
 
-Examples:
-* `addfollowup Prepare interview questions ci/1`
-* `addfollowup Request financial records ci/2`
+### Parameters & Constraints
 
-### Deleting a follow-up: `deletefollowup`
+| Parameter          | Type            | Description                                                            | Examples                    |
+| :----------------- | :-------------- | :--------------------------------------------------------------------- | :-------------------------- |
+| `DESCRIPTION`      | `user string`   | Description of the follow-up                                           | Prepare interview questions |
+| `ci/CONTACT_INDEX` | `Contact Index` | Contact to link the follow-up to, from the displayed **CONTACTS** panel | `1`                         |
 
-Deletes a follow-up reminder from PressMemo.
+> **Tip / Note:**
+> * Enter `DESCRIPTION` as plain text before `ci/`; it does not use a prefix.
+> * `DESCRIPTION` cannot be blank or contain a forward slash (`/`). Leading and trailing whitespace is removed.
+> * A contact cannot have two follow-ups with exactly the same description. Description comparison is case-sensitive.
+> * Follow-ups belong to contacts, not directly to stories. Deleting a story does not remove a contact's follow-ups.
+> * Editing a contact's name updates the contact name shown on their follow-ups. Deleting a contact also deletes all follow-ups linked to them.
+> * Adding a follow-up resets the **FOLLOW-UPS** panel to display all follow-ups.
 
-Format: `deletefollowup INDEX`
+### Examples
 
-* `INDEX` is a positive integer selecting a follow-up from the follow-up list.
-* **Known issue:** The panel sorts follow-ups by contact name, but deletion indexes the underlying model list. If the two orders differ, the numbered item selected by the command may not be the one shown at that number in the panel. See [Known issues](#known-issues).
-* Deleting a follow-up does not delete the associated contact.
+* **Example 1: Add a follow-up to the first displayed contact**
+  * **Input / Action:** `addfollowup Prepare interview questions ci/1`
+  * **Expected Outcome:** Adds the follow-up `Prepare interview questions` and links it to the first contact in the displayed **CONTACTS** panel.
 
-Examples:
-* `deletefollowup 1`
-* `deletefollowup 3`
+* **Example 2: Add a follow-up to the second displayed contact**
+  * **Input / Action:** `addfollowup Request financial records ci/2`
+  * **Expected Outcome:** Adds the follow-up `Request financial records` and links it to the second contact in the displayed **CONTACTS** panel.
+
+### Common Errors & Troubleshooting
+
+| Error Message / Symptom                          | Cause                                                                 | How to Fix                                                        |
+| :----------------------------------------------- | :-------------------------------------------------------------------- | :---------------------------------------------------------------- |
+| `This followup already exists for CONTACT_NAME.` | The contact already has a follow-up with exactly the same description | Use a different description or edit the existing follow-up        |
+| `The contact index provided is invalid.`          | `CONTACT_INDEX` is outside the displayed contact list                 | Choose an index currently shown in the **CONTACTS** panel          |
+| `Descriptions can take any values except forward slash (/), and should not be blank` | `DESCRIPTION` is blank or contains `/` | Enter a non-blank description without a forward slash |
+
+## Editing a follow-up: `editfollowup`
+
+- **Objective:** Updates the description or linked contact of an existing follow-up.
+
+### Usage / Command Format
+
+`editfollowup INDEX [d/DESCRIPTION] [ci/CONTACT_INDEX]`
+
+### Parameters & Constraints
+
+| Parameter          | Type             | Description                                                                     | Examples      |
+| :----------------- | :--------------- | :------------------------------------------------------------------------------ | :------------ |
+| `INDEX`            | `Followup Index` | Follow-up to edit, from the displayed **FOLLOW-UPS** panel                       | `1`           |
+| `d/DESCRIPTION`    | `user string`    | New follow-up description                                                       | Call tomorrow |
+| `ci/CONTACT_INDEX` | `Contact Index`  | New linked contact, from the displayed **CONTACTS** panel                        | `2`           |
+
+> **Tip / Note:**
+> * At least one of `d/DESCRIPTION` or `ci/CONTACT_INDEX` must be provided.
+> * Existing values are preserved for fields that are not provided.
+> * The same description constraints as `addfollowup` apply.
+> * The edited follow-up cannot duplicate another follow-up linked to the same contact.
+> * The current follow-up filter is preserved. If the edited follow-up no longer matches that filter, it disappears from the displayed **FOLLOW-UPS** panel but remains saved in PressMemo.
+
+### Examples
+
+* **Example 1: Edit only the description**
+  * **Input / Action:** `editfollowup 1 d/Call tomorrow`
+  * **Expected Outcome:** Changes the description of the first displayed follow-up to `Call tomorrow` while preserving its linked contact.
+
+* **Example 2: Edit the description and linked contact**
+  * **Input / Action:** `editfollowup 1 d/Call tomorrow ci/2`
+  * **Expected Outcome:** Changes the first displayed follow-up's description to `Call tomorrow` and links it to the second displayed contact.
+
+### Common Errors & Troubleshooting
+
+| Error Message / Symptom                                     | Cause                                                               | How to Fix                                                    |
+| :---------------------------------------------------------- | :------------------------------------------------------------------ | :------------------------------------------------------------ |
+| `At least one field to edit must be provided.`              | Neither `d/DESCRIPTION` nor `ci/CONTACT_INDEX` was supplied          | Provide at least one field to update                          |
+| `This followup already exists for this contact.`             | The edited values duplicate another follow-up for the linked contact | Use a different description or contact                        |
+| `The followup index provided is invalid.`                    | `INDEX` is outside the displayed follow-up list                      | Choose an index currently shown in the **FOLLOW-UPS** panel   |
+| `The contact index provided is invalid.`                     | `CONTACT_INDEX` is outside the displayed contact list                | Choose an index currently shown in the **CONTACTS** panel     |
+
+## Deleting a follow-up: `deletefollowup`
+
+- **Objective:** Deletes the specified follow-up reminder from PressMemo.
+
+### Usage / Command Format
+
+`deletefollowup INDEX`
+
+### Parameters & Constraints
+
+| Parameter | Type             | Description                                               | Examples |
+| :-------- | :--------------- | :-------------------------------------------------------- | :------- |
+| `INDEX`   | `Followup Index` | Follow-up to delete from the displayed **FOLLOW-UPS** panel | `1`      |
+
+> **Tip / Note:**
+> * `INDEX` must be a positive integer within the displayed follow-up list.
+> * Deleting a follow-up does not delete its linked contact.
+> * Deletion cannot be undone.
+
+### Examples
+
+* **Example 1: Delete from the full follow-up list**
+  * **Input / Action:** `listfollowups`, followed by `deletefollowup 1`
+  * **Expected Outcome:** Deletes the first follow-up displayed in the **FOLLOW-UPS** panel.
+
+* **Example 2: Delete from filtered search results**
+  * **Input / Action:** `findfollowups interview`, followed by `deletefollowup 1`
+  * **Expected Outcome:** Deletes the first follow-up displayed in the filtered **FOLLOW-UPS** panel.
+
+### Common Errors & Troubleshooting
+
+| Error Message / Symptom                  | Cause                                                 | How to Fix                                               |
+| :--------------------------------------- | :---------------------------------------------------- | :------------------------------------------------------- |
+| `The followup index provided is invalid.` | `INDEX` is outside the displayed follow-up list       | Choose an index currently shown in the **FOLLOW-UPS** panel |
+
+## Finding follow-ups by description: `findfollowups`
+
+- **Objective:** Finds follow-ups whose descriptions contain any of the given keywords and displays them in the **FOLLOW-UPS** panel.
+
+### Usage / Command Format
+
+`findfollowups KEYWORD [MORE_KEYWORDS]...`
+
+### Parameters & Constraints
+
+| Parameter       | Type   | Description                                                 | Examples          |
+| :-------------- | :----- | :---------------------------------------------------------- | :---------------- |
+| `KEYWORD`       | `word` | First keyword to search for in follow-up descriptions       | interview         |
+| `MORE_KEYWORDS` | `word` | Additional keywords to search for in follow-up descriptions | meeting call      |
+
+> **Tip / Note:**
+> * The search is case-insensitive; for example, `interview` matches `Interview`.
+> * Only full words match; for example, `inter` does not match `interview`.
+> * Keyword order does not matter.
+> * Follow-ups matching at least one keyword are returned (an `OR` search).
+> * The search considers only follow-up descriptions, not linked contact names.
+> * The search replaces the current follow-up filter and searches all saved follow-ups. The **CONTACTS** and **STORIES** panels remain unchanged.
+> * Use `listfollowups` to display all follow-ups again.
+
+### Examples
+
+* **Example 1: Search using one keyword**
+  * **Input / Action:** `findfollowups interview`
+  * **Expected Outcome:** Displays follow-ups containing the full word `interview` in their descriptions.
+
+* **Example 2: Search using multiple keywords**
+  * **Input / Action:** `findfollowups interview meeting`
+  * **Expected Outcome:** Displays follow-ups whose descriptions contain either `interview` or `meeting`.
+
+* **Example 3: Search with no matches**
+  * **Input / Action:** `findfollowups nonexistentkeyword`
+  * **Expected Outcome:** Displays an empty **FOLLOW-UPS** panel and reports that no follow-ups were found.
+
+### Common Errors & Troubleshooting
+
+| Error Message / Symptom                                         | Cause                                                | How to Fix                                                        |
+| :-------------------------------------------------------------- | :--------------------------------------------------- | :---------------------------------------------------------------- |
+| `0 followup(s) listed!` when matches were expected              | The search used a partial word or the wrong keywords | Use complete words that appear in the follow-up descriptions      |
+| Invalid command format                                          | No search keyword was supplied                       | Provide at least one keyword, e.g., `findfollowups interview`     |
 
 ## Listing follow-ups: `listfollowups`
 
@@ -519,7 +649,9 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 | **Delete follow-up**              | `deletefollowup INDEX`<br> e.g., `deletefollowup 1`                                                                                                                                 |
 | **Delete story**                  | `deletestory INDEX`<br> e.g., `deletestory 2`                                                                                                                                       |
 | **Edit**                          | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`                                          |
+| **Edit follow-up**                | `editfollowup INDEX [d/DESCRIPTION] [ci/CONTACT_INDEX]`<br> e.g., `editfollowup 1 d/Call tomorrow ci/2`                                                                             |
 | **Find**                          | `findcontact KEYWORD [MORE_KEYWORDS]`<br> e.g., `findcontact James Jake`                                                                                                            |
+| **Find follow-ups**               | `findfollowups KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findfollowups interview meeting`                                                                                              |
 | **Find stories**                  | `findstories STORY_NAME [MORE_KEYWORDS]...`<br> e.g., `findstories Housing Investigation`                                                                                           |
 | **List all contacts and stories** | `list` (clears both filters)                                                                                                                                                        |
 | **List contacts**                 | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)                                        |
