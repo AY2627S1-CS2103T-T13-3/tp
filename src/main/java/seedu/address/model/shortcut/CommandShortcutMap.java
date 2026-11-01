@@ -61,7 +61,7 @@ public class CommandShortcutMap {
 
         if (!isValidShortcutPattern(shortcut)) {
             logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
-                    + "shortcuts must start with a lowercase letter and contain only lowercase letters and digits.",
+                    + "shortcuts must not be blank or contain whitespace or forward slashes (/).",
                     shortcut, commandWord));
             return false;
         }

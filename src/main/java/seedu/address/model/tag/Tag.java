@@ -9,7 +9,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Tag {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Tag names can take any values except forward slash (/), and should not be blank";
+            "Tag names should not be blank or start with whitespace";
     public static final String VALIDATION_REGEX = "^\\S.*$";
 
     private final String tagName;

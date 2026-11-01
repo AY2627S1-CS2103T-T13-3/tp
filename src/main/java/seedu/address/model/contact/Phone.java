@@ -11,7 +11,7 @@ public class Phone {
 
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Phone numbers should only contain digits, and should be between 3 and 15 digits long";
+            "Phone numbers should not be blank or start with a whitespace";
     public static final String VALIDATION_REGEX = "^\\S.*$";
     private final String value;
 

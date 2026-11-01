@@ -12,7 +12,7 @@ import seedu.address.commons.util.StringUtil;
 public class StoryName {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Names can take any values except forward slash (/), and should not be blank";
+            "Story names should not be blank or start with whitespace or a forward slash (/)";
 
     /*
      * The first character of the name must not be a whitespace or forward slash

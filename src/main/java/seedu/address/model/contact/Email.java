@@ -10,7 +10,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Email {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Emails should be of the format word@word, where word is a user string that does not contain spaces";
+            "Emails should not be blank or start with a whitespace";
     public static final String VALIDATION_REGEX = "^\\S.*$";
 
     private final String value;
