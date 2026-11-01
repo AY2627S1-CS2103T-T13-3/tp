@@ -56,7 +56,8 @@ public class ListFollowupsCommand extends Command {
 
         if (index >= lastShownContactList.size()) {
             throw new CommandException(
-                    Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+                    String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                            contactIndex.get().getOneBased(), lastShownContactList.size()));
         }
 
         Contact selectedContact = lastShownContactList.get(index);

@@ -27,7 +27,7 @@ public class AddFollowupCommandParser implements Parser<AddFollowupCommand> {
 
         List<String> missingInputs = new ArrayList<>();
         if (!argMultimap.hasPreamble()) {
-            missingInputs.add("DESCRIPTION");
+            missingInputs.add("description");
         }
         argMultimap.getMissingPrefixes(PREFIX_CONTACTINDEX).stream()
                 .map(Prefix::toString)

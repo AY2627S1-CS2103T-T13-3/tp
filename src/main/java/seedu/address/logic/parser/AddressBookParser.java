@@ -68,7 +68,7 @@ public class AddressBookParser {
         CommandInfo commandInfo = CommandWords.getCommandInfo(commandWord);
         if (commandInfo == null) {
             logger.finer("This user input caused a ParseException: " + userInput);
-            throw new ParseException(MESSAGE_UNKNOWN_COMMAND.formatted(enteredCommandWord));
+            throw new ParseException(String.format(MESSAGE_UNKNOWN_COMMAND, enteredCommandWord));
 
         }
 
