@@ -102,7 +102,7 @@ public class JsonAdaptedStoryTest {
     @Test
     public void toModelType_invalidContact_throwsIllegalValueException() {
         List<JsonAdaptedName> invalidContacts = List.of(
-                new JsonAdaptedName("Alex/Yeoh"));
+                new JsonAdaptedName("/Alex Yeoh"));
 
         JsonAdaptedStory story = new JsonAdaptedStory(
                 VALID_NAME, List.of(), invalidContacts);

@@ -23,7 +23,7 @@ import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
 
 public class ParserUtilTest {
-    private static final String INVALID_NAME = "R/chel";
+    private static final String INVALID_NAME = "/Rachel";
     private static final String INVALID_PHONE = "+651234";
     private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_EMAIL = "example.com";
@@ -91,7 +91,7 @@ public class ParserUtilTest {
 
     @Test
     public void parseFollowupDescription_blankOrInvalidValue_throwsParseException() {
-        for (String input : List.of("", WHITESPACE, "the s/o myth", "Callback/")) {
+        for (String input : List.of("", WHITESPACE, "/", "/Callback")) {
             assertThrows(ParseException.class, FollowupDescription.MESSAGE_CONSTRAINTS, ()
                     -> ParserUtil.parseFollowupDescription(input));
         }

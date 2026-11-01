@@ -29,10 +29,9 @@ public class NameTest {
         assertFalse(Name.isValidName(" ")); // spaces only
         assertFalse(Name.isValidName("/")); // forward slash only
         assertFalse(Name.isValidName("/peter")); // starts with forward slash
-        assertFalse(Name.isValidName("peter/")); // ends with forward slash
-        assertFalse(Name.isValidName("peter/jack")); // contains forward slash
-
         // valid name
+        assertTrue(Name.isValidName("peter/")); // ends with forward slash
+        assertTrue(Name.isValidName("peter/jack")); // contains forward slash
         assertTrue(Name.isValidName("peter jack")); // alphabets only
         assertTrue(Name.isValidName("12345")); // numbers only
         assertTrue(Name.isValidName("peter the 2nd")); // alphanumeric characters
