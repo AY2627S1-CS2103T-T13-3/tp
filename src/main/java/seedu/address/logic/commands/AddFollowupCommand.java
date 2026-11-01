@@ -27,7 +27,8 @@ public class AddFollowupCommand extends AddressBookMutatingCommand {
             + "Example: " + COMMAND_WORD + " meeting " + PREFIX_CONTACTINDEX + "1";
 
     public static final String MESSAGE_SUCCESS = "Followup %1$s has been added to %2$s.";
-    public static final String MESSAGE_DUPLICATE_FOLLOWUP = "This followup already exists for %1$s.";
+    public static final String MESSAGE_DUPLICATE_FOLLOWUP =
+            "Error: there is already a followup \"%1$s\" for the contact \"%2$s\"!";
 
     private final FollowupDescription followupDescription;
     private final Index contactIndex;
@@ -57,7 +58,8 @@ public class AddFollowupCommand extends AddressBookMutatingCommand {
         Followup followupToAdd = new Followup(followupDescription, target.getName());
 
         if (model.hasFollowup(followupToAdd)) {
-            throw new CommandException(String.format(MESSAGE_DUPLICATE_FOLLOWUP, target.getName()));
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_FOLLOWUP, followupToAdd.getDescription(),
+                    target.getName()));
         }
 
         model.addFollowup(followupToAdd);

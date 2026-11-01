@@ -32,7 +32,8 @@ public class EditFollowupCommand extends AddressBookMutatingCommand {
             + "Example: " + COMMAND_WORD + " 1 " + PREFIX_DESCRIPTION + "Call tomorrow " + PREFIX_CONTACTINDEX + "2";
     public static final String MESSAGE_EDIT_FOLLOWUP_SUCCESS = "Edited followup: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
-    public static final String MESSAGE_DUPLICATE_FOLLOWUP = "This followup already exists for this contact.";
+    public static final String MESSAGE_DUPLICATE_FOLLOWUP =
+            "Error: there is already a followup \"%1$s\" for the contact \"%2$s\"!";
 
     private final Index index;
     private final EditFollowupDescriptor editFollowupDescriptor;
@@ -65,7 +66,8 @@ public class EditFollowupCommand extends AddressBookMutatingCommand {
         }
         Followup editedFollowup = editFollowupDescriptor.createEditedFollowup(followupToEdit, updatedContact);
         if (!followupToEdit.equals(editedFollowup) && model.hasFollowup(editedFollowup)) {
-            throw new CommandException(MESSAGE_DUPLICATE_FOLLOWUP);
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_FOLLOWUP, editedFollowup.getDescription(),
+                    updatedContact));
         }
 
         model.setFollowup(followupToEdit, editedFollowup);

@@ -69,7 +69,8 @@ public class EditFollowupCommandTest {
         descriptor.setContactIndex(Index.fromOneBased(2));
         EditFollowupCommand command = new EditFollowupCommand(Index.fromOneBased(1), descriptor);
         assertThrows(CommandException.class,
-                EditFollowupCommand.MESSAGE_DUPLICATE_FOLLOWUP, () -> command.execute(model));
+                String.format(EditFollowupCommand.MESSAGE_DUPLICATE_FOLLOWUP, original.getDescription(),
+                        BENSON.getName()), () -> command.execute(model));
         assertEquals(original, model.getFilteredFollowupList().get(0));
     }
 
