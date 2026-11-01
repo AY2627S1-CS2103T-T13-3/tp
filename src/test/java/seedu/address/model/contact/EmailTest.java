@@ -28,10 +28,12 @@ public class EmailTest {
         assertFalse(Email.isValidEmail("")); // empty string
         assertFalse(Email.isValidEmail(" ")); // spaces only
         assertFalse(Email.isValidEmail(" peterjack@example.com")); // leading space
-        assertFalse(Email.isValidEmail("/")); // forward slash only
-        assertFalse(Email.isValidEmail("/example.com")); // starts with forward slash
+
+
 
         // valid email
+        assertTrue(Email.isValidEmail("/")); // forward slash only
+        assertTrue(Email.isValidEmail("/example.com")); // starts with forward slash
         assertTrue(Email.isValidEmail("@example.com")); // missing local part
         assertTrue(Email.isValidEmail("peterjackexample.com")); // missing '@' symbol
         assertTrue(Email.isValidEmail("peterjack@")); // missing domain name

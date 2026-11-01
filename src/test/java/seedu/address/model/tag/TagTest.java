@@ -27,9 +27,12 @@ public class TagTest {
         // invalid tag name
         assertFalse(Tag.isValidTagName("")); // empty string
         assertFalse(Tag.isValidTagName(" ")); // spaces only
-        assertFalse(Tag.isValidTagName("/")); // forward slash only
-        assertFalse(Tag.isValidTagName("/tag")); // starts with forward slash
+        assertFalse(Tag.isValidTagName(" tag")); // leading space
+
+
         // valid tag name
+        assertTrue(Tag.isValidTagName("/")); // forward slash only
+        assertTrue(Tag.isValidTagName("/tag")); // starts with forward slash
         assertTrue(Tag.isValidTagName("tag/")); // ends with forward slash
         assertTrue(Tag.isValidTagName("tag/sub")); // contains forward slash
         assertTrue(Tag.isValidTagName("friend")); // alphabets only

@@ -16,7 +16,7 @@ public class FollowupDescriptionTest {
 
     @Test
     public void constructor_invalidDescription_throwsIllegalArgumentException() {
-        for (String invalid : new String[]{"", " ", " Call Alice", "/", "/Call Alice"}) {
+        for (String invalid : new String[]{"", " ", " Call Alice"}) {
             assertThrows(IllegalArgumentException.class, () -> new FollowupDescription(invalid));
         }
     }
@@ -24,11 +24,11 @@ public class FollowupDescriptionTest {
     @Test
     public void isValidDescription() {
         assertThrows(NullPointerException.class, () -> FollowupDescription.isValidDescription(null));
-        for (String invalid : new String[]{"", " ", " Call Alice", "/", "/Call Alice"}) {
+        for (String invalid : new String[]{"", " ", " Call Alice"}) {
             assertFalse(FollowupDescription.isValidDescription(invalid));
         }
         for (String valid : new String[]{
-            "A", "12345", "Call Alice", "Call/Alice", "Call Alice/", "Call Alice 2", "Call  Alice ",
+            "/", "/Call Alice", "A", "12345", "Call Alice", "Call/Alice", "Call Alice/", "Call Alice 2", "Call  Alice ",
             "Call Alice!", "Call Alice - urgent!", "Interview prep (round 1)"}) {
             assertTrue(FollowupDescription.isValidDescription(valid));
             assertEquals(valid, new FollowupDescription(valid).toString());

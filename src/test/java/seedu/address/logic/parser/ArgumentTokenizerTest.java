@@ -166,6 +166,14 @@ public class ArgumentTokenizerTest {
     }
 
     @Test
+    public void tokenize_userStringStartingWithEscapedSlash_success() throws ParseException {
+        String argsString = "\\/birthday 3\\/12 p/ \\/12\\/34";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString, pSlash);
+        assertPreamblePresent(argMultimap, "/birthday 3/12");
+        assertArgumentPresent(argMultimap, pSlash, "/12/34");
+    }
+
+    @Test
     public void tokenize_backslashNotBeforeSlash_preserved() throws ParseException {
         String argsString = " p/ C:\\docs\\file\\not-slash";
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString, pSlash);

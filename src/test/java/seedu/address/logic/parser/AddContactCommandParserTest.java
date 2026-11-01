@@ -67,6 +67,17 @@ public class AddContactCommandParserTest {
     }
 
     @Test
+    public void parse_escapedLeadingSlashFields_success() {
+        Contact expectedContact = new ContactBuilder().withName("/Bob Choo").withPhone("/22224444")
+                .withEmail("/bob@example.com").withAddress("/123, Jurong West Ave 6, #08-111")
+                .withTags("/friend").build();
+
+        assertParseSuccess(parser,
+                " n/\\/Bob Choo p/\\/22224444 e/\\/bob@example.com a/\\/123, Jurong West Ave 6, #08-111 t/\\/friend",
+                new AddContactCommand(expectedContact));
+    }
+
+    @Test
     public void parse_repeatedNonTagValue_failure() {
         String validExpectedContactString = NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
                 + ADDRESS_DESC_BOB + TAG_DESC_FRIEND;

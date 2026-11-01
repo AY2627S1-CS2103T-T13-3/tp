@@ -11,13 +11,20 @@ import seedu.address.model.tag.Tag;
 public class JsonAdaptedTagTest {
 
     private static final String VALID_TAG = "press";
-    private static final String INVALID_TAG = "/press";
+    private static final String INVALID_TAG = " ";
 
     @Test
     public void toModelType_validTag_returnsTag() throws Exception {
         JsonAdaptedTag tag = new JsonAdaptedTag(VALID_TAG);
 
         assertEquals(new Tag(VALID_TAG), tag.toModelType());
+    }
+
+    @Test
+    public void toModelType_startsWithSlash_returnsTag() throws Exception {
+        JsonAdaptedTag tag = new JsonAdaptedTag("/press");
+
+        assertEquals(new Tag("/press"), tag.toModelType());
     }
 
     @Test
