@@ -7,23 +7,26 @@ import static seedu.address.testutil.TypicalContacts.BENSON;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.exceptions.IllegalValueException;
 import seedu.address.model.contact.Address;
+import seedu.address.model.contact.Contact;
 import seedu.address.model.contact.Email;
 import seedu.address.model.contact.Name;
 import seedu.address.model.contact.Phone;
 import seedu.address.model.story.StoryName;
+import seedu.address.model.tag.Tag;
 
 public class JsonAdaptedContactTest {
-    private static final String INVALID_NAME = "/Rachel";
-    private static final String INVALID_PHONE = "/651234";
+    private static final String INVALID_NAME = " ";
+    private static final String INVALID_PHONE = " ";
     private static final String INVALID_ADDRESS = " ";
-    private static final String INVALID_EMAIL = "/example.com";
-    private static final String INVALID_TAG = "/friend";
+    private static final String INVALID_EMAIL = " ";
+    private static final String INVALID_TAG = " ";
 
     private static final String VALID_NAME = BENSON.getName().toString();
     private static final String VALID_PHONE = BENSON.getPhone().toString();
@@ -37,6 +40,16 @@ public class JsonAdaptedContactTest {
     public void toModelType_validContactDetails_returnsContact() throws Exception {
         JsonAdaptedContact contact = new JsonAdaptedContact(BENSON);
         assertEquals(BENSON, contact.toModelType());
+    }
+
+    @Test
+    public void toModelType_startsWithSlash_returnsContact() throws Exception {
+        JsonAdaptedContact contact =
+                new JsonAdaptedContact("/Rachel", "/651234", "/example.com", "/address",
+                        List.of(new JsonAdaptedTag("/friend")));
+        Contact expected = new Contact(new Name("/Rachel"), new Phone("/651234"), new Email("/example.com"),
+                new Address("/address"), Set.of(new Tag("/friend")));
+        assertEquals(expected, contact.toModelType());
     }
 
     @Test

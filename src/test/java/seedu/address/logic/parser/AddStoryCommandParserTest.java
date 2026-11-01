@@ -116,4 +116,10 @@ public class AddStoryCommandParserTest {
         assertParseFailure(parser, "Valid Story t/urgent t/   ", Tag.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "Valid Story t/urgent t/invalid/tag", MESSAGE_INVALID_USER_STRING);
     }
+
+    @Test
+    public void parse_escapedLeadingSlashFields_success() {
+        Story expectedStory = new Story(new StoryName("/Budget 2026"), Set.of(new Tag("/urgent")));
+        assertParseSuccess(parser, " \\/Budget 2026 t/\\/urgent", new AddStoryCommand(expectedStory));
+    }
 }

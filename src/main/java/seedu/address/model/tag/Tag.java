@@ -10,7 +10,7 @@ public class Tag {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Tag names can take any values except forward slash (/), and should not be blank";
-    public static final String VALIDATION_REGEX = "[^\\s/].*";
+    public static final String VALIDATION_REGEX = "^\\S.*$";
 
     private final String tagName;
 

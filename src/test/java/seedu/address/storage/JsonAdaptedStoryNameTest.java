@@ -14,13 +14,20 @@ import seedu.address.model.story.StoryName;
 public class JsonAdaptedStoryNameTest {
 
     private static final String VALID_NAME = "Housing Investigation";
-    private static final String INVALID_NAME = "/Housing Investigation";
+    private static final String INVALID_NAME = " ";
 
     @Test
     public void toModelType_validName_returnsStoryName() throws Exception {
         JsonAdaptedStoryName storyName = new JsonAdaptedStoryName(VALID_NAME);
 
         assertEquals(new StoryName(VALID_NAME), storyName.toModelType());
+    }
+
+    @Test
+    public void toModelType_startsWithSlash_returnsStoryName() throws Exception {
+        JsonAdaptedStoryName storyName = new JsonAdaptedStoryName("/Housing Investigation");
+
+        assertEquals(new StoryName("/Housing Investigation"), storyName.toModelType());
     }
 
     @Test

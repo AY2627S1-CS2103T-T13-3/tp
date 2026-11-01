@@ -14,13 +14,20 @@ import seedu.address.model.contact.Name;
 public class JsonAdaptedNameTest {
 
     private static final String VALID_NAME = "Alex Yeoh";
-    private static final String INVALID_NAME = "/Alex Yeoh";
+    private static final String INVALID_NAME = " ";
 
     @Test
     public void toModelType_validName_returnsName() throws Exception {
         JsonAdaptedName name = new JsonAdaptedName(VALID_NAME);
 
         assertEquals(new Name(VALID_NAME), name.toModelType());
+    }
+
+    @Test
+    public void toModelType_startsWithSlash_returnsName() throws Exception {
+        JsonAdaptedName name = new JsonAdaptedName("/Alex Yeoh");
+
+        assertEquals(new Name("/Alex Yeoh"), name.toModelType());
     }
 
     @Test

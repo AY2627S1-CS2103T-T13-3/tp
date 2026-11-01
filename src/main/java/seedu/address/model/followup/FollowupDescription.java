@@ -17,7 +17,7 @@ public class FollowupDescription {
     /*
      * The first character of the description must not be a whitespace or forward slash
      */
-    public static final String VALIDATION_REGEX = "[^\\s/].*";
+    public static final String VALIDATION_REGEX = "^\\S.*$";
 
     public final String description;
 

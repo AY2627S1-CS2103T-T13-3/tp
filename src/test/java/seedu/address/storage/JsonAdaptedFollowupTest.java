@@ -16,9 +16,9 @@ import seedu.address.model.followup.FollowupDescription;
 public class JsonAdaptedFollowupTest {
 
     private static final String VALID_DESCRIPTION = "Request interview";
-    private static final String INVALID_DESCRIPTION = "/Request interview";
+    private static final String INVALID_DESCRIPTION = " ";
     private static final String VALID_CONTACT = "Alex Yeoh";
-    private static final String INVALID_CONTACT = "/Alex Yeoh";
+    private static final String INVALID_CONTACT = " ";
 
     @Test
     public void toModelType_validFollowup_returnsFollowup() throws Exception {
@@ -28,6 +28,18 @@ public class JsonAdaptedFollowupTest {
         Followup expected = new Followup(
                 new FollowupDescription(VALID_DESCRIPTION),
                 new Name(VALID_CONTACT));
+
+        assertEquals(expected, followup.toModelType());
+    }
+
+    @Test
+    public void toModelType_startsWithSlash_returnsFollowup() throws Exception {
+        JsonAdaptedFollowup followup =
+                new JsonAdaptedFollowup("/Request interview", "/Alex Yeoh");
+
+        Followup expected = new Followup(
+                new FollowupDescription("/Request interview"),
+                new Name("/Alex Yeoh"));
 
         assertEquals(expected, followup.toModelType());
     }

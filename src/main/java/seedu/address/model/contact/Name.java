@@ -17,7 +17,7 @@ public class Name {
     /*
      * The first character of the name must not be a whitespace or forward slash
      */
-    public static final String VALIDATION_REGEX = "[^\\s/].*";
+    public static final String VALIDATION_REGEX = "^\\S.*$";
 
     private final String fullName;
 

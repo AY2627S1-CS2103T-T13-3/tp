@@ -129,4 +129,11 @@ public class AddFollowupCommandParserTest {
         assertParseFailure(parser, "Followup A z/invalid", MESSAGE_INVALID_USER_STRING);
         assertParseFailure(parser, "Followup A z/invalid ci/1", MESSAGE_INVALID_USER_STRING);
     }
+
+    @Test
+    public void parse_escapedLeadingSlashDescription_success() {
+        AddFollowupCommand expectedCommand = new AddFollowupCommand(
+                new FollowupDescription("/Interview prep"), Index.fromOneBased(1));
+        assertParseSuccess(parser, " \\/Interview prep ci/1", expectedCommand);
+    }
 }
