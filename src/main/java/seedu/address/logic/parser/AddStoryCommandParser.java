@@ -1,10 +1,10 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.Set;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddStoryCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.story.Story;
@@ -24,9 +24,8 @@ public class AddStoryCommandParser implements Parser<AddStoryCommand> {
     public AddStoryCommand parse(String args) throws ParseException {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_TAG);
 
-        if (argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
+        if (!argMultimap.hasPreamble()) {
+            throw new ParseException(Messages.getErrorMessageForMissingRequiredInputs("STORY_NAME"));
         }
 
         StoryName storyName = ParserUtil.parseStoryName(argMultimap.getPreamble());

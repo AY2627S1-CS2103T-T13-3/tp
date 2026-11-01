@@ -1,9 +1,12 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import seedu.address.commons.core.index.Index;
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddFollowupCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.followup.FollowupDescription;
@@ -22,9 +25,16 @@ public class AddFollowupCommandParser implements Parser<AddFollowupCommand> {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_CONTACTINDEX);
 
-        if (argMultimap.getValue(PREFIX_CONTACTINDEX).isEmpty()
-                || argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddFollowupCommand.MESSAGE_USAGE));
+        List<String> missingInputs = new ArrayList<>();
+        if (!argMultimap.hasPreamble()) {
+            missingInputs.add("DESCRIPTION");
+        }
+        argMultimap.getMissingPrefixes(PREFIX_CONTACTINDEX).stream()
+                .map(Prefix::toString)
+                .forEach(missingInputs::add);
+        if (!missingInputs.isEmpty()) {
+            throw new ParseException(Messages.getErrorMessageForMissingRequiredInputs(
+                    missingInputs.toArray(String[]::new)));
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_CONTACTINDEX);
