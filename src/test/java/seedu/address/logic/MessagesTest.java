@@ -28,7 +28,7 @@ public class MessagesTest {
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
                 Set.of(new Tag("friends")));
         String expected = "Alice Pauline; Phone: 94351253; Email: alice@example.com; "
-                + "Address: 123, Jurong West Ave 6, #08-111; Tags: [friends]; Stories: ";
+                + "Address: 123, Jurong West Ave 6, #08-111; Tags: [friends]";
         assertEquals(expected, Messages.format(contact));
     }
 
@@ -70,6 +70,26 @@ public class MessagesTest {
                 List.of(new Name("Alice Pauline")));
         String expected = "Housing Investigation; Tags: [urgent]; Contacts: [Alice Pauline]";
         assertEquals(expected, Messages.format(story));
+    }
+
+    @Test
+    public void format_contactWithoutTags() {
+        Contact contact = new Contact(new Name("Alice Pauline"), new Phone("94351253"),
+                new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
+                Set.of(), List.of(new StoryName("Housing Investigation")));
+        String expected = "Alice Pauline; Phone: 94351253; Email: alice@example.com; "
+                + "Address: 123, Jurong West Ave 6, #08-111; Stories: [Housing Investigation]";
+        assertEquals(expected, Messages.format(contact));
+    }
+
+    @Test
+    public void format_contactWithoutTagsAndStories() {
+        Contact contact = new Contact(new Name("Alice Pauline"), new Phone("94351253"),
+                new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
+                Set.of());
+        String expected = "Alice Pauline; Phone: 94351253; Email: alice@example.com; "
+                + "Address: 123, Jurong West Ave 6, #08-111";
+        assertEquals(expected, Messages.format(contact));
     }
 
     @Test
