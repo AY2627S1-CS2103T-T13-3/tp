@@ -24,27 +24,25 @@ public class EmailTest {
         // null email
         assertThrows(NullPointerException.class, () -> Email.isValidEmail(null));
 
-        // blank email
+        // invalid email
         assertFalse(Email.isValidEmail("")); // empty string
         assertFalse(Email.isValidEmail(" ")); // spaces only
-
-        // missing parts
-        assertFalse(Email.isValidEmail("@example.com")); // missing local part
-        assertFalse(Email.isValidEmail("peterjackexample.com")); // missing '@' symbol
-        assertFalse(Email.isValidEmail("peterjack@")); // missing domain name
-
-        // invalid parts
-        assertFalse(Email.isValidEmail("peter jack@example.com")); // spaces in local part
-        assertFalse(Email.isValidEmail("peterjack@exam ple.com")); // spaces in domain name
         assertFalse(Email.isValidEmail(" peterjack@example.com")); // leading space
-        assertFalse(Email.isValidEmail("peterjack@example.com ")); // trailing space
-        assertFalse(Email.isValidEmail("peterjack@@example.com")); // double '@' symbol
-        assertFalse(Email.isValidEmail("peter@jack@example.com")); // multiple '@' symbols
-        assertFalse(Email.isValidEmail("peter/jack@example.com")); // forward slash in local part
-        assertFalse(Email.isValidEmail("peterjack@example.com/1")); // forward slash in domain name
-        assertFalse(Email.isValidEmail("peter/jack@example.com/1")); // forward slash in both
+        assertFalse(Email.isValidEmail("/")); // forward slash only
+        assertFalse(Email.isValidEmail("/example.com")); // starts with forward slash
 
         // valid email
+        assertTrue(Email.isValidEmail("@example.com")); // missing local part
+        assertTrue(Email.isValidEmail("peterjackexample.com")); // missing '@' symbol
+        assertTrue(Email.isValidEmail("peterjack@")); // missing domain name
+        assertTrue(Email.isValidEmail("peter jack@example.com")); // spaces in local part
+        assertTrue(Email.isValidEmail("peterjack@exam ple.com")); // spaces in domain name
+        assertTrue(Email.isValidEmail("peterjack@example.com ")); // trailing space
+        assertTrue(Email.isValidEmail("peterjack@@example.com")); // double '@' symbol
+        assertTrue(Email.isValidEmail("peter@jack@example.com")); // multiple '@' symbols
+        assertTrue(Email.isValidEmail("peter/jack@example.com")); // forward slash in local part
+        assertTrue(Email.isValidEmail("peterjack@example.com/1")); // forward slash in domain name
+        assertTrue(Email.isValidEmail("peter/jack@example.com/1")); // forward slash in both
         assertTrue(Email.isValidEmail("a@bc")); // minimal
         assertTrue(Email.isValidEmail("test@localhost")); // alphabets only
         assertTrue(Email.isValidEmail("123@145")); // numeric local part and domain name

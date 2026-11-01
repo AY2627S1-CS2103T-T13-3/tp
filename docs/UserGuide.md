@@ -239,7 +239,7 @@ Examples:
 | Parameter    | Type          | Description              | Examples                  |
 | :----------- | :------------ | :----------------------- | :------------------------ |
 | `STORY_NAME` | `user string` | name of the story to add | wumpus<br><br>find wumpus |
-| TAG          | `word`        | a tag for the story      | smelly                    |
+| TAG          | `user string` | a tag for the story      | smelly                    |
 
 
 > **Tip / Note:**
@@ -254,8 +254,8 @@ Examples:
   * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel without tags
 
 * **Example 2: valid and unique story name with 2 tags 
-  * **Input / Action:** `addstory find wumpus t/smelly t/at22`
-  * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel with the tags "smelly" and "at22"
+  * **Input / Action:** `addstory find wumpus t/smelly t/at 2, 2`
+  * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel with the tags "smelly" and "at 2, 2"
 
 ### Common Errors & Troubleshooting (optional, feature-specific)
 

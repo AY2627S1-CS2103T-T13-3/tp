@@ -20,7 +20,7 @@ import seedu.address.logic.commands.CommandWords;
  */
 public class CommandShortcutMap {
 
-    public static final String SHORTCUT_VALIDATION_REGEX = "[a-z][a-z0-9]*";
+    public static final String SHORTCUT_VALIDATION_REGEX = "^[^\\s/]+$";
 
     private static final Logger logger = LogsCenter.getLogger(CommandShortcutMap.class);
 

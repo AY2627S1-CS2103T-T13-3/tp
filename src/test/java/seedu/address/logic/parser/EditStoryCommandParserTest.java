@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_USER_STRING;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_STORYNAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_STORYTAG_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_CRIME;
@@ -70,7 +71,7 @@ public class EditStoryCommandParserTest {
         assertParseFailure(parser, "1 some random string", MESSAGE_INVALID_FORMAT);
 
         // invalid prefix being parsed as preamble
-        assertParseFailure(parser, "1 i/ string", MESSAGE_INVALID_FORMAT);
+        assertParseFailure(parser, "1 i/ string", MESSAGE_INVALID_USER_STRING);
     }
 
     @Test
@@ -78,10 +79,10 @@ public class EditStoryCommandParserTest {
         assertParseFailure(parser, "1" + INVALID_STORYNAME_DESC, StoryName.MESSAGE_CONSTRAINTS); // invalid name
         assertParseFailure(parser, "1 n/", StoryName.MESSAGE_CONSTRAINTS); // empty name
         assertParseFailure(parser, "1 n/   ", StoryName.MESSAGE_CONSTRAINTS); // whitespace name
-        assertParseFailure(parser, "1 n/Story/1", StoryName.MESSAGE_CONSTRAINTS); // slash in name
+        assertParseFailure(parser, "1 n/Story/1", MESSAGE_INVALID_USER_STRING); // slash in name
 
         assertParseFailure(parser, "1" + INVALID_STORYTAG_DESC, Tag.MESSAGE_CONSTRAINTS); // invalid tag
-        assertParseFailure(parser, "1 t/tag/1", Tag.MESSAGE_CONSTRAINTS); // slash in tag
+        assertParseFailure(parser, "1 t/tag/1", MESSAGE_INVALID_USER_STRING); // slash in tag
 
         // while parsing {@code PREFIX_TAG} alone will reset the tags of the {@code Story} being edited,
         // parsing it together with a valid tag results in error

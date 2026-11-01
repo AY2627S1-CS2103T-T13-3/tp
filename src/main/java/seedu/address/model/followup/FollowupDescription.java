@@ -15,10 +15,9 @@ public class FollowupDescription {
             "Descriptions can take any values except forward slash (/), and should not be blank";
 
     /*
-     * The first character of the description must not be a whitespace or forward slash,
-     * and the description must not contain any forward slash.
+     * The first character of the description must not be a whitespace or forward slash
      */
-    public static final String VALIDATION_REGEX = "[^\\s/][^/]*";
+    public static final String VALIDATION_REGEX = "[^\\s/].*";
 
     public final String description;
 

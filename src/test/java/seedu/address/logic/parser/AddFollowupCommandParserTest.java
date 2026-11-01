@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_USER_STRING;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
@@ -92,9 +93,9 @@ public class AddFollowupCommandParserTest {
         assertParseFailure(parser, "   ci/2", expectedMissingDescMessage);
 
         // D_INV2: Forward slash in description
-        assertParseFailure(parser, "/urgent ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "Call Dr. Smith s/o the myth ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "Interview/Investigation ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "/urgent ci/1", MESSAGE_INVALID_USER_STRING);
+        assertParseFailure(parser, "Call Dr. Smith s/o the myth ci/1", MESSAGE_INVALID_USER_STRING);
+        assertParseFailure(parser, "Interview/Investigation ci/1", MESSAGE_INVALID_USER_STRING);
 
         // CI_INV1: Boundary 0
         assertParseFailure(parser, "Followup A ci/0", MESSAGE_INVALID_INDEX);
@@ -125,9 +126,7 @@ public class AddFollowupCommandParserTest {
 
     @Test
     public void parse_invalidPrefix_failure() {
-        assertParseFailure(parser, "Followup A z/invalid",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddFollowupCommand.MESSAGE_USAGE));
-        assertParseFailure(parser, "Followup A z/invalid ci/1",
-                FollowupDescription.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "Followup A z/invalid", MESSAGE_INVALID_USER_STRING);
+        assertParseFailure(parser, "Followup A z/invalid ci/1", MESSAGE_INVALID_USER_STRING);
     }
 }

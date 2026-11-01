@@ -83,8 +83,8 @@ public class ShortcutCommandTest {
     @Test
     public void execute_invalidShortcut_throwsCommandException() {
         Model model = new ModelManager();
-        ShortcutCommand command = new ShortcutCommand("List!", "list");
-        String expectedMessage = String.format(ShortcutCommand.MESSAGE_INVALID_SHORTCUT, "List!");
+        ShortcutCommand command = new ShortcutCommand("List/", "list");
+        String expectedMessage = String.format(ShortcutCommand.MESSAGE_INVALID_SHORTCUT, "List/");
 
         assertThrows(CommandException.class, expectedMessage, () -> command.execute(model));
         assertTrue(model.getShortcuts().isEmpty());

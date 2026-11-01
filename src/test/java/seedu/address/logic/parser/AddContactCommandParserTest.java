@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_INVALID_USER_STRING;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
@@ -285,21 +286,18 @@ public class AddContactCommandParserTest {
 
         // Name edge cases: empty, invalid name containing fslash
         assertParseFailure(parser, " n/" + validPhone + validEmail + validAddress, Name.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, " n/Al/ice" + validPhone + validEmail + validAddress, Name.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, " n/Al/ice" + validPhone + validEmail + validAddress, MESSAGE_INVALID_USER_STRING);
 
-        // Phone edge cases: empty, less than 3 digits, non-digits
+        // Phone edge cases: empty, whitespace only, contains fslash
         assertParseFailure(parser, validName + " p/" + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + " p/12" + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + " p/123a" + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, validName + " p/   " + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, validName + " p/12/34" + validEmail + validAddress, MESSAGE_INVALID_USER_STRING);
 
-        // Email edge cases: empty, missing @, missing domain, missing local-part, multiple @
+        // Email edge cases: empty, whitespace only, contains fslash
         assertParseFailure(parser, validName + validPhone + " e/" + validAddress, Email.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + " e/notanemail" + validAddress, Email.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + " e/alice@" + validAddress, Email.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + " e/@example.com" + validAddress,
-                Email.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + " e/alice@@example.com" + validAddress,
-                Email.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, validName + validPhone + " e/   " + validAddress, Email.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, validName + validPhone + " e/alice/@example.com" + validAddress,
+                MESSAGE_INVALID_USER_STRING);
 
         // Address edge cases: empty, whitespace only
         assertParseFailure(parser, validName + validPhone + validEmail + " a/", Address.MESSAGE_CONSTRAINTS);
@@ -311,6 +309,6 @@ public class AddContactCommandParserTest {
         assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/   ",
                 Tag.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/tag/1",
-                Tag.MESSAGE_CONSTRAINTS);
+                MESSAGE_INVALID_USER_STRING);
     }
 }

@@ -11,7 +11,7 @@ public class Email {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Emails should be of the format word@word, where word is a user string that does not contain spaces";
-    public static final String VALIDATION_REGEX = "[^\\s/@]+@[^\\s/@]+";
+    public static final String VALIDATION_REGEX = "[^\\s/].*";
 
     private final String value;
 

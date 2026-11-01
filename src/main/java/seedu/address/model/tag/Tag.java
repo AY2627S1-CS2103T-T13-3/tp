@@ -5,13 +5,12 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 
 /**
  * Represents a Tag in the address book.
- * Guarantees: immutable; name is valid as declared in {@link #isValidTagName(String)}
  */
 public class Tag {
 
     public static final String MESSAGE_CONSTRAINTS =
             "Tag names can take any values except forward slash (/), and should not be blank";
-    public static final String VALIDATION_REGEX = "[^\\s/][^/]*";
+    public static final String VALIDATION_REGEX = "[^\\s/].*";
 
     private final String tagName;
 
