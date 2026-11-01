@@ -11,6 +11,7 @@ import seedu.address.commons.util.StringUtil;
  */
 public class Name {
 
+    // TODO 1: Update MESSAGE_CONSTRAINTS for classes like this
     public static final String MESSAGE_CONSTRAINTS =
             "Names can take any values except forward slash (/), and should not be blank";
 
