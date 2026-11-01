@@ -27,17 +27,22 @@ public class PhoneTest {
         // invalid phone numbers
         assertFalse(Phone.isValidPhone("")); // empty string
         assertFalse(Phone.isValidPhone(" ")); // spaces only
-        assertFalse(Phone.isValidPhone("91")); // less than 3 numbers
-        assertFalse(Phone.isValidPhone("phone")); // non-numeric
-        assertFalse(Phone.isValidPhone("9011p041")); // alphabets within digits
-        assertFalse(Phone.isValidPhone("9312 1534")); // spaces within digits
-        assertFalse(Phone.isValidPhone("1234567890123456")); // 16 numbers (more than 15 digits)
-        assertFalse(Phone.isValidPhone("123456789012345678901234567890")); // very long numbers
+        assertFalse(Phone.isValidPhone("/")); // forward slash only
+        assertFalse(Phone.isValidPhone("/911")); // starts with forward slash
+        assertFalse(Phone.isValidPhone(" 911")); // leading space
 
         // valid phone numbers
+        assertTrue(Phone.isValidPhone("91")); // less than 3 numbers
+        assertTrue(Phone.isValidPhone("phone")); // non-numeric
+        assertTrue(Phone.isValidPhone("9011p041")); // alphabets within digits
+        assertTrue(Phone.isValidPhone("9312 1534")); // spaces within digits
+        assertTrue(Phone.isValidPhone("1234567890123456")); // 16 numbers (more than 15 digits)
+        assertTrue(Phone.isValidPhone("123456789012345678901234567890")); // very long numbers
         assertTrue(Phone.isValidPhone("911")); // exactly 3 numbers (lower bound)
         assertTrue(Phone.isValidPhone("93121534"));
         assertTrue(Phone.isValidPhone("124293842033123")); // exactly 15 numbers (upper bound)
+        assertTrue(Phone.isValidPhone("911/")); // ends with forward slash
+        assertTrue(Phone.isValidPhone("91/1")); // contains forward slash
     }
 
     @Test
