@@ -43,32 +43,12 @@ public class CommandShortcutMapTest {
     }
 
     @Test
-    public void assignShortcut_reservedCommandWord_returnsFalseAndNotAdded() {
-        CommandShortcutMap shortcuts = new CommandShortcutMap();
-
-        assertFalse(shortcuts.assignShortcut("list", "clear"));
-        assertFalse(shortcuts.assignShortcut("exit", "clear"));
-        assertFalse(shortcuts.assignShortcut("shortcut", "clear"));
-        assertTrue(shortcuts.asMap().isEmpty());
-    }
-
-    @Test
-    public void assignShortcut_nonAssignableCommand_returnsFalseAndNotAdded() {
-        CommandShortcutMap shortcuts = new CommandShortcutMap();
-
-        assertFalse(shortcuts.assignShortcut("sc", "invalidCommand"));
-        assertFalse(shortcuts.assignShortcut("sc", "shortcut"));
-        assertTrue(shortcuts.asMap().isEmpty());
-    }
-
-    @Test
     public void constructorWithMap_discardsInvalidMappings() {
         Map<String, String> initialMappings = Map.of(
                 "ls", "list",
                 "c", "clear",
                 "inv/slash", "list",
-                "exit", "list",
-                "foo", "invalidCommand"
+                "inv space", "list"
         );
 
         CommandShortcutMap shortcuts = new CommandShortcutMap(initialMappings);

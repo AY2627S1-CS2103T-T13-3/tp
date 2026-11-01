@@ -11,6 +11,7 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
+import seedu.address.logic.commands.CommandWords;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -41,7 +42,28 @@ public class LogicManager implements Logic {
     public LogicManager(Model model, Storage storage) {
         this.model = model;
         this.storage = storage;
+        sanitizeShortcuts(model);
         addressBookParser = new AddressBookParser(model::getShortcuts);
+    }
+
+    private void sanitizeShortcuts(Model model) {
+        model.getShortcuts().entrySet().stream()
+                .filter(entry -> CommandWords.isCommandWord(entry.getKey())
+                        || !CommandWords.isAssignableCommandWord(entry.getValue()))
+                .forEach(entry -> {
+                    String shortcut = entry.getKey();
+                    String commandWord = entry.getValue();
+                    if (CommandWords.isCommandWord(shortcut)) {
+                        logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
+                                + "'%s' is a built-in command word and cannot be used as a shortcut.",
+                                shortcut, commandWord, shortcut));
+                    } else {
+                        logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
+                                + "'%s' is not an assignable command.",
+                                shortcut, commandWord, commandWord));
+                    }
+                    model.removeShortcut(shortcut);
+                });
     }
 
     @Override

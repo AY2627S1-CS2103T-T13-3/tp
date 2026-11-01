@@ -13,7 +13,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import seedu.address.commons.core.LogsCenter;
-import seedu.address.logic.commands.CommandWords;
 
 /**
  * Stores the user's command shortcuts and keeps the mapping one-to-one.
@@ -52,7 +51,7 @@ public class CommandShortcutMap {
     /**
      * Assigns {@code shortcut} to {@code commandWord}.
      * Any previous shortcut for the command, and any previous command for the shortcut, is replaced.
-     * If the mapping violates shortcut syntax, is a reserved keyword, or targets a non-assignable command,
+     * If the mapping violates shortcut syntax,
      * the mapping is discarded, a warning is logged, and {@code false} is returned.
      */
     public boolean assignShortcut(String shortcut, String commandWord) {
@@ -61,22 +60,8 @@ public class CommandShortcutMap {
 
         if (!isValidShortcutPattern(shortcut)) {
             logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
-                    + "shortcuts must start with a lowercase letter and contain only lowercase letters and digits.",
+                    + "shortcuts cannot contain whitespace or forward slashes.",
                     shortcut, commandWord));
-            return false;
-        }
-
-        if (CommandWords.isCommandWord(shortcut)) {
-            logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
-                    + "'%s' is a built-in command word and cannot be used as a shortcut.",
-                    shortcut, commandWord, shortcut));
-            return false;
-        }
-
-        if (!CommandWords.isAssignableCommandWord(commandWord)) {
-            logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
-                    + "'%s' is not an assignable command.",
-                    shortcut, commandWord, commandWord));
             return false;
         }
 

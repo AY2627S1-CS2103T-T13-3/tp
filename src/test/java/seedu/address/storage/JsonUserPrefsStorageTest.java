@@ -140,10 +140,7 @@ public class JsonUserPrefsStorageTest {
                 + "      \"ls\" : \"list\",\n"
                 + "      \"inv space\" : \"list\",\n"
                 + "      \"inv/slash\" : \"list\",\n"
-                + "      \"exit\" : \"list\",\n"
-                + "      \"cl\" : \"clear\",\n"
-                + "      \"invtarget\" : \"notARealCommand\",\n"
-                + "      \"invtarget2\" : \"shortcut\"\n"
+                + "      \"cl\" : \"clear\"\n"
                 + "    }\n"
                 + "  }\n"
                 + "}";
