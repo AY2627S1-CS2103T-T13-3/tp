@@ -15,10 +15,9 @@ public class Name {
             "Names can take any values except forward slash (/), and should not be blank";
 
     /*
-     * The first character of the name must not be a whitespace or forward slash,
-     * and the name must not contain any forward slash.
+     * The first character of the name must not be a whitespace or forward slash
      */
-    public static final String VALIDATION_REGEX = "[^\\s/][^/]*";
+    public static final String VALIDATION_REGEX = "[^\\s/].*";
 
     private final String fullName;
 
