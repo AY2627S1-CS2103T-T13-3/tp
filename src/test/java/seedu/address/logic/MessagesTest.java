@@ -104,17 +104,25 @@ public class MessagesTest {
     }
 
     @Test
-    public void getErrorMessageForInvalidPrefixes() {
-        Prefix[] expectedPrefixes = new Prefix[] { new Prefix("n/"), new Prefix("p/") };
+    public void getErrorMessageForInvalidUserString_returnsLocationAndSegment() {
+        String expectedMessage = "Unrecognised prefix or unescaped forward slash in \"the n/ argument\"."
+                + "\nProblematic segment: \"Al/ice\"";
 
-        // Multiple invalid indices
-        String message = Messages.getErrorMessageForInvalidPrefixes(expectedPrefixes, List.of(1, 2));
-        assertTrue(message.contains("1") && message.contains("2"));
-        assertTrue(message.contains("n/") && message.contains("p/"));
+        assertEquals(expectedMessage,
+                Messages.getErrorMessageForInvalidUserString("the n/ argument", "Al/ice"));
+    }
 
-        // Single invalid index
-        String singleMessage = Messages.getErrorMessageForInvalidPrefixes(expectedPrefixes, List.of(1));
-        assertTrue(singleMessage.contains("1"));
-        assertTrue(singleMessage.contains("n/"));
+    @Test
+    public void getErrorMessageForMissingRequiredInputs_returnsGrammaticallyCorrectMessage() {
+        assertEquals("Missing required input: n/.",
+                Messages.getErrorMessageForMissingRequiredInputs("n/"));
+        assertEquals("Missing required inputs: n/, p/.",
+                Messages.getErrorMessageForMissingRequiredInputs("n/", "p/"));
+    }
+
+    @Test
+    public void getErrorMessageForUnexpectedPreamble_returnsPreamble() {
+        assertEquals("Unexpected input before the first prefix: \"unexpected\".",
+                Messages.getErrorMessageForUnexpectedPreamble("unexpected"));
     }
 }

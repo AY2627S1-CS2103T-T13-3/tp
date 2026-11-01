@@ -164,7 +164,9 @@ public class EditContactCommandTest {
         EditContactDescriptor descriptor = new EditContactDescriptorBuilder().withName(VALID_NAME_BOB).build();
         EditContactCommand editContactCommand = new EditContactCommand(outOfBoundIndex, descriptor);
 
-        assertCommandFailure(editContactCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(editContactCommand, model, expectedMessage);
     }
 
     /**
@@ -181,7 +183,9 @@ public class EditContactCommandTest {
         EditContactCommand editContactCommand = new EditContactCommand(outOfBoundIndex,
                 new EditContactDescriptorBuilder().withName(VALID_NAME_BOB).build());
 
-        assertCommandFailure(editContactCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(editContactCommand, model, expectedMessage);
     }
 
     @Test
@@ -280,11 +284,15 @@ public class EditContactCommandTest {
         EditContactDescriptor descriptor = new EditContactDescriptorBuilder().withName(VALID_NAME_BOB).build();
         EditContactCommand editContactCommand = new EditContactCommand(outOfBoundIndex, descriptor);
 
-        assertCommandFailure(editContactCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(editContactCommand, model, expectedMessage);
 
         Index maxIntIndex = Index.fromOneBased(Integer.MAX_VALUE);
         EditContactCommand editContactMaxIndex = new EditContactCommand(maxIntIndex, descriptor);
-        assertCommandFailure(editContactMaxIndex, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMaxIndexMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                maxIntIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(editContactMaxIndex, model, expectedMaxIndexMessage);
     }
 
     @Test

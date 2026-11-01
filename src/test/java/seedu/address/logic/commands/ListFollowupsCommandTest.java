@@ -125,10 +125,9 @@ public class ListFollowupsCommandTest {
     public void execute_invalidContactIndex_throwsCommandException() {
         Index invalidIndex = Index.fromOneBased(model.getFilteredContactList().size() + 1);
 
-        assertCommandFailure(
-                new ListFollowupsCommand(invalidIndex),
-                model,
-                Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                invalidIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(new ListFollowupsCommand(invalidIndex), model, expectedMessage);
     }
 
     @Test
@@ -138,10 +137,9 @@ public class ListFollowupsCommandTest {
         // ensures outOfBoundIndex is valid in address book, but out of bounds in filtered contact list
         assertTrue(outOfBoundIndex.getZeroBased() < model.getAddressBook().getContactList().size());
 
-        assertCommandFailure(
-                new ListFollowupsCommand(outOfBoundIndex),
-                model,
-                Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(new ListFollowupsCommand(outOfBoundIndex), model, expectedMessage);
     }
 
     @Test

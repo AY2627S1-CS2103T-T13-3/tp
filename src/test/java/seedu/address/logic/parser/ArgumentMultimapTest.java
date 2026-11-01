@@ -73,6 +73,37 @@ public class ArgumentMultimapTest {
     }
 
     @Test
+    public void hasPreamble_preamblePresent_returnsTrue() {
+        map.put(new Prefix(""), "unexpected");
+
+        assertTrue(map.hasPreamble());
+    }
+
+    @Test
+    public void hasPreamble_preambleAbsent_returnsFalse() {
+        map.put(namePrefix, "Alice");
+
+        assertFalse(map.hasPreamble());
+    }
+
+    @Test
+    public void getMissingPrefixes_someMissing_returnsMissingPrefixesInArgumentOrder() {
+        Prefix phonePrefix = new Prefix("p/");
+        map.put(namePrefix, "Alice");
+
+        assertEquals(List.of(tagPrefix, phonePrefix),
+                map.getMissingPrefixes(namePrefix, tagPrefix, phonePrefix));
+    }
+
+    @Test
+    public void getMissingPrefixes_noneMissing_returnsEmptyList() {
+        map.put(namePrefix, "Alice");
+        map.put(tagPrefix, "friend");
+
+        assertTrue(map.getMissingPrefixes(namePrefix, tagPrefix).isEmpty());
+    }
+
+    @Test
     public void verifyNoDuplicatePrefixesFor_identicalValues_throwsParseException() {
         map.put(namePrefix, "Alice");
         map.put(namePrefix, "Alice");

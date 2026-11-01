@@ -1,6 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STORYINDEX;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
@@ -57,26 +56,28 @@ public class UnassignCommandParserTest {
 
     @Test
     public void parse_missingRequiredPrefix_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, UnassignCommand.MESSAGE_USAGE);
+        String expectedBothMissing = Messages.getErrorMessageForMissingRequiredInputs(
+                PREFIX_CONTACTINDEX.toString(), PREFIX_STORYINDEX.toString());
 
         // Missing both prefixes
-        assertParseFailure(parser, "", expectedMessage);
-        assertParseFailure(parser, "   ", expectedMessage);
+        assertParseFailure(parser, "", expectedBothMissing);
+        assertParseFailure(parser, "   ", expectedBothMissing);
 
         // Missing story index
-        assertParseFailure(parser, " " + PREFIX_CONTACTINDEX + CONTACT_INDEX.getOneBased(), expectedMessage);
+        assertParseFailure(parser, " " + PREFIX_CONTACTINDEX + CONTACT_INDEX.getOneBased(),
+                Messages.getErrorMessageForMissingRequiredInputs(PREFIX_STORYINDEX.toString()));
 
         // Missing contact index
-        assertParseFailure(parser, " " + PREFIX_STORYINDEX + STORY_INDEX.getOneBased(), expectedMessage);
+        assertParseFailure(parser, " " + PREFIX_STORYINDEX + STORY_INDEX.getOneBased(),
+                Messages.getErrorMessageForMissingRequiredInputs(PREFIX_CONTACTINDEX.toString()));
     }
 
     @Test
     public void parse_nonEmptyPreamble_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, UnassignCommand.MESSAGE_USAGE);
         assertParseFailure(parser, "unexpected " + PREFIX_CONTACTINDEX + "1 " + PREFIX_STORYINDEX + "1",
-                expectedMessage);
+                Messages.getErrorMessageForUnexpectedPreamble("unexpected"));
         assertParseFailure(parser, "123 " + PREFIX_CONTACTINDEX + "1 " + PREFIX_STORYINDEX + "1",
-                expectedMessage);
+                Messages.getErrorMessageForUnexpectedPreamble("123"));
     }
 
     @Test

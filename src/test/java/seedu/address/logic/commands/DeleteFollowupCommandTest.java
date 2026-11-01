@@ -47,7 +47,9 @@ public class DeleteFollowupCommandTest {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredFollowupList().size() + 1);
         DeleteFollowupCommand deleteFollowupCommand = new DeleteFollowupCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteFollowupCommand, model, Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredFollowupList().size());
+        assertCommandFailure(deleteFollowupCommand, model, expectedMessage);
     }
 
     @Test
@@ -77,7 +79,9 @@ public class DeleteFollowupCommandTest {
 
         DeleteFollowupCommand deleteFollowupCommand = new DeleteFollowupCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteFollowupCommand, model, Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredFollowupList().size());
+        assertCommandFailure(deleteFollowupCommand, model, expectedMessage);
     }
 
     @Test

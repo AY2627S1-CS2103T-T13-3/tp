@@ -186,7 +186,9 @@ public class EditStoryCommandTest {
         EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).build();
         EditStoryCommand editStoryCommand = new EditStoryCommand(outOfBoundIndex, descriptor);
 
-        assertCommandFailure(editStoryCommand, model, MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(editStoryCommand, model, expectedMessage);
     }
 
     /**
@@ -203,7 +205,9 @@ public class EditStoryCommandTest {
         EditStoryCommand editStoryCommand = new EditStoryCommand(outOfBoundIndex,
                 new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_CRIME).build());
 
-        assertCommandFailure(editStoryCommand, model, MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(editStoryCommand, model, expectedMessage);
     }
 
     @Test
@@ -282,7 +286,9 @@ public class EditStoryCommandTest {
         EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).build();
         EditStoryCommand editStoryCommand = new EditStoryCommand(maxIntIndex, descriptor);
 
-        assertCommandFailure(editStoryCommand, model, MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                maxIntIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(editStoryCommand, model, expectedMessage);
     }
 
     @Test

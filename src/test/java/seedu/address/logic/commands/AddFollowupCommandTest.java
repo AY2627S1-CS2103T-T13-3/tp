@@ -61,7 +61,9 @@ public class AddFollowupCommandTest {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredContactList().size() + 1);
         AddFollowupCommand addFollowupCommand = new AddFollowupCommand(FOLLOWUP_A.getDescription(), outOfBoundIndex);
 
-        assertCommandFailure(addFollowupCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(addFollowupCommand, model, expectedMessage);
     }
 
     @Test
@@ -91,7 +93,9 @@ public class AddFollowupCommandTest {
 
         AddFollowupCommand addFollowupCommand = new AddFollowupCommand(FOLLOWUP_A.getDescription(), outOfBoundIndex);
 
-        assertCommandFailure(addFollowupCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(addFollowupCommand, model, expectedMessage);
     }
 
     @Test
