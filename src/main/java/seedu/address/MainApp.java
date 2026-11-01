@@ -67,9 +67,27 @@ public class MainApp extends Application {
 
         model = initModelManager(storage, userPrefs);
 
-        logic = new LogicManager(model, storage);
+        logic = initLogicManager(model, storage);
 
         ui = new UiManager(logic, storage.getAddressBookFilePath(), getInitialLoadMessage());
+    }
+
+    private LogicManager initLogicManager(Model model, Storage storage) {
+        LogicManager logicManager;
+        try {
+            // TODO: throw exception in constructor AFTER all invalid shortcuts removed
+            logicManager = new LogicManager(model, storage);
+        } catch (Exception e) {
+            // TODO: oneline message for shortcuts removed
+            String errorMsg;
+
+            // TODO: decide whether to log here or in LogicManager constructor
+            logger.warning(errorMsg);
+
+            initialLoadErrors.add(errorMsg);
+            logicManager = new LogicManager(model, storage); // this will succeed as the invalid shortcuts were removed
+        }
+        return logicManager;
     }
 
     /**
