@@ -2,6 +2,7 @@ package seedu.address.logic;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -11,6 +12,7 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
+import seedu.address.logic.commands.CommandWords;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -41,7 +43,17 @@ public class LogicManager implements Logic {
     public LogicManager(Model model, Storage storage) {
         this.model = model;
         this.storage = storage;
+        sanitizeShortcuts(model);
         addressBookParser = new AddressBookParser(model::getShortcuts);
+    }
+
+    private static void sanitizeShortcuts(Model model) {
+        List<String> invalidShortcuts = model.getShortcuts().entrySet().stream()
+                .filter(entry -> CommandWords.isCommandWord(entry.getKey())
+                        || !CommandWords.isAssignableCommandWord(entry.getValue()))
+                .map(Map.Entry::getKey)
+                .toList();
+        invalidShortcuts.forEach(model::removeShortcut);
     }
 
     @Override

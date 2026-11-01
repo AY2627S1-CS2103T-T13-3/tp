@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -259,6 +260,24 @@ public class LogicManagerTest {
     @Test
     public void getShortcuts_returnsCorrectShortcuts() {
         assertEquals(model.getShortcuts(), logic.getShortcuts());
+    }
+
+    @Test
+    public void constructor_sanitizesInvalidShortcutsFromModel() {
+        Model testModel = new ModelManager();
+        testModel.assignShortcut("ls", "list");
+        testModel.assignShortcut("exit", "clear");
+        testModel.assignShortcut("inv", "notACommand");
+
+        JsonAddressBookStorage addressBookStorage =
+                new JsonAddressBookStorage(temporaryFolder.resolve("addressBook.json"));
+        JsonUserPrefsStorage userPrefsStorage =
+                new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json"));
+        StorageManager testStorage = new StorageManager(addressBookStorage, userPrefsStorage);
+
+        new LogicManager(testModel, testStorage);
+
+        assertEquals(Map.of("ls", "list"), testModel.getShortcuts());
     }
 
     /**
