@@ -61,33 +61,31 @@ This guide describes the features implemented for PressMemo v1.4.
   For example, if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 * Extraneous parameters for commands that take no parameters, such as `help`, `exit`, `clear`, and `list`, are not allowed.<br>
   For example, `help 123` will result in an error.
-* Leading and trailing whitespaces in parameters are ignored. <br>
-  For example `n/  John Doe  ` will be treated as `John Doe`.
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </div>
 
 ### Common input types
 
-| Input type     | Definition                                                                       | Format/s                                                                                                                                                                                         | Examples                                          |
-| -------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
-| user string    | A typed unit of text input.                                                      | Must contain one or more characters, with at least one non-space character.<br><br>Any forward slash must be escaped using backslash (\\).<br><br>Any spaces at the start and end are truncated. | wumpus<br><br>wumpus farts<br><br>birthday 3\\/12 |
-| word           | A `user string` that does not contain spaces or forward slashes                  | Does not contain spaces or forward slashes                                                                                                                                                       | wumpus<br><br>wumpus,farts!                       |
-| Contact Index  | A `word` representing the 1-based position of a `Contact` in the contact panel   | Integer between and including 1 and the number of `Contact`s in the contact panel<br><br>If the contact panel is empty, there is no valid `Contact Index`                                        | 1                                                 |
-| Story Index    | A `word` representing the 1-based position of a `Story` in the story panel       | Integer between and including 1 and the number of `Story`s in the story panel<br><br>If the story panel is empty, there is no valid `Story Index`                                                | 2                                                 |
-| Followup Index | A `word` representing the 1-based position of a `Followup` in the followup panel | Integer between and including 1 and the number of `Followup`s in the followup panel<br><br>If the followup panel is empty, there is no valid `Followup Index`                                    | 1                                                 |
+| Input type        | Definition                                                                | Format/s                                                                                                                                                                                       | Examples                                      |
+|-------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
+| `user-string`     | A sequence of characters.                                                 | Must contain one or more characters, with at least one non-space character.<br><br>Any forward slash must be escaped using backslash (\\).<br><br>Any spaces at the start and end are ignored. | wumpus<br><br>wumpus farts<br><br>date 3\\/12 |
+| `word`            | A `user-string` that does not contain spaces or forward slashes.          | Must not contain spaces or forward slashes                                                                                                                                                     | wumpus<br><br>wumpus,farts!                   |
+| `contact-index`   | A number representing the position of a `Contact` in the contact panel.   | Integer between 1 and the number of `Contact`s in the contact panel<br><br>If the contact panel is empty, there is no valid `contact-index`                                                    | 1                                             |
+| `story-index`     | A number representing the position of a `Story` in the story panel.       | Integer between 1 and the number of `Story`s in the story panel<br><br>If the story panel is empty, there is no valid `story-index`                                                            | 2                                             |
+| `followup-index`  | A number representing the position of a `Followup` in the followup panel. | Integer between 1 and the number of `Followup`s in the followup panel<br><br>If the followup panel is empty, there is no valid `followup-index`                                                | 1                                             |
 
 ### Viewing help: `help`
 
-Toggles the help panel which lists all default commands and its command format. 
+Toggles the help panel which lists all default commands and their formats. 
 
 Format: `help`
 
-* If the help panel is closed, `help` opens the help panel. If the help panel is open, `help` closes the help panel.
-* Use the scrollbar on the right to find the specific command you are looking for. You may also click on one of the command panels and use the up and down arrow key to scroll down the command list.
-* You can click on the `X` button to close the help panel.
-* You can also open and close the help panel from the **Help** menu. 
-* The help panel does not display any shortcuts that you may have created for the default commands. 
-* For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
+![Ui with Help Panel](images/UiWithHelpPanel.png)
+
+* Enter `help` to open or close the help panel. Alternatively, use the **Help** menu at the top.
+* Use the scrollbar or select the command panel and use the up and down arrow keys to view the command list.
+* The help panel displays only the default commands and does not include any custom shortcuts you have created. 
+* For the latest instructions about contact, story, follow-up, and shortcut commands, refer to this User Guide.
 
 ### Adding a contact: `addcontact`
 
