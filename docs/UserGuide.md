@@ -162,18 +162,44 @@ Examples:
 
 ### Listing stories: `liststories`
 
-Displays all stories, or only those assigned to a selected contact.
+- **Objective:** Displays all stories in PressMemo or only those assigned to a specified contact.
 
-Format: `liststories [ci/CONTACT_INDEX]`
+<img src="images/liststories-example.png" alt="Listing stories" width="726" height="593">
 
-* `liststories` shows all stories and removes any active **story** filter.
-* `liststories ci/CONTACT_INDEX` shows only stories assigned to that contact in the **currently displayed contact list**.
-* The **CONTACTS** panel remains unchanged. If the selected contact has no assigned stories, the story list becomes empty.
+#### Usage / Command Format
 
-Examples:
-* `listcontacts` followed by `liststories ci/1` shows stories assigned to the first displayed contact.
-* `findcontact John` followed by `liststories ci/1` uses the first contact in the filtered search results.
-* `liststories` shows all stories again without changing the displayed contacts.
+`liststories [ci/CONTACT_INDEX]`
+
+#### Parameters & Constraints
+
+| Parameter | Type | Description | Examples |
+| --- | --- | --- | --- |
+| `ci/CONTACT_INDEX` | Contact Index | Optional 1-based index of the contact in the currently displayed CONTACTS panel, used to filter stories assigned to that contact. | `ci/1` |
+
+> **Tip / Note:**
+>
+> - Without `ci/CONTACT_INDEX`, `liststories` displays all stories and removes any active story filter.
+> - With `ci/CONTACT_INDEX`, `liststories` displays only stories assigned to the specified contact.
+> - The contact index refers to the currently displayed CONTACTS panel, including any filtered results.
+> - The CONTACTS and FOLLOW-UPS panels remain unchanged.
+> - If the specified contact has no assigned stories, the STORIES panel becomes empty.
+> - Use `liststories` without parameters to display all stories again.
+
+#### Examples
+
+- **Example 1: Listing all stories**
+    - **Input / Action:** `liststories`
+    - **Expected Outcome:** All stories in PressMemo are displayed in the STORIES panel, removing any previously applied story filter. A success message indicates the number of stories displayed.
+
+- **Example 2: Listing stories assigned to a contact**
+    - **Input / Action:** `liststories ci/1`
+    - **Expected Outcome:** Only stories assigned to the first displayed contact are shown in the STORIES panel. The CONTACTS and FOLLOW-UPS panels remain unchanged.
+
+#### Common Errors & Troubleshooting
+
+| Error Message / Symptom | Cause | How to Fix |
+| --- | --- | --- |
+| No stories are displayed after `liststories ci/1`. | The selected contact has no assigned stories. | Check the contact's story assignments, or run `liststories` without parameters to display all stories again. |
 
 ### Editing a contact: `editcontact`
 
@@ -213,18 +239,37 @@ Examples:
 
 ### Deleting a contact: `deletecontact`
 
-Deletes the specified contact from PressMemo.
+- **Objective:** Deletes a specified contact from PressMemo, including their story assignments and associated follow-ups.
 
-Format: `deletecontact INDEX`
+<img src="images/deletecontact-example.png" alt="Deleting a contact" width="726" height="593">
 
-* Deletes the contact at the specified `INDEX`.
-* The index refers to the index number shown in the displayed contact list.
-* The index **must be a positive integer** 1, 2, 3, …​
-* Deleting a contact also removes their assignments from stories and deletes all follow-ups linked to them. The stories themselves remain.
+#### Usage / Command Format
 
-Examples:
-* `list` followed by `deletecontact 2` deletes the 2nd contact in PressMemo.
-* `findcontact Betsy` followed by `deletecontact 1` deletes the 1st contact in the results of the `findcontact` command.
+`deletecontact INDEX`
+
+#### Parameters & Constraints
+
+| Parameter | Type | Description | Examples |
+| --- | --- | --- |----------|
+| `INDEX` | Contact Index | The 1-based index of the contact in the currently displayed CONTACTS panel. | `2`      |
+
+> **Tip / Note:**
+>
+> - The index refers to the currently displayed contact list, including any filtered results.
+> - Deleting a contact automatically removes their assignments from all stories. The stories themselves remain in PressMemo.
+> - All follow-ups associated with the deleted contact are also deleted.
+> - Other contacts and their assignments remain unchanged.
+> - Deletion cannot be undone.
+
+#### Examples
+
+- **Example 1: Deleting a contact**
+    - **Input / Action:** `deletecontact 2`
+    - **Expected Outcome:** The second displayed contact is deleted from PressMemo. Their associated story assignments and follow-ups are also removed, and a success message displays the deleted contact's details.
+
+- **Example 2: Deleting a contact from a filtered list**
+    - **Input / Action:** `findcontact Bernice` followed by `deletecontact 1`
+    - **Expected Outcome:** The first displayed contact in the filtered results is deleted from PressMemo, along with their associated story assignments and follow-ups.
 
 ### Adding a story: `addstory`
 
@@ -365,33 +410,85 @@ Examples:
 
 ### Assigning a contact to a story: `assign`
 
-Links an existing contact to an existing story.
+- **Objective:** Assigns an existing contact to an existing story in PressMemo.
 
-Format: `assign ci/CONTACT_INDEX si/STORY_INDEX`
+<img src="images/assign-example.png" alt="Assigning a contact to a story" width="726" height="593">
 
-* Both indices are required and refer to the currently displayed contact and story lists respectively.
-* Assign one contact to one story per command. Repeat the command with other indices to create more assignments.
-* Assigning a contact to a story they already belong to leaves the existing assignment unchanged.
-* After the command, both lists show all entries and the cards show the updated assignments.
+#### Usage / Command Format
 
-Examples:
+`assign ci/CONTACT_INDEX si/STORY_INDEX`
 
-* `list` and then `assign ci/1 si/1` assigns the 1st contact to the 1st story, provided both lists have entries.
-* `assign si/2 ci/1` assigns the 1st displayed contact to the 2nd displayed story.
+#### Parameters & Constraints
+
+| Parameter | Type | Description | Examples |
+| --- | --- | --- | --- |
+| `ci/CONTACT_INDEX` | Contact Index | The 1-based index of the contact in the currently displayed contact list. | `ci/1` |
+| `si/STORY_INDEX` | Story Index | The 1-based index of the story in the currently displayed story list. | `si/2` |
+
+> **Tip / Note:**
+>
+> - Both parameters are required, and their order can be reversed.
+> - Indices refer to the currently displayed contact and story lists, including any filtered results.
+> - Each command assigns one contact to one story. A contact can be assigned to multiple stories, and a story can have multiple assigned contacts.
+> - A contact cannot be assigned to the same story more than once. Attempting to do so displays an error.
+> - The contact and story records remain unchanged apart from their assignments. The command does not explicitly reset active list filters.
+
+#### Examples
+
+- **Example 1: Assigning a contact to a story**
+    - **Input / Action:** `assign ci/1 si/1`
+    - **Expected Outcome:** The first displayed contact is assigned to the first displayed story. The assignment is reflected in both records, and a success message identifies the contact and story.
+
+- **Example 2: Assigning a contact using reversed parameter order**
+    - **Input / Action:** `assign si/2 ci/1`
+    - **Expected Outcome:** The first displayed contact is assigned to the second displayed story.
+
+#### Common Errors & Troubleshooting
+
+| Error Message / Symptom | Cause | How to Fix |
+| --- | --- | --- |
+| `Alice Tan is already assigned to Investigation.` | The selected contact is already assigned to the selected story. | Select a different contact or story, or leave the existing assignment unchanged. |
 
 ### Unassigning a contact from a story: `unassign`
 
-Removes the link between a contact and a story, keeping both records.
+- **Objective:** Removes an existing assignment between a contact and a story without deleting either record.
 
-Format: `unassign ci/CONTACT_INDEX si/STORY_INDEX`
+<img src="images/unassign-example.png" alt="Unassigning a contact from a story" width="726" height="593">
 
-* Both indices are required and refer to the currently displayed contact and story lists respectively.
-* Other assignments remain unchanged. Unassigning a contact who is not assigned to that story has no effect on assignments.
-* After the command, both lists show all entries and the cards show the updated assignments.
+#### Usage / Command Format
 
-Examples:
+`unassign ci/CONTACT_INDEX si/STORY_INDEX`
 
-* `unassign ci/1 si/1` removes the assignment between the 1st displayed contact and the 1st displayed story.
+#### Parameters & Constraints
+
+| Parameter | Type | Description | Examples |
+| --- | --- | --- |----------|
+| `ci/CONTACT_INDEX` | Contact Index | The 1-based index of the contact in the currently displayed contact list. | `ci/1`   |
+| `si/STORY_INDEX` | Story Index | The 1-based index of the story in the currently displayed story list. | `si/1`   |
+
+> **Tip / Note:**
+>
+> - Both parameters are required, and their order can be reversed.
+> - Indices refer to the currently displayed contact and story lists, including any filtered results.
+> - The selected contact must already be assigned to the selected story. Otherwise, an error is displayed.
+> - Unassigning removes only the relationship between the specified contact and story. Both records and their other assignments are preserved.
+> - The command does not explicitly reset active list filters.
+
+#### Examples
+
+- **Example 1: Unassigning a contact from a story**
+    - **Input / Action:** `unassign ci/1 si/1`
+    - **Expected Outcome:** The assignment between the first displayed contact and the first displayed story is removed. Both records remain in PressMemo, and a success message identifies the contact and story.
+
+- **Example 2: Unassigning a contact while preserving other assignments**
+    - **Input / Action:** `unassign si/2 ci/1`
+    - **Expected Outcome:** The first displayed contact is unassigned from the second displayed story. Any assignments involving other stories or contacts remain unchanged.
+
+#### Common Errors & Troubleshooting
+
+| Error Message / Symptom | Cause | How to Fix |
+| --- | --- | --- |
+| `Alice Tan is not assigned to Investigation.` | The selected contact is not currently assigned to the selected story. | Check the existing assignments and select a contact-story pair that is assigned. |
 
 ### Deleting a story: `deletestory`
 
