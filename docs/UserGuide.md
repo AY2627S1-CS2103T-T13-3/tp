@@ -23,18 +23,18 @@ This guide describes the features implemented for PressMemo v1.4.
 
 4. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar pressmemo.jar`.<br>
    A GUI with the **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels similar to the one below should appear in a few seconds. On the first run, the app contains sample contacts, stories and follow-ups.<br>
-   ![Ui](images/Ui.png)
+   ![Ui](images/QuickstartUi.png)
 
 5. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to open the help window.<br>
    Some example commands you can try:
 
     * `list` : Displays all contacts, stories and follow-ups.
 
-    * `addcontact n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to PressMemo.
+    * `addcontact n/Jane Smith p/91234567 e/janesmith@example.com a/Jane street, block 987, #10-10` : Adds a contact named `Jane Smith` to PressMemo.
 
-    * `assign ci/1 si/1` : Assigns the 1st displayed contact to the 1st displayed story.
+    * `assign ci/1 si/2` : Assigns the 1st displayed contact to the 2nd displayed story.
 
-    * `deletefollowup 1` : Deletes the follow-up at index 1.
+    * `deletefollowup 1` : Deletes the 1st displayed follow-up.
 
     * `shortcut s/ls c/list` : Defines `ls` as a shortcut for `list`.
 
@@ -61,6 +61,8 @@ This guide describes the features implemented for PressMemo v1.4.
   For example, if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 * Extraneous parameters for commands that take no parameters, such as `help`, `exit`, `clear`, and `list`, are not allowed.<br>
   For example, `help 123` will result in an error.
+* Leading and trailing whitespaces in parameters are ignored. <br>
+  For example `n/  John Doe  ` will be treated as `John Doe`.
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
 </div>
 
