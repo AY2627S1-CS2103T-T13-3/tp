@@ -37,7 +37,8 @@ public class DeleteStoryCommand extends AddressBookMutatingCommand {
         List<Story> lastShownList = model.getFilteredStoryList();
 
         if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                    targetIndex.getOneBased(), lastShownList.size()));
         }
 
         Story storyToDelete = lastShownList.get(targetIndex.getZeroBased());

@@ -87,4 +87,30 @@ public class EditStoryDescriptorTest {
                 + editStoryDescriptor.getTags().orElse(null) + "}";
         assertEquals(expected, editStoryDescriptor.toString());
     }
+
+    @Test
+    public void copyConstructor_allPairsFieldCombinations_success() {
+        // Equivalence Partitioning & All-Pairs combinations of field presence:
+        // Factor 1: Name (Present, Absent)
+        // Factor 2: Tags (Present, Absent)
+        // All 4 pairs covered:
+        // Pair 1: Name=Present, Tags=Present
+        // Pair 2: Name=Present, Tags=Absent
+        // Pair 3: Name=Absent, Tags=Present
+        // Pair 4: Name=Absent, Tags=Absent
+
+        EditStoryDescriptor[] testDescriptors = new EditStoryDescriptor[] {
+            new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).withTags(VALID_STORYTAG_MALAYSIA).build(),
+            new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).build(),
+            new EditStoryDescriptorBuilder().withTags(VALID_STORYTAG_MALAYSIA).build(),
+            new EditStoryDescriptor()
+        };
+
+        for (EditStoryDescriptor descriptor : testDescriptors) {
+            EditStoryDescriptor copy = new EditStoryDescriptor(descriptor);
+            assertEquals(descriptor, copy);
+            assertEquals(descriptor.getName(), copy.getName());
+            assertEquals(descriptor.getTags(), copy.getTags());
+        }
+    }
 }

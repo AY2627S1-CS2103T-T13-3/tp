@@ -49,7 +49,7 @@ public class EditContactCommand extends AddressBookMutatingCommand {
 
     public static final String MESSAGE_EDIT_CONTACT_SUCCESS = "Edited contact: %1$s";
     public static final String MESSAGE_NOT_EDITED = "At least one field to edit must be provided.";
-    public static final String MESSAGE_DUPLICATE_CONTACT = "This contact already exists in PressMemo.";
+    public static final String MESSAGE_DUPLICATE_CONTACT = "Error: there is already a contact named \"%1$s\"!";
 
     private final Index index;
     private final EditContactDescriptor editContactDescriptor;
@@ -72,14 +72,15 @@ public class EditContactCommand extends AddressBookMutatingCommand {
         List<Contact> lastShownList = model.getFilteredContactList();
 
         if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                    index.getOneBased(), lastShownList.size()));
         }
 
         Contact contactToEdit = lastShownList.get(index.getZeroBased());
         Contact editedContact = editContactDescriptor.createEditedContact(contactToEdit);
 
         if (!contactToEdit.representsSameItem(editedContact) && model.hasContact(editedContact)) {
-            throw new CommandException(MESSAGE_DUPLICATE_CONTACT);
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_CONTACT, editedContact.getName()));
         }
 
         model.setContact(contactToEdit, editedContact);

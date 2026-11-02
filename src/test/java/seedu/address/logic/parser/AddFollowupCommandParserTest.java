@@ -1,6 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
@@ -84,17 +83,21 @@ public class AddFollowupCommandParserTest {
     @Test
     public void parse_edgeCaseIsolatedInvalidInputs_failure() {
         // D_INV1: Missing or blank description
-        String expectedMissingDescMessage = String.format(
-                MESSAGE_INVALID_COMMAND_FORMAT, AddFollowupCommand.MESSAGE_USAGE);
-        assertParseFailure(parser, "", expectedMissingDescMessage);
-        assertParseFailure(parser, "     ", expectedMissingDescMessage);
+        String expectedAllMissingMessage = Messages.getErrorMessageForMissingRequiredInputs(
+                "description", PREFIX_CONTACTINDEX.toString());
+        String expectedMissingDescMessage = Messages.getErrorMessageForMissingRequiredInputs("description");
+        assertParseFailure(parser, "", expectedAllMissingMessage);
+        assertParseFailure(parser, "     ", expectedAllMissingMessage);
         assertParseFailure(parser, " ci/1", expectedMissingDescMessage);
         assertParseFailure(parser, "   ci/2", expectedMissingDescMessage);
 
         // D_INV2: Forward slash in description
-        assertParseFailure(parser, "/urgent ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "Call Dr. Smith s/o the myth ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "Interview/Investigation ci/1", FollowupDescription.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "/urgent ci/1",
+                Messages.getErrorMessageForInvalidUserString("/urgent"));
+        assertParseFailure(parser, "Call Dr. Smith s/o the myth ci/1",
+                Messages.getErrorMessageForInvalidUserString("Call Dr. Smith s/o the myth"));
+        assertParseFailure(parser, "Interview/Investigation ci/1",
+                Messages.getErrorMessageForInvalidUserString("Interview/Investigation"));
 
         // CI_INV1: Boundary 0
         assertParseFailure(parser, "Followup A ci/0", MESSAGE_INVALID_INDEX);
@@ -120,14 +123,21 @@ public class AddFollowupCommandParserTest {
 
         // CI_INV7: Missing contact index prefix
         assertParseFailure(parser, "Followup A",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddFollowupCommand.MESSAGE_USAGE));
+                Messages.getErrorMessageForMissingRequiredInputs(PREFIX_CONTACTINDEX.toString()));
     }
 
     @Test
     public void parse_invalidPrefix_failure() {
         assertParseFailure(parser, "Followup A z/invalid",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddFollowupCommand.MESSAGE_USAGE));
+                Messages.getErrorMessageForInvalidUserString("Followup A z/invalid"));
         assertParseFailure(parser, "Followup A z/invalid ci/1",
-                FollowupDescription.MESSAGE_CONSTRAINTS);
+                Messages.getErrorMessageForInvalidUserString("Followup A z/invalid"));
+    }
+
+    @Test
+    public void parse_escapedLeadingSlashDescription_success() {
+        AddFollowupCommand expectedCommand = new AddFollowupCommand(
+                new FollowupDescription("/Interview prep"), Index.fromOneBased(1));
+        assertParseSuccess(parser, " \\/Interview prep ci/1", expectedCommand);
     }
 }

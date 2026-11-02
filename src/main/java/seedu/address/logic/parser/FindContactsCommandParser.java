@@ -19,10 +19,10 @@ public class FindContactsCommandParser implements Parser<FindContactsCommand> {
      * @throws ParseException if the user input does not conform to the expected format
      */
     public FindContactsCommand parse(String args) throws ParseException {
-        String trimmedArgs = args.trim();
+        ArgumentMultimap argMap = ArgumentTokenizer.tokenize(args);
+        String trimmedArgs = argMap.getPreamble();
         if (trimmedArgs.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindContactsCommand.MESSAGE_USAGE));
+            throw new ParseException(MESSAGE_INVALID_COMMAND_FORMAT);
         }
 
         String[] nameKeywords = trimmedArgs.split("\\s+");

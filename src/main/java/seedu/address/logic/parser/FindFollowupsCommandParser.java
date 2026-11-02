@@ -15,12 +15,11 @@ public class FindFollowupsCommandParser implements Parser<FindFollowupsCommand> 
 
     @Override
     public FindFollowupsCommand parse(String args) throws ParseException {
-        String trimmedArgs = args.trim();
+        ArgumentMultimap argMap = ArgumentTokenizer.tokenize(args);
+        String trimmedArgs = argMap.getPreamble();
 
         if (trimmedArgs.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                            FindFollowupsCommand.MESSAGE_USAGE));
+            throw new ParseException(MESSAGE_INVALID_COMMAND_FORMAT);
         }
 
         String[] descriptionKeywords = trimmedArgs.split("\\s+");

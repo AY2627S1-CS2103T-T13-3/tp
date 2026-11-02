@@ -3,7 +3,6 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
-import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
@@ -22,13 +21,13 @@ public class AddContactCommand extends AddressBookMutatingCommand {
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Adds a contact to PressMemo. "
             + "Parameters: "
-            + PREFIX_NAME + "NAME "
+            + "NAME "
             + PREFIX_PHONE + "PHONE "
             + PREFIX_EMAIL + "EMAIL "
             + PREFIX_ADDRESS + "ADDRESS "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_NAME + "John Doe "
+            + "John Doe "
             + PREFIX_PHONE + "98765432 "
             + PREFIX_EMAIL + "johnd@example.com "
             + PREFIX_ADDRESS + "311, Clementi Ave 2, #02-25 "
@@ -36,7 +35,7 @@ public class AddContactCommand extends AddressBookMutatingCommand {
             + PREFIX_TAG + "owesMoney";
 
     public static final String MESSAGE_SUCCESS = "New contact added: %1$s";
-    public static final String MESSAGE_DUPLICATE_CONTACT = "This contact already exists in PressMemo.";
+    public static final String MESSAGE_DUPLICATE_CONTACT = "Error: there is already a contact named \"%1$s\"!";
 
     private final Contact toAdd;
 
@@ -53,7 +52,7 @@ public class AddContactCommand extends AddressBookMutatingCommand {
         requireNonNull(model);
 
         if (model.hasContact(toAdd)) {
-            throw new CommandException(MESSAGE_DUPLICATE_CONTACT);
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_CONTACT, toAdd.getName()));
         }
 
         model.addContact(toAdd);

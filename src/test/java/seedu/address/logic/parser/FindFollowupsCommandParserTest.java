@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
-import seedu.address.logic.commands.FindFollowupsCommand;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -58,17 +57,11 @@ public class FindFollowupsCommandParserTest {
 
     @Test
     public void parse_emptyArg_throwsParseException() {
-        assertParseFailure(parser, "     ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        FindFollowupsCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "     ", MESSAGE_INVALID_COMMAND_FORMAT);
 
-        assertParseFailure(parser, "",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        FindFollowupsCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "", MESSAGE_INVALID_COMMAND_FORMAT);
 
-        assertParseFailure(parser, "\t \r \n",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
-                        FindFollowupsCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, "\t \r \n", MESSAGE_INVALID_COMMAND_FORMAT);
     }
 
     @Test

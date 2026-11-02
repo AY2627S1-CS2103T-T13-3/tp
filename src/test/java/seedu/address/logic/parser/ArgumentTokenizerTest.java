@@ -3,10 +3,12 @@ package seedu.address.logic.parser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 public class ArgumentTokenizerTest {
@@ -65,10 +67,19 @@ public class ArgumentTokenizerTest {
     }
 
     @Test
-    public void tokenize_slashInPreamble_success() {
+    public void tokenize_slashInPreamble_throwsParseException() {
         String argsString = "  some random string /t tag with leading and trailing spaces ";
+        ParseException exception = assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(argsString));
+
+        assertEquals(Messages.getErrorMessageForInvalidUserString(
+                "some random string /t tag with leading and trailing spaces"), exception.getMessage());
+    }
+
+    @Test
+    public void tokenize_escapedSlashInPreamble_success() throws ParseException {
+        String argsString = "  some random string \\/t tag with leading and trailing spaces ";
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString);
-        assertPreamblePresent(argMultimap, argsString.trim());
+        assertPreamblePresent(argMultimap, "some random string /t tag with leading and trailing spaces");
     }
 
     @Test
@@ -135,13 +146,59 @@ public class ArgumentTokenizerTest {
     }
 
     @Test
-    public void tokenize_multipleArgumentsJoined() {
-        String argsString = "SomePreambleStringp/ pSlash joinedt/joined t/ not joinedQ/joined";
+    public void tokenize_multipleArgumentsJoined() throws ParseException {
+        String argsString = "SomePreambleStringp\\/ pSlash joinedt\\/joined t/ not joinedQ\\/joined";
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString, pSlash, tSlash, qSlash);
         assertPreamblePresent(argMultimap, "SomePreambleStringp/ pSlash joinedt/joined");
         assertArgumentAbsent(argMultimap, pSlash);
         assertArgumentPresent(argMultimap, tSlash, "not joinedQ/joined");
         assertArgumentAbsent(argMultimap, qSlash);
+    }
+
+    @Test
+    public void tokenize_argumentsJoinedUnescaped_throwsParseException() {
+        String argsString = "SomePreambleStringp/ pSlash joinedt/joined t/ not joinedQ/joined";
+        assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(argsString, pSlash, tSlash, qSlash));
+    }
+
+    @Test
+    public void tokenize_userStringWithEscapedSlash_success() throws ParseException {
+        String argsString = "birthday 3\\/12 p/ 12\\/34";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString, pSlash);
+        assertPreamblePresent(argMultimap, "birthday 3/12");
+        assertArgumentPresent(argMultimap, pSlash, "12/34");
+    }
+
+    @Test
+    public void tokenize_userStringStartingWithEscapedSlash_success() throws ParseException {
+        String argsString = "\\/birthday 3\\/12 p/ \\/12\\/34";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString, pSlash);
+        assertPreamblePresent(argMultimap, "/birthday 3/12");
+        assertArgumentPresent(argMultimap, pSlash, "/12/34");
+    }
+
+    @Test
+    public void tokenize_backslashNotBeforeSlash_preserved() throws ParseException {
+        String argsString = " p/ C:\\docs\\file\\not-slash";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString, pSlash);
+        assertArgumentPresent(argMultimap, pSlash, "C:\\docs\\file\\not-slash");
+
+        String argsStringWithEscapedSlash = " p/ C:\\docs\\file\\/and-slash";
+        argMultimap = ArgumentTokenizer.tokenize(argsStringWithEscapedSlash, pSlash);
+        assertArgumentPresent(argMultimap, pSlash, "C:\\docs\\file/and-slash");
+    }
+
+    @Test
+    public void tokenize_unescapedSlashInArgument_throwsParseException() {
+        ParseException exception = assertThrows(ParseException.class, () ->
+                ArgumentTokenizer.tokenize(" p/ invalid/value", pSlash));
+        assertEquals(Messages.getErrorMessageForInvalidUserString("invalid/value"),
+                exception.getMessage());
+
+        assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(" p/ /leading-slash", pSlash));
+        assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(" p/ trailing-slash/", pSlash));
+        assertThrows(ParseException.class, () ->
+                ArgumentTokenizer.tokenize(" p/ valid\\/escaped/then-unescaped", pSlash));
     }
 
     @Test
