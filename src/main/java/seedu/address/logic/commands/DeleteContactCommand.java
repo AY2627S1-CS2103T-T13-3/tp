@@ -37,7 +37,8 @@ public class DeleteContactCommand extends AddressBookMutatingCommand {
         List<Contact> lastShownList = model.getFilteredContactList();
 
         if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                    targetIndex.getOneBased(), lastShownList.size()));
         }
 
         Contact contactToDelete = lastShownList.get(targetIndex.getZeroBased());

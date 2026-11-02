@@ -47,7 +47,9 @@ public class DeleteStoryCommandTest {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredStoryList().size() + 1);
         DeleteStoryCommand deleteStoryCommand = new DeleteStoryCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteStoryCommand, model, Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(deleteStoryCommand, model, expectedMessage);
     }
 
     @Test
@@ -77,7 +79,9 @@ public class DeleteStoryCommandTest {
 
         DeleteStoryCommand deleteStoryCommand = new DeleteStoryCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteStoryCommand, model, Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(deleteStoryCommand, model, expectedMessage);
     }
 
     @Test

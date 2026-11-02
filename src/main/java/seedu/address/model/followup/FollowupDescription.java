@@ -12,10 +12,10 @@ import seedu.address.commons.util.StringUtil;
 public class FollowupDescription {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Descriptions can take any values except forward slash (/), and should not be blank";
+            "Follow-up descriptions should not be blank or start with a whitespace";
 
     /*
-     * The first character of the description must not be a whitespace or forward slash
+     * The first character of the description must not be a whitespace
      */
     public static final String VALIDATION_REGEX = "^\\S.*$";
 

@@ -56,7 +56,8 @@ public class ListContactsCommand extends Command {
 
         if (index >= lastShownStoryList.size()) {
             throw new CommandException(
-                    Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+                    String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                            storyIndex.get().getOneBased(), lastShownStoryList.size()));
         }
 
         Story selectedStory = lastShownStoryList.get(index);

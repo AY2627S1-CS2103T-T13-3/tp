@@ -63,7 +63,8 @@ public class EditStoryCommand extends AddressBookMutatingCommand {
         List<Story> lastShownList = model.getFilteredStoryList();
 
         if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                    index.getOneBased(), lastShownList.size()));
         }
 
         Story storyToEdit = lastShownList.get(index.getZeroBased());

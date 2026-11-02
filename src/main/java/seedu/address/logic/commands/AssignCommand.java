@@ -52,11 +52,13 @@ public class AssignCommand extends AddressBookMutatingCommand {
         List<Story> lastShownStoryList = model.getFilteredStoryList();
 
         if (contactIndex.getZeroBased() >= lastShownContactList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                    contactIndex.getOneBased(), lastShownContactList.size()));
         }
 
         if (storyIndex.getZeroBased() >= lastShownStoryList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                    storyIndex.getOneBased(), lastShownStoryList.size()));
         }
 
         Contact contactToAssign = lastShownContactList.get(contactIndex.getZeroBased());

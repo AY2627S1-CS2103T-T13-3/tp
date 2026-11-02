@@ -37,7 +37,8 @@ public class DeleteFollowupCommand extends AddressBookMutatingCommand {
         List<Followup> lastShownList = model.getFilteredFollowupList();
 
         if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX);
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX,
+                    targetIndex.getOneBased(), lastShownList.size()));
         }
 
         Followup followupToDelete = lastShownList.get(targetIndex.getZeroBased());

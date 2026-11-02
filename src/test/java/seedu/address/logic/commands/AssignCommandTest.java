@@ -89,7 +89,9 @@ public class AssignCommandTest {
         Index outOfBoundContactIndex = Index.fromOneBased(model.getFilteredContactList().size() + 1);
         AssignCommand assignCommand = new AssignCommand(INDEX_FIRST_STORY, outOfBoundContactIndex);
 
-        assertCommandFailure(assignCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundContactIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(assignCommand, model, expectedMessage);
     }
 
     @Test
@@ -100,7 +102,9 @@ public class AssignCommandTest {
         assertTrue(outOfBoundContactIndex.getZeroBased() < model.getAddressBook().getContactList().size());
 
         AssignCommand assignCommand = new AssignCommand(INDEX_FIRST_STORY, outOfBoundContactIndex);
-        assertCommandFailure(assignCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundContactIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(assignCommand, model, expectedMessage);
     }
 
     @Test
@@ -108,7 +112,9 @@ public class AssignCommandTest {
         Index outOfBoundStoryIndex = Index.fromOneBased(model.getFilteredStoryList().size() + 1);
         AssignCommand assignCommand = new AssignCommand(outOfBoundStoryIndex, INDEX_FIRST_CONTACT);
 
-        assertCommandFailure(assignCommand, model, Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                outOfBoundStoryIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(assignCommand, model, expectedMessage);
     }
 
     @Test
@@ -119,7 +125,9 @@ public class AssignCommandTest {
         assertTrue(outOfBoundStoryIndex.getZeroBased() < model.getAddressBook().getStoryList().size());
 
         AssignCommand assignCommand = new AssignCommand(outOfBoundStoryIndex, INDEX_FIRST_CONTACT);
-        assertCommandFailure(assignCommand, model, Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                outOfBoundStoryIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(assignCommand, model, expectedMessage);
     }
 
     @Test
@@ -128,7 +136,9 @@ public class AssignCommandTest {
         Index outOfBoundStoryIndex = Index.fromOneBased(model.getFilteredStoryList().size() + 1);
         AssignCommand assignCommand = new AssignCommand(outOfBoundStoryIndex, outOfBoundContactIndex);
 
-        assertCommandFailure(assignCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundContactIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(assignCommand, model, expectedMessage);
     }
 
     @Test
@@ -150,11 +160,15 @@ public class AssignCommandTest {
 
         // Max contact index
         AssignCommand maxContactCommand = new AssignCommand(INDEX_FIRST_STORY, maxIndex);
-        assertCommandFailure(maxContactCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedContactMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                maxIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(maxContactCommand, model, expectedContactMessage);
 
         // Max story index
         AssignCommand maxStoryCommand = new AssignCommand(maxIndex, INDEX_FIRST_CONTACT);
-        assertCommandFailure(maxStoryCommand, model, Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedStoryMessage = String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                maxIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(maxStoryCommand, model, expectedStoryMessage);
     }
 
     @Test
