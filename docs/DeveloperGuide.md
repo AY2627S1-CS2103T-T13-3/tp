@@ -146,12 +146,12 @@ The `Model` component,
 
 ### Storage component
 
-**API** : [`Storage.java`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/storage/Storage.java)
+**API** : [`Storage.java`](https://github.com/AY2627S1-CS2103T-T13-3/tp/blob/master/src/main/java/seedu/address/storage/Storage.java)
 
-<img src="images/StorageClassDiagram.png" width="550" />
+<img src="images/StorageClassDiagram.png" alt="Structure of the Storage component" width="550" />
 
 The `Storage` component,
-* can save contact, story, and follow-up data together in one JSON file, while saving user preference data in a separate JSON file, and read them back into corresponding objects.
+* can save contact, story, and follow-up data together in one JSON file, while storing user preferences in a separate JSON file, and read the data back into corresponding objects.
 * is implemented by `StorageManager`, which delegates the actual JSON file access to `JsonAddressBookStorage` and `JsonUserPrefsStorage`.
 * uses JSON-adapted classes to serialize and deserialize contacts, stories, follow-ups, and their associations.
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`).
@@ -168,57 +168,62 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Assign feature
 
-#### Feature Specification
+- **Objective:** Assigns an existing contact to an existing story while maintaining consistent assignments in both records.
 
-The assign feature establishes a bidirectional link between an existing contact and an existing story in PressMemo.
+<img src="images/assign-example.png" alt="Assigning a contact to a story" width="726" height="593">
 
-* **Command format:** `assign ci/CONTACT_INDEX si/STORY_INDEX`
-  * `ci/CONTACT_INDEX`: A 1-based positive integer specifying the contact from the currently displayed contact list.
-  * `si/STORY_INDEX`: A 1-based positive integer specifying the story from the currently displayed story list.
-  * Parameter order is flexible (e.g., `assign si/1 ci/1` is equally valid).
+#### API
 
-* **Output & Feedback:**
-  * Success: Returns `Assigned [Contact Name] to [Story Name]` and displays the updated associations in both panels.
-  * Invalid command format: Displays the command usage guidance with examples.
-  * Invalid index: Displays an error message indicating that the contact or story index is invalid.
+- **Command:** `assign ci/CONTACT_INDEX si/STORY_INDEX`
+- **Parameters:** refer to [User Guide](UserGuide.md#assigning-a-contact-to-a-story-assign)
+- **Description:**
+    - Creates an assignment between the specified contact and story.
+- **Preconditions:**
+    - Both indices refer to existing entries in the Active Contact List and Active Story List, respectively.
+    - The specified contact is not already assigned to the specified story.
+- **Postconditions:**
+    - The specified story is added to the contact's assigned stories.
+    - The specified contact is added to the story's assigned contacts.
+    - Other assignments remain unchanged.
+    - The Active Contact Filter and Active Story Filter are not reset.
+- **Exceptions:**
+    - If the command arguments are invalid: displays an error message for `ParseException`.
+    - If either index is outside the corresponding Active List: displays an error message for `CommandException`.
+    - If the contact is already assigned to the story: displays an error message for `CommandException`.
 
-* **Edge Case Behaviour:**
-  * **Filtered lists:** Indices always refer to the displayed contact and story lists at the moment of command execution, not the unfiltered master lists.
-  * **Already assigned:** If the specified contact is already assigned to the story, the operation is idempotent; the association is retained without creating duplicates.
-  * **Missing / out-of-bounds indices:** An invalid index triggers a `CommandException` before any state changes are applied to either entity.
+#### Implementation details
 
-* **Side Effects:**
-  * Creates a bidirectional reference: adds the story name to the contact's assigned stories set, and adds the contact name to the story's assigned contacts set.
-  * Automatically resets list filters via `Model#updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)` and `Model#updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES)` so that both updated entities are visible immediately in the UI.
+The `assign` command maintains a bidirectional association between `Contact` and `Story`. Each `Contact` stores a list of assigned story names, while each `Story` stores a list of assigned contact names.
 
-#### Model Execution Details
+Since both classes are immutable, assigning a contact to a story creates updated `Contact` and `Story` objects. `AddressBook` replaces the original objects in their respective lists to ensure that both sides of the assignment remain consistent.
 
-Unlike creation or deletion commands where parsing constitutes the primary logic flow, the assign command's core complexity lies in the `Model` component, which maintains immutability and bidirectional consistency across `Contact` and `Story` instances.
+The following sequence diagram illustrates the interactions within the Model component during the execution of a valid `assign ci/1 si/1` command, after index and assignment validation.
 
-When `AssignCommand#execute(model)` is invoked:
-1. `AssignCommand` retrieves the target `Contact` and `Story` from the filtered lists using the provided indices.
-2. `AssignCommand` calls `Model#assignStory(target, story)`.
-3. `ModelManager` delegates this call to `AddressBook#assignStory(target, story)`.
-4. `AddressBook` invokes `target.assign(story)`, returning a new immutable `Contact` containing the updated story set.
-5. `AddressBook` invokes `story.assign(target)`, returning a new immutable `Story` containing the updated contact set.
-6. `AddressBook` replaces the old `Contact` and `Story` in `UniqueContactList` and `UniqueStoryList` with their updated immutable counterparts.
-7. `AssignCommand` resets the filtered contact and story lists so the updated entries are reflected across the interface.
+![Assign sequence diagram](images/AssignSequenceDiagram.png)
 
-The sequence diagram below illustrates the interactions within the `Model` component during the execution of `assign ci/1 si/1`:
+##### Execution flow
 
-![AssignSequenceDiagram](images/AssignSequenceDiagram.png)
+1. The user enters the `assign` command as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates an `AssignCommandParser` to parse the command arguments.
+4. `AssignCommandParser` uses `AssignmentParserUtil` to parse the contact and story indices and creates an `AssignCommand` object.
+5. `LogicManager` executes the `AssignCommand` object.
+6. `AssignCommand` retrieves the specified contact and story from the Active Contact List and Active Story List and checks that both indices are valid.
+7. `AssignCommand` checks whether the contact is already assigned to the story. If so, it throws a `CommandException`.
+8. Otherwise, `AssignCommand` calls `Model.assignStory(contact, story)`.
+9. `ModelManager` delegates the operation to `AddressBook.assignStory()`.
+10. `AddressBook` calls `Contact.assign(story)` and `Story.assign(contact)` to create updated `Contact` and `Story` objects.
+11. `AddressBook` replaces the original objects using `UniqueContactList.setContact()` and `UniqueStoryList.setStory()`.
+12. `AssignCommand` returns a `CommandResult` containing a success message. `LogicManager` saves the updated data, and the UI reflects the new assignment.
 
-#### Design considerations:
+#### Design Considerations
 
-**Aspect: How associations between contacts and stories are stored:**
+- **Aspect:** Maintaining assignments between contacts and stories.
 
-* **Alternative 1 (current choice):** Bidirectional references inside `Contact` and `Story` models.
-  * Pros: Direct and efficient lookups when rendering contact cards and story cards in the UI without requiring joint table queries or complex searches.
-  * Cons: Both entities must be updated concurrently in `AddressBook` whenever an assignment, unassignment, contact edit, or story edit occurs.
-
-* **Alternative 2:** Separate association list or join table in `AddressBook`.
-  * Pros: Decouples `Contact` and `Story` models from referencing each other directly.
-  * Cons: Increases overhead for looking up relationships and requires managing a separate association list during serialization and deserialization.
+| | Chosen: Store assignments in both Contact and Story | Alternative: Maintain a separate association collection |
+| --- | --- | --- |
+| **Pros** | Allows contacts and stories to retrieve their assignments directly without additional relationship lookups. | Stores each association in one central location, avoiding duplicated relationship information. |
+| **Cons** | Requires updating both records to maintain consistency whenever an assignment changes. | Requires additional lookups to retrieve assignments and management of a separate association collection. |
 ## `addstory`
 
 - **Objective:** Adds a story to PressMemo
@@ -727,7 +732,7 @@ Use case ends.
 
 Actor: User
 
-Guarantees:
+##### Guarantees:
 
 - At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the stories that match the specified filter
 - The ActiveContactList  and contact panel remain unchanged
@@ -752,38 +757,49 @@ Use case ends.
 - System will inform the user in the story panel that there are no matching stories
 - Use case ends.
 
-#### Use Case: UC4- Assign contact to story
+#### Use Case: UC4 - Assign contact to story
 
 Actor: User
 
+##### Guarantees:
+
+- At the end of MSS, the specified contact is assigned to the specified story in both the ArchiveContactList and ArchiveStoryList.
+- The assignment is reflected in the ActiveContactList and ActiveStoryList.
+- Existing assignments remain unchanged.
+
 ##### MSS:
 
-1. User specifies an existing contact and an existing story
-2. User requests to assign the contact to the story
-3. System checks that the specified contact exists
-4. System check that the specified story exists
-5. System links the contact to the story
-6. System saves the updated information to storage
-7. System informs the user that the contact has been successfully assigned to the story
+1. User identifies an existing contact and an existing story from their respective displayed lists.
+2. User requests to assign the contact to the story using their displayed indices.
+3. System verifies that both indices refer to existing entries in their respective Active Lists.
+4. System checks that the contact is not already assigned to the story.
+5. System updates both the contact and story records to reflect the assignment.
+6. System saves the updated information to storage.
+7. System informs the user that the contact has been successfully assigned to the story.
 
-Use case ends
+Use case ends.
 
 ##### Extensions:
 
-3a. The specified contact does not exist
+2a. User provides an invalid command format.
 
-- System informs the user that no matching contact found.
-- Use case ends
+- 2a1. System displays an error message indicating the invalid input.
+- Use case ends.
 
-4a. The specified story does not exist
+3a. The specified contact index is outside the ActiveContactList.
 
-- System informs the user that no matching story was found.
-- Use case ends
+- 3a1. System displays an error message indicating that the contact index is invalid.
+- Use case ends.
 
-5a. The contact is already assigned to the story
+3b. The specified story index is outside the ActiveStoryList.
 
-- System informs the user that the contact is already assigned to the specified story
-- Use case ends
+- 3b1. System displays an error message indicating that the story index is invalid.
+- Use case ends.
+
+4a. The contact is already assigned to the story.
+
+- 4a1. System informs the user that the contact is already assigned to the specified story.
+- Use case ends.
 
 #### Use Case: UC5 - Add Story
 
@@ -830,25 +846,41 @@ Use case ends.
 
 Actor: User
 
+##### Guarantees:
+
+- At the end of MSS, the specified contact is removed from the ArchiveContactList.
+- The deleted contact's assignments are removed from all associated stories, without deleting the stories themselves.
+- All follow-ups associated with the deleted contact are removed from the ArchiveFollowupList.
+- The Active Lists reflect the updated data.
+
 ##### MSS:
 
-1. User requests to list contacts
-2. PressMemo shows a list of contacts
-3. User requests to delete a specific contact in the list
-4. PressMemo deletes the contact
+1. User requests to list contacts.
+2. System displays the contact list.
+3. User requests to delete a specific contact using its displayed index.
+4. System verifies that the specified index refers to an existing contact in the ActiveContactList.
+5. System deletes the contact and removes its associated story assignments and follow-ups.
+6. System saves the updated information to storage.
+7. System displays a success message containing the deleted contact's details.
 
 Use case ends.
 
 ##### Extensions:
 
-2a. The list is empty.
+2a. The displayed contact list is empty.
 
+- 2a1. System displays an empty contact list.
 - Use case ends.
 
-3a. The given index is invalid (not positive integer or larger than the number of contacts displayed)
+3a. User provides an invalid index format.
 
-- PressMemo shows an error message.
-- Use case resumes at step 2.
+- 3a1. System displays an error message indicating that the index must be a positive integer.
+- Use case ends.
+
+4a. The specified contact index is outside the ActiveContactList.
+
+- 4a1. System displays an error message indicating that the contact index is invalid.
+- Use case ends.
 
 #### Use Case: UC7 - Edit a contact
 
@@ -1092,54 +1124,270 @@ Use case ends.
 * **Active Followup Filter**: The currently active filter over the Archive Followup List, which determines the Active Followup List.
 --------------------------------------------------------------------------------------------------------------------
 
-## **Appendix: Instructions for manual testing**
+## Appendix: Instructions for manual testing
 
-Given below are instructions to test the app manually.
+Given below are instructions to test PressMemo manually.
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** These instructions only provide a starting point for testers to work on;
-testers are expected to do more *exploratory* testing.
-
-</div>
+> **Note:** These instructions only provide a starting point for testers to work on; testers are expected to do more *exploratory* testing.
+>
+> Unless otherwise specified, test cases assume the default sample data containing 7 contacts, 2 stories and 2 follow-ups. Run tests that modify or delete data independently, using a fresh test folder where necessary. All indices refer to the currently displayed lists.
 
 ### Launch and shutdown
 
 1. Initial launch
 
-   1. Download the JAR file and copy it into an empty folder.
+    1. Download the JAR file and copy it into an empty folder.
 
-   1. Double-click the JAR file.<br>
-      Expected: The GUI opens with a set of sample contacts. The window size may not be optimal.
+    2. Open a terminal in that folder and run `java -jar pressmemo.jar`, replacing the filename if necessary.
 
-1. Saving window preferences
+       Expected: The GUI opens with sample contacts, stories and follow-ups. The initial window size may not be optimal.
 
-   1. Resize the window to an optimal size. Move the window to a different location. Close the window.
+2. Saving window preferences
 
-   1. Relaunch the app by double-clicking the JAR file.<br>
-       Expected: The most recent window size and location are retained.
+    1. Resize the window and move it to a different location. Close PressMemo.
 
-1. _{ more test cases …​ }_
+    2. Relaunch the JAR file from the same folder.
 
-### Deleting a contact
+       Expected: The most recent window size and position are retained.
 
-1. Deleting a contact while all contacts are being shown
+### Adding, editing and deleting contacts
 
-   1. Prerequisites: List all contacts using the `list` command, with multiple contacts in the list.
+1. Adding and editing a contact
 
-   1. Test case: `deletecontact 1`<br>
-      Expected: The first contact is deleted from the list. The status message shows the deleted contact's details.
+    1. Prerequisites: Use the default sample data and run `list`.
 
-   1. Test case: `deletecontact 0`<br>
-      Expected: No contact is deleted. The status message shows error details.
+    2. Test case: `addcontact Test User p/91234567 e/test@example.com a/Singapore`
 
-   1. Other incorrect delete commands to try: `deletecontact`, `deletecontact x`, `...` (where x is larger than the list size)<br>
-      Expected: Similar to previous.
+       Expected: Test User is successfully added to PressMemo with the specified details.
 
-1. _{ more test cases …​ }_
+    3. Test case: `findcontacts Test`, followed by `editcontact 1 p/98765432`
+
+       Expected: Test User is displayed and their phone number is updated to 98765432.
+
+2. Deleting a contact
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `deletecontact 2`
+
+       Expected: Bernice Yu is deleted from PressMemo. Her story assignments and associated follow-ups are also removed.
+
+    3. Test case: `deletecontact 0`
+
+       Expected: No contact is deleted. An error message indicates that the index is invalid.
+
+### Finding and listing contacts
+
+1. Finding contacts by name
+
+    1. Prerequisites: Use the default sample data.
+
+    2. Test case: `findcontacts Alex`
+
+       Expected: Only contacts with names matching Alex are displayed in the CONTACTS panel.
+
+    3. Test case: `listcontacts`
+
+       Expected: All contacts are displayed again.
+
+2. Listing contacts assigned to a story
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `listcontacts si/1`
+
+       Expected: Only contacts assigned to the first displayed story are shown in the CONTACTS panel.
+
+    3. Test case: `list`
+
+       Expected: All contacts, stories and follow-ups are displayed, clearing the active filters.
+
+### Adding, editing and deleting stories
+
+1. Adding and editing a story
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `addstory Test Investigation`
+
+       Expected: A new story named Test Investigation is added to PressMemo.
+
+    3. Test case: `findstories Investigation`, followed by `editstory 1 n/Updated Investigation`
+
+       Expected: The newly added story is renamed to Updated Investigation.
+
+2. Deleting a story
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `deletestory 2`
+
+       Expected: The second displayed story is deleted. Its assignments are removed from associated contacts, but the contacts remain in PressMemo.
+
+### Finding and listing stories
+
+1. Finding stories by name
+
+    1. Prerequisites: Use the default sample data.
+
+    2. Test case: `findstories Cybersecurity`
+
+       Expected: Only stories whose names match Cybersecurity are displayed.
+
+    3. Test case: `liststories`
+
+       Expected: All stories are displayed again.
+
+2. Listing stories assigned to a contact
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `liststories ci/1`
+
+       Expected: Only Cybersecurity Data Breach is displayed, as it is the story initially assigned to Alex Yeoh.
+
+    3. Test case: `liststories`
+
+       Expected: Both sample stories are displayed again.
+
+### Assigning and unassigning contacts
+
+1. Assigning a contact to a story
+
+    1. Prerequisites: Use the default sample data and run `list`. Alex Yeoh is not initially assigned to Fresh Graduate Unemployment.
+
+    2. Test case: `assign ci/1 si/2`
+
+       Expected: Alex Yeoh is successfully assigned to Fresh Graduate Unemployment. The assignment is reflected in both records.
+
+    3. Test case: `assign ci/1 si/2`
+
+       Expected: An error message indicates that Alex Yeoh is already assigned to Fresh Graduate Unemployment. No duplicate assignment is created.
+
+2. Unassigning a contact from a story
+
+    1. Prerequisites: Use the default sample data and run `list`. Alex Yeoh is initially assigned to Cybersecurity Data Breach.
+
+    2. Test case: `unassign ci/1 si/1`
+
+       Expected: Alex Yeoh is unassigned from Cybersecurity Data Breach. Both records remain in PressMemo.
+
+    3. Test case: `unassign ci/1 si/1`
+
+       Expected: An error message indicates that the contact is not assigned to the story. No further changes are made.
+
+### Adding, editing and deleting follow-ups
+
+1. Adding and editing a follow-up
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `addfollowup Call editor ci/1`
+
+       Expected: A new follow-up named Call editor is added and linked to Alex Yeoh.
+
+    3. Test case: `findfollowups Call`, followed by `editfollowup 1 d/Call editor tomorrow`
+
+       Expected: The follow-up's description is updated while remaining linked to Alex Yeoh.
+
+2. Deleting a follow-up
+
+    1. Prerequisites: Use the default sample data and run `listfollowups`.
+
+    2. Test case: `deletefollowup 1`
+
+       Expected: The first displayed follow-up is deleted without deleting its associated contact.
+
+### Finding and listing follow-ups
+
+1. Finding follow-ups by description
+
+    1. Prerequisites: Use the default sample data.
+
+    2. Test case: `findfollowups interview`
+
+       Expected: Only follow-ups containing the word interview in their descriptions are displayed.
+
+    3. Test case: `listfollowups`
+
+       Expected: All follow-ups are displayed again.
+
+2. Listing follow-ups associated with a contact
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `listfollowups ci/1`
+
+       Expected: Only follow-ups associated with Alex Yeoh are displayed in the FOLLOW-UPS panel.
+
+### Other commands
+
+1. Viewing help
+
+    1. Test case: `help`
+
+       Expected: The help panel is displayed.
+
+    2. Test case: `help`
+
+       Expected: The help panel closes.
+
+2. Creating and removing shortcuts
+
+    1. Test case: `shortcut s/ls c/list`
+
+       Expected: A new shortcut `ls` is created for the `list` command.
+
+    2. Test case: `ls`
+
+       Expected: The `list` command is executed successfully.
+
+    3. Test case: `shortcut`
+
+       Expected: The list of configured shortcuts is displayed.
+
+    4. Test case: `unshortcut ls`
+
+       Expected: The shortcut `ls` is removed.
+
+3. Clearing all records
+
+    1. Prerequisites: Use a separate test folder containing sample data.
+
+    2. Test case: `clear`
+
+       Expected: All contacts, stories and follow-ups are deleted from PressMemo.
+
+4. Exiting PressMemo
+
+    1. Test case: `exit`
+
+       Expected: PressMemo closes successfully.
 
 ### Saving data
 
-1. Dealing with missing/corrupted data files
+1. Saving changes between launches
 
-   1. _{Explain how to simulate missing or corrupted data files and state the expected behavior.}_
+    1. Prerequisites: Use the default sample data.
 
-1. _{ more test cases …​ }_
+    2. Test case: `addstory Persistence Test`
+
+       Expected: A new story named Persistence Test is added.
+
+    3. Close PressMemo and relaunch the JAR file from the same folder.
+
+       Expected: Persistence Test remains in the STORIES panel, confirming that the changes were saved.
+
+2. Handling missing or corrupted data files
+
+    1. Prerequisites: Close PressMemo and use a separate test folder.
+
+    2. Rename `data/addressbook.json` to `data/addressbook-backup.json` and relaunch PressMemo.
+
+       Expected: PressMemo starts with the default sample data because the data file is missing.
+
+    3. Close PressMemo. Replace the contents of the newly created `data/addressbook.json` with invalid JSON, such as `not valid JSON`, then relaunch PressMemo.
+
+       Expected: PressMemo reports that the data file could not be loaded and starts with empty lists instead of crashing.
+
+    4. Close PressMemo and restore the original backup before using the application again.
