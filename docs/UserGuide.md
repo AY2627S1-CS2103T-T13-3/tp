@@ -30,7 +30,7 @@ This guide describes the features implemented for PressMemo v1.4.
 
     * `list` : Displays all contacts, stories and follow-ups.
 
-    * `addcontact n/Jane Smith p/91234567 e/janesmith@example.com a/Jane street, block 987, #10-10` : Adds a contact named `Jane Smith` to PressMemo.
+    * `addcontact Jane Smith p/91234567 e/janesmith@example.com a/Jane street, block 987, #10-10` : Adds a contact named `Jane Smith` to PressMemo.
 
     * `assign ci/1 si/2` : Assigns the 1st displayed contact to the 2nd displayed story.
 
@@ -52,13 +52,13 @@ This guide describes the features implemented for PressMemo v1.4.
 **:information_source: Notes about the command format:**<br>
 
 * Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
-  For example, in `addcontact n/NAME`, replace `NAME` with a value such as `John Doe`.
+  For example, in `addcontact p/PHONE`, replace `PHONE` with a value such as `98765432`.
 * Items in square brackets are optional.<br>
-  For example, `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
+  For example, `p/PHONE [t/TAG]` can be used as `p/98765432 t/friend` or as `p/98765432`.
 * Items followed by `…`​ can appear zero or more times.<br>
   For example, `[t/TAG]…​` may be omitted, or written as `t/friend` or `t/friend t/family`.
 * Prefixed parameters can be in any order.<br>
-  For example, if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
+  For example, if the command specifies `e/EMAIL p/PHONE`, `p/PHONE e/EMAIL` is also acceptable.
 * Extraneous parameters for commands that take no parameters, such as `help`, `exit`, `clear`, and `list`, are not allowed.<br>
   For example, `help 123` will result in an error.
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
@@ -76,36 +76,58 @@ This guide describes the features implemented for PressMemo v1.4.
 
 ### Viewing help: `help`
 
-Toggles the help panel which lists all default commands and their formats. 
-
-Format: `help`
+* **Objective:** Toggles the help panel which lists all default commands and their formats. 
 
 ![Ui with Help Panel](images/UiWithHelpPanel.png)
 
-* Enter `help` to open or close the help panel. The link to the user guide will also be shown in the message panel. Alternatively, use the **Help** menu at the top. 
-* Use the scrollbar or select the command panel and use the up and down arrow keys to view the command list.
-* The help panel displays only the default commands and does not include any custom shortcuts you have created. 
-* For the latest instructions about contact, story, follow-up, and shortcut commands, refer to this User Guide.
+#### Usage / Command Format
+`help`
+
+#### Parameters
+* No parameters are allowed. Adding extra parameters results in an error.
+
+> **Tip / Note:**
+> * Enter `help` to open or close the help panel. Alternatively, use the **Help** menu at the top. The link to the user guide will also be shown in the message panel.
+> * Use the scrollbar or select the command panel and use the up and down arrow keys to navigate the command list.
+> * The help panel displays only the default commands and does not include any custom shortcuts you have created. 
+> * For the latest instructions about contact, story, follow-up, and shortcut commands, refer to this User Guide.
 
 ### Adding a contact: `addcontact`
 
-Adds a contact to PressMemo.
+* **Objective:** Adds a contact to PressMemo.
 
-Format: `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
+![Add Contact Example](images/addcontact-example.png)
+#### Usage / Command Format
+`addcontact NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]…​`
 
-* All four fields (`n/`, `p/`, `e/`, and `a/`) are required and cannot be blank.
-* Names contain only letters, digits, and spaces. A contact with exactly the same name already in PressMemo cannot be added.
-* Phone numbers contain between 3 and 15 digits and no other characters. Emails must have a valid `word@word` format.
-* Tag names contain only letters and digits, without spaces.
-* Adding a contact preserves any active contact filter. The new contact will appear in the contact list if it matches the active filter.
+#### Parameters
+| Parameter  | Type           | Description                         | Examples              |
+|------------|----------------|-------------------------------------|-----------------------|
+| `NAME`     | `user-string`  | Name of the contact to add          | Jane Smith            |
+| `PHONE`    | `user-string`  | Phone number of the contact to add  | 98765432              |
+| `EMAIL`    | `user-string`  | Email address of the contact to add | janesmith@example.com |
+| `ADDRESS`  | `user-string`  | Address of the contact to add       | 1 Kent Ridge Drive    |
 
-<div markdown="span" class="alert alert-primary">:bulb: **Tip:**
-A contact can have any number of tags, including zero.
-</div>
+> **Tip / Note:**
+> * `NAME`, `p/PHONE`, `e/EMAIL` and `a/ADDRESS` must be specified exactly once and cannot be blank.
+> * A contact with exactly the same name already in PressMemo cannot be added. For example, if a contact with the name `John Doe` already exists in PressMemo, adding another contact with the name `John Doe` is not allowed, but adding a contact with the name `john doe` is allowed.
+> * A contact can have any number of tags, including zero.
+> * The new contact will be added to the end of the contact list.
+> * Adding a contact preserves any active contact filter. The new contact will appear in the contact list if it matches the active filter.
 
-Examples:
-* `addcontact n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `addcontact n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+#### Examples
+* **Example 1:** Valid and unique contact with no tags
+  * **Input / Action:** `addcontact Jane Smith p/91234567 e/janesmith@example.com a/Jane street, block 123, #01-01`
+  * **Expected Outcome:** The contact named "Jane Smith" is added to the contacts in PressMemo and displayed in the contact panel without tags.
+* **Example 2:** Valid and unique contact with 2 tags
+  * **Input / Action:** `addcontact Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+  * **Expected Outcome:** The contact named "Betsy Crowe" is added to the contacts in PressMemo and displayed in the contact panel with the tags "friend" and "criminal".
+
+#### Common Errors & Troubleshooting
+
+| Error Message / Symptom                       | Cause                                                                      | How to Fix                                                                                  |
+|:----------------------------------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------|
+| Error: there is already a contact named {xxx} | Trying to add a contact named {xxx} when {xxx} already exists in PressMemo | Delete the existing contact named {xxx} first<br><br>OR<br><br>Use a different contact name |
 
 ### Listing contacts and stories (refactored commands)
 
@@ -135,30 +157,58 @@ This visual badge ensures you always know whether the displayed index numbers (e
 
 ### Listing all contacts and stories: `list`
 
-Displays all contacts and stories, removing any active contact and story filters.
+- **Objective:** Displays all contacts and stories, removing any active contact and story filters.
+![list](images/list-example.png)
 
-Format: `list`
+#### Usage / Command Format
 
-* `list` resets the **CONTACTS** and **STORIES** panels together.
-* It does not reset or separately list the follow-ups; those remain visible in the **FOLLOW-UPS** panel.
-* `list` has no filtering parameters; extra arguments will result in an error. Use `listcontacts` or `liststories` to filter one panel.
+`list`
 
-Example:
-* `findcontact John` followed by `list` restores both lists in full.
+#### Parameters & Constraints
+
+This command does not accept parameters. Any extraneous characters will result in an error.
+
+> **Tip / Note:**
+> * `list` resets both the **CONTACTS** and **STORIES** panels together.
+> * It does not reset or separately filter follow-ups; those remain visible in the **FOLLOW-UPS** panel.
+> * Use `listcontacts` or `liststories` if you want to filter or reset only one panel.
+
+#### Examples
+
+* **Example 1: Reset all active contact and story filters**
+  * **Input / Action:** `list`
+  * **Expected Outcome:** Both **CONTACTS** and **STORIES** panels display all entries, and both panel header filter badges update to `[All]`.
 
 ### Listing contacts: `listcontacts`
 
-Displays all contacts, or only those assigned to a selected story.
+- **Objective:** Displays all contacts, or only contacts assigned to a selected story.
+![listcontacts](images/listcontacts-example.png)
 
-Format: `listcontacts [si/STORY_INDEX]`
+#### Usage / Command Format
 
-* `listcontacts` shows all contacts and removes any active **contact** filter, including a `findcontact` search.
-* `listcontacts si/STORY_INDEX` shows only contacts assigned to that story in the **currently displayed story list**.
-* The **STORIES** panel remains unchanged. If the selected story has no assigned contacts, the contact list becomes empty.
+`listcontacts [si/STORY_INDEX]`
 
-Examples:
-* `liststories` followed by `listcontacts si/1` shows contacts assigned to the first displayed story.
-* `listcontacts` shows all contacts again without changing the displayed stories.
+#### Parameters & Constraints
+
+| Parameter        | Type          | Description                                                                          | Examples |
+| :--------------- | :------------ | :----------------------------------------------------------------------------------- | :------- |
+| `si/STORY_INDEX` | `story-index` | (Optional) Story to filter contacts by, from the displayed **STORIES** panel        | `1`      |
+
+> **Tip / Note:**
+> * `listcontacts` without parameters displays all contacts and clears any active contact filter (including `findcontact`).
+> * `listcontacts si/STORY_INDEX` displays only contacts assigned to that story in the **currently displayed story list**.
+> * The **STORIES** panel remains unchanged. If the selected story has no assigned contacts, the contact list becomes empty.
+> * The contact panel header filter badge updates dynamically (e.g. `[All]` or `[Filtered by story: "..."]`).
+
+#### Examples
+
+* **Example 1: View all contacts**
+  * **Input / Action:** `listcontacts`
+  * **Expected Outcome:** All contacts in PressMemo are displayed in the **CONTACTS** panel. The **STORIES** and **FOLLOW-UPS** panels remain unchanged.
+
+* **Example 2: Filter contacts by assigned story**
+  * **Input / Action:** `listcontacts si/1`
+  * **Expected Outcome:** Displays only contacts assigned to the first story currently displayed in the **STORIES** panel.
 
 ### Listing stories: `liststories`
 
@@ -203,21 +253,59 @@ Examples:
 
 ### Editing a contact: `editcontact`
 
-Edits an existing contact in PressMemo.
+- **Objective:** Edits the details of an existing contact in PressMemo.
+![editcontact](images/editcontact-example.png)
 
-Format: `editcontact INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+#### Usage / Command Format
 
-* Edits the contact at the specified `INDEX`. The index refers to the index number shown in the displayed contact list. The index **must be a positive integer** 1, 2, 3, …​
-* At least one of the optional fields must be provided.
-* Existing values will be updated to the input values.
-* When editing tags, all of the contact's existing tags are removed; adding tags is not cumulative.
-* To remove all of a contact's tags, enter `t/` without a tag after it.
-* The same field restrictions as `addcontact` apply. You cannot change a contact's name to another existing contact's name.
-* Editing preserves the current contact list filter instead of resetting to all contacts. Editing a contact, including changing their name, preserves their story assignments and updates associated follow-up references.
+`editcontact INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
 
-Examples:
-*  `editcontact 1 p/91234567 e/johndoe@example.com` Edits the phone number and email address of the 1st contact to be `91234567` and `johndoe@example.com` respectively.
-*  `editcontact 2 n/Betsy Crower t/` Edits the name of the 2nd contact to be `Betsy Crower` and clears all existing tags.
+#### Parameters & Constraints
+
+| Parameter   | Type            | Description                                                                                     | Examples            |
+| :---------- | :-------------- | :---------------------------------------------------------------------------------------------- | :------------------ |
+| `INDEX`     | `contact-index` | Contact to edit, from the displayed **CONTACTS** panel                                          | `1`                 |
+| `n/NAME`    | `user-string`   | New name of the contact (must be unique; cannot be blank or start with whitespace)             | Betsy Crower        |
+| `p/PHONE`   | `user-string`   | New phone number (cannot be blank or start with whitespace)                                     | 91234567            |
+| `e/EMAIL`   | `user-string`   | New email address (cannot be blank or start with whitespace)                                    | johndoe@example.com |
+| `a/ADDRESS` | `user-string`   | New physical address (cannot be blank or start with whitespace; forward slashes must be escaped) | 123 Clementi Rd     |
+| `t/TAG`     | `user-string`   | New tag to assign (can be repeated, or `t/` to clear tags; replaces all existing tags)          | friend              |
+
+> **Tip / Note:**
+> * Provide at least one field to edit (`n/NAME`, `p/PHONE`, `e/EMAIL`, `a/ADDRESS`, or `t/TAG`).
+> * Values not supplied are preserved.
+> * Supplying one or more `t/TAG` values replaces all existing tags.
+>   * Empty `t/` values are ignored. For example, `editcontact 1 t/ t/urgent t/source` replaces the tags with `urgent` and `source`.
+>   * If every supplied `t/` value is empty, such as `t/` or `t/ t/`, all tags are removed.
+> * The new name must not duplicate another contact's name.
+> * Editing a contact's name preserves all story assignments and updates the contact name across linked stories and follow-ups.
+> * The current contact filter is preserved. If the edited contact no longer matches the filter, the contact is no longer displayed but remains saved in PressMemo.
+
+#### Examples
+
+* **Example 1: Edit phone number and email address**
+  * **Input / Action:** `editcontact 1 p/91234567 e/johndoe@example.com`
+  * **Expected Outcome:** Edits the phone number and email address of the 1st contact to `91234567` and `johndoe@example.com` respectively.
+
+* **Example 2: Edit name and clear all existing tags**
+  * **Input / Action:** `editcontact 2 n/Betsy Crower t/`
+  * **Expected Outcome:** Changes the name of the 2nd contact to `Betsy Crower` and clears all existing tags from that contact.
+
+* **Example 3: Add a new tag while retaining existing tags**
+  * **Input / Action:** `editcontact 1 t/friends t/owesMoney t/source`
+  * **Expected Outcome:** Replaces the tags with `friends`, `owesMoney`, and `source`, successfully adding `source` while keeping the original two tags.
+
+#### Common Errors & Troubleshooting
+
+| Error Message / Symptom | Cause | How to Fix |
+| :--- | :--- | :--- |
+| `At least one field to edit must be provided.` | No fields (`n/`, `p/`, `e/`, `a/`, `t/`) were specified after the index. | Provide at least one field to update. |
+| `Error: there is already a contact named "Alex Yeoh"!` | The edited name duplicates another existing contact in PressMemo. | Use a unique contact name. |
+| `Contact names should not be blank or start with whitespace` | The contact name is blank or begins with whitespace. | Enter a name that does not start with whitespace. |
+| `Phone numbers should not be blank or start with whitespace` | The phone number is blank or begins with whitespace. | Enter a phone number that does not start with whitespace. |
+| `Emails should not be blank or start with whitespace` | The email address is blank or begins with whitespace. | Enter an email address that does not start with whitespace. |
+| `Addresses should not be blank or start with whitespace` | The address is blank or begins with whitespace. | Enter an address that does not start with whitespace. |
+| `Tag names should not be blank or start with whitespace` | A tag name begins with a space or contains only whitespace after `t/`. | Enter a non-blank tag name without leading whitespace (or use `t/` without spaces to clear tags). |
 
 ### Locating contacts by name: `findcontact`
 
@@ -743,16 +831,34 @@ Examples:
 
 ### Removing a command shortcut: `unshortcut`
 
-Removes an existing custom shortcut without deleting the underlying command.
+- **Objective:** Removes an existing custom shortcut alias without affecting the underlying command.
+![unshortcut](images/unshortcut-example.png)
 
-Format: `unshortcut SHORTCUT`
+#### Usage / Command Format
 
-* `SHORTCUT` must name an existing alias. If it does not exist, an error message is displayed.
-* Removing the alias is saved in `preferences.json`.
+`unshortcut SHORTCUT`
 
-Examples:
-* `unshortcut ls`
-* `unshortcut ds`
+#### Parameters & Constraints
+
+| Parameter  | Type          | Description                                    | Examples |
+| :--------- | :------------ | :--------------------------------------------- | :------- |
+| `SHORTCUT` | `user-string` | Existing shortcut alias to remove from PressMemo | `ls`     |
+
+> **Tip / Note:**
+> * `SHORTCUT` must match an existing assigned shortcut alias.
+> * Removing the alias is saved in `preferences.json` immediately.
+
+#### Examples
+
+* **Example 1: Remove an assigned shortcut**
+  * **Input / Action:** `unshortcut ls`
+  * **Expected Outcome:** Displays `Removed shortcut: ls -> list`. Typing `ls` will now report an unknown command.
+
+#### Common Errors & Troubleshooting
+
+| Error Message / Symptom | Cause | How to Fix |
+| :--- | :--- | :--- |
+| `The shortcut "ls" is not assigned to any command.` | The specified shortcut does not exist. | Run `shortcut` to view all active shortcuts, then verify the shortcut name. |
 
 ### Clearing all entries: `clear`
 
@@ -812,6 +918,7 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
 2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
+3. **Editing Contact Tags Overwrites Existing Tags**: In `editcontact`, specifying `t/TAG` replaces all existing tags on the contact rather than appending new tags. For example, if a contact has tags `friends` and `owesMoney`, running `editcontact 1 t/source` removes both existing tags and leaves only `source`. If you wish to preserve existing tags when adding a new one, you must re-enter all existing tags alongside the new one (e.g. `editcontact 1 t/friends t/owesMoney t/source`). We plan to provide an explicit distinction between adding and replacing tags in a future update.
 
 --------------------------------------------------------------------------------------------------------------------
 
