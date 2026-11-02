@@ -76,16 +76,21 @@ This guide describes the features implemented for PressMemo v1.4.
 
 ### Viewing help: `help`
 
-Toggles the help panel which lists all default commands and their formats. 
-
-Format: `help`
+* **Objective**: Toggles the help panel which lists all default commands and their formats. 
 
 ![Ui with Help Panel](images/UiWithHelpPanel.png)
 
-* Enter `help` to open or close the help panel. The link to the user guide will also be shown in the message panel. Alternatively, use the **Help** menu at the top. 
-* Use the scrollbar or select the command panel and use the up and down arrow keys to navigate the command list.
-* The help panel displays only the default commands and does not include any custom shortcuts you have created. 
-* For the latest instructions about contact, story, follow-up, and shortcut commands, refer to this User Guide.
+#### Usage / Command Format
+`help`
+
+#### Parameters
+* No parameters are allowed. Adding extra parameters results in an error.
+
+> **Tip / Note:**
+> * Enter `help` to open or close the help panel. Alternatively, use the **Help** menu at the top. The link to the user guide will also be shown in the message panel.
+> * Use the scrollbar or select the command panel and use the up and down arrow keys to navigate the command list.
+> * The help panel displays only the default commands and does not include any custom shortcuts you have created. 
+> * For the latest instructions about contact, story, follow-up, and shortcut commands, refer to this User Guide.
 
 ### Adding a contact: `addcontact`
 
