@@ -88,4 +88,39 @@ public class EditFollowupDescriptorTest {
                 + "{description=Call, contactIndex=" + Index.fromOneBased(1) + "}";
         assertEquals(expected, editFollowupDescriptor.toString());
     }
+
+    @Test
+    public void copyConstructor_allPairsFieldCombinations_success() {
+        // Equivalence Partitioning & All-Pairs combinations of field presence:
+        // Factor 1: Description (Present, Absent)
+        // Factor 2: ContactIndex (Present, Absent)
+        // All 4 pairs covered:
+        // Pair 1: Description=Present, ContactIndex=Present
+        // Pair 2: Description=Present, ContactIndex=Absent
+        // Pair 3: Description=Absent, ContactIndex=Present
+        // Pair 4: Description=Absent, ContactIndex=Absent
+
+        EditFollowupDescriptor bothPresent = new EditFollowupDescriptor();
+        bothPresent.setDescription(new FollowupDescription("Call"));
+        bothPresent.setContactIndex(Index.fromOneBased(1));
+
+        EditFollowupDescriptor descOnly = new EditFollowupDescriptor();
+        descOnly.setDescription(new FollowupDescription("Email"));
+
+        EditFollowupDescriptor indexOnly = new EditFollowupDescriptor();
+        indexOnly.setContactIndex(Index.fromOneBased(2));
+
+        EditFollowupDescriptor neitherPresent = new EditFollowupDescriptor();
+
+        EditFollowupDescriptor[] testDescriptors = new EditFollowupDescriptor[] {
+            bothPresent, descOnly, indexOnly, neitherPresent
+        };
+
+        for (EditFollowupDescriptor descriptor : testDescriptors) {
+            EditFollowupDescriptor copy = new EditFollowupDescriptor(descriptor);
+            assertEquals(descriptor, copy);
+            assertEquals(descriptor.getDescription(), copy.getDescription());
+            assertEquals(descriptor.getContactIndex(), copy.getContactIndex());
+        }
+    }
 }
