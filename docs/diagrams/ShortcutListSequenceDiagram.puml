@@ -1,0 +1,70 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":ShortcutCommandParser" as ShortcutCommandParser LOGIC_COLOR
+participant "s:ShortcutCommand" as ShortcutCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("shortcut")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("shortcut")
+activate AddressBookParser
+
+create ShortcutCommandParser
+AddressBookParser -> ShortcutCommandParser
+activate ShortcutCommandParser
+
+ShortcutCommandParser --> AddressBookParser
+deactivate ShortcutCommandParser
+
+AddressBookParser -> ShortcutCommandParser : parse("")
+activate ShortcutCommandParser
+
+create ShortcutCommand
+ShortcutCommandParser -> ShortcutCommand
+activate ShortcutCommand
+
+ShortcutCommand --> ShortcutCommandParser : s
+deactivate ShortcutCommand
+
+ShortcutCommandParser --> AddressBookParser : s
+deactivate ShortcutCommandParser
+'Hidden arrow to position the destroy marker below the end of the activation bar.
+ShortcutCommandParser -[hidden]-> AddressBookParser
+destroy ShortcutCommandParser
+
+AddressBookParser --> LogicManager : s
+deactivate AddressBookParser
+
+LogicManager -> ShortcutCommand : execute(m)
+activate ShortcutCommand
+
+ShortcutCommand -> Model : getShortcuts()
+activate Model
+
+Model --> ShortcutCommand : shortcutsMap
+deactivate Model
+
+create CommandResult
+ShortcutCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> ShortcutCommand
+deactivate CommandResult
+
+ShortcutCommand --> LogicManager : r
+deactivate ShortcutCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml

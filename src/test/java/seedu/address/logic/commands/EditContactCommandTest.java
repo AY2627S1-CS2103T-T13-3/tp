@@ -11,6 +11,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showContactAtIndex;
+import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_CONTACT;
@@ -47,6 +48,18 @@ import seedu.address.testutil.StoryBuilder;
 public class EditContactCommandTest {
 
     private Model model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+
+    @Test
+    public void constructor_nullParams_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new EditContactCommand(null, new EditContactDescriptor()));
+        assertThrows(NullPointerException.class, () -> new EditContactCommand(INDEX_FIRST_CONTACT, null));
+    }
+
+    @Test
+    public void execute_nullModel_throwsNullPointerException() {
+        EditContactCommand command = new EditContactCommand(INDEX_FIRST_CONTACT, new EditContactDescriptor());
+        assertThrows(NullPointerException.class, () -> command.execute(null));
+    }
 
     @Test
     public void execute_allFieldsSpecifiedUnfilteredList_success() {
