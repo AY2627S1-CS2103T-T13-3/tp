@@ -520,7 +520,7 @@ Examples:
 | Error Message / Symptom                                         | Cause                                                | How to Fix                                                        |
 | :-------------------------------------------------------------- | :--------------------------------------------------- | :---------------------------------------------------------------- |
 | `0 followup(s) listed!` when matches were expected              | The search used a partial word, mismatched punctuation, or the wrong keywords | Use complete whitespace-separated words, including their punctuation, from the follow-up descriptions |
-| Invalid command format                                          | No search keyword was supplied                       | Provide at least one keyword, e.g., `findfollowups interview`     |
+| `Invalid command format.`                                       | No search keyword was supplied                       | Provide at least one keyword, e.g., `findfollowups interview`     |
 
 ## Listing follow-ups: `listfollowups`
 
