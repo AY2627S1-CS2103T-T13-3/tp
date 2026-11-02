@@ -271,11 +271,7 @@ The sequence diagram below illustrates the interactions within the `Model` compo
 
 ### Implementation details
 
-<<<<<<< Updated upstream
-<!-- Note: FindStorySequenceDiagram.puml is located in docs/diagrams/FindStorySequenceDiagram.puml -->
-=======
 ![[images/FindStoriesSequenceDiagram.png]]
->>>>>>> Stashed changes
 
 #### Execution flow
 1. The user enters the `findstories` command as an input string.
