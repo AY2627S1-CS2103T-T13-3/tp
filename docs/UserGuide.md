@@ -82,7 +82,7 @@ Format: `help`
 
 ![Ui with Help Panel](images/UiWithHelpPanel.png)
 
-* Enter `help` to open or close the help panel. Alternatively, use the **Help** menu at the top.
+* Enter `help` to open or close the help panel. The link to the user guide will also be shown in the result panel. Alternatively, use the **Help** menu at the top. 
 * Use the scrollbar or select the command panel and use the up and down arrow keys to view the command list.
 * The help panel displays only the default commands and does not include any custom shortcuts you have created. 
 * For the latest instructions about contact, story, follow-up, and shortcut commands, refer to this User Guide.
