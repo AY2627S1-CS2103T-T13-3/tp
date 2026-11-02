@@ -376,8 +376,8 @@ Examples:
 
 | Parameter          | Type            | Description                                                            | Examples                    |
 | :----------------- | :-------------- | :--------------------------------------------------------------------- | :-------------------------- |
-| `DESCRIPTION`      | `user string`   | Description of the follow-up                                           | Prepare interview questions |
-| `ci/CONTACT_INDEX` | `Contact Index` | Contact to link the follow-up to, from the displayed **CONTACTS** panel | `1`                         |
+| `DESCRIPTION`      | `user-string`   | Description of the follow-up                                           | Prepare interview questions |
+| `ci/CONTACT_INDEX` | `contact-index` | Contact to link the follow-up to, from the displayed **CONTACTS** panel | `1`                         |
 
 > **Tip / Note:**
 > * Enter `DESCRIPTION` as plain text before `ci/`; it does not use a prefix.
@@ -415,9 +415,9 @@ Examples:
 
 | Parameter          | Type             | Description                                                                     | Examples      |
 | :----------------- | :--------------- | :------------------------------------------------------------------------------ | :------------ |
-| `INDEX`            | `Followup Index` | Follow-up to edit, from the displayed **FOLLOW-UPS** panel                       | `1`           |
-| `d/DESCRIPTION`    | `user string`    | New follow-up description                                                       | Call tomorrow |
-| `ci/CONTACT_INDEX` | `Contact Index`  | New linked contact, from the displayed **CONTACTS** panel                        | `2`           |
+| `INDEX`            | `followup-index` | Follow-up to edit, from the displayed **FOLLOW-UPS** panel                       | `1`           |
+| `d/DESCRIPTION`    | `user-string`    | New follow-up description                                                       | Call tomorrow |
+| `ci/CONTACT_INDEX` | `contact-index`  | New linked contact, from the displayed **CONTACTS** panel                        | `2`           |
 
 > **Tip / Note:**
 > * At least one of `d/DESCRIPTION` or `ci/CONTACT_INDEX` must be provided.
@@ -458,7 +458,7 @@ Examples:
 
 | Parameter | Type             | Description                                               | Examples |
 | :-------- | :--------------- | :-------------------------------------------------------- | :------- |
-| `INDEX`   | `Followup Index` | Follow-up to delete from the displayed **FOLLOW-UPS** panel | `1`      |
+| `INDEX`   | `followup-index` | Follow-up to delete from the displayed **FOLLOW-UPS** panel | `1`      |
 
 > **Tip / Note:**
 > * `INDEX` must be a positive integer within the displayed follow-up list.
