@@ -272,14 +272,14 @@ This command does not accept parameters. Any extraneous characters will result i
 | `t/TAG`     | `user-string`   | New tag to assign (can be repeated, or `t/` to clear tags; replaces all existing tags)          | friend              |
 
 > **Tip / Note:**
-> * `INDEX` must be a positive integer within the displayed **CONTACTS** panel.
-> * At least one optional field must be provided.
-> * Existing values are updated to the specified input values; unmentioned fields remain unchanged.
-> * **Tag Replacement Limitation & Workaround:** When editing tags with `t/TAG`, all existing tags on the contact are replaced rather than appended. For example, if a contact at index 1 currently has tags `friends` and `owesMoney`, executing `editcontact 1 t/source` removes both existing tags and leaves only `source`. To add a new tag while preserving existing ones, you must re-enter all existing tags alongside the new tag (e.g. `editcontact 1 t/friends t/owesMoney t/source`).
-> * *Planned Improvement:* We recognize this current design requires re-typing existing tags when adding new ones. A future enhancement is planned to support adding and removing tags incrementally without overwriting existing tags.
-> * To remove all tags from a contact, enter `t/` without a tag name after it.
+> * Provide at least one field to edit (`n/NAME`, `p/PHONE`, `e/EMAIL`, `a/ADDRESS`, or `t/TAG`).
+> * Values not supplied are preserved.
+> * Supplying one or more `t/TAG` values replaces all existing tags.
+>   * Empty `t/` values are ignored. For example, `editcontact 1 t/ t/urgent t/source` replaces the tags with `urgent` and `source`.
+>   * If every supplied `t/` value is empty, such as `t/` or `t/ t/`, all tags are removed.
+> * The new name must not duplicate another contact's name.
 > * Editing a contact's name preserves all story assignments and updates the contact name across linked stories and follow-ups.
-> * Editing preserves the active contact list filter instead of resetting to all contacts.
+> * The current contact filter is preserved. If the edited contact no longer matches the filter, the contact is no longer displayed but remains saved in PressMemo.
 
 #### Examples
 

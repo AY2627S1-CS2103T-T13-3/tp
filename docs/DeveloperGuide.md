@@ -485,12 +485,12 @@ The sequence diagram below illustrates the interactions when the user executes t
 
 ### Design Considerations
 
-- **Aspect: 1-to-1 Bijective Mapping Constraint**
+- **Aspect: Shortcut-to-command mapping relationship (One-to-one vs. Many-to-one)**
 
-|          | Chosen                                                                                                                                                                                | Alternative                                                                          |
+|          | Chosen                                                                                                                                                   | Alternative                                         |
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| **Pros** | **1-to-1 bidirectional mapping** ensures predictable, unambiguous alias lookups and clean reverse lookups in the UI and help commands. Reassigning automatically removes stale aliases. | **Many-to-one mapping** allows multiple shortcuts for the same command word.        |
-| **Cons** | Users cannot have multiple aliases for the same command (e.g. both `c` and `cls` for `clear`).                                                                                       | Increases chance of user confusion and bloats the shortcut list in small interfaces. |
+| **Pros** | **One-to-one mapping** ensures predictable, unambiguous alias lookups: each command has at most one shortcut alias, enabling clean bidirectional lookups in UI panels and help views without stale or conflicting aliases. | **Many-to-one mapping** allows users to define multiple alias variations for the same command word based on personal typing habits (e.g., both `c` and `cls` for `clear`). |
+| **Cons** | Users cannot assign multiple aliases to the same command (reassigning a command automatically overrides its previous shortcut).                                                       | Increases chance of alias collisions, user confusion, and bloats the shortcut list in small interfaces. |
 
 ### \[Proposed\] Undo/redo feature
 
