@@ -2,6 +2,7 @@ package seedu.address.logic;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -47,23 +48,25 @@ public class LogicManager implements Logic {
     }
 
     private void sanitizeShortcuts(Model model) {
-        model.getShortcuts().entrySet().stream()
+        List<Map.Entry<String, String>> invalidShortcuts = model.getShortcuts().entrySet().stream()
                 .filter(entry -> CommandWords.isCommandWord(entry.getKey())
                         || !CommandWords.isAssignableCommandWord(entry.getValue()))
-                .forEach(entry -> {
-                    String shortcut = entry.getKey();
-                    String commandWord = entry.getValue();
-                    if (CommandWords.isCommandWord(shortcut)) {
-                        logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
-                                + "'%s' is a built-in command word and cannot be used as a shortcut.",
-                                shortcut, commandWord, shortcut));
-                    } else {
-                        logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
-                                + "'%s' is not an assignable command.",
-                                shortcut, commandWord, commandWord));
-                    }
-                    model.removeShortcut(shortcut);
-                });
+                .toList();
+
+        invalidShortcuts.forEach(entry -> {
+            String shortcut = entry.getKey();
+            String commandWord = entry.getValue();
+            if (CommandWords.isCommandWord(shortcut)) {
+                logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
+                        + "'%s' is a built-in command word and cannot be used as a shortcut.",
+                        shortcut, commandWord, shortcut));
+            } else {
+                logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
+                        + "'%s' is not an assignable command.",
+                        shortcut, commandWord, commandWord));
+            }
+            model.removeShortcut(shortcut);
+        });
     }
 
     @Override
