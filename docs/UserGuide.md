@@ -382,12 +382,12 @@ Examples:
 > **Tip / Note:**
 > * Enter `DESCRIPTION` as plain text before `ci/`; it does not use a prefix.
 > * `DESCRIPTION` cannot be blank. Leading and trailing whitespace is removed.
-> * A contact cannot have two follow-ups with exactly the same description. 
+> * A contact cannot have two follow-ups with exactly the same description.
 >   * Description comparison is case-sensitive.
-> * Follow-ups belong to contacts, not directly to stories. 
+> * Follow-ups belong to contacts, not directly to stories.
 >   * Deleting a story does not remove a contact's follow-ups.
->   * Each follow-up belong to exactly one contact
-> * Editing a contact's name updates the contact name shown on their follow-ups. 
+>   * Each follow-up belongs to exactly one contact.
+> * Editing a contact's name updates the contact name shown on their follow-ups.
 > * Deleting a contact also deletes all follow-ups linked to them.
 > * Adding a follow-up retains the **FOLLOW-UPS** panel filter. New follow-ups are displayed if they match the existing filter.
 
@@ -421,7 +421,7 @@ Examples:
 
 > **Tip / Note:**
 > * At least one of `d/DESCRIPTION` or `ci/CONTACT_INDEX` must be provided.
-> * A follow-up can be linked to only one contact at a time. 
+> * A follow-up can be linked to only one contact at a time.
 >   * Linking it to a new contact replaces the existing link.
 > * Existing values are preserved for fields that are not provided.
 > * The same description constraints as `addfollowup` apply.
@@ -477,7 +477,7 @@ Examples:
 
 ### Finding follow-ups by description: `findfollowups`
 
-- **Objective:** Finds follow-ups whose descriptions contain any of the given keywords and display them in the **FOLLOW-UPS** panel.
+- **Objective:** Finds follow-ups whose descriptions contain any of the given keywords and displays them in the **FOLLOW-UPS** panel.
 
 #### Usage / Command Format
 
@@ -513,7 +513,7 @@ Examples:
 * **Example 3: Search with no matches**
   * **Input / Action:** `findfollowups nonexistentkeyword`
   * **Expected Outcome:** Displays an empty **FOLLOW-UPS** panel and reports `0 followup(s) listed!`.
-    * As there are no follow-ups that whose descriptions contain `nonexistentkeyword`.
+    * There are no follow-ups whose descriptions contain `nonexistentkeyword`.
 
 #### Common Errors & Troubleshooting
 
