@@ -25,6 +25,27 @@ public class ShortcutCommandTest {
     }
 
     @Test
+    public void isValidShortcutPattern() {
+        assertFalse(ShortcutCommand.isValidShortcutPattern(null));
+        assertFalse(ShortcutCommand.isValidShortcutPattern(""));
+        assertFalse(ShortcutCommand.isValidShortcutPattern(" "));
+        assertFalse(ShortcutCommand.isValidShortcutPattern("a b"));
+        assertFalse(ShortcutCommand.isValidShortcutPattern("/"));
+        assertFalse(ShortcutCommand.isValidShortcutPattern("/a"));
+        assertFalse(ShortcutCommand.isValidShortcutPattern("a/"));
+        assertFalse(ShortcutCommand.isValidShortcutPattern("a/b"));
+
+        assertTrue(ShortcutCommand.isValidShortcutPattern("a"));
+        assertTrue(ShortcutCommand.isValidShortcutPattern("ab"));
+        assertTrue(ShortcutCommand.isValidShortcutPattern("ab1"));
+        assertTrue(ShortcutCommand.isValidShortcutPattern("1a"));
+        assertTrue(ShortcutCommand.isValidShortcutPattern("a-b"));
+        assertTrue(ShortcutCommand.isValidShortcutPattern("Abc"));
+        assertTrue(ShortcutCommand.isValidShortcutPattern("ABC"));
+        assertTrue(ShortcutCommand.isValidShortcutPattern("list"));
+    }
+
+    @Test
     public void execute_assignShortcut_success() throws Exception {
         Model model = new ModelManager();
 

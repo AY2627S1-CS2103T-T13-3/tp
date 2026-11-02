@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
-import seedu.address.model.shortcut.CommandShortcutMap;
 
 /**
  * Assigns a user-defined shortcut to a command, or lists all shortcuts.
@@ -32,6 +31,7 @@ public class ShortcutCommand extends Command {
     public static final String MESSAGE_RESERVED_SHORTCUT = "'%s' is a built-in command word and cannot be used as "
             + "a shortcut.";
     public static final String MESSAGE_UNKNOWN_COMMAND = "'%s' is not a command that can be assigned a shortcut.";
+    public static final String SHORTCUT_VALIDATION_REGEX = "^[^\\s/]+$";
 
     private final String shortcut;
     private final String commandWord;
@@ -46,6 +46,13 @@ public class ShortcutCommand extends Command {
     public ShortcutCommand(String shortcut, String commandWord) {
         this.shortcut = requireNonNull(shortcut);
         this.commandWord = requireNonNull(commandWord);
+    }
+
+    /**
+     * Returns true if {@code shortcut} conforms to the shortcut syntax requirements.
+     */
+    public static boolean isValidShortcutPattern(String shortcut) {
+        return shortcut != null && shortcut.matches(SHORTCUT_VALIDATION_REGEX);
     }
 
     @Override
@@ -76,7 +83,7 @@ public class ShortcutCommand extends Command {
     }
 
     private void validateAssignment() throws CommandException {
-        if (!CommandShortcutMap.isValidShortcutPattern(shortcut)) {
+        if (!isValidShortcutPattern(shortcut)) {
             throw new CommandException(String.format(MESSAGE_INVALID_SHORTCUT, shortcut));
         }
         if (CommandWords.isCommandWord(shortcut)) {
