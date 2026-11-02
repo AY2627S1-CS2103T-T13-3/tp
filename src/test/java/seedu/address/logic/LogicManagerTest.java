@@ -2,6 +2,7 @@ package seedu.address.logic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -269,6 +272,32 @@ public class LogicManagerTest {
     @Test
     public void getShortcuts_returnsCorrectShortcuts() {
         assertEquals(model.getShortcuts(), logic.getShortcuts());
+    }
+
+    @Test
+    public void constructor_sanitizesInvalidShortcutsFromModel() {
+        Model testModel = new ModelManager();
+        testModel.assignShortcut("ls", "list");
+        testModel.assignShortcut("exit", "clear");
+        testModel.assignShortcut("inv", "notACommand");
+        testModel.assignShortcut("inv/slash", "findcontacts");
+        testModel.assignShortcut("inv space", "findstories");
+
+        JsonAddressBookStorage addressBookStorage =
+                new JsonAddressBookStorage(temporaryFolder.resolve("addressBook.json"));
+        JsonUserPrefsStorage userPrefsStorage =
+                new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json"));
+        StorageManager testStorage = new StorageManager(addressBookStorage, userPrefsStorage);
+
+        LogicManager testLogicManager = new LogicManager(testModel, testStorage);
+
+        assertTrue(testLogicManager.hasDiscardedShortcuts());
+        assertEquals(List.of("exit", "inv", "inv/slash", "inv space"), testLogicManager.getDiscardedShortcuts());
+        assertEquals(Map.of("ls", "list"), testModel.getShortcuts());
+
+        LogicManager cleanLogicManager = new LogicManager(testModel, testStorage);
+        assertFalse(cleanLogicManager.hasDiscardedShortcuts());
+        assertTrue(cleanLogicManager.getDiscardedShortcuts().isEmpty());
     }
 
     @Test

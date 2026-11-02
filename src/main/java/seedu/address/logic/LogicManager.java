@@ -2,6 +2,9 @@ package seedu.address.logic;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -11,6 +14,8 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
+import seedu.address.logic.commands.CommandWords;
+import seedu.address.logic.commands.ShortcutCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -34,6 +39,7 @@ public class LogicManager implements Logic {
     private final Model model;
     private final Storage storage;
     private final AddressBookParser addressBookParser;
+    private final List<String> discardedShortcuts = new ArrayList<>();
 
     /**
      * Constructs a {@code LogicManager} with the given {@code Model} and {@code Storage}.
@@ -41,7 +47,50 @@ public class LogicManager implements Logic {
     public LogicManager(Model model, Storage storage) {
         this.model = model;
         this.storage = storage;
+        sanitizeShortcuts(model);
         addressBookParser = new AddressBookParser(model::getShortcuts);
+    }
+
+    private void sanitizeShortcuts(Model model) {
+        List<Map.Entry<String, String>> invalidShortcuts = model.getShortcuts().entrySet().stream()
+                .filter(entry -> !ShortcutCommand.isValidShortcutPattern(entry.getKey())
+                        || CommandWords.isCommandWord(entry.getKey())
+                        || !CommandWords.isAssignableCommandWord(entry.getValue()))
+                .toList();
+
+        invalidShortcuts.forEach(entry -> {
+            String shortcut = entry.getKey();
+            String commandWord = entry.getValue();
+            if (!ShortcutCommand.isValidShortcutPattern(shortcut)) {
+                logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
+                        + "shortcuts cannot contain whitespace or forward slashes.",
+                        shortcut, commandWord));
+            } else if (CommandWords.isCommandWord(shortcut)) {
+                logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
+                        + "'%s' is a built-in command word and cannot be used as a shortcut.",
+                        shortcut, commandWord, shortcut));
+            } else {
+                logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
+                        + "'%s' is not an assignable command.",
+                        shortcut, commandWord, commandWord));
+            }
+            discardedShortcuts.add(shortcut);
+            model.removeShortcut(shortcut);
+        });
+    }
+
+    /**
+     * Returns an unmodifiable list of shortcut keys discarded during initialization.
+     */
+    public List<String> getDiscardedShortcuts() {
+        return Collections.unmodifiableList(discardedShortcuts);
+    }
+
+    /**
+     * Returns true if any invalid shortcuts were discarded from the model during initialization.
+     */
+    public boolean hasDiscardedShortcuts() {
+        return !discardedShortcuts.isEmpty();
     }
 
     @Override
