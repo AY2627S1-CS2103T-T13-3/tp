@@ -76,7 +76,7 @@ This guide describes the features implemented for PressMemo v1.4.
 
 ### Viewing help: `help`
 
-* **Objective**: Toggles the help panel which lists all default commands and their formats. 
+* **Objective:** Toggles the help panel which lists all default commands and their formats. 
 
 ![Ui with Help Panel](images/UiWithHelpPanel.png)
 
@@ -94,23 +94,40 @@ This guide describes the features implemented for PressMemo v1.4.
 
 ### Adding a contact: `addcontact`
 
-Adds a contact to PressMemo.
+* **Objective:** Adds a contact to PressMemo.
 
-Format: `addcontact NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]…​`
+![Add Contact Example](images/addcontact-example.png)
+#### Usage / Command Format
+`addcontact NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]…​`
 
-* `NAME`, `p/PHONE`, `e/EMAIL` and `a/ADDRESS` must be specified exactly once and cannot be blank.
-* Names contain only letters, digits, and spaces. A contact with exactly the same name already in PressMemo cannot be added.
-* Phone numbers contain between 3 and 15 digits and no other characters. Emails must have a valid `word@word` format.
-* Tag names contain only letters and digits, without spaces.
-* Adding a contact preserves any active contact filter. The new contact will appear in the contact list if it matches the active filter.
+#### Parameters
+| Parameter  | Type           | Description                         | Examples              |
+|------------|----------------|-------------------------------------|-----------------------|
+| `NAME`     | `user-string`  | Name of the contact to add          | Jane Smith            |
+| `PHONE`    | `user-string`  | Phone number of the contact to add  | 98765432              |
+| `EMAIL`    | `user-string`  | Email address of the contact to add | janesmith@example.com |
+| `ADDRESS`  | `user-string`  | Address of the contact to add       | 1 Kent Ridge Drive    |
 
-<div markdown="span" class="alert alert-primary">:bulb: **Tip:**
-A contact can have any number of tags, including zero.
-</div>
+> **Tip / Note:**
+> * `NAME`, `p/PHONE`, `e/EMAIL` and `a/ADDRESS` must be specified exactly once and cannot be blank.
+> * A contact with exactly the same name already in PressMemo cannot be added. For example, if a contact with the name `John Doe` already exists in PressMemo, adding another contact with the name `John Doe` is not allowed, but adding a contact with the name `john doe` is allowed.
+> * A contact can have any number of tags, including zero.
+> * The new contact will be added to the end of the contact list.
+> * Adding a contact preserves any active contact filter. The new contact will appear in the contact list if it matches the active filter.
 
-Examples:
-* `addcontact n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `addcontact n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+#### Examples
+* **Example 1:** Valid and unique contact with no tags
+  * **Input / Action:** `addcontact Jane Smith p/91234567 e/janesmith@example.com a/Jane street, block 123, #01-01`
+  * **Expected Outcome:** The contact named "Jane Smith" is added to the contacts in PressMemo and displayed in the contact panel without tags.
+* **Example 2:** Valid and unique contact with 2 tags
+  * **Input / Action:** `addcontact Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+  * **Expected Outcome:** The contact named "Betsy Crowe" is added to the contacts in PressMemo and displayed in the contact panel with the tags "friend" and "criminal".
+
+#### Common Errors & Troubleshooting
+
+| Error Message / Symptom                       | Cause                                                                      | How to Fix                                                                                  |
+|:----------------------------------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------|
+| Error: there is already a contact named {xxx} | Trying to add a contact named {xxx} when {xxx} already exists in PressMemo | Delete the existing contact named {xxx} first<br><br>OR<br><br>Use a different contact name |
 
 ### Listing contacts and stories (refactored commands)
 
