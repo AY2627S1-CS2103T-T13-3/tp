@@ -14,7 +14,7 @@ public class UnassignCommandParser implements Parser<UnassignCommand> {
      * @throws ParseException if the user input does not conform to the expected format
      */
     public UnassignCommand parse(String args) throws ParseException {
-        AssignmentIndices indices = AssignmentParserUtil.parseIndices(args, UnassignCommand.MESSAGE_USAGE);
+        AssignmentIndices indices = AssignmentParserUtil.parseIndices(args);
         return new UnassignCommand(indices.getStoryIndex(), indices.getContactIndex());
     }
 

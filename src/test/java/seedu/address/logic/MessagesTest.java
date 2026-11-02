@@ -28,7 +28,7 @@ public class MessagesTest {
                 new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
                 Set.of(new Tag("friends")));
         String expected = "Alice Pauline; Phone: 94351253; Email: alice@example.com; "
-                + "Address: 123, Jurong West Ave 6, #08-111; Tags: [friends]; Stories: ";
+                + "Address: 123, Jurong West Ave 6, #08-111; Tags: [friends]";
         assertEquals(expected, Messages.format(contact));
     }
 
@@ -73,6 +73,26 @@ public class MessagesTest {
     }
 
     @Test
+    public void format_contactWithoutTags() {
+        Contact contact = new Contact(new Name("Alice Pauline"), new Phone("94351253"),
+                new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
+                Set.of(), List.of(new StoryName("Housing Investigation")));
+        String expected = "Alice Pauline; Phone: 94351253; Email: alice@example.com; "
+                + "Address: 123, Jurong West Ave 6, #08-111; Stories: [Housing Investigation]";
+        assertEquals(expected, Messages.format(contact));
+    }
+
+    @Test
+    public void format_contactWithoutTagsAndStories() {
+        Contact contact = new Contact(new Name("Alice Pauline"), new Phone("94351253"),
+                new Email("alice@example.com"), new Address("123, Jurong West Ave 6, #08-111"),
+                Set.of());
+        String expected = "Alice Pauline; Phone: 94351253; Email: alice@example.com; "
+                + "Address: 123, Jurong West Ave 6, #08-111";
+        assertEquals(expected, Messages.format(contact));
+    }
+
+    @Test
     public void format_followup() {
         Followup followup = new Followup(new FollowupDescription("Call back"), new Name("Alice Pauline"));
         String expected = "Call back; Contact: Alice Pauline";
@@ -104,17 +124,25 @@ public class MessagesTest {
     }
 
     @Test
-    public void getErrorMessageForInvalidPrefixes() {
-        Prefix[] expectedPrefixes = new Prefix[] { new Prefix("n/"), new Prefix("p/") };
+    public void getErrorMessageForInvalidUserString_returnsLocationAndSegment() {
+        String expectedMessage = "Unrecognised prefix or unescaped forward slash in \"the n/ argument\"."
+                + "\nProblematic segment: \"Al/ice\"";
 
-        // Multiple invalid indices
-        String message = Messages.getErrorMessageForInvalidPrefixes(expectedPrefixes, List.of(1, 2));
-        assertTrue(message.contains("1") && message.contains("2"));
-        assertTrue(message.contains("n/") && message.contains("p/"));
+        assertEquals(expectedMessage,
+                Messages.getErrorMessageForInvalidUserString("the n/ argument", "Al/ice"));
+    }
 
-        // Single invalid index
-        String singleMessage = Messages.getErrorMessageForInvalidPrefixes(expectedPrefixes, List.of(1));
-        assertTrue(singleMessage.contains("1"));
-        assertTrue(singleMessage.contains("n/"));
+    @Test
+    public void getErrorMessageForMissingRequiredInputs_returnsGrammaticallyCorrectMessage() {
+        assertEquals("Missing required input: n/.",
+                Messages.getErrorMessageForMissingRequiredInputs("n/"));
+        assertEquals("Missing required inputs: n/, p/.",
+                Messages.getErrorMessageForMissingRequiredInputs("n/", "p/"));
+    }
+
+    @Test
+    public void getErrorMessageForUnexpectedPreamble_returnsPreamble() {
+        assertEquals("Unexpected input before the first prefix: \"unexpected\".",
+                Messages.getErrorMessageForUnexpectedPreamble("unexpected"));
     }
 }

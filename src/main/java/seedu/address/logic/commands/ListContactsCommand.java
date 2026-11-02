@@ -12,6 +12,7 @@ import seedu.address.commons.util.ToStringBuilder;
 import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
+import seedu.address.model.contact.ContactAssignedToStoryPredicate;
 import seedu.address.model.story.Story;
 
 /**
@@ -55,13 +56,14 @@ public class ListContactsCommand extends Command {
 
         if (index >= lastShownStoryList.size()) {
             throw new CommandException(
-                    Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+                    String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                            storyIndex.get().getOneBased(), lastShownStoryList.size()));
         }
 
         Story selectedStory = lastShownStoryList.get(index);
 
         // Display only contacts assigned to this story
-        model.updateFilteredContactList(selectedStory);
+        model.updateFilteredContactList(new ContactAssignedToStoryPredicate(selectedStory));
 
         return new CommandResult(
                 String.format(MESSAGE_LIST_ASSIGNED_CONTACTS_SUCCESS,

@@ -13,6 +13,7 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.contact.Contact;
+import seedu.address.model.story.StoryAssignedToContactPredicate;
 
 /**
  * Lists stories in PressMemo to the user.
@@ -55,13 +56,14 @@ public class ListStoriesCommand extends Command {
 
         if (index >= lastShownContactList.size()) {
             throw new CommandException(
-                    Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+                    String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                            contactIndex.get().getOneBased(), lastShownContactList.size()));
         }
 
         Contact selectedContact = lastShownContactList.get(index);
 
         // Display only stories assigned to this contact
-        model.updateFilteredStoryList(selectedContact);
+        model.updateFilteredStoryList(new StoryAssignedToContactPredicate(selectedContact));
 
         return new CommandResult(
                 String.format(MESSAGE_LIST_ASSIGNED_STORIES_SUCCESS,

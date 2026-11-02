@@ -61,7 +61,9 @@ public class AddFollowupCommandTest {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredContactList().size() + 1);
         AddFollowupCommand addFollowupCommand = new AddFollowupCommand(FOLLOWUP_A.getDescription(), outOfBoundIndex);
 
-        assertCommandFailure(addFollowupCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(addFollowupCommand, model, expectedMessage);
     }
 
     @Test
@@ -77,7 +79,7 @@ public class AddFollowupCommandTest {
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
         expectedModel.addFollowup(FOLLOWUP_A);
-        showFilteredContactList(expectedModel, target);
+        showContactAtIndex(expectedModel, INDEX_FIRST_CONTACT);
         assertCommandSuccess(addFollowupCommand, model, expectedMessage, expectedModel);
     }
 
@@ -91,7 +93,9 @@ public class AddFollowupCommandTest {
 
         AddFollowupCommand addFollowupCommand = new AddFollowupCommand(FOLLOWUP_A.getDescription(), outOfBoundIndex);
 
-        assertCommandFailure(addFollowupCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(addFollowupCommand, model, expectedMessage);
     }
 
     @Test
@@ -110,7 +114,8 @@ public class AddFollowupCommandTest {
     public void execute_duplicateFollowup_throwsCommandException() {
         model.addFollowup(FOLLOWUP_A);
         assertCommandFailure(new AddFollowupCommand(FOLLOWUP_A.getDescription(), INDEX_FIRST_CONTACT), model,
-                String.format(AddFollowupCommand.MESSAGE_DUPLICATE_FOLLOWUP, FOLLOWUP_A.getContact()));
+                String.format(AddFollowupCommand.MESSAGE_DUPLICATE_FOLLOWUP, FOLLOWUP_A.getDescription(),
+                        FOLLOWUP_A.getContact()));
     }
 
     @Test
@@ -154,12 +159,5 @@ public class AddFollowupCommandTest {
         assertEquals(expected, addFollowupCommand.toString());
     }
 
-    /**
-     * Updates {@code model}'s filtered list to show no followups.
-     */
-    private void showFilteredContactList(Model model, Contact target) {
-        model.updateFilteredContactList(p -> p.isSameContact(target));
 
-        assertEquals(1, model.getFilteredContactList().size());
-    }
 }

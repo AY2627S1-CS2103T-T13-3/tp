@@ -26,12 +26,14 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
+import seedu.address.logic.commands.CommandTestUtil.StoryNameEqualsPredicate;
 import seedu.address.logic.commands.EditStoryCommand.EditStoryDescriptor;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
+import seedu.address.model.contact.ContactAssignedToStoryPredicate;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
@@ -139,7 +141,7 @@ public class EditStoryCommandTest {
     @Test
     public void execute_filteredList_preservesMatchingStory() {
         Story storyInFilteredList = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
-        model.updateFilteredStoryList(s -> s.getName().equals(storyInFilteredList.getName()));
+        model.updateFilteredStoryList(new StoryNameEqualsPredicate(storyInFilteredList.getName()));
         assertEquals(1, model.getFilteredStoryList().size());
 
         Story editedStory = new StoryBuilder(storyInFilteredList).withTags(VALID_STORYTAG_MALAYSIA).build();
@@ -150,7 +152,7 @@ public class EditStoryCommandTest {
                 String.format(EditStoryCommand.MESSAGE_EDIT_STORY_SUCCESS, Messages.format(editedStory));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-        expectedModel.updateFilteredStoryList(s -> s.getName().equals(storyInFilteredList.getName()));
+        expectedModel.updateFilteredStoryList(new StoryNameEqualsPredicate(storyInFilteredList.getName()));
         expectedModel.setStory(model.getFilteredStoryList().get(0), editedStory);
 
         assertCommandSuccess(editStoryCommand, model, expectedMessage, expectedModel);
@@ -163,7 +165,7 @@ public class EditStoryCommandTest {
         EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder(firstStory).build();
         EditStoryCommand editStoryCommand = new EditStoryCommand(INDEX_SECOND_STORY, descriptor);
 
-        assertCommandFailure(editStoryCommand, model, MESSAGE_DUPLICATE_STORY);
+        assertCommandFailure(editStoryCommand, model, String.format(MESSAGE_DUPLICATE_STORY, firstStory.getName()));
     }
 
     @Test
@@ -175,7 +177,7 @@ public class EditStoryCommandTest {
         EditStoryCommand editStoryCommand = new EditStoryCommand(INDEX_FIRST_STORY,
                 new EditStoryDescriptorBuilder(storyInList).build());
 
-        assertCommandFailure(editStoryCommand, model, MESSAGE_DUPLICATE_STORY);
+        assertCommandFailure(editStoryCommand, model, String.format(MESSAGE_DUPLICATE_STORY, storyInList.getName()));
     }
 
     @Test
@@ -184,7 +186,9 @@ public class EditStoryCommandTest {
         EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).build();
         EditStoryCommand editStoryCommand = new EditStoryCommand(outOfBoundIndex, descriptor);
 
-        assertCommandFailure(editStoryCommand, model, MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(editStoryCommand, model, expectedMessage);
     }
 
     /**
@@ -201,7 +205,9 @@ public class EditStoryCommandTest {
         EditStoryCommand editStoryCommand = new EditStoryCommand(outOfBoundIndex,
                 new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_CRIME).build());
 
-        assertCommandFailure(editStoryCommand, model, MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(editStoryCommand, model, expectedMessage);
     }
 
     @Test
@@ -280,7 +286,9 @@ public class EditStoryCommandTest {
         EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).build();
         EditStoryCommand editStoryCommand = new EditStoryCommand(maxIntIndex, descriptor);
 
-        assertCommandFailure(editStoryCommand, model, MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                maxIntIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(editStoryCommand, model, expectedMessage);
     }
 
     @Test
@@ -292,7 +300,7 @@ public class EditStoryCommandTest {
 
         Story assignedStory = model.getFilteredStoryList().get(INDEX_FIRST_STORY.getZeroBased());
 
-        model.updateFilteredContactList(assignedStory);
+        model.updateFilteredContactList(new ContactAssignedToStoryPredicate(assignedStory));
 
         EditStoryDescriptor descriptor = new EditStoryDescriptorBuilder().withName(VALID_STORYNAME_FRAUD).build();
         EditStoryCommand editStoryCommand = new EditStoryCommand(INDEX_FIRST_STORY, descriptor);
@@ -303,13 +311,94 @@ public class EditStoryCommandTest {
                 Messages.format(editedStory));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-        expectedModel.updateFilteredContactList(assignedStory);
+        expectedModel.updateFilteredContactList(new ContactAssignedToStoryPredicate(assignedStory));
         expectedModel.setStory(assignedStory, editedStory);
 
         assertCommandSuccess(editStoryCommand, model, expectedMessage, expectedModel);
 
-        String expectedStatus = String.format(Model.FILTER_STATUS_BY_STORY_FORMAT, editedStory.getName());
+        String expectedStatus = new ContactAssignedToStoryPredicate(editedStory).toString();
         assertEquals(expectedStatus, model.getContactFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredContactList().size());
+    }
+
+    private enum StoryTagEdit {
+        NEW, CLEAR, SAME
+    }
+
+    private enum StoryIndexChoice {
+        FIRST, LAST, FILTERED
+    }
+
+    /**
+     * Equivalence Partitions for EditStoryCommand:
+     * 1. StoryName:
+     *    - N_NEW: Changed story name
+     *    - N_SAME: Unchanged
+     * 2. Tags:
+     *    - T_NEW: Changed to new tags
+     *    - T_CLEAR: Cleared tags (empty set)
+     *    - T_SAME: Unchanged
+     * 3. Story Index:
+     *    - I_FIRST: Index 1
+     *    - I_LAST: Last index
+     *    - I_FILTERED: Filtered story list index
+     *
+     * The following 9 test cases achieve 100% pairwise (all-pairs) coverage across all pairs
+     * among the 3 factors without test suite explosion.
+     */
+    @Test
+    public void execute_allPairsCombinations_success() {
+        StoryIndexChoice[] indexChoices = {
+            StoryIndexChoice.FIRST, StoryIndexChoice.FIRST, StoryIndexChoice.FIRST,
+            StoryIndexChoice.LAST, StoryIndexChoice.LAST, StoryIndexChoice.LAST,
+            StoryIndexChoice.FILTERED, StoryIndexChoice.FILTERED, StoryIndexChoice.FILTERED
+        };
+        boolean[] changeName = {
+            true, false, true,
+            false, true, false,
+            true, false, true
+        };
+        StoryTagEdit[] tagEdits = {
+            StoryTagEdit.NEW, StoryTagEdit.CLEAR, StoryTagEdit.SAME,
+            StoryTagEdit.NEW, StoryTagEdit.CLEAR, StoryTagEdit.SAME,
+            StoryTagEdit.NEW, StoryTagEdit.CLEAR, StoryTagEdit.SAME
+        };
+
+        for (int i = 0; i < 9; i++) {
+            Model testModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+            Index targetIndex;
+            if (indexChoices[i] == StoryIndexChoice.FILTERED) {
+                showStoryAtIndex(testModel, INDEX_FIRST_STORY);
+                targetIndex = INDEX_FIRST_STORY;
+            } else if (indexChoices[i] == StoryIndexChoice.FIRST) {
+                targetIndex = INDEX_FIRST_STORY;
+            } else {
+                targetIndex = Index.fromOneBased(testModel.getFilteredStoryList().size());
+            }
+
+            Story storyToEdit = testModel.getFilteredStoryList().get(targetIndex.getZeroBased());
+            EditStoryDescriptor descriptor = new EditStoryDescriptor();
+            if (changeName[i]) {
+                descriptor.setName(new StoryName("Exclusive Investigation " + i));
+            }
+            if (tagEdits[i] == StoryTagEdit.NEW) {
+                descriptor.setTags(Set.of(new Tag("breaking"), new Tag("exclusive")));
+            } else if (tagEdits[i] == StoryTagEdit.CLEAR) {
+                descriptor.setTags(Set.of());
+            }
+
+            Story editedStory = descriptor.createEditedStory(storyToEdit);
+            EditStoryCommand command = new EditStoryCommand(targetIndex, descriptor);
+
+            Model expectedModel = new ModelManager(new AddressBook(testModel.getAddressBook()), new UserPrefs());
+            if (indexChoices[i] == StoryIndexChoice.FILTERED) {
+                showStoryAtIndex(expectedModel, INDEX_FIRST_STORY);
+            }
+            expectedModel.setStory(storyToEdit, editedStory);
+
+            String expectedMessage = String.format(EditStoryCommand.MESSAGE_EDIT_STORY_SUCCESS,
+                    Messages.format(editedStory));
+            assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
+        }
     }
 }

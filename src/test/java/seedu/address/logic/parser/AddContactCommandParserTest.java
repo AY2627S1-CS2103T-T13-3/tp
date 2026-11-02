@@ -1,6 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
@@ -18,10 +17,6 @@ import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_NON_EMPTY;
 import static seedu.address.logic.commands.CommandTestUtil.PREAMBLE_WHITESPACE;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.TAG_DESC_HUSBAND;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_NAME_BOB;
-import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
@@ -63,6 +58,17 @@ public class AddContactCommandParserTest {
         assertParseSuccess(parser,
                 NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
                 new AddContactCommand(expectedContactMultipleTags));
+    }
+
+    @Test
+    public void parse_escapedLeadingSlashFields_success() {
+        Contact expectedContact = new ContactBuilder().withName("/Bob Choo").withPhone("/22224444")
+                .withEmail("/bob@example.com").withAddress("/123, Jurong West Ave 6, #08-111")
+                .withTags("/friend").build();
+
+        assertParseSuccess(parser,
+                " n/\\/Bob Choo p/\\/22224444 e/\\/bob@example.com a/\\/123, Jurong West Ave 6, #08-111 t/\\/friend",
+                new AddContactCommand(expectedContact));
     }
 
     @Test
@@ -139,27 +145,25 @@ public class AddContactCommandParserTest {
 
     @Test
     public void parse_compulsoryFieldMissing_failure() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddContactCommand.MESSAGE_USAGE);
-
         // missing name prefix
-        assertParseFailure(parser, VALID_NAME_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB,
-                expectedMessage);
+        assertParseFailure(parser, PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB,
+                Messages.getErrorMessageForMissingRequiredInputs(PREFIX_NAME.toString()));
 
         // missing phone prefix
-        assertParseFailure(parser, NAME_DESC_BOB + VALID_PHONE_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB,
-                expectedMessage);
+        assertParseFailure(parser, NAME_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB,
+                Messages.getErrorMessageForMissingRequiredInputs(PREFIX_PHONE.toString()));
 
         // missing email prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + VALID_EMAIL_BOB + ADDRESS_DESC_BOB,
-                expectedMessage);
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + ADDRESS_DESC_BOB,
+                Messages.getErrorMessageForMissingRequiredInputs(PREFIX_EMAIL.toString()));
 
         // missing address prefix
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + VALID_ADDRESS_BOB,
-                expectedMessage);
+        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB,
+                Messages.getErrorMessageForMissingRequiredInputs(PREFIX_ADDRESS.toString()));
 
         // all prefixes missing
-        assertParseFailure(parser, VALID_NAME_BOB + VALID_PHONE_BOB + VALID_EMAIL_BOB + VALID_ADDRESS_BOB,
-                expectedMessage);
+        assertParseFailure(parser, "", Messages.getErrorMessageForMissingRequiredInputs(PREFIX_NAME.toString(),
+                PREFIX_PHONE.toString(), PREFIX_EMAIL.toString(), PREFIX_ADDRESS.toString()));
     }
 
     @Test
@@ -191,7 +195,7 @@ public class AddContactCommandParserTest {
         // non-empty preamble
         assertParseFailure(parser, PREAMBLE_NON_EMPTY + NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB
                 + ADDRESS_DESC_BOB + TAG_DESC_HUSBAND + TAG_DESC_FRIEND,
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddContactCommand.MESSAGE_USAGE));
+                Messages.getErrorMessageForUnexpectedPreamble(PREAMBLE_NON_EMPTY.trim()));
     }
 
     @Test
@@ -285,21 +289,20 @@ public class AddContactCommandParserTest {
 
         // Name edge cases: empty, invalid name containing fslash
         assertParseFailure(parser, " n/" + validPhone + validEmail + validAddress, Name.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, " n/Al/ice" + validPhone + validEmail + validAddress, Name.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, " n/Al/ice" + validPhone + validEmail + validAddress,
+                Messages.getErrorMessageForInvalidUserString("the n/ argument", "Al/ice"));
 
-        // Phone edge cases: empty, less than 3 digits, non-digits
+        // Phone edge cases: empty, whitespace only, contains fslash
         assertParseFailure(parser, validName + " p/" + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + " p/12" + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + " p/123a" + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, validName + " p/   " + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, validName + " p/12/34" + validEmail + validAddress,
+                Messages.getErrorMessageForInvalidUserString("the p/ argument", "12/34"));
 
-        // Email edge cases: empty, missing @, missing domain, missing local-part, multiple @
+        // Email edge cases: empty, whitespace only, contains fslash
         assertParseFailure(parser, validName + validPhone + " e/" + validAddress, Email.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + " e/notanemail" + validAddress, Email.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + " e/alice@" + validAddress, Email.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + " e/@example.com" + validAddress,
-                Email.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + " e/alice@@example.com" + validAddress,
-                Email.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, validName + validPhone + " e/   " + validAddress, Email.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, validName + validPhone + " e/alice/@example.com" + validAddress,
+                Messages.getErrorMessageForInvalidUserString("the e/ argument", "alice/@example.com"));
 
         // Address edge cases: empty, whitespace only
         assertParseFailure(parser, validName + validPhone + validEmail + " a/", Address.MESSAGE_CONSTRAINTS);
@@ -311,6 +314,6 @@ public class AddContactCommandParserTest {
         assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/   ",
                 Tag.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/tag/1",
-                Tag.MESSAGE_CONSTRAINTS);
+                Messages.getErrorMessageForInvalidUserString("the t/ argument", "tag/1"));
     }
 }

@@ -68,13 +68,13 @@ This guide describes the features implemented for PressMemo v1.4.
 
 ### Common input types
 
-| Input type     | Definition                                                                                                                                             | Format/s                                                                                                                                                                                                             | Examples                   |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| user string    | A typed unit of text input.<br><br>Behaviour for invalid `user string`s is unspecified, and may result in unexpected behaviour such as error messages. | Valid `user string`s comprise only non-control ascii characters (0x20 - 0x7E), excluding forward slash '/' (0x2F). It cannot start with a space (0x20).<br><br>Any spaces at the end of`user string`s are truncated. | wumpus<br><br>wumpus farts |
-| word           | A `user string` that does not contain spaces                                                                                                           | Does not contain spaces.                                                                                                                                                                                             | wumpus<br><br>wumpusfarts  |
-| Contact Index  | A `word` representing the 1-based position of a `Contact` in the contact panel                                                                         | Integer between and including 1 and the number of `Contact`s in the contact panel<br><br>If the contact panel is empty, there is no valid `Contact Index`                                                            | 1                          |
-| Story Index    | A `word` representing the 1-based position of a `Story` in the story panel                                                                             | Integer between and including 1 and the number of `Story`s in the story panel<br><br>If the story panel is empty, there is no valid `Story Index`                                                                    | 2                          |
-| Followup Index | A `word` representing the 1-based position of a `Followup` in the followup panel                                                                       | Integer between and including 1 and the number of `Followup`s in the followup panel<br><br>If the followup panel is empty, there is no valid `Followup Index`                                                        | 1                          |
+| Input type     | Definition                                                                       | Format/s                                                                                                                                                                                         | Examples                                          |
+| -------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| user string    | A typed unit of text input.                                                      | Must contain one or more characters, with at least one non-space character.<br><br>Any forward slash must be escaped using backslash (\\).<br><br>Any spaces at the start and end are truncated. | wumpus<br><br>wumpus farts<br><br>birthday 3\\/12 |
+| word           | A `user string` that does not contain spaces or forward slashes                  | Does not contain spaces or forward slashes                                                                                                                                                       | wumpus<br><br>wumpus,farts!                       |
+| Contact Index  | A `word` representing the 1-based position of a `Contact` in the contact panel   | Integer between and including 1 and the number of `Contact`s in the contact panel<br><br>If the contact panel is empty, there is no valid `Contact Index`                                        | 1                                                 |
+| Story Index    | A `word` representing the 1-based position of a `Story` in the story panel       | Integer between and including 1 and the number of `Story`s in the story panel<br><br>If the story panel is empty, there is no valid `Story Index`                                                | 2                                                 |
+| Followup Index | A `word` representing the 1-based position of a `Followup` in the followup panel | Integer between and including 1 and the number of `Followup`s in the followup panel<br><br>If the followup panel is empty, there is no valid `Followup Index`                                    | 1                                                 |
 
 ### Viewing help: `help`
 
@@ -242,7 +242,7 @@ Examples:
 | Parameter    | Type          | Description              | Examples                  |
 | :----------- | :------------ | :----------------------- | :------------------------ |
 | `STORY_NAME` | `user string` | name of the story to add | wumpus<br><br>find wumpus |
-| TAG          | `word`        | a tag for the story      | smelly                    |
+| TAG          | `user string` | a tag for the story      | smelly                    |
 
 
 > **Tip / Note:**
@@ -257,8 +257,8 @@ Examples:
   * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel without tags
 
 * **Example 2: valid and unique story name with 2 tags 
-  * **Input / Action:** `addstory find wumpus t/smelly t/at22`
-  * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel with the tags "smelly" and "at22"
+  * **Input / Action:** `addstory find wumpus t/smelly t/at 2, 2`
+  * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel with the tags "smelly" and "at 2, 2"
 
 ### Common Errors & Troubleshooting (optional, feature-specific)
 

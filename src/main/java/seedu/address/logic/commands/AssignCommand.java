@@ -3,8 +3,6 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STORYINDEX;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_CONTACTS;
-import static seedu.address.model.Model.PREDICATE_SHOW_ALL_STORIES;
 
 import java.util.List;
 
@@ -54,11 +52,13 @@ public class AssignCommand extends AddressBookMutatingCommand {
         List<Story> lastShownStoryList = model.getFilteredStoryList();
 
         if (contactIndex.getZeroBased() >= lastShownContactList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                    contactIndex.getOneBased(), lastShownContactList.size()));
         }
 
         if (storyIndex.getZeroBased() >= lastShownStoryList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                    storyIndex.getOneBased(), lastShownStoryList.size()));
         }
 
         Contact contactToAssign = lastShownContactList.get(contactIndex.getZeroBased());
@@ -72,8 +72,6 @@ public class AssignCommand extends AddressBookMutatingCommand {
         }
 
         model.assignStory(contactToAssign, storyToAssign);
-        model.updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
-        model.updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
         return new CommandResult(String.format(MESSAGE_SUCCESS, contactToAssign.getName(), storyToAssign.getName()));
     }
 

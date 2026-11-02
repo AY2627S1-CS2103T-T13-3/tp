@@ -3,6 +3,7 @@ package seedu.address.logic.commands;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.PREDICATE_SHOW_NO_STORIES;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showStoryAtIndex;
@@ -46,7 +47,9 @@ public class DeleteStoryCommandTest {
         Index outOfBoundIndex = Index.fromOneBased(model.getFilteredStoryList().size() + 1);
         DeleteStoryCommand deleteStoryCommand = new DeleteStoryCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteStoryCommand, model, Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(deleteStoryCommand, model, expectedMessage);
     }
 
     @Test
@@ -60,8 +63,8 @@ public class DeleteStoryCommandTest {
                 Messages.format(storyToDelete));
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        showStoryAtIndex(expectedModel, INDEX_FIRST_STORY);
         expectedModel.deleteStory(storyToDelete);
-        showNoStory(expectedModel);
 
         assertCommandSuccess(deleteStoryCommand, model, expectedMessage, expectedModel);
     }
@@ -76,7 +79,9 @@ public class DeleteStoryCommandTest {
 
         DeleteStoryCommand deleteStoryCommand = new DeleteStoryCommand(outOfBoundIndex);
 
-        assertCommandFailure(deleteStoryCommand, model, Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(deleteStoryCommand, model, expectedMessage);
     }
 
     @Test
@@ -113,7 +118,7 @@ public class DeleteStoryCommandTest {
      * Updates {@code model}'s filtered list to show no stories.
      */
     private void showNoStory(Model model) {
-        model.updateFilteredStoryList(p -> false);
+        model.updateFilteredStoryList(PREDICATE_SHOW_NO_STORIES);
 
         assertTrue(model.getFilteredStoryList().isEmpty());
     }

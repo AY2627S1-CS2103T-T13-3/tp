@@ -15,7 +15,8 @@ public class FindFollowupsCommandParser implements Parser<FindFollowupsCommand> 
 
     @Override
     public FindFollowupsCommand parse(String args) throws ParseException {
-        String trimmedArgs = args.trim();
+        ArgumentMultimap argMap = ArgumentTokenizer.tokenize(args);
+        String trimmedArgs = argMap.getPreamble();
 
         if (trimmedArgs.isEmpty()) {
             throw new ParseException(

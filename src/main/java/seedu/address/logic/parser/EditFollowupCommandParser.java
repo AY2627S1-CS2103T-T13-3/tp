@@ -1,7 +1,6 @@
 package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_DESCRIPTION;
 
@@ -21,8 +20,7 @@ public class EditFollowupCommandParser implements Parser<EditFollowupCommand> {
         try {
             index = ParserUtil.parseIndex(argMultimap.getPreamble());
         } catch (ParseException pe) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditFollowupCommand.MESSAGE_USAGE), pe);
+            throw new ParseException(pe.getMessage() + "\n" + EditFollowupCommand.MESSAGE_USAGE, pe);
         }
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_DESCRIPTION, PREFIX_CONTACTINDEX);
 

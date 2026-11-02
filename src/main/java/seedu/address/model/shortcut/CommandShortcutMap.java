@@ -20,7 +20,7 @@ import seedu.address.logic.commands.CommandWords;
  */
 public class CommandShortcutMap {
 
-    public static final String SHORTCUT_VALIDATION_REGEX = "[a-z][a-z0-9]*";
+    public static final String SHORTCUT_VALIDATION_REGEX = "^[^\\s/]+$";
 
     private static final Logger logger = LogsCenter.getLogger(CommandShortcutMap.class);
 
@@ -61,7 +61,7 @@ public class CommandShortcutMap {
 
         if (!isValidShortcutPattern(shortcut)) {
             logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
-                    + "shortcuts must start with a lowercase letter and contain only lowercase letters and digits.",
+                    + "shortcuts must not be blank or contain whitespace or forward slashes (/).",
                     shortcut, commandWord));
             return false;
         }

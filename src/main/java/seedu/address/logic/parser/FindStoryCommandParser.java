@@ -19,7 +19,8 @@ public class FindStoryCommandParser implements Parser<FindStoriesCommand> {
      * @throws ParseException if no story name keywords are supplied
      */
     public FindStoriesCommand parse(String args) throws ParseException {
-        String trimmedArgs = args.trim();
+        ArgumentMultimap argMap = ArgumentTokenizer.tokenize(args);
+        String trimmedArgs = argMap.getPreamble();
         if (trimmedArgs.isEmpty()) {
             throw new ParseException(
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindStoriesCommand.MESSAGE_USAGE));

@@ -26,10 +26,17 @@ import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.contact.Address;
 import seedu.address.model.contact.Contact;
+import seedu.address.model.contact.Email;
+import seedu.address.model.contact.Name;
+import seedu.address.model.contact.Phone;
 import seedu.address.model.followup.Followup;
 import seedu.address.model.followup.FollowupDescription;
+import seedu.address.model.followup.FollowupIsForContactPredicate;
 import seedu.address.model.story.Story;
+import seedu.address.model.story.StoryAssignedToContactPredicate;
+import seedu.address.model.tag.Tag;
 import seedu.address.testutil.ContactBuilder;
 import seedu.address.testutil.EditContactDescriptorBuilder;
 import seedu.address.testutil.StoryBuilder;
@@ -139,7 +146,8 @@ public class EditContactCommandTest {
         EditContactDescriptor descriptor = new EditContactDescriptorBuilder(firstContact).build();
         EditContactCommand editContactCommand = new EditContactCommand(INDEX_SECOND_CONTACT, descriptor);
 
-        assertCommandFailure(editContactCommand, model, EditContactCommand.MESSAGE_DUPLICATE_CONTACT);
+        assertCommandFailure(editContactCommand, model, String.format(EditContactCommand.MESSAGE_DUPLICATE_CONTACT,
+                firstContact.getName()));
     }
 
     @Test
@@ -151,7 +159,8 @@ public class EditContactCommandTest {
         EditContactCommand editContactCommand = new EditContactCommand(INDEX_FIRST_CONTACT,
                 new EditContactDescriptorBuilder(contactInList).build());
 
-        assertCommandFailure(editContactCommand, model, EditContactCommand.MESSAGE_DUPLICATE_CONTACT);
+        assertCommandFailure(editContactCommand, model, String.format(EditContactCommand.MESSAGE_DUPLICATE_CONTACT,
+                contactInList.getName()));
     }
 
     @Test
@@ -160,7 +169,9 @@ public class EditContactCommandTest {
         EditContactDescriptor descriptor = new EditContactDescriptorBuilder().withName(VALID_NAME_BOB).build();
         EditContactCommand editContactCommand = new EditContactCommand(outOfBoundIndex, descriptor);
 
-        assertCommandFailure(editContactCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(editContactCommand, model, expectedMessage);
     }
 
     /**
@@ -177,7 +188,9 @@ public class EditContactCommandTest {
         EditContactCommand editContactCommand = new EditContactCommand(outOfBoundIndex,
                 new EditContactDescriptorBuilder().withName(VALID_NAME_BOB).build());
 
-        assertCommandFailure(editContactCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(editContactCommand, model, expectedMessage);
     }
 
     @Test
@@ -276,11 +289,15 @@ public class EditContactCommandTest {
         EditContactDescriptor descriptor = new EditContactDescriptorBuilder().withName(VALID_NAME_BOB).build();
         EditContactCommand editContactCommand = new EditContactCommand(outOfBoundIndex, descriptor);
 
-        assertCommandFailure(editContactCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(editContactCommand, model, expectedMessage);
 
         Index maxIntIndex = Index.fromOneBased(Integer.MAX_VALUE);
         EditContactCommand editContactMaxIndex = new EditContactCommand(maxIntIndex, descriptor);
-        assertCommandFailure(editContactMaxIndex, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMaxIndexMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                maxIntIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(editContactMaxIndex, model, expectedMaxIndexMessage);
     }
 
     @Test
@@ -294,8 +311,8 @@ public class EditContactCommandTest {
         Followup followup = new Followup(new FollowupDescription("Follow up"), contactToEdit.getName());
         model.addFollowup(followup);
 
-        model.updateFilteredStoryList(contactToEdit);
-        model.updateFilteredFollowupList(contactToEdit);
+        model.updateFilteredStoryList(new StoryAssignedToContactPredicate(contactToEdit));
+        model.updateFilteredFollowupList(new FollowupIsForContactPredicate(contactToEdit));
 
         EditContactDescriptor descriptor = new EditContactDescriptorBuilder().withName(VALID_NAME_BOB).build();
         EditContactCommand editContactCommand = new EditContactCommand(INDEX_FIRST_CONTACT, descriptor);
@@ -305,16 +322,134 @@ public class EditContactCommandTest {
                 String.format(EditContactCommand.MESSAGE_EDIT_CONTACT_SUCCESS, Messages.format(editedContact));
 
         Model expectedModel = new ModelManager(new AddressBook(model.getAddressBook()), new UserPrefs());
-        expectedModel.updateFilteredStoryList(contactToEdit);
-        expectedModel.updateFilteredFollowupList(contactToEdit);
+        expectedModel.updateFilteredStoryList(new StoryAssignedToContactPredicate(contactToEdit));
+        expectedModel.updateFilteredFollowupList(new FollowupIsForContactPredicate(contactToEdit));
         expectedModel.setContact(contactToEdit, editedContact);
 
         assertCommandSuccess(editContactCommand, model, expectedMessage, expectedModel);
 
-        String expectedStatus = String.format(Model.FILTER_STATUS_BY_CONTACT_FORMAT, editedContact.getName());
-        assertEquals(expectedStatus, model.getStoryFilterStatusProperty().getValue());
+        String expectedStoryStatus = new StoryAssignedToContactPredicate(editedContact).toString();
+        String expectedFollowupStatus = new FollowupIsForContactPredicate(editedContact).toString();
+        assertEquals(expectedStoryStatus, model.getStoryFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredStoryList().size());
-        assertEquals(expectedStatus, model.getFollowupFilterStatusProperty().getValue());
+        assertEquals(expectedFollowupStatus, model.getFollowupFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredFollowupList().size());
+    }
+
+    private enum TagEdit {
+        NEW, CLEAR, SAME
+    }
+
+    private enum IndexChoice {
+        FIRST, MID, LAST, FILTERED
+    }
+
+    /**
+     * Equivalence Partitions for EditContactCommand:
+     * 1. Name:
+     *    - N_NEW: Changed name
+     *    - N_SAME: Unchanged
+     * 2. Phone:
+     *    - P_NEW: Changed phone
+     *    - P_SAME: Unchanged
+     * 3. Email:
+     *    - E_NEW: Changed email
+     *    - E_SAME: Unchanged
+     * 4. Address:
+     *    - A_NEW: Changed address
+     *    - A_SAME: Unchanged
+     * 5. Tags:
+     *    - T_NEW: Changed to new tags
+     *    - T_CLEAR: Cleared tags (empty set)
+     *    - T_SAME: Unchanged
+     * 6. Contact Index:
+     *    - I_FIRST: Index 1
+     *    - I_MID: Index 2
+     *    - I_LAST: Last index
+     *    - I_FILTERED: Index 1 on filtered list
+     *
+     * The following 12 test cases achieve 100% pairwise (all-pairs) coverage across all 92 pairs
+     * among the 6 factors without test suite explosion.
+     */
+    @Test
+    public void execute_allPairsCombinations_success() {
+        IndexChoice[] indexChoices = {
+            IndexChoice.MID, IndexChoice.FILTERED, IndexChoice.LAST, IndexChoice.MID,
+            IndexChoice.LAST, IndexChoice.LAST, IndexChoice.FIRST, IndexChoice.FIRST,
+            IndexChoice.FILTERED, IndexChoice.MID, IndexChoice.FILTERED, IndexChoice.FIRST
+        };
+        boolean[] changeName = {
+            true, false, true, false,
+            true, false, true, false,
+            true, false, true, true
+        };
+        boolean[] changePhone = {
+            true, false, true, false,
+            false, true, true, true,
+            true, false, true, false
+        };
+        boolean[] changeEmail = {
+            true, false, false, true,
+            true, false, true, false,
+            true, false, true, true
+        };
+        boolean[] changeAddress = {
+            true, false, false, true,
+            false, true, true, false,
+            true, false, true, true
+        };
+        TagEdit[] tagEdits = {
+            TagEdit.CLEAR, TagEdit.CLEAR, TagEdit.NEW, TagEdit.SAME,
+            TagEdit.SAME, TagEdit.CLEAR, TagEdit.CLEAR, TagEdit.SAME,
+            TagEdit.NEW, TagEdit.NEW, TagEdit.SAME, TagEdit.NEW
+        };
+
+        for (int i = 0; i < 12; i++) {
+            Model testModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+            Index targetIndex;
+            if (indexChoices[i] == IndexChoice.FILTERED) {
+                showContactAtIndex(testModel, INDEX_SECOND_CONTACT);
+                targetIndex = INDEX_FIRST_CONTACT;
+            } else if (indexChoices[i] == IndexChoice.FIRST) {
+                targetIndex = INDEX_FIRST_CONTACT;
+            } else if (indexChoices[i] == IndexChoice.MID) {
+                targetIndex = INDEX_SECOND_CONTACT;
+            } else {
+                targetIndex = Index.fromOneBased(testModel.getFilteredContactList().size());
+            }
+
+            Contact contactToEdit = testModel.getFilteredContactList().get(targetIndex.getZeroBased());
+            EditContactDescriptor descriptor = new EditContactDescriptor();
+            if (changeName[i]) {
+                descriptor.setName(new Name("Unique Contact " + i));
+            }
+            if (changePhone[i]) {
+                descriptor.setPhone(new Phone("9876543" + (i % 10)));
+            }
+            if (changeEmail[i]) {
+                descriptor.setEmail(new Email("contact" + i + "@example.com"));
+            }
+            if (changeAddress[i]) {
+                descriptor.setAddress(new Address("Blk " + i + ", Test Avenue"));
+            }
+            if (tagEdits[i] == TagEdit.NEW) {
+                descriptor.setTags(java.util.Set.of(new Tag("vip"), new Tag("t" + i)));
+            } else if (tagEdits[i] == TagEdit.CLEAR) {
+                descriptor.setTags(java.util.Set.of());
+            }
+
+            Contact editedContact = descriptor.createEditedContact(contactToEdit);
+            EditContactCommand command = new EditContactCommand(targetIndex, descriptor);
+
+            Model expectedModel = new ModelManager(new AddressBook(testModel.getAddressBook()), new UserPrefs());
+            if (indexChoices[i] == IndexChoice.FILTERED) {
+                showContactAtIndex(expectedModel, INDEX_SECOND_CONTACT);
+            }
+            expectedModel.setContact(contactToEdit, editedContact);
+
+            String expectedMessage = String.format(EditContactCommand.MESSAGE_EDIT_CONTACT_SUCCESS,
+                    Messages.format(editedContact));
+            assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
+        }
     }
 }
