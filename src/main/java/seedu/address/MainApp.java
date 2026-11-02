@@ -41,6 +41,8 @@ public class MainApp extends Application {
             + " Will be starting with an empty PressMemo.";
     public static final String MESSAGE_PREFERENCES_CORRUPTED = "Preference file at %s could not be loaded."
             + " Using default preferences.";
+    public static final String MESSAGE_INVALID_SHORTCUTS_DISCARDED = "Invalid shortcuts detected in %s "
+            + "were discarded.";
 
     private static final Logger logger = LogsCenter.getLogger(MainApp.class);
     private static final Path USER_PREFS_FILE_PATH = Paths.get("preferences.json");
@@ -67,9 +69,26 @@ public class MainApp extends Application {
 
         model = initModelManager(storage, userPrefs);
 
-        logic = new LogicManager(model, storage);
+        logic = initLogicManager(model, storage);
 
         ui = new UiManager(logic, storage.getAddressBookFilePath(), getInitialLoadMessage());
+    }
+
+    /**
+     * Returns a {@code LogicManager} with the given {@code Model} and {@code Storage}. <br>
+     * Records a load error if any invalid shortcuts were discarded from user preferences.
+     */
+    protected LogicManager initLogicManager(Model model, Storage storage) {
+        LogicManager logicManager = new LogicManager(model, storage);
+        if (logicManager.hasDiscardedShortcuts()) {
+            Path prefsPath = storage != null && storage.getUserPrefsFilePath() != null
+                    ? storage.getUserPrefsFilePath()
+                    : USER_PREFS_FILE_PATH;
+            String errorMsg = String.format(MESSAGE_INVALID_SHORTCUTS_DISCARDED, prefsPath);
+            logger.warning(errorMsg);
+            initialLoadErrors.add(errorMsg);
+        }
+        return logicManager;
     }
 
     /**

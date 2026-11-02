@@ -36,6 +36,7 @@ public class LogicManager implements Logic {
     private final Model model;
     private final Storage storage;
     private final AddressBookParser addressBookParser;
+    private boolean hasDiscardedShortcuts;
 
     /**
      * Constructs a {@code LogicManager} with the given {@code Model} and {@code Storage}.
@@ -53,6 +54,10 @@ public class LogicManager implements Logic {
                         || !CommandWords.isAssignableCommandWord(entry.getValue()))
                 .toList();
 
+        if (!invalidShortcuts.isEmpty()) {
+            hasDiscardedShortcuts = true;
+        }
+
         invalidShortcuts.forEach(entry -> {
             String shortcut = entry.getKey();
             String commandWord = entry.getValue();
@@ -67,6 +72,13 @@ public class LogicManager implements Logic {
             }
             model.removeShortcut(shortcut);
         });
+    }
+
+    /**
+     * Returns true if any invalid shortcuts were discarded from the model during initialization.
+     */
+    public boolean hasDiscardedShortcuts() {
+        return hasDiscardedShortcuts;
     }
 
     @Override

@@ -15,8 +15,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import seedu.address.logic.Logic;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
+import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
 import seedu.address.storage.JsonAddressBookStorage;
 import seedu.address.storage.JsonUserPrefsStorage;
@@ -134,5 +136,42 @@ public class MainAppTest {
         String expectedPrefsMessage = String.format(MainApp.MESSAGE_PREFERENCES_CORRUPTED, corruptedPrefsPath);
         String expectedDataMessage = String.format(MainApp.MESSAGE_DATA_FILE_CORRUPTED, corruptedAddressBookPath);
         assertEquals(expectedPrefsMessage + "\n" + expectedDataMessage, mainApp.getInitialLoadMessage());
+    }
+
+    @Test
+    public void initLogicManager_validShortcuts_success() {
+        Path validAddressBookPath = tempDir.resolve("valid_ab.json");
+        JsonAddressBookStorage abStorage = new JsonAddressBookStorage(validAddressBookPath);
+        JsonUserPrefsStorage prefsStorage = new JsonUserPrefsStorage(tempDir.resolve("prefs.json"));
+        StorageManager storageManager = new StorageManager(abStorage, prefsStorage);
+
+        Model model = new ModelManager();
+        model.assignShortcut("ls", "list");
+
+        Logic logic = mainApp.initLogicManager(model, storageManager);
+        assertNotNull(logic);
+        assertTrue(mainApp.getInitialLoadErrors().isEmpty());
+        assertNull(mainApp.getInitialLoadMessage());
+    }
+
+    @Test
+    public void initLogicManager_invalidShortcuts_addsErrorMessage() {
+        Path validAddressBookPath = tempDir.resolve("valid_ab.json");
+        JsonAddressBookStorage abStorage = new JsonAddressBookStorage(validAddressBookPath);
+        Path prefsPath = tempDir.resolve("prefs.json");
+        JsonUserPrefsStorage prefsStorage = new JsonUserPrefsStorage(prefsPath);
+        StorageManager storageManager = new StorageManager(abStorage, prefsStorage);
+
+        Model model = new ModelManager();
+        model.assignShortcut("exit", "list");
+
+        Logic logic = mainApp.initLogicManager(model, storageManager);
+        assertNotNull(logic);
+
+        List<String> errors = mainApp.getInitialLoadErrors();
+        assertEquals(1, errors.size());
+        String expectedMessage = String.format(MainApp.MESSAGE_INVALID_SHORTCUTS_DISCARDED, prefsPath);
+        assertEquals(expectedMessage, errors.get(0));
+        assertEquals(expectedMessage, mainApp.getInitialLoadMessage());
     }
 }

@@ -2,6 +2,7 @@ package seedu.address.logic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
@@ -275,9 +276,13 @@ public class LogicManagerTest {
                 new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json"));
         StorageManager testStorage = new StorageManager(addressBookStorage, userPrefsStorage);
 
-        new LogicManager(testModel, testStorage);
+        LogicManager testLogicManager = new LogicManager(testModel, testStorage);
 
+        assertTrue(testLogicManager.hasDiscardedShortcuts());
         assertEquals(Map.of("ls", "list"), testModel.getShortcuts());
+
+        LogicManager cleanLogicManager = new LogicManager(testModel, testStorage);
+        assertFalse(cleanLogicManager.hasDiscardedShortcuts());
     }
 
     /**
