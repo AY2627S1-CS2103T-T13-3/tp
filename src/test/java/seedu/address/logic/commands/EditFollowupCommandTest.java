@@ -69,7 +69,8 @@ public class EditFollowupCommandTest {
         descriptor.setContactIndex(Index.fromOneBased(2));
         EditFollowupCommand command = new EditFollowupCommand(Index.fromOneBased(1), descriptor);
         assertThrows(CommandException.class,
-                EditFollowupCommand.MESSAGE_DUPLICATE_FOLLOWUP, () -> command.execute(model));
+                String.format(EditFollowupCommand.MESSAGE_DUPLICATE_FOLLOWUP, original.getDescription(),
+                        BENSON.getName()), () -> command.execute(model));
         assertEquals(original, model.getFilteredFollowupList().get(0));
     }
 
@@ -77,20 +78,28 @@ public class EditFollowupCommandTest {
     public void execute_invalidIndexes_failure() {
         EditFollowupDescriptor descriptor = new EditFollowupDescriptor();
         descriptor.setContactIndex(Index.fromOneBased(3));
+        String invalidFollowupMessage = String.format(Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX,
+                2, model.getFilteredFollowupList().size());
         assertCommandFailure(new EditFollowupCommand(Index.fromOneBased(2), descriptor), model,
-                Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX);
+                invalidFollowupMessage);
+        String invalidContactMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                3, model.getFilteredContactList().size());
         assertCommandFailure(new EditFollowupCommand(Index.fromOneBased(1), descriptor), model,
-                Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+                invalidContactMessage);
 
         // Boundary max integer index for followup
+        String maxFollowupMessage = String.format(Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX,
+                Integer.MAX_VALUE, model.getFilteredFollowupList().size());
         assertCommandFailure(new EditFollowupCommand(Index.fromOneBased(Integer.MAX_VALUE), descriptor), model,
-                Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX);
+                maxFollowupMessage);
 
         // Boundary max integer index for contact
         EditFollowupDescriptor maxContactDescriptor = new EditFollowupDescriptor();
         maxContactDescriptor.setContactIndex(Index.fromOneBased(Integer.MAX_VALUE));
+        String maxContactMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                Integer.MAX_VALUE, model.getFilteredContactList().size());
         assertCommandFailure(new EditFollowupCommand(Index.fromOneBased(1), maxContactDescriptor), model,
-                Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+                maxContactMessage);
     }
 
     @Test

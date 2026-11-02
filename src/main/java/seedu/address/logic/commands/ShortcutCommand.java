@@ -27,8 +27,8 @@ public class ShortcutCommand extends Command {
     public static final String MESSAGE_SHORTCUTS_HEADER = "Command shortcuts:\n";
     public static final String MESSAGE_SHORTCUT_REPLACED =
             "Warning: Existing shortcut '%s' for command '%s' was removed.";
-    public static final String MESSAGE_INVALID_SHORTCUT = "Shortcut '%s' is invalid. Shortcuts must start with a "
-            + "lowercase letter and contain only lowercase letters and digits.";
+    public static final String MESSAGE_INVALID_SHORTCUT = "Shortcut '%s' is invalid. "
+            + "Shortcuts must not be blank or contain whitespace or forward slashes (/).";
     public static final String MESSAGE_RESERVED_SHORTCUT = "'%s' is a built-in command word and cannot be used as "
             + "a shortcut.";
     public static final String MESSAGE_UNKNOWN_COMMAND = "'%s' is not a command that can be assigned a shortcut.";

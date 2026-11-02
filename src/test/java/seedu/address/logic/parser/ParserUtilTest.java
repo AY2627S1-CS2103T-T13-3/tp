@@ -23,11 +23,11 @@ import seedu.address.model.story.StoryName;
 import seedu.address.model.tag.Tag;
 
 public class ParserUtilTest {
-    private static final String INVALID_NAME = "/Rachel";
-    private static final String INVALID_PHONE = "/651234";
+    private static final String INVALID_NAME = " ";
+    private static final String INVALID_PHONE = " ";
     private static final String INVALID_ADDRESS = " ";
-    private static final String INVALID_EMAIL = "/example.com";
-    private static final String INVALID_TAG = "/friend";
+    private static final String INVALID_EMAIL = " ";
+    private static final String INVALID_TAG = " ";
 
     private static final String VALID_NAME = "Rachel Walker";
     private static final String VALID_PHONE = "123456";
@@ -74,7 +74,7 @@ public class ParserUtilTest {
 
     @Test
     public void parseStoryName_blankOrInvalidValue_throwsParseException() {
-        for (String input : List.of("", WHITESPACE, "/", "/Story")) {
+        for (String input : List.of("", WHITESPACE)) {
             assertThrows(ParseException.class, StoryName.MESSAGE_CONSTRAINTS, () -> ParserUtil.parseStoryName(input));
         }
     }
@@ -85,13 +85,19 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parseStoryName_startsWithSlash_success() throws Exception {
+        assertEquals(new StoryName("/"), ParserUtil.parseStoryName("/"));
+        assertEquals(new StoryName("/Story"), ParserUtil.parseStoryName("/Story"));
+    }
+
+    @Test
     public void parseFollowupDescription_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> ParserUtil.parseFollowupDescription(null));
     }
 
     @Test
     public void parseFollowupDescription_blankOrInvalidValue_throwsParseException() {
-        for (String input : List.of("", WHITESPACE, "/", "/Callback")) {
+        for (String input : List.of("", WHITESPACE)) {
             assertThrows(ParseException.class, FollowupDescription.MESSAGE_CONSTRAINTS, ()
                     -> ParserUtil.parseFollowupDescription(input));
         }
@@ -101,6 +107,12 @@ public class ParserUtilTest {
     public void parseFollowupDescription_surroundingWhitespace_preservesInternalSpaces() throws Exception {
         assertEquals(new FollowupDescription("Call  back"),
                 ParserUtil.parseFollowupDescription(WHITESPACE + "Call  back" + WHITESPACE));
+    }
+
+    @Test
+    public void parseFollowupDescription_startsWithSlash_success() throws Exception {
+        assertEquals(new FollowupDescription("/"), ParserUtil.parseFollowupDescription("/"));
+        assertEquals(new FollowupDescription("/Callback"), ParserUtil.parseFollowupDescription("/Callback"));
     }
 
     @Test
@@ -142,6 +154,12 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parseName_startsWithSlash_returnsName() throws Exception {
+        Name expectedName = new Name("/Rachel");
+        assertEquals(expectedName, ParserUtil.parseName("/Rachel"));
+    }
+
+    @Test
     public void parsePhone_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> ParserUtil.parsePhone((String) null));
     }
@@ -162,6 +180,12 @@ public class ParserUtilTest {
         String phoneWithWhitespace = WHITESPACE + VALID_PHONE + WHITESPACE;
         Phone expectedPhone = new Phone(VALID_PHONE);
         assertEquals(expectedPhone, ParserUtil.parsePhone(phoneWithWhitespace));
+    }
+
+    @Test
+    public void parsePhone_startsWithSlash_returnsPhone() throws Exception {
+        Phone expectedPhone = new Phone("/651234");
+        assertEquals(expectedPhone, ParserUtil.parsePhone("/651234"));
     }
 
     @Test
@@ -211,6 +235,12 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parseEmail_startsWithSlash_returnsEmail() throws Exception {
+        Email expectedEmail = new Email("/example.com");
+        assertEquals(expectedEmail, ParserUtil.parseEmail("/example.com"));
+    }
+
+    @Test
     public void parseTag_null_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> ParserUtil.parseTag(null));
     }
@@ -231,6 +261,12 @@ public class ParserUtilTest {
         String tagWithWhitespace = WHITESPACE + VALID_TAG_1 + WHITESPACE;
         Tag expectedTag = new Tag(VALID_TAG_1);
         assertEquals(expectedTag, ParserUtil.parseTag(tagWithWhitespace));
+    }
+
+    @Test
+    public void parseTag_startsWithSlash_returnsTag() throws Exception {
+        Tag expectedTag = new Tag("/friend");
+        assertEquals(expectedTag, ParserUtil.parseTag("/friend"));
     }
 
     @Test

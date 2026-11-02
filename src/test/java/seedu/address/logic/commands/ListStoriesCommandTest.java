@@ -153,10 +153,9 @@ public class ListStoriesCommandTest {
         Index invalidIndex = Index.fromOneBased(
                 model.getFilteredContactList().size() + 1);
 
-        assertCommandFailure(
-                new ListStoriesCommand(invalidIndex),
-                model,
-                Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                invalidIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(new ListStoriesCommand(invalidIndex), model, expectedMessage);
     }
 
     @Test

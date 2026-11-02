@@ -1,7 +1,6 @@
 package seedu.address.logic.parser;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
@@ -30,7 +29,7 @@ public class EditStoryCommandParser implements Parser<EditStoryCommand> {
         try {
             index = ParserUtil.parseIndex(argMultimap.getPreamble());
         } catch (ParseException pe) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditStoryCommand.MESSAGE_USAGE), pe);
+            throw new ParseException(pe.getMessage() + "\n" + EditStoryCommand.MESSAGE_USAGE, pe);
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME);

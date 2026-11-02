@@ -1,7 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_USER_STRING;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
@@ -109,14 +107,15 @@ public class EditFollowupCommandParserTest {
             "", " ", "0 d/Call", "-1 ci/2", "-5 d/Call", "word d/Call",
             "2147483648 d/Call", Long.toString(Long.MAX_VALUE) + " d/Call", "1 extra d/Call"
         }) {
-            assertParseFailure(parser, input,
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditFollowupCommand.MESSAGE_USAGE));
+            assertParseFailure(parser, input, ParserUtil.MESSAGE_INVALID_INDEX + "\n"
+                    + EditFollowupCommand.MESSAGE_USAGE);
         }
 
         // Invalid description
         assertParseFailure(parser, "1 d/", FollowupDescription.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "1 d/   ", FollowupDescription.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1 d/Call/Tomorrow", MESSAGE_INVALID_USER_STRING);
+        assertParseFailure(parser, "1 d/Call/Tomorrow",
+                Messages.getErrorMessageForInvalidUserString("the d/ argument", "Call/Tomorrow"));
 
         // Invalid contact index boundaries
         assertParseFailure(parser, "1 ci/0", ParserUtil.MESSAGE_INVALID_INDEX);

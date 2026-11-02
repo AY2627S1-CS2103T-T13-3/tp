@@ -36,7 +36,7 @@ public class AddContactCommand extends AddressBookMutatingCommand {
             + PREFIX_TAG + "owesMoney";
 
     public static final String MESSAGE_SUCCESS = "New contact added: %1$s";
-    public static final String MESSAGE_DUPLICATE_CONTACT = "This contact already exists in PressMemo.";
+    public static final String MESSAGE_DUPLICATE_CONTACT = "Error: there is already a contact named \"%1$s\"!";
 
     private final Contact toAdd;
 
@@ -53,7 +53,7 @@ public class AddContactCommand extends AddressBookMutatingCommand {
         requireNonNull(model);
 
         if (model.hasContact(toAdd)) {
-            throw new CommandException(MESSAGE_DUPLICATE_CONTACT);
+            throw new CommandException(String.format(MESSAGE_DUPLICATE_CONTACT, toAdd.getName()));
         }
 
         model.addContact(toAdd);

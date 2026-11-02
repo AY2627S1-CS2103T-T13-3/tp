@@ -137,7 +137,9 @@ public class ArgumentTokenizer {
         String value = argsString.substring(valueStartPos, nextPrefixPosition.getStartPosition());
         String trimmed = value.trim();
         if (trimmed.replace("\\/", "").contains("/")) {
-            throw new ParseException(Messages.MESSAGE_INVALID_USER_STRING);
+            String inputLocation = prefix.getPrefix().isEmpty() ? "the command preamble"
+                    : "the " + prefix + " argument";
+            throw new ParseException(Messages.getErrorMessageForInvalidUserString(inputLocation, trimmed));
         }
 
         return trimmed.replace("\\/", "/");

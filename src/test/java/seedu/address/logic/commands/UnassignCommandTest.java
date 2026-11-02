@@ -95,7 +95,9 @@ public class UnassignCommandTest {
         Index outOfBoundContactIndex = Index.fromOneBased(model.getFilteredContactList().size() + 1);
         UnassignCommand unassignCommand = new UnassignCommand(INDEX_FIRST_STORY, outOfBoundContactIndex);
 
-        assertCommandFailure(unassignCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundContactIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(unassignCommand, model, expectedMessage);
     }
 
     @Test
@@ -106,7 +108,9 @@ public class UnassignCommandTest {
         assertTrue(outOfBoundContactIndex.getZeroBased() < model.getAddressBook().getContactList().size());
 
         UnassignCommand unassignCommand = new UnassignCommand(INDEX_FIRST_STORY, outOfBoundContactIndex);
-        assertCommandFailure(unassignCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundContactIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(unassignCommand, model, expectedMessage);
     }
 
     @Test
@@ -114,7 +118,9 @@ public class UnassignCommandTest {
         Index outOfBoundStoryIndex = Index.fromOneBased(model.getFilteredStoryList().size() + 1);
         UnassignCommand unassignCommand = new UnassignCommand(outOfBoundStoryIndex, INDEX_FIRST_CONTACT);
 
-        assertCommandFailure(unassignCommand, model, Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                outOfBoundStoryIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(unassignCommand, model, expectedMessage);
     }
 
     @Test
@@ -125,7 +131,9 @@ public class UnassignCommandTest {
         assertTrue(outOfBoundStoryIndex.getZeroBased() < model.getAddressBook().getStoryList().size());
 
         UnassignCommand unassignCommand = new UnassignCommand(outOfBoundStoryIndex, INDEX_FIRST_CONTACT);
-        assertCommandFailure(unassignCommand, model, Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                outOfBoundStoryIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(unassignCommand, model, expectedMessage);
     }
 
     @Test
@@ -134,7 +142,9 @@ public class UnassignCommandTest {
         Index outOfBoundStoryIndex = Index.fromOneBased(model.getFilteredStoryList().size() + 1);
         UnassignCommand unassignCommand = new UnassignCommand(outOfBoundStoryIndex, outOfBoundContactIndex);
 
-        assertCommandFailure(unassignCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                outOfBoundContactIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(unassignCommand, model, expectedMessage);
     }
 
     @Test
@@ -155,11 +165,15 @@ public class UnassignCommandTest {
 
         // Max contact index
         UnassignCommand maxContactCommand = new UnassignCommand(INDEX_FIRST_STORY, maxIndex);
-        assertCommandFailure(maxContactCommand, model, Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedContactMessage = String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                maxIndex.getOneBased(), model.getFilteredContactList().size());
+        assertCommandFailure(maxContactCommand, model, expectedContactMessage);
 
         // Max story index
         UnassignCommand maxStoryCommand = new UnassignCommand(maxIndex, INDEX_FIRST_CONTACT);
-        assertCommandFailure(maxStoryCommand, model, Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedStoryMessage = String.format(Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                maxIndex.getOneBased(), model.getFilteredStoryList().size());
+        assertCommandFailure(maxStoryCommand, model, expectedStoryMessage);
     }
 
     @Test
