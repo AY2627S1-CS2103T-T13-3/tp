@@ -33,7 +33,7 @@ public class UnshortcutCommandParserTest {
 
     @Test
     public void parse_emptyShortcut_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, UnshortcutCommand.MESSAGE_USAGE);
+        String expectedMessage = MESSAGE_INVALID_COMMAND_FORMAT;
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse(""));
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse("   "));
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse("\t \n \r"));
@@ -41,7 +41,7 @@ public class UnshortcutCommandParserTest {
 
     @Test
     public void parse_multipleTokens_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, UnshortcutCommand.MESSAGE_USAGE);
+        String expectedMessage = MESSAGE_INVALID_COMMAND_FORMAT;
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse("ls extra"));
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse("a b c"));
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse("1 2"));

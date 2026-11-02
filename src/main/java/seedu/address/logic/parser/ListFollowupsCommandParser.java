@@ -26,9 +26,7 @@ public class ListFollowupsCommandParser implements Parser<ListFollowupsCommand> 
         // Check that the input format is valid
         if (!argMultimap.getPreamble().isEmpty()
                 || argMultimap.getValue(PREFIX_CONTACTINDEX).isEmpty()) {
-            throw new ParseException(String.format(
-                    MESSAGE_INVALID_COMMAND_FORMAT,
-                    ListFollowupsCommand.MESSAGE_USAGE));
+            throw new ParseException(MESSAGE_INVALID_COMMAND_FORMAT);
         }
 
         // Reject duplicate prefixes

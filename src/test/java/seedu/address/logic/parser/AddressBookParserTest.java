@@ -95,7 +95,7 @@ public class AddressBookParserTest {
         assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD) instanceof ClearCommand);
         assertTrue(parser.parseCommand(ClearCommand.COMMAND_WORD + "   ") instanceof ClearCommand);
         assertThrows(ParseException.class,
-                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\n" + ClearCommand.MESSAGE_USAGE, ()
+                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\nCommand format: clear", ()
                 -> parser.parseCommand(ClearCommand.COMMAND_WORD + " 3"));
     }
 
@@ -127,7 +127,7 @@ public class AddressBookParserTest {
         assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD) instanceof ExitCommand);
         assertTrue(parser.parseCommand(ExitCommand.COMMAND_WORD + "   ") instanceof ExitCommand);
         assertThrows(ParseException.class,
-                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\n" + ExitCommand.MESSAGE_USAGE, ()
+                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\nCommand format: exit", ()
                 -> parser.parseCommand(ExitCommand.COMMAND_WORD + " 3"));
     }
 
@@ -176,7 +176,7 @@ public class AddressBookParserTest {
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD) instanceof HelpCommand);
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD + "   ") instanceof HelpCommand);
         assertThrows(ParseException.class,
-                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\n" + HelpCommand.MESSAGE_USAGE, ()
+                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\nCommand format: help", ()
                 -> parser.parseCommand(HelpCommand.COMMAND_WORD + " 3"));
     }
 
@@ -185,7 +185,7 @@ public class AddressBookParserTest {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + "   ") instanceof ListCommand);
         assertThrows(ParseException.class,
-                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\n" + ListCommand.MESSAGE_USAGE, ()
+                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\nCommand format: list", ()
                 -> parser.parseCommand(ListCommand.COMMAND_WORD + " 3"));
     }
 
@@ -306,7 +306,7 @@ public class AddressBookParserTest {
     public void parseCommand_shortcutToZeroArgCommandWithArguments_throwsParseException() {
         AddressBookParser parserWithShortcuts = new AddressBookParser(() -> Map.of("c", "clear"));
         assertThrows(ParseException.class,
-                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\n" + ClearCommand.MESSAGE_USAGE, ()
+                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\nCommand format: clear", ()
                 -> parserWithShortcuts.parseCommand("c 123"));
     }
 
@@ -338,7 +338,7 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_unrecognisedInput_throwsParseException() {
-        assertThrows(ParseException.class, String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE), ()
+        assertThrows(ParseException.class, MESSAGE_INVALID_COMMAND_FORMAT + "\n" + HelpCommand.MESSAGE_USAGE, ()
             -> parser.parseCommand(""));
     }
 

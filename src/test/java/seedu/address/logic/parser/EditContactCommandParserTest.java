@@ -46,8 +46,7 @@ public class EditContactCommandParserTest {
 
     private static final String TAG_EMPTY = " " + PREFIX_TAG;
 
-    private static final String MESSAGE_INVALID_FORMAT =
-            ParserUtil.MESSAGE_INVALID_INDEX + "\n" + EditContactCommand.MESSAGE_USAGE;
+    private static final String MESSAGE_INVALID_FORMAT = ParserUtil.MESSAGE_INVALID_INDEX;
 
 
 

@@ -22,8 +22,7 @@ public class FindContactsCommandParser implements Parser<FindContactsCommand> {
         ArgumentMultimap argMap = ArgumentTokenizer.tokenize(args);
         String trimmedArgs = argMap.getPreamble();
         if (trimmedArgs.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindContactsCommand.MESSAGE_USAGE));
+            throw new ParseException(MESSAGE_INVALID_COMMAND_FORMAT);
         }
 
         String[] nameKeywords = trimmedArgs.split("\\s+");

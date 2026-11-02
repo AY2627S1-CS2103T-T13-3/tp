@@ -16,8 +16,9 @@ public class Messages {
 
     public static final String MESSAGE_UNKNOWN_COMMAND = "Unknown command: %s.";
     public static final String MESSAGE_INVALID_USER_STRING =
-            "Unrecognised prefix or unescaped forward slash in \"%s\".";
-    public static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format!\n%1$s";
+            "Unrecognised prefix or unescaped forward slash in \"%s\". "
+                    + "To use a forward slash as text, escape it with a backslash, e.g. \"\\/\".";
+    public static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format!";
     public static final String MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS =
             "Invalid Command: Command should not be used with parameters.";
     public static final String MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX =

@@ -24,13 +24,7 @@ public class EditStoryCommandParser implements Parser<EditStoryCommand> {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_TAG);
 
-        Index index;
-
-        try {
-            index = ParserUtil.parseIndex(argMultimap.getPreamble());
-        } catch (ParseException pe) {
-            throw new ParseException(pe.getMessage() + "\n" + EditStoryCommand.MESSAGE_USAGE, pe);
-        }
+        Index index = ParserUtil.parseIndex(argMultimap.getPreamble());
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_NAME);
 

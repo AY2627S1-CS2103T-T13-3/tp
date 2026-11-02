@@ -22,7 +22,7 @@ public class ShortcutCommandParser implements Parser<ShortcutCommand> {
         String shortcut = argMultimap.getValue(PREFIX_SHORTCUT).orElse("");
         String commandWord = argMultimap.getValue(PREFIX_COMMAND).orElse("");
         if (!argMultimap.getPreamble().isEmpty() || !isSingleToken(shortcut) || !isSingleToken(commandWord)) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ShortcutCommand.MESSAGE_USAGE));
+            throw new ParseException(MESSAGE_INVALID_COMMAND_FORMAT);
         }
 
         return new ShortcutCommand(shortcut, commandWord);

@@ -39,7 +39,7 @@ public class DeleteContactCommandParserTest {
 
     @Test
     public void parse_invalidArgs_throwsParseException() {
-        String expectedMessage = MESSAGE_INVALID_INDEX + "\n" + DeleteContactCommand.MESSAGE_USAGE;
+        String expectedMessage = MESSAGE_INVALID_INDEX;
 
         // Non-numeric strings
         assertParseFailure(parser, "a", expectedMessage);

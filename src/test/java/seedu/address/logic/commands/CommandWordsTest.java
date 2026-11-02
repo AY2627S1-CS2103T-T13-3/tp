@@ -93,7 +93,7 @@ public class CommandWordsTest {
         assertTrue(clearInfo.parse("") instanceof ClearCommand);
         assertTrue(clearInfo.parse("   ") instanceof ClearCommand);
         assertThrows(ParseException.class,
-                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\n" + ClearCommand.MESSAGE_USAGE, ()
+                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\nCommand format: " + clearInfo.getFormat(), ()
                 -> clearInfo.parse(" 123"));
 
         // Exit command
@@ -101,7 +101,7 @@ public class CommandWordsTest {
         assertTrue(exitInfo.parse("") instanceof ExitCommand);
         assertTrue(exitInfo.parse("   ") instanceof ExitCommand);
         assertThrows(ParseException.class,
-                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\n" + ExitCommand.MESSAGE_USAGE, ()
+                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\nCommand format: " + exitInfo.getFormat(), ()
                 -> exitInfo.parse(" 123"));
 
         // List command
@@ -109,7 +109,7 @@ public class CommandWordsTest {
         assertTrue(listInfo.parse("") instanceof ListCommand);
         assertTrue(listInfo.parse("   ") instanceof ListCommand);
         assertThrows(ParseException.class,
-                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\n" + ListCommand.MESSAGE_USAGE, ()
+                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\nCommand format: " + listInfo.getFormat(), ()
                 -> listInfo.parse(" 123"));
 
         // Help command
@@ -117,7 +117,7 @@ public class CommandWordsTest {
         assertTrue(helpInfo.parse("") instanceof HelpCommand);
         assertTrue(helpInfo.parse("   ") instanceof HelpCommand);
         assertThrows(ParseException.class,
-                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\n" + HelpCommand.MESSAGE_USAGE, ()
+                MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\nCommand format: " + helpInfo.getFormat(), ()
                 -> helpInfo.parse(" 123"));
     }
 }

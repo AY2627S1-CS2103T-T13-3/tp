@@ -10,7 +10,8 @@ public interface Parser<T extends Command> {
 
     /**
      * Parses {@code userInput} into a command and returns it.
-     * @throws ParseException if {@code userInput} does not conform to the expected format
+     * @throws ParseException containing the reason if {@code userInput} does not conform to the expected format.
+     *         The command format is added by {@code CommandInfo}.
      */
     T parse(String userInput) throws ParseException;
 }

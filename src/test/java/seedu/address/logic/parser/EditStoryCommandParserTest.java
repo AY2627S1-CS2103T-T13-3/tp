@@ -32,8 +32,7 @@ public class EditStoryCommandParserTest {
 
     private static final String TAG_EMPTY = " " + PREFIX_TAG;
 
-    private static final String MESSAGE_INVALID_FORMAT =
-            ParserUtil.MESSAGE_INVALID_INDEX + "\n" + EditStoryCommand.MESSAGE_USAGE;
+    private static final String MESSAGE_INVALID_FORMAT = ParserUtil.MESSAGE_INVALID_INDEX;
     private EditStoryCommandParser parser = new EditStoryCommandParser();
 
     @Test

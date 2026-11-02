@@ -43,7 +43,7 @@ public class ListStoriesCommandParserTest {
 
     @Test
     public void parse_invalidPreambleOrMissingPrefix_failure() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListStoriesCommand.MESSAGE_USAGE);
+        String expectedMessage = MESSAGE_INVALID_COMMAND_FORMAT;
 
         // Missing prefix
         assertParseFailure(parser, " 2", expectedMessage);
