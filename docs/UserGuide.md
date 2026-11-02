@@ -871,11 +871,23 @@ Examples:
 
 ### Clearing all entries: `clear`
 
-Clears all contacts, stories, assignments, and follow-ups from PressMemo.
+* **Objective:** Clears all contacts, stories, assignments, and follow-ups from PressMemo.
 
-Format: `clear`
+<img alt="Clear command example" src="images/clear-example.png" width="726" height="593">
 
-This affects all records, including those hidden by filters. User preferences and command shortcuts are not removed. There is no confirmation prompt or undo command; back up your data files first if you may need them later.
+#### Usage / Command Format
+`clear`
+
+#### Parameters & Constraints
+* No parameters are allowed. Adding extra parameters results in an error.
+
+<div markdown="span" class="alert alert-warning"> **Caution:**
+Clearing removes all existing contacts, stories, assignments and followups from PressMemo permanently. There is no confirmation prompt for the command and once the data has been cleared, it cannot be recovered back. Therefore, clear PressMemo only if you are sure you do not need the data anymore.  
+</div>
+
+> **Tip / Note:**
+> * Clearing affects all contacts, stories, assignments and followups, including those hidden by filters.
+> * User preferences and command shortcuts are not removed by clearing. To remove shortcuts, use the `unshortcut` command.
 
 ### Exiting the program: `exit`
 
