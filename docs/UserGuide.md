@@ -428,6 +428,7 @@ This command does not accept parameters. Any extraneous characters will result i
 ### Editing a story: `editstory`
 
 - **Objective:** Updates the name or tags of an existing story.
+![editstory](images/editstory-example.png)
 
 #### Usage / Command Format
 
@@ -634,6 +635,7 @@ This command does not accept parameters. Any extraneous characters will result i
 ### Adding a follow-up: `addfollowup`
 
 - **Objective:** Adds a follow-up reminder and links it to an existing contact.
+- ![addfollowup](images/addfollowup-example.png)
 
 #### Usage / Command Format
 
@@ -673,6 +675,7 @@ This command does not accept parameters. Any extraneous characters will result i
 ### Editing a follow-up: `editfollowup`
 
 - **Objective:** Updates the description or linked contact of an existing follow-up.
+![editfollowup](images/editfollowup-example.png)
 
 #### Usage / Command Format
 
@@ -716,6 +719,7 @@ This command does not accept parameters. Any extraneous characters will result i
 ### Deleting a follow-up: `deletefollowup`
 
 - **Objective:** Deletes the specified follow-up reminder from PressMemo.
+![deletefollowup](images/deletefollowup-example.png)
 
 #### Usage / Command Format
 
@@ -745,6 +749,7 @@ This command does not accept parameters. Any extraneous characters will result i
 ### Finding follow-ups by description: `findfollowups`
 
 - **Objective:** Finds follow-ups whose descriptions contain any of the given keywords and displays them in the **FOLLOW-UPS** panel.
+![findfollowups](images/findfollowups-example.png)
 
 #### Usage / Command Format
 
