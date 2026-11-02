@@ -18,9 +18,9 @@ public class Messages {
     public static final String MESSAGE_INVALID_USER_STRING =
             "Unrecognised prefix or unescaped forward slash in \"%s\". "
                     + "To use a forward slash as text, escape it with a backslash, e.g. \"\\/\".";
-    public static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format!";
+    public static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format.";
     public static final String MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS =
-            "Invalid Command: Command should not be used with parameters.";
+            "This command does not accept parameters.";
     public static final String MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX =
             "The contact index %1$d is invalid for the displayed list of %2$d contact(s).";
     public static final String MESSAGE_INVALID_STORY_DISPLAYED_INDEX =
@@ -31,7 +31,7 @@ public class Messages {
     public static final String MESSAGE_STORIES_LISTED_OVERVIEW = "%1$d story(ies) listed!";
     public static final String MESSAGE_FOLLOWUPS_LISTED_OVERVIEW = "%1$d followup(s) listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
-                "The following prefix(es) should not be duplicated: ";
+            "The following prefix(es) should not be duplicated: ";
 
     /**
      * Returns an error message indicating the duplicate prefixes.
@@ -45,7 +45,7 @@ public class Messages {
         return MESSAGE_DUPLICATE_FIELDS + String.join(" ", duplicateFields);
     }
     /**
-     * Returns an error message indicating the input segment containing an unrecognized prefix or unescaped slash.
+     * Returns an error message indicating the input segment containing an unrecognised prefix or unescaped slash.
      */
     public static String getErrorMessageForInvalidUserString(String invalidUserString) {
         return String.format(MESSAGE_INVALID_USER_STRING, invalidUserString);
