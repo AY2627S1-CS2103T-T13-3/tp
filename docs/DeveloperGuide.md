@@ -332,6 +332,9 @@ The sequence diagram below illustrates the interactions within the `Model` compo
 8. `Model` refreshes the ActiveStoryList for the updated ActiveFollowupFilter.
 9. `UI` updates the follow-up panel accordingly.
 
+The activity diagram below shows the branching logic depending on whether `CONTACT_INDEX` is specified:
+![ListFollowupActivityDiagram](images/ListFollowupsActivityDiagram.png)
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation
