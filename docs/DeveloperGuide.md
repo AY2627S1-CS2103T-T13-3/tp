@@ -146,10 +146,12 @@ The `Model` component,
 
 ### Storage component
 
-**API** : [`Storage.java`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/storage/Storage.java)
+**API** : [`Storage.java`](https://github.com/AY2627S1-CS2103T-T13-3/tp/blob/master/src/main/java/seedu/address/storage/Storage.java)
+
+<img src="images/StorageClassDiagram.png" alt="Structure of the Storage component" width="550" />
 
 The `Storage` component,
-* can save contact, story, and follow-up data together in one JSON file, while saving user preference data in a separate JSON file, and read them back into corresponding objects.
+* can save contact, story, and follow-up data together in one JSON file, while storing user preferences in a separate JSON file, and read the data back into corresponding objects.
 * is implemented by `StorageManager`, which delegates the actual JSON file access to `JsonAddressBookStorage` and `JsonUserPrefsStorage`.
 * uses JSON-adapted classes to serialize and deserialize contacts, stories, follow-ups, and their associations.
 * depends on some classes in the `Model` component (because the `Storage` component's job is to save/retrieve objects that belong to the `Model`).
@@ -893,89 +895,266 @@ Use case ends.
 
 Given below are instructions to test PressMemo manually.
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** These instructions provide a starting point for testers, who are expected to conduct further exploratory testing. Unless otherwise stated, each test assumes a fresh launch with the default sample data. Run tests that modify or delete records independently, as they may change the indices used by later commands. All indices refer to the currently displayed lists.
-</div>
+> **Note:** These instructions only provide a starting point for testers to work on; testers are expected to do more *exploratory* testing.
+>
+> Unless otherwise specified, test cases assume the default sample data containing 7 contacts, 2 stories and 2 follow-ups. Run tests that modify or delete data independently, using a fresh test folder where necessary. All indices refer to the currently displayed lists.
 
 ### Launch and shutdown
 
-1. **Initial launch**
-    1. Download the JAR and place it in an empty, writable folder.
-    1. Open a terminal in that folder and run `java -jar pressmemo.jar` (rename the JAR to `pressmemo.jar` first if necessary).<br>
-       Expected: The GUI opens with sample contacts, stories and follow-ups.
+1. Initial launch
 
-1. **Saving window preferences**
-    1. Resize and move the window, then close PressMemo.
-    1. Relaunch it from the same folder.<br>
-       Expected: The last saved window size and position are restored.
+    1. Download the JAR file and copy it into an empty folder.
 
-### Contact features
+    2. Open a terminal in that folder and run `java -jar pressmemo.jar`, replacing the filename if necessary.
 
-| Feature | Test case | Expected outcome |
-| --- | --- | --- |
-| Add Contact | `addcontact Test User p/91234567 e/test@example.com a/Singapore` | The new contact is added to PressMemo. |
-| Edit Contact | `editcontact 1 p/98765432` | The first displayed contact's phone number is changed. |
-| Delete Contact | `deletecontact 2` | The second displayed contact is deleted, together with their story assignments and associated follow-ups. |
-| Find Contacts | `findcontacts Alex` | Only contacts whose names match the keyword `Alex` are displayed. |
-| List Contacts | `listcontacts si/1` | Only contacts assigned to the first displayed story are shown. |
+       Expected: The GUI opens with sample contacts, stories and follow-ups. The initial window size may not be optimal.
 
-### Story features
+2. Saving window preferences
 
-| Feature | Test case | Expected outcome |
-| --- | --- | --- |
-| Add Story | `addstory Test Investigation` | A story named `Test Investigation` is added. |
-| Edit Story | `editstory 1 n/Updated Investigation` | The first displayed story's name is updated. |
-| Delete Story | `deletestory 1` | The first displayed story is deleted and unassigned from its contacts. |
-| Find Stories | `findstories Cybersecurity` | Only matching stories are displayed. |
-| List Stories | `liststories ci/1` | Only stories assigned to the first displayed contact are shown. |
+    1. Resize the window and move it to a different location. Close PressMemo.
 
-### Assignment features
+    2. Relaunch the JAR file from the same folder.
 
-| Feature | Test case | Expected outcome |
-| --- | --- | --- |
-| Assign | `assign ci/1 si/2` | The first displayed contact is assigned to the second displayed story, and both records reflect the assignment. |
-| Unassign | `unassign ci/1 si/1` | The assignment between the first displayed contact and story is removed while both records remain. |
+       Expected: The most recent window size and position are retained.
 
-### Follow-up features
+### Adding, editing and deleting contacts
 
-| Feature | Test case | Expected outcome |
-| --- | --- | --- |
-| Add Follow-up | `addfollowup Call source ci/1` | A new follow-up is linked to the first displayed contact. |
-| Edit Follow-up | `editfollowup 1 d/Call tomorrow` | The first displayed follow-up's description is updated. |
-| Delete Follow-up | `deletefollowup 1` | The first displayed follow-up is removed without deleting its contact. |
-| Find Follow-ups | `findfollowups interview` | Follow-ups containing the word `interview` are displayed. |
-| List Follow-ups | `listfollowups ci/1` | Only follow-ups linked to the first displayed contact are shown. |
+1. Adding and editing a contact
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `addcontact Test User p/91234567 e/test@example.com a/Singapore`
+
+       Expected: Test User is successfully added to PressMemo with the specified details.
+
+    3. Test case: `findcontacts Test`, followed by `editcontact 1 p/98765432`
+
+       Expected: Test User is displayed and their phone number is updated to 98765432.
+
+2. Deleting a contact
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `deletecontact 2`
+
+       Expected: Bernice Yu is deleted from PressMemo. Her story assignments and associated follow-ups are also removed.
+
+    3. Test case: `deletecontact 0`
+
+       Expected: No contact is deleted. An error message indicates that the index is invalid.
+
+### Finding and listing contacts
+
+1. Finding contacts by name
+
+    1. Prerequisites: Use the default sample data.
+
+    2. Test case: `findcontacts Alex`
+
+       Expected: Only contacts with names matching Alex are displayed in the CONTACTS panel.
+
+    3. Test case: `listcontacts`
+
+       Expected: All contacts are displayed again.
+
+2. Listing contacts assigned to a story
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `listcontacts si/1`
+
+       Expected: Only contacts assigned to the first displayed story are shown in the CONTACTS panel.
+
+    3. Test case: `list`
+
+       Expected: All contacts, stories and follow-ups are displayed, clearing the active filters.
+
+### Adding, editing and deleting stories
+
+1. Adding and editing a story
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `addstory Test Investigation`
+
+       Expected: A new story named Test Investigation is added to PressMemo.
+
+    3. Test case: `findstories Investigation`, followed by `editstory 1 n/Updated Investigation`
+
+       Expected: The newly added story is renamed to Updated Investigation.
+
+2. Deleting a story
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `deletestory 2`
+
+       Expected: The second displayed story is deleted. Its assignments are removed from associated contacts, but the contacts remain in PressMemo.
+
+### Finding and listing stories
+
+1. Finding stories by name
+
+    1. Prerequisites: Use the default sample data.
+
+    2. Test case: `findstories Cybersecurity`
+
+       Expected: Only stories whose names match Cybersecurity are displayed.
+
+    3. Test case: `liststories`
+
+       Expected: All stories are displayed again.
+
+2. Listing stories assigned to a contact
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `liststories ci/1`
+
+       Expected: Only Cybersecurity Data Breach is displayed, as it is the story initially assigned to Alex Yeoh.
+
+    3. Test case: `liststories`
+
+       Expected: Both sample stories are displayed again.
+
+### Assigning and unassigning contacts
+
+1. Assigning a contact to a story
+
+    1. Prerequisites: Use the default sample data and run `list`. Alex Yeoh is not initially assigned to Fresh Graduate Unemployment.
+
+    2. Test case: `assign ci/1 si/2`
+
+       Expected: Alex Yeoh is successfully assigned to Fresh Graduate Unemployment. The assignment is reflected in both records.
+
+    3. Test case: `assign ci/1 si/2`
+
+       Expected: An error message indicates that Alex Yeoh is already assigned to Fresh Graduate Unemployment. No duplicate assignment is created.
+
+2. Unassigning a contact from a story
+
+    1. Prerequisites: Use the default sample data and run `list`. Alex Yeoh is initially assigned to Cybersecurity Data Breach.
+
+    2. Test case: `unassign ci/1 si/1`
+
+       Expected: Alex Yeoh is unassigned from Cybersecurity Data Breach. Both records remain in PressMemo.
+
+    3. Test case: `unassign ci/1 si/1`
+
+       Expected: An error message indicates that the contact is not assigned to the story. No further changes are made.
+
+### Adding, editing and deleting follow-ups
+
+1. Adding and editing a follow-up
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `addfollowup Call editor ci/1`
+
+       Expected: A new follow-up named Call editor is added and linked to Alex Yeoh.
+
+    3. Test case: `findfollowups Call`, followed by `editfollowup 1 d/Call editor tomorrow`
+
+       Expected: The follow-up's description is updated while remaining linked to Alex Yeoh.
+
+2. Deleting a follow-up
+
+    1. Prerequisites: Use the default sample data and run `listfollowups`.
+
+    2. Test case: `deletefollowup 1`
+
+       Expected: The first displayed follow-up is deleted without deleting its associated contact.
+
+### Finding and listing follow-ups
+
+1. Finding follow-ups by description
+
+    1. Prerequisites: Use the default sample data.
+
+    2. Test case: `findfollowups interview`
+
+       Expected: Only follow-ups containing the word interview in their descriptions are displayed.
+
+    3. Test case: `listfollowups`
+
+       Expected: All follow-ups are displayed again.
+
+2. Listing follow-ups associated with a contact
+
+    1. Prerequisites: Use the default sample data and run `list`.
+
+    2. Test case: `listfollowups ci/1`
+
+       Expected: Only follow-ups associated with Alex Yeoh are displayed in the FOLLOW-UPS panel.
 
 ### Other commands
 
-| Feature | Test case | Expected outcome |
-| --- | --- | --- |
-| List | `list` | All contacts and stories are displayed; their active filters are cleared. The follow-up filter is unchanged. |
-| Help | `help` | The help panel opens or closes. |
-| Shortcut | `shortcut s/ls c/list`, followed by `ls` | The alias `ls` is created and executes `list`. |
-| Unshortcut | `shortcut s/ls c/list`, followed by `unshortcut ls` | The alias `ls` is removed; the built-in `list` command remains available. |
-| Clear | `clear` | All contacts, stories and follow-ups are removed. Perform this test last or in a separate folder. |
-| Exit | `exit` | PressMemo closes. |
+1. Viewing help
+
+    1. Test case: `help`
+
+       Expected: The help panel is displayed.
+
+    2. Test case: `help`
+
+       Expected: The help panel closes.
+
+2. Creating and removing shortcuts
+
+    1. Test case: `shortcut s/ls c/list`
+
+       Expected: A new shortcut `ls` is created for the `list` command.
+
+    2. Test case: `ls`
+
+       Expected: The `list` command is executed successfully.
+
+    3. Test case: `shortcut`
+
+       Expected: The list of configured shortcuts is displayed.
+
+    4. Test case: `unshortcut ls`
+
+       Expected: The shortcut `ls` is removed.
+
+3. Clearing all records
+
+    1. Prerequisites: Use a separate test folder containing sample data.
+
+    2. Test case: `clear`
+
+       Expected: All contacts, stories and follow-ups are deleted from PressMemo.
+
+4. Exiting PressMemo
+
+    1. Test case: `exit`
+
+       Expected: PressMemo closes successfully.
 
 ### Saving data
 
-1. **Saving changes between launches**
-    1. Launch PressMemo with the default sample data and enter `addstory Persistence Test`.
-    1. Close PressMemo and relaunch the JAR from the same folder.<br>
-       Expected: `Persistence Test` is still present in the STORIES panel, confirming that data was saved to `data/addressbook.json`.
+1. Saving changes between launches
 
-1. **Saving shortcuts**
-    1. Enter `shortcut s/ls c/list`, then close and relaunch PressMemo.
-    1. Enter `ls`.<br>
-       Expected: The shortcut still executes `list`, confirming that shortcuts were saved to `preferences.json`.
+    1. Prerequisites: Use the default sample data.
 
-1. **Handling a missing data file**
-    1. Close PressMemo and rename `data/addressbook.json` to `data/addressbook-backup.json`.
-    1. Relaunch PressMemo from the same folder.<br>
-       Expected: PressMemo starts with its default sample contacts, stories and follow-ups because the data file is missing.
+    2. Test case: `addstory Persistence Test`
 
-1. **Handling a corrupted data file**
-    1. In a separate test folder, close PressMemo and make a backup copy of `data/addressbook.json`.
-    1. Replace the contents of `data/addressbook.json` with `not valid JSON`.
-    1. Relaunch PressMemo.<br>
-       Expected: PressMemo reports that the data file could not be loaded and starts with empty contact, story and follow-up lists instead of crashing.
-    1. Close the app and restore the backup file before further testing. Do not run data-modifying commands on the empty dataset, as they may overwrite the corrupted file.
+       Expected: A new story named Persistence Test is added.
+
+    3. Close PressMemo and relaunch the JAR file from the same folder.
+
+       Expected: Persistence Test remains in the STORIES panel, confirming that the changes were saved.
+
+2. Handling missing or corrupted data files
+
+    1. Prerequisites: Close PressMemo and use a separate test folder.
+
+    2. Rename `data/addressbook.json` to `data/addressbook-backup.json` and relaunch PressMemo.
+
+       Expected: PressMemo starts with the default sample data because the data file is missing.
+
+    3. Close PressMemo. Replace the contents of the newly created `data/addressbook.json` with invalid JSON, such as `not valid JSON`, then relaunch PressMemo.
+
+       Expected: PressMemo reports that the data file could not be loaded and starts with empty lists instead of crashing.
+
+    4. Close PressMemo and restore the original backup before using the application again.
