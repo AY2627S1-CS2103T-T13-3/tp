@@ -10,7 +10,7 @@ import static seedu.address.commons.util.AppUtil.checkArgument;
 public class Email {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Emails should not be blank or start with a whitespace";
+            "Emails should not be blank or start with whitespace";
     public static final String VALIDATION_REGEX = "^\\S.*$";
 
     private final String value;

@@ -39,7 +39,7 @@ public class DeleteStoryCommandParserTest {
 
     @Test
     public void parse_invalidArgs_throwsParseException() {
-        String expectedMessage = MESSAGE_INVALID_INDEX + "\n" + DeleteStoryCommand.MESSAGE_USAGE;
+        String expectedMessage = MESSAGE_INVALID_INDEX;
 
         // Non-numeric strings
         assertParseFailure(parser, "a", expectedMessage);

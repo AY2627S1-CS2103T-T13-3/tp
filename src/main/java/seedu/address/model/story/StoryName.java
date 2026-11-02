@@ -15,7 +15,7 @@ public class StoryName {
             "Story names should not be blank or start with whitespace";
 
     /*
-     * The first character of the name must not be a whitespace.
+     * The first character of the name must not be whitespace.
      */
     public static final String VALIDATION_REGEX = "^\\S.*$";
 

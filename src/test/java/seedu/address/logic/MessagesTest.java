@@ -124,12 +124,11 @@ public class MessagesTest {
     }
 
     @Test
-    public void getErrorMessageForInvalidUserString_returnsLocationAndSegment() {
-        String expectedMessage = "Unrecognised prefix or unescaped forward slash in \"the n/ argument\"."
-                + "\nProblematic segment: \"Al/ice\"";
+    public void getErrorMessageForInvalidUserString_returnsSegment() {
+        String expectedMessage = "Unrecognised prefix or unescaped forward slash in \"Al/ice\". "
+                + "To use a forward slash as text, escape it with a backslash, e.g. \"\\/\".";
 
-        assertEquals(expectedMessage,
-                Messages.getErrorMessageForInvalidUserString("the n/ argument", "Al/ice"));
+        assertEquals(expectedMessage, Messages.getErrorMessageForInvalidUserString("Al/ice"));
     }
 
     @Test

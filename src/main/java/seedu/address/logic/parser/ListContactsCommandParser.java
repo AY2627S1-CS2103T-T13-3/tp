@@ -26,9 +26,7 @@ public class ListContactsCommandParser implements Parser<ListContactsCommand> {
         // Check that the input format is valid
         if (!argMultimap.getPreamble().isEmpty()
                 || argMultimap.getValue(PREFIX_STORYINDEX).isEmpty()) {
-            throw new ParseException(String.format(
-                    MESSAGE_INVALID_COMMAND_FORMAT,
-                    ListContactsCommand.MESSAGE_USAGE));
+            throw new ParseException(MESSAGE_INVALID_COMMAND_FORMAT);
         }
 
         // Reject duplicate prefixes

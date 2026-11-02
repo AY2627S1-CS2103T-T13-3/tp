@@ -107,15 +107,14 @@ public class EditFollowupCommandParserTest {
             "", " ", "0 d/Call", "-1 ci/2", "-5 d/Call", "word d/Call",
             "2147483648 d/Call", Long.toString(Long.MAX_VALUE) + " d/Call", "1 extra d/Call"
         }) {
-            assertParseFailure(parser, input, ParserUtil.MESSAGE_INVALID_INDEX + "\n"
-                    + EditFollowupCommand.MESSAGE_USAGE);
+            assertParseFailure(parser, input, ParserUtil.MESSAGE_INVALID_INDEX);
         }
 
         // Invalid description
         assertParseFailure(parser, "1 d/", FollowupDescription.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "1 d/   ", FollowupDescription.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "1 d/Call/Tomorrow",
-                Messages.getErrorMessageForInvalidUserString("the d/ argument", "Call/Tomorrow"));
+                Messages.getErrorMessageForInvalidUserString("Call/Tomorrow"));
 
         // Invalid contact index boundaries
         assertParseFailure(parser, "1 ci/0", ParserUtil.MESSAGE_INVALID_INDEX);

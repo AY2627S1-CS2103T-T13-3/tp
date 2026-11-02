@@ -71,7 +71,7 @@ public class ArgumentTokenizerTest {
         String argsString = "  some random string /t tag with leading and trailing spaces ";
         ParseException exception = assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(argsString));
 
-        assertEquals(Messages.getErrorMessageForInvalidUserString("the command preamble",
+        assertEquals(Messages.getErrorMessageForInvalidUserString(
                 "some random string /t tag with leading and trailing spaces"), exception.getMessage());
     }
 
@@ -192,7 +192,7 @@ public class ArgumentTokenizerTest {
     public void tokenize_unescapedSlashInArgument_throwsParseException() {
         ParseException exception = assertThrows(ParseException.class, () ->
                 ArgumentTokenizer.tokenize(" p/ invalid/value", pSlash));
-        assertEquals(Messages.getErrorMessageForInvalidUserString("the p/ argument", "invalid/value"),
+        assertEquals(Messages.getErrorMessageForInvalidUserString("invalid/value"),
                 exception.getMessage());
 
         assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(" p/ /leading-slash", pSlash));

@@ -1,7 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS;
 
 import java.util.List;
 import java.util.Map;
@@ -118,30 +118,30 @@ public final class CommandWords {
             new CommandInfo(ListCommand.COMMAND_WORD,
                     "list",
                     "Lists all contacts, stories and followups.",
-                    noArgs(ListCommand::new, ListCommand.MESSAGE_USAGE)),
+                    noArgs(ListCommand::new)),
             new CommandInfo(ClearCommand.COMMAND_WORD,
                     "clear",
                     "Clears all entries from PressMemo.",
-                    noArgs(ClearCommand::new, ClearCommand.MESSAGE_USAGE)),
+                    noArgs(ClearCommand::new)),
             new CommandInfo(HelpCommand.COMMAND_WORD,
                     "help",
                     "Toggles the help panel with commands and syntax.",
-                    noArgs(HelpCommand::new, HelpCommand.MESSAGE_USAGE)),
+                    noArgs(HelpCommand::new)),
             new CommandInfo(ExitCommand.COMMAND_WORD,
                     "exit",
                     "Exits the application.",
-                    noArgs(ExitCommand::new, ExitCommand.MESSAGE_USAGE)));
+                    noArgs(ExitCommand::new)));
 
     private static final Map<String, CommandInfo> COMMAND_INFO_MAP = COMMAND_INFOS.stream()
             .collect(Collectors.toUnmodifiableMap(CommandInfo::getCommandWord, Function.identity()));
 
     private CommandWords() {}
 
-    private static <T extends Command> Parser<T> noArgs(Supplier<T> supplier, String messageUsage) {
+    private static <T extends Command> Parser<T> noArgs(Supplier<T> supplier) {
         return arguments -> {
             requireNonNull(arguments);
             if (!arguments.trim().isEmpty()) {
-                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, messageUsage));
+                throw new ParseException(MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS);
             }
             return supplier.get();
         };

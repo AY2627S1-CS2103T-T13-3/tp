@@ -15,12 +15,8 @@ public class DeleteFollowupCommandParser implements Parser<DeleteFollowupCommand
      * @throws ParseException if the user input does not conform to the expected format
      */
     public DeleteFollowupCommand parse(String args) throws ParseException {
-        try {
-            Index index = ParserUtil.parseIndex(args);
-            return new DeleteFollowupCommand(index);
-        } catch (ParseException pe) {
-            throw new ParseException(pe.getMessage() + "\n" + DeleteFollowupCommand.MESSAGE_USAGE, pe);
-        }
+        Index index = ParserUtil.parseIndex(args);
+        return new DeleteFollowupCommand(index);
     }
 
 }

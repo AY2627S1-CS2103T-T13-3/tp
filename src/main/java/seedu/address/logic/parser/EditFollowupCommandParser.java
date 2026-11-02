@@ -16,12 +16,7 @@ public class EditFollowupCommandParser implements Parser<EditFollowupCommand> {
     public EditFollowupCommand parse(String args) throws ParseException {
         requireNonNull(args);
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_DESCRIPTION, PREFIX_CONTACTINDEX);
-        Index index;
-        try {
-            index = ParserUtil.parseIndex(argMultimap.getPreamble());
-        } catch (ParseException pe) {
-            throw new ParseException(pe.getMessage() + "\n" + EditFollowupCommand.MESSAGE_USAGE, pe);
-        }
+        Index index = ParserUtil.parseIndex(argMultimap.getPreamble());
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_DESCRIPTION, PREFIX_CONTACTINDEX);
 
         EditFollowupDescriptor descriptor = new EditFollowupDescriptor();

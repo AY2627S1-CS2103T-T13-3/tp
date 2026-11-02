@@ -46,28 +46,28 @@ public class ShortcutCommandParserTest {
 
     @Test
     public void parse_nonEmptyPreamble_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ShortcutCommand.MESSAGE_USAGE);
+        String expectedMessage = MESSAGE_INVALID_COMMAND_FORMAT;
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse("extra s/ls c/list"));
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse("123 s/ls c/list"));
     }
 
     @Test
     public void parse_missingPrefix_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ShortcutCommand.MESSAGE_USAGE);
+        String expectedMessage = MESSAGE_INVALID_COMMAND_FORMAT;
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse(" s/ls"));
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse(" c/list"));
     }
 
     @Test
     public void parse_multiWordValue_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ShortcutCommand.MESSAGE_USAGE);
+        String expectedMessage = MESSAGE_INVALID_COMMAND_FORMAT;
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse(" s/list all c/list"));
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse(" s/ls c/list all"));
     }
 
     @Test
     public void parse_blankOrEmptyValue_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, ShortcutCommand.MESSAGE_USAGE);
+        String expectedMessage = MESSAGE_INVALID_COMMAND_FORMAT;
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse(" s/ c/list"));
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse(" s/   c/list"));
         assertThrows(ParseException.class, expectedMessage, () -> parser.parse(" s/ls c/"));

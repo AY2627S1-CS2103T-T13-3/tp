@@ -15,12 +15,8 @@ public class DeleteContactCommandParser implements Parser<DeleteContactCommand> 
      * @throws ParseException if the user input does not conform to the expected format
      */
     public DeleteContactCommand parse(String args) throws ParseException {
-        try {
-            Index index = ParserUtil.parseIndex(args);
-            return new DeleteContactCommand(index);
-        } catch (ParseException pe) {
-            throw new ParseException(pe.getMessage() + "\n" + DeleteContactCommand.MESSAGE_USAGE, pe);
-        }
+        Index index = ParserUtil.parseIndex(args);
+        return new DeleteContactCommand(index);
     }
 
 }
