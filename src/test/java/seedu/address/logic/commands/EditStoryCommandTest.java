@@ -320,4 +320,85 @@ public class EditStoryCommandTest {
         assertEquals(expectedStatus, model.getContactFilterStatusProperty().getValue());
         assertEquals(1, model.getFilteredContactList().size());
     }
+
+    private enum StoryTagEdit {
+        NEW, CLEAR, SAME
+    }
+
+    private enum StoryIndexChoice {
+        FIRST, LAST, FILTERED
+    }
+
+    /**
+     * Equivalence Partitions for EditStoryCommand:
+     * 1. StoryName:
+     *    - N_NEW: Changed story name
+     *    - N_SAME: Unchanged
+     * 2. Tags:
+     *    - T_NEW: Changed to new tags
+     *    - T_CLEAR: Cleared tags (empty set)
+     *    - T_SAME: Unchanged
+     * 3. Story Index:
+     *    - I_FIRST: Index 1
+     *    - I_LAST: Last index
+     *    - I_FILTERED: Filtered story list index
+     *
+     * The following 9 test cases achieve 100% pairwise (all-pairs) coverage across all pairs
+     * among the 3 factors without test suite explosion.
+     */
+    @Test
+    public void execute_allPairsCombinations_success() {
+        StoryIndexChoice[] indexChoices = {
+            StoryIndexChoice.FIRST, StoryIndexChoice.FIRST, StoryIndexChoice.FIRST,
+            StoryIndexChoice.LAST, StoryIndexChoice.LAST, StoryIndexChoice.LAST,
+            StoryIndexChoice.FILTERED, StoryIndexChoice.FILTERED, StoryIndexChoice.FILTERED
+        };
+        boolean[] changeName = {
+            true, false, true,
+            false, true, false,
+            true, false, true
+        };
+        StoryTagEdit[] tagEdits = {
+            StoryTagEdit.NEW, StoryTagEdit.CLEAR, StoryTagEdit.SAME,
+            StoryTagEdit.NEW, StoryTagEdit.CLEAR, StoryTagEdit.SAME,
+            StoryTagEdit.NEW, StoryTagEdit.CLEAR, StoryTagEdit.SAME
+        };
+
+        for (int i = 0; i < 9; i++) {
+            Model testModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+            Index targetIndex;
+            if (indexChoices[i] == StoryIndexChoice.FILTERED) {
+                showStoryAtIndex(testModel, INDEX_FIRST_STORY);
+                targetIndex = INDEX_FIRST_STORY;
+            } else if (indexChoices[i] == StoryIndexChoice.FIRST) {
+                targetIndex = INDEX_FIRST_STORY;
+            } else {
+                targetIndex = Index.fromOneBased(testModel.getFilteredStoryList().size());
+            }
+
+            Story storyToEdit = testModel.getFilteredStoryList().get(targetIndex.getZeroBased());
+            EditStoryDescriptor descriptor = new EditStoryDescriptor();
+            if (changeName[i]) {
+                descriptor.setName(new StoryName("Exclusive Investigation " + i));
+            }
+            if (tagEdits[i] == StoryTagEdit.NEW) {
+                descriptor.setTags(Set.of(new Tag("breaking"), new Tag("exclusive")));
+            } else if (tagEdits[i] == StoryTagEdit.CLEAR) {
+                descriptor.setTags(Set.of());
+            }
+
+            Story editedStory = descriptor.createEditedStory(storyToEdit);
+            EditStoryCommand command = new EditStoryCommand(targetIndex, descriptor);
+
+            Model expectedModel = new ModelManager(new AddressBook(testModel.getAddressBook()), new UserPrefs());
+            if (indexChoices[i] == StoryIndexChoice.FILTERED) {
+                showStoryAtIndex(expectedModel, INDEX_FIRST_STORY);
+            }
+            expectedModel.setStory(storyToEdit, editedStory);
+
+            String expectedMessage = String.format(EditStoryCommand.MESSAGE_EDIT_STORY_SUCCESS,
+                    Messages.format(editedStory));
+            assertCommandSuccess(command, testModel, expectedMessage, expectedModel);
+        }
+    }
 }

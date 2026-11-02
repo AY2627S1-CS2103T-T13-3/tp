@@ -272,6 +272,21 @@ public class LogicManagerTest {
         assertEquals(model.getShortcuts(), logic.getShortcuts());
     }
 
+    @Test
+    public void getContactFilterStatusProperty_returnsCorrectProperty() {
+        assertEquals(model.getContactFilterStatusProperty(), logic.getContactFilterStatusProperty());
+    }
+
+    @Test
+    public void getStoryFilterStatusProperty_returnsCorrectProperty() {
+        assertEquals(model.getStoryFilterStatusProperty(), logic.getStoryFilterStatusProperty());
+    }
+
+    @Test
+    public void getFollowupFilterStatusProperty_returnsCorrectProperty() {
+        assertEquals(model.getFollowupFilterStatusProperty(), logic.getFollowupFilterStatusProperty());
+    }
+
     /**
      * Executes the command and confirms that
      * - no exceptions are thrown <br>

@@ -7,6 +7,7 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalContacts.ALICE;
 import static seedu.address.testutil.TypicalContacts.BENSON;
+import static seedu.address.testutil.TypicalContacts.CARL;
 
 import org.junit.jupiter.api.Test;
 
@@ -150,5 +151,147 @@ public class EditFollowupCommandTest {
         String expected = EditFollowupCommand.class.getCanonicalName()
                 + "{index=" + Index.fromOneBased(1) + ", editFollowupDescriptor=" + descriptor + "}";
         assertEquals(expected, command.toString());
+    }
+
+    @Test
+    public void execute_allPairsCombinations_success() throws Exception {
+        // Equivalence Partitioning & All-Pairs combinations across:
+        // Factor 1: Target Followup Index (FIRST, LAST, FILTERED)
+        // Factor 2: Description (NEW, SAME_OR_ABSENT)
+        // Factor 3: Contact Index (NEW, SAME_OR_ABSENT)
+        // 6 test cases cover 100% of all 16 pairwise combinations.
+
+        Followup followup1 = new Followup(new FollowupDescription("Call Alice"), ALICE.getName());
+        Followup followup2 = new Followup(new FollowupDescription("Email Benson"), BENSON.getName());
+        Followup followup3 = new Followup(new FollowupDescription("Review Carl"), CARL.getName());
+
+        // Combination 1: (FIRST, NEW_DESC, NEW_CONTACT)
+        {
+            Model localModel = new ModelManager();
+            localModel.addContact(ALICE);
+            localModel.addContact(BENSON);
+            localModel.addContact(CARL);
+            localModel.addFollowup(followup1);
+            localModel.addFollowup(followup2);
+            localModel.addFollowup(followup3);
+
+            EditFollowupDescriptor descriptor = new EditFollowupDescriptor();
+            descriptor.setDescription(new FollowupDescription("Meet Alice"));
+            descriptor.setContactIndex(Index.fromOneBased(2)); // BENSON
+
+            EditFollowupCommand command = new EditFollowupCommand(Index.fromOneBased(1), descriptor);
+            command.execute(localModel);
+
+            Followup expected = new Followup(new FollowupDescription("Meet Alice"), BENSON.getName());
+            assertEquals(expected, localModel.getFilteredFollowupList().get(0));
+        }
+
+        // Combination 2: (FIRST, SAME_DESC, ABSENT_CONTACT)
+        {
+            Model localModel = new ModelManager();
+            localModel.addContact(ALICE);
+            localModel.addContact(BENSON);
+            localModel.addContact(CARL);
+            localModel.addFollowup(followup1);
+            localModel.addFollowup(followup2);
+            localModel.addFollowup(followup3);
+
+            EditFollowupDescriptor descriptor = new EditFollowupDescriptor();
+            descriptor.setDescription(new FollowupDescription("Call Alice")); // SAME
+
+            EditFollowupCommand command = new EditFollowupCommand(Index.fromOneBased(1), descriptor);
+            command.execute(localModel);
+
+            assertEquals(followup1, localModel.getFilteredFollowupList().get(0));
+        }
+
+        // Combination 3: (LAST, NEW_DESC, ABSENT_CONTACT)
+        {
+            Model localModel = new ModelManager();
+            localModel.addContact(ALICE);
+            localModel.addContact(BENSON);
+            localModel.addContact(CARL);
+            localModel.addFollowup(followup1);
+            localModel.addFollowup(followup2);
+            localModel.addFollowup(followup3);
+
+            EditFollowupDescriptor descriptor = new EditFollowupDescriptor();
+            descriptor.setDescription(new FollowupDescription("Interview Carl")); // NEW
+
+            EditFollowupCommand command = new EditFollowupCommand(Index.fromOneBased(3), descriptor);
+            command.execute(localModel);
+
+            Followup expected = new Followup(new FollowupDescription("Interview Carl"), CARL.getName());
+            assertEquals(expected, localModel.getFilteredFollowupList().get(2));
+        }
+
+        // Combination 4: (LAST, ABSENT_DESC, NEW_CONTACT)
+        {
+            Model localModel = new ModelManager();
+            localModel.addContact(ALICE);
+            localModel.addContact(BENSON);
+            localModel.addContact(CARL);
+            localModel.addFollowup(followup1);
+            localModel.addFollowup(followup2);
+            localModel.addFollowup(followup3);
+
+            EditFollowupDescriptor descriptor = new EditFollowupDescriptor();
+            descriptor.setContactIndex(Index.fromOneBased(1)); // ALICE (NEW for followup3)
+
+            EditFollowupCommand command = new EditFollowupCommand(Index.fromOneBased(3), descriptor);
+            command.execute(localModel);
+
+            Followup expected = new Followup(new FollowupDescription("Review Carl"), ALICE.getName());
+            assertEquals(expected, localModel.getFilteredFollowupList().get(2));
+        }
+
+        // Combination 5: (FILTERED, NEW_DESC, NEW_CONTACT)
+        {
+            Model localModel = new ModelManager();
+            localModel.addContact(ALICE);
+            localModel.addContact(BENSON);
+            localModel.addContact(CARL);
+            localModel.addFollowup(followup1);
+            localModel.addFollowup(followup2);
+            localModel.addFollowup(followup3);
+
+            // Filter followup list to show only followup2
+            localModel.updateFilteredFollowupList(new FollowupIsForContactPredicate(BENSON));
+            assertEquals(1, localModel.getFilteredFollowupList().size());
+
+            EditFollowupDescriptor descriptor = new EditFollowupDescriptor();
+            descriptor.setDescription(new FollowupDescription("Followup call")); // NEW
+            descriptor.setContactIndex(Index.fromOneBased(3)); // CARL (NEW)
+
+            EditFollowupCommand command = new EditFollowupCommand(Index.fromOneBased(1), descriptor);
+            command.execute(localModel);
+
+            Followup expected = new Followup(new FollowupDescription("Followup call"), CARL.getName());
+            assertTrue(localModel.getAddressBook().getFollowupList().contains(expected));
+        }
+
+        // Combination 6: (FILTERED, SAME_DESC, SAME_CONTACT)
+        {
+            Model localModel = new ModelManager();
+            localModel.addContact(ALICE);
+            localModel.addContact(BENSON);
+            localModel.addContact(CARL);
+            localModel.addFollowup(followup1);
+            localModel.addFollowup(followup2);
+            localModel.addFollowup(followup3);
+
+            // Filter followup list to show only followup2
+            localModel.updateFilteredFollowupList(new FollowupIsForContactPredicate(BENSON));
+            assertEquals(1, localModel.getFilteredFollowupList().size());
+
+            EditFollowupDescriptor descriptor = new EditFollowupDescriptor();
+            descriptor.setDescription(new FollowupDescription("Email Benson")); // SAME
+            descriptor.setContactIndex(Index.fromOneBased(2)); // BENSON (SAME)
+
+            EditFollowupCommand command = new EditFollowupCommand(Index.fromOneBased(1), descriptor);
+            command.execute(localModel);
+
+            assertEquals(followup2, localModel.getFilteredFollowupList().get(0));
+        }
     }
 }

@@ -113,4 +113,47 @@ public class EditContactDescriptorTest {
                 + editContactDescriptor.getTags().orElse(null) + "}";
         assertEquals(expected, editContactDescriptor.toString());
     }
+
+    /**
+     * All-pairs combinations of field presence across (Name, Phone, Email, Address, Tags)
+     * verifying the copy constructor, equality, and hash code behavior.
+     */
+    @Test
+    public void copyConstructor_allPairsFieldCombinations_success() {
+        boolean[][] testCases = {
+            {true, true, true, true, true},
+            {true, false, false, false, false},
+            {false, true, false, false, true},
+            {false, false, true, true, false},
+            {true, true, false, true, false},
+            {false, false, true, false, true}
+        };
+
+        for (boolean[] tc : testCases) {
+            EditContactDescriptor descriptor = new EditContactDescriptor();
+            if (tc[0]) {
+                descriptor.setName(new seedu.address.model.contact.Name(VALID_NAME_BOB));
+            }
+            if (tc[1]) {
+                descriptor.setPhone(new seedu.address.model.contact.Phone(VALID_PHONE_BOB));
+            }
+            if (tc[2]) {
+                descriptor.setEmail(new seedu.address.model.contact.Email(VALID_EMAIL_BOB));
+            }
+            if (tc[3]) {
+                descriptor.setAddress(new seedu.address.model.contact.Address(VALID_ADDRESS_BOB));
+            }
+            if (tc[4]) {
+                descriptor.setTags(java.util.Set.of(new seedu.address.model.tag.Tag(VALID_TAG_HUSBAND)));
+            }
+
+            EditContactDescriptor copy = new EditContactDescriptor(descriptor);
+            assertEquals(descriptor, copy);
+            assertEquals(descriptor.getName(), copy.getName());
+            assertEquals(descriptor.getPhone(), copy.getPhone());
+            assertEquals(descriptor.getEmail(), copy.getEmail());
+            assertEquals(descriptor.getAddress(), copy.getAddress());
+            assertEquals(descriptor.getTags(), copy.getTags());
+        }
+    }
 }
