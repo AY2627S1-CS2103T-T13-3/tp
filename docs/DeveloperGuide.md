@@ -252,7 +252,7 @@ The sequence diagram below illustrates the interactions within the `Model` compo
 
 ## `findstories`
 
-- **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and updates the `ActiveStoryList`.
+- **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive).
 
 ### API
 
