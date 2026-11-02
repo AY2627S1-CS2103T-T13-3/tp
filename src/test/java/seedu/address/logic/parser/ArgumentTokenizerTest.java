@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 public class ArgumentTokenizerTest {
@@ -68,7 +69,10 @@ public class ArgumentTokenizerTest {
     @Test
     public void tokenize_slashInPreamble_throwsParseException() {
         String argsString = "  some random string /t tag with leading and trailing spaces ";
-        assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(argsString));
+        ParseException exception = assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(argsString));
+
+        assertEquals(Messages.getErrorMessageForInvalidUserString(
+                "some random string /t tag with leading and trailing spaces"), exception.getMessage());
     }
 
     @Test
@@ -166,6 +170,14 @@ public class ArgumentTokenizerTest {
     }
 
     @Test
+    public void tokenize_userStringStartingWithEscapedSlash_success() throws ParseException {
+        String argsString = "\\/birthday 3\\/12 p/ \\/12\\/34";
+        ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString, pSlash);
+        assertPreamblePresent(argMultimap, "/birthday 3/12");
+        assertArgumentPresent(argMultimap, pSlash, "/12/34");
+    }
+
+    @Test
     public void tokenize_backslashNotBeforeSlash_preserved() throws ParseException {
         String argsString = " p/ C:\\docs\\file\\not-slash";
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(argsString, pSlash);
@@ -178,7 +190,11 @@ public class ArgumentTokenizerTest {
 
     @Test
     public void tokenize_unescapedSlashInArgument_throwsParseException() {
-        assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(" p/ invalid/value", pSlash));
+        ParseException exception = assertThrows(ParseException.class, () ->
+                ArgumentTokenizer.tokenize(" p/ invalid/value", pSlash));
+        assertEquals(Messages.getErrorMessageForInvalidUserString("invalid/value"),
+                exception.getMessage());
+
         assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(" p/ /leading-slash", pSlash));
         assertThrows(ParseException.class, () -> ArgumentTokenizer.tokenize(" p/ trailing-slash/", pSlash));
         assertThrows(ParseException.class, () ->

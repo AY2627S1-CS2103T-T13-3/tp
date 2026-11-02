@@ -27,9 +27,12 @@ public class StoryNameTest {
         // invalid name
         assertFalse(StoryName.isValidName("")); // empty string
         assertFalse(StoryName.isValidName(" ")); // spaces only
-        assertFalse(StoryName.isValidName("/")); // forward slash only
-        assertFalse(StoryName.isValidName("/story")); // starts with forward slash
+        assertFalse(StoryName.isValidName(" story")); // leading space
+
+
         // valid name
+        assertTrue(StoryName.isValidName("/")); // forward slash only
+        assertTrue(StoryName.isValidName("/story")); // starts with forward slash
         assertTrue(StoryName.isValidName("story/")); // ends with forward slash
         assertTrue(StoryName.isValidName("story/name")); // contains forward slash
         assertTrue(StoryName.isValidName("Breaking News")); // alphabets only

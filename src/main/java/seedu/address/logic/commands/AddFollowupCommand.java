@@ -51,7 +51,8 @@ public class AddFollowupCommand extends AddressBookMutatingCommand {
         List<Contact> lastShownContactList = model.getFilteredContactList();
 
         if (contactIndex.getZeroBased() >= lastShownContactList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                    contactIndex.getOneBased(), lastShownContactList.size()));
         }
 
         Contact target = lastShownContactList.get(contactIndex.getZeroBased());

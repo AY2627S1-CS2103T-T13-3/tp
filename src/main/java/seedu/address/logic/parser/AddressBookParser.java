@@ -49,7 +49,7 @@ public class AddressBookParser {
     public Command parseCommand(String userInput) throws ParseException {
         final Matcher matcher = BASIC_COMMAND_FORMAT.matcher(userInput.trim());
         if (!matcher.matches()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, HelpCommand.MESSAGE_USAGE));
+            throw new ParseException(MESSAGE_INVALID_COMMAND_FORMAT + "\n" + HelpCommand.MESSAGE_USAGE);
         }
 
         final String enteredCommandWord = matcher.group("commandWord");
@@ -68,7 +68,8 @@ public class AddressBookParser {
         CommandInfo commandInfo = CommandWords.getCommandInfo(commandWord);
         if (commandInfo == null) {
             logger.finer("This user input caused a ParseException: " + userInput);
-            throw new ParseException(MESSAGE_UNKNOWN_COMMAND);
+            throw new ParseException(String.format(MESSAGE_UNKNOWN_COMMAND, enteredCommandWord));
+
         }
 
         return commandInfo.parse(arguments);

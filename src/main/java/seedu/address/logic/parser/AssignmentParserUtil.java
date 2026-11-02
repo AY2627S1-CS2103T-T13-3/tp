@@ -1,12 +1,12 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_CONTACTINDEX;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_STORYINDEX;
 
-import java.util.stream.Stream;
+import java.util.List;
 
 import seedu.address.commons.core.index.Index;
+import seedu.address.logic.Messages;
 import seedu.address.logic.parser.exceptions.ParseException;
 
 /**
@@ -19,15 +19,22 @@ final class AssignmentParserUtil {
     /**
      * Parses the contact and story indices from {@code args}.
      *
-     * @param usageMessage command-specific usage message shown when the input format is invalid
      */
-    static AssignmentIndices parseIndices(String args, String usageMessage) throws ParseException {
+    static AssignmentIndices parseIndices(String args) throws ParseException {
         ArgumentMultimap argMultimap =
                 ArgumentTokenizer.tokenize(args, PREFIX_CONTACTINDEX, PREFIX_STORYINDEX);
 
-        if (!arePrefixesPresent(argMultimap, PREFIX_CONTACTINDEX, PREFIX_STORYINDEX)
-                || !argMultimap.getPreamble().isEmpty()) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, usageMessage));
+        if (argMultimap.hasPreamble()) {
+            throw new ParseException(Messages.getErrorMessageForUnexpectedPreamble(argMultimap.getPreamble()));
+        }
+
+        List<String> missingInputs = argMultimap
+                .getMissingPrefixes(PREFIX_CONTACTINDEX, PREFIX_STORYINDEX).stream()
+                .map(Prefix::toString)
+                .toList();
+        if (!missingInputs.isEmpty()) {
+            throw new ParseException(Messages.getErrorMessageForMissingRequiredInputs(
+                    missingInputs.toArray(String[]::new)));
         }
 
         argMultimap.verifyNoDuplicatePrefixesFor(PREFIX_CONTACTINDEX, PREFIX_STORYINDEX);
@@ -35,9 +42,5 @@ final class AssignmentParserUtil {
         Index contactIndex = ParserUtil.parseIndex(argMultimap.getValue(PREFIX_CONTACTINDEX).get());
 
         return new AssignmentIndices(storyIndex, contactIndex);
-    }
-
-    private static boolean arePrefixesPresent(ArgumentMultimap argumentMultimap, Prefix... prefixes) {
-        return Stream.of(prefixes).allMatch(prefix -> argumentMultimap.getValue(prefix).isPresent());
     }
 }

@@ -1,6 +1,5 @@
 package seedu.address.logic;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,18 +14,24 @@ import seedu.address.model.story.Story;
  */
 public class Messages {
 
-    public static final String MESSAGE_UNKNOWN_COMMAND = "Unknown command.";
-    public static final String MESSAGE_INVALID_PREFIX = "Invalid prefixes at indices: %s.\nUse valid prefixes: %s.";
-    public static final String MESSAGE_INVALID_USER_STRING = "Any forward slash must be escaped.";
-    public static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format!\n%1$s";
-    public static final String MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX = "The contact index provided is invalid.";
-    public static final String MESSAGE_INVALID_STORY_DISPLAYED_INDEX = "The story index provided is invalid.";
-    public static final String MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX = "The followup index provided is invalid.";
+    public static final String MESSAGE_UNKNOWN_COMMAND = "Unknown command: %s.";
+    public static final String MESSAGE_INVALID_USER_STRING =
+            "Unrecognised prefix or unescaped forward slash in \"%s\". "
+                    + "To use a forward slash as text, escape it with a backslash, e.g. \"\\/\".";
+    public static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format.";
+    public static final String MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS =
+            "This command does not accept parameters.";
+    public static final String MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX =
+            "The contact index %1$d is invalid for the displayed list of %2$d contact(s).";
+    public static final String MESSAGE_INVALID_STORY_DISPLAYED_INDEX =
+            "The story index %1$d is invalid for the displayed list of %2$d story(ies).";
+    public static final String MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX =
+            "The followup index %1$d is invalid for the displayed list of %2$d followup(s).";
     public static final String MESSAGE_CONTACTS_LISTED_OVERVIEW = "%1$d contact(s) listed!";
     public static final String MESSAGE_STORIES_LISTED_OVERVIEW = "%1$d story(ies) listed!";
     public static final String MESSAGE_FOLLOWUPS_LISTED_OVERVIEW = "%1$d followup(s) listed!";
     public static final String MESSAGE_DUPLICATE_FIELDS =
-                "Multiple values specified for the following single-valued field(s): ";
+            "The following prefix(es) should not be duplicated: ";
 
     /**
      * Returns an error message indicating the duplicate prefixes.
@@ -40,23 +45,26 @@ public class Messages {
         return MESSAGE_DUPLICATE_FIELDS + String.join(" ", duplicateFields);
     }
     /**
-     * Returns an error message indicating the invalid prefixes.
+     * Returns an error message indicating the input segment containing an unrecognised prefix or unescaped slash.
      */
-    public static String getErrorMessageForInvalidPrefixes(Prefix[] expectedPrefixes, List<Integer> invalidPositions) {
-        assert !invalidPositions.isEmpty();
+    public static String getErrorMessageForInvalidUserString(String invalidUserString) {
+        return String.format(MESSAGE_INVALID_USER_STRING, invalidUserString);
+    }
 
-        Set<String> invalidFields =
-                invalidPositions.stream()
-                        .map(String::valueOf)
-                        .collect(Collectors.toSet());
-        Set<String> validFields =
-                Stream.of(expectedPrefixes)
-                        .map(Prefix::getPrefix)
-                        .collect(Collectors.toSet());
-        return MESSAGE_INVALID_PREFIX.formatted(
-                String.join(", ", invalidFields),
-                String.join(", ", validFields)
-        );
+    /**
+     * Returns an error message listing the required inputs that were not provided.
+     */
+    public static String getErrorMessageForMissingRequiredInputs(String... missingInputs) {
+        assert missingInputs.length > 0;
+        String inputLabel = missingInputs.length == 1 ? "input" : "inputs";
+        return "Missing required " + inputLabel + ": " + String.join(", ", missingInputs) + ".";
+    }
+
+    /**
+     * Returns an error message identifying unexpected text before the first prefix.
+     */
+    public static String getErrorMessageForUnexpectedPreamble(String preamble) {
+        return "Unexpected input before the first prefix: \"" + preamble + "\".";
     }
 
     /**
@@ -70,11 +78,16 @@ public class Messages {
                 .append("; Email: ")
                 .append(contact.getEmail())
                 .append("; Address: ")
-                .append(contact.getAddress())
-                .append("; Tags: ");
-        contact.getTags().forEach(builder::append);
-        builder.append("; Stories: ");
-        contact.getStories().forEach(story -> builder.append("[").append(story).append("]"));
+                .append(contact.getAddress());
+
+        if (!contact.getTags().isEmpty()) {
+            builder.append("; Tags: ");
+            contact.getTags().forEach(builder::append);
+        }
+        if (!contact.getStories().isEmpty()) {
+            builder.append("; Stories: ");
+            contact.getStories().forEach(story -> builder.append("[").append(story).append("]"));
+        }
         return builder.toString();
     }
 

@@ -14,7 +14,7 @@ public class AssignCommandParser implements Parser<AssignCommand> {
      * @throws ParseException if the user input does not conform to the expected format
      */
     public AssignCommand parse(String args) throws ParseException {
-        AssignmentIndices indices = AssignmentParserUtil.parseIndices(args, AssignCommand.MESSAGE_USAGE);
+        AssignmentIndices indices = AssignmentParserUtil.parseIndices(args);
         return new AssignCommand(indices.getStoryIndex(), indices.getContactIndex());
     }
 

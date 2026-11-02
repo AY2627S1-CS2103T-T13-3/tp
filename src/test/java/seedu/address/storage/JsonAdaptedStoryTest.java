@@ -22,9 +22,9 @@ import seedu.address.model.tag.Tag;
 public class JsonAdaptedStoryTest {
 
     private static final String VALID_NAME = "Housing Investigation";
-    private static final String INVALID_NAME = "/Housing Investigation";
+    private static final String INVALID_NAME = " ";
     private static final String VALID_TAG = "investigation";
-    private static final String INVALID_TAG = "/investigation";
+    private static final String INVALID_TAG = " ";
 
     @Test
     public void toModelType_validStoryDetails_returnsStory() throws Exception {
@@ -34,6 +34,20 @@ public class JsonAdaptedStoryTest {
 
         assertEquals(new StoryName(VALID_NAME), modelStory.getName());
         assertTrue(modelStory.getContacts().isEmpty());
+    }
+
+    @Test
+    public void toModelType_startsWithSlash_returnsStory() throws Exception {
+        JsonAdaptedStory story = new JsonAdaptedStory(
+                "/Housing Investigation",
+                List.of(new JsonAdaptedTag("/investigation")),
+                List.of(new JsonAdaptedName("/Alex Yeoh")));
+
+        Story modelStory = story.toModelType();
+
+        assertEquals(new StoryName("/Housing Investigation"), modelStory.getName());
+        assertEquals(Set.of(new Tag("/investigation")), modelStory.getTags());
+        assertEquals(List.of(new Name("/Alex Yeoh")), modelStory.getContacts());
     }
 
     @Test
@@ -102,7 +116,7 @@ public class JsonAdaptedStoryTest {
     @Test
     public void toModelType_invalidContact_throwsIllegalValueException() {
         List<JsonAdaptedName> invalidContacts = List.of(
-                new JsonAdaptedName("/Alex Yeoh"));
+                new JsonAdaptedName(" "));
 
         JsonAdaptedStory story = new JsonAdaptedStory(
                 VALID_NAME, List.of(), invalidContacts);

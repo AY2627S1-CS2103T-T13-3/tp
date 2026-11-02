@@ -137,7 +137,7 @@ public class ArgumentTokenizer {
         String value = argsString.substring(valueStartPos, nextPrefixPosition.getStartPosition());
         String trimmed = value.trim();
         if (trimmed.replace("\\/", "").contains("/")) {
-            throw new ParseException(Messages.MESSAGE_INVALID_USER_STRING);
+            throw new ParseException(Messages.getErrorMessageForInvalidUserString(trimmed));
         }
 
         return trimmed.replace("\\/", "/");

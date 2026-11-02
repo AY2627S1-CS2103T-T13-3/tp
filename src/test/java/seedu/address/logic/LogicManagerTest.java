@@ -8,7 +8,6 @@ import static seedu.address.logic.Messages.MESSAGE_INVALID_STORY_DISPLAYED_INDEX
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.logic.commands.CommandTestUtil.ADDRESS_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.EMAIL_DESC_AMY;
-import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalContacts.AMY;
@@ -69,13 +68,15 @@ public class LogicManagerTest {
     @Test
     public void execute_invalidCommandFormat_throwsParseException() {
         String invalidCommand = "uicfhmowqewca";
-        assertParseException(invalidCommand, MESSAGE_UNKNOWN_COMMAND);
+        assertParseException(invalidCommand, String.format(MESSAGE_UNKNOWN_COMMAND, invalidCommand));
     }
 
     @Test
     public void execute_commandExecutionError_throwsCommandException() {
         String deleteCommand = "deletecontact 9";
-        assertCommandException(deleteCommand, MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                9, model.getFilteredContactList().size());
+        assertCommandException(deleteCommand, expectedMessage);
     }
 
     @Test
@@ -195,8 +196,9 @@ public class LogicManagerTest {
 
     @Test
     public void execute_invalidCommands_doesNotPersistData() {
-        assertParseException("unknownCommand", MESSAGE_UNKNOWN_COMMAND);
-        assertCommandException("deletecontact 1", MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        assertParseException("unknownCommand", String.format(MESSAGE_UNKNOWN_COMMAND, "unknownCommand"));
+        assertCommandException("deletecontact 1", String.format(MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                1, model.getFilteredContactList().size()));
 
         assertFalse(Files.exists(temporaryFolder.resolve("addressBook.json")));
         assertFalse(Files.exists(temporaryFolder.resolve("userPrefs.json")));
@@ -207,23 +209,27 @@ public class LogicManagerTest {
         logic.execute("shortcut s/ls c/list");
         logic.execute("unshortcut ls");
 
-        assertParseException("ls", MESSAGE_UNKNOWN_COMMAND);
+        assertParseException("ls", String.format(MESSAGE_UNKNOWN_COMMAND, "ls"));
     }
 
     @Test
     public void execute_assignOrUnassignEmptyContactList_throwsCommandException() {
         model.addStory(new StoryBuilder().build());
 
-        assertCommandException("assign ci/1 si/1", MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
-        assertCommandException("unassign ci/1 si/1", MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+        String expectedMessage = String.format(MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                1, model.getFilteredContactList().size());
+        assertCommandException("assign ci/1 si/1", expectedMessage);
+        assertCommandException("unassign ci/1 si/1", expectedMessage);
     }
 
     @Test
     public void execute_assignOrUnassignEmptyStoryList_throwsCommandException() {
         model.addContact(AMY);
 
-        assertCommandException("assign ci/1 si/1", MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
-        assertCommandException("unassign ci/1 si/1", MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String expectedMessage = String.format(MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                1, model.getFilteredStoryList().size());
+        assertCommandException("assign ci/1 si/1", expectedMessage);
+        assertCommandException("unassign ci/1 si/1", expectedMessage);
     }
 
     @Test
@@ -231,10 +237,14 @@ public class LogicManagerTest {
         model.addContact(AMY);
         model.addStory(new StoryBuilder().build());
 
-        assertCommandException("assign ci/2 si/1", MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
-        assertCommandException("unassign ci/2 si/1", MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
-        assertCommandException("assign ci/1 si/2", MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
-        assertCommandException("unassign ci/1 si/2", MESSAGE_INVALID_STORY_DISPLAYED_INDEX);
+        String invalidContactMessage = String.format(MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                2, model.getFilteredContactList().size());
+        String invalidStoryMessage = String.format(MESSAGE_INVALID_STORY_DISPLAYED_INDEX,
+                2, model.getFilteredStoryList().size());
+        assertCommandException("assign ci/2 si/1", invalidContactMessage);
+        assertCommandException("unassign ci/2 si/1", invalidContactMessage);
+        assertCommandException("assign ci/1 si/2", invalidStoryMessage);
+        assertCommandException("unassign ci/1 si/2", invalidStoryMessage);
     }
 
     @Test
@@ -288,6 +298,21 @@ public class LogicManagerTest {
         LogicManager cleanLogicManager = new LogicManager(testModel, testStorage);
         assertFalse(cleanLogicManager.hasDiscardedShortcuts());
         assertTrue(cleanLogicManager.getDiscardedShortcuts().isEmpty());
+    }
+
+    @Test
+    public void getContactFilterStatusProperty_returnsCorrectProperty() {
+        assertEquals(model.getContactFilterStatusProperty(), logic.getContactFilterStatusProperty());
+    }
+
+    @Test
+    public void getStoryFilterStatusProperty_returnsCorrectProperty() {
+        assertEquals(model.getStoryFilterStatusProperty(), logic.getStoryFilterStatusProperty());
+    }
+
+    @Test
+    public void getFollowupFilterStatusProperty_returnsCorrectProperty() {
+        assertEquals(model.getFollowupFilterStatusProperty(), logic.getFollowupFilterStatusProperty());
     }
 
     /**
@@ -368,7 +393,7 @@ public class LogicManagerTest {
         logic = new LogicManager(model, storage);
 
         // Triggers the saveAddressBook method by executing an add command
-        String addCommand = AddContactCommand.COMMAND_WORD + NAME_DESC_AMY + PHONE_DESC_AMY
+        String addCommand = AddContactCommand.COMMAND_WORD + " " + AMY.getName() + PHONE_DESC_AMY
                 + EMAIL_DESC_AMY + ADDRESS_DESC_AMY;
         Contact expectedContact = new ContactBuilder(AMY).withTags().build();
         ModelManager expectedModel = new ModelManager();

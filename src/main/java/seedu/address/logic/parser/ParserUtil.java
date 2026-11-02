@@ -3,7 +3,6 @@ package seedu.address.logic.parser;
 import static java.util.Objects.requireNonNull;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -130,20 +129,22 @@ public class ParserUtil {
     }
 
     /**
-     * Parses {@code Collection<String> tags} into a {@code Set<Tag>}.
+     * Parses {@code Collection<String> tags} into a {@code Set<Tag>}, ignoring empty values.
      */
     public static Set<Tag> parseTags(Collection<String> tags) throws ParseException {
         requireNonNull(tags);
         final Set<Tag> tagSet = new HashSet<>();
         for (String tagName : tags) {
-            tagSet.add(parseTag(tagName));
+            if (!tagName.isEmpty()) {
+                tagSet.add(parseTag(tagName));
+            }
         }
         return tagSet;
     }
 
     /**
      * Parses {@code tags} into a tag set for an edit operation, or returns an empty optional if no tag prefix was
-     * supplied. A single empty value represents clearing all tags.
+     * supplied. Empty values are ignored, with only empty values representing clearing all tags.
      */
     public static Optional<Set<Tag>> parseTagsForEdit(Collection<String> tags) throws ParseException {
         requireNonNull(tags);
@@ -152,10 +153,7 @@ public class ParserUtil {
             return Optional.empty();
         }
 
-        Collection<String> tagsToParse = tags.size() == 1 && tags.contains("")
-                ? Collections.emptySet()
-                : tags;
-        return Optional.of(parseTags(tagsToParse));
+        return Optional.of(parseTags(tags));
     }
 
     /**

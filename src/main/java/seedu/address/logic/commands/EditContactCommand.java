@@ -72,7 +72,8 @@ public class EditContactCommand extends AddressBookMutatingCommand {
         List<Contact> lastShownList = model.getFilteredContactList();
 
         if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                    index.getOneBased(), lastShownList.size()));
         }
 
         Contact contactToEdit = lastShownList.get(index.getZeroBased());

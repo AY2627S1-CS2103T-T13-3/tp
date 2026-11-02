@@ -51,7 +51,8 @@ public class EditFollowupCommand extends AddressBookMutatingCommand {
         requireNonNull(model);
         List<Followup> lastShownList = model.getFilteredFollowupList();
         if (index.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX);
+            throw new CommandException(String.format(Messages.MESSAGE_INVALID_FOLLOWUP_DISPLAYED_INDEX,
+                    index.getOneBased(), lastShownList.size()));
         }
 
         Followup followupToEdit = lastShownList.get(index.getZeroBased());
@@ -60,7 +61,8 @@ public class EditFollowupCommand extends AddressBookMutatingCommand {
             Index contactIndex = editFollowupDescriptor.getContactIndex().get();
             List<Contact> lastShownContacts = model.getFilteredContactList();
             if (contactIndex.getZeroBased() >= lastShownContacts.size()) {
-                throw new CommandException(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX);
+                throw new CommandException(String.format(Messages.MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX,
+                        contactIndex.getOneBased(), lastShownContacts.size()));
             }
             updatedContact = lastShownContacts.get(contactIndex.getZeroBased()).getName();
         }

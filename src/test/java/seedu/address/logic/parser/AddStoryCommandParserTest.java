@@ -1,7 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_USER_STRING;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
 
@@ -10,6 +8,7 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.logic.Messages;
 import seedu.address.logic.commands.AddStoryCommand;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryName;
@@ -36,9 +35,7 @@ public class AddStoryCommandParserTest {
      *    - T3: Multiple unique tags ("t/urgent t/breaking")
      *    - T4: Duplicate tags ("t/urgent t/breaking t/urgent" -> deduplicated)
      *    Invalid:
-     *    - T_INV1: Empty tag value ("t/")
-     *    - T_INV2: Whitespace tag ("t/   ")
-     *    - T_INV3: Forward slash in tag ("t/urgent/tag")
+     *    - T_INV1: Forward slash in tag ("t/urgent/tag")
      */
     @Test
     public void parse_allPairsCombinations_success() {
@@ -87,33 +84,41 @@ public class AddStoryCommandParserTest {
     @Test
     public void parse_edgeCaseIsolatedInvalidInputs_failure() {
         // SN_INV1: Empty or whitespace-only preamble
-        assertParseFailure(parser, "",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
-        assertParseFailure(parser, "     ",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
+        String missingStoryNameMessage = Messages.getErrorMessageForMissingRequiredInputs("story name");
+        assertParseFailure(parser, "", missingStoryNameMessage);
+        assertParseFailure(parser, "     ", missingStoryNameMessage);
 
         // SN_INV1 with valid tags: Empty preamble with tags
-        assertParseFailure(parser, " t/urgent",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
-        assertParseFailure(parser, "    t/urgent t/breaking",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, AddStoryCommand.MESSAGE_USAGE));
+        assertParseFailure(parser, " t/urgent", missingStoryNameMessage);
+        assertParseFailure(parser, "    t/urgent t/breaking", missingStoryNameMessage);
 
         // SN_INV2: Forward slash in story name
-        assertParseFailure(parser, "Invalid/Story", MESSAGE_INVALID_USER_STRING);
-        assertParseFailure(parser, "Budget / 2026", MESSAGE_INVALID_USER_STRING);
-        assertParseFailure(parser, "Invalid/Story t/urgent", MESSAGE_INVALID_USER_STRING);
+        assertParseFailure(parser, "Invalid/Story",
+                Messages.getErrorMessageForInvalidUserString("Invalid/Story"));
+        assertParseFailure(parser, "Budget / 2026",
+                Messages.getErrorMessageForInvalidUserString("Budget / 2026"));
+        assertParseFailure(parser, "Invalid/Story t/urgent",
+                Messages.getErrorMessageForInvalidUserString("Invalid/Story"));
 
-        // T_INV1: Empty tag value
-        assertParseFailure(parser, "Valid Story t/", Tag.MESSAGE_CONSTRAINTS);
-
-        // T_INV2: Whitespace only tag value
-        assertParseFailure(parser, "Valid Story t/   ", Tag.MESSAGE_CONSTRAINTS);
-
-        // T_INV3: Tag containing forward slash
-        assertParseFailure(parser, "Valid Story t/invalid/tag", MESSAGE_INVALID_USER_STRING);
+        // T_INV1: Tag containing forward slash
+        assertParseFailure(parser, "Valid Story t/invalid/tag",
+                Messages.getErrorMessageForInvalidUserString("invalid/tag"));
 
         // Valid tag followed by invalid tag in isolation
-        assertParseFailure(parser, "Valid Story t/urgent t/   ", Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "Valid Story t/urgent t/invalid/tag", MESSAGE_INVALID_USER_STRING);
+        assertParseFailure(parser, "Valid Story t/urgent t/invalid/tag",
+                Messages.getErrorMessageForInvalidUserString("invalid/tag"));
+    }
+
+    @Test
+    public void parse_emptyTagsIgnored_success() {
+        Story expectedStory = new Story(new StoryName("Valid Story"), Set.of(new Tag("urgent")));
+
+        assertParseSuccess(parser, "Valid Story t/ t/urgent t/", new AddStoryCommand(expectedStory));
+    }
+
+    @Test
+    public void parse_escapedLeadingSlashFields_success() {
+        Story expectedStory = new Story(new StoryName("/Budget 2026"), Set.of(new Tag("/urgent")));
+        assertParseSuccess(parser, " \\/Budget 2026 t/\\/urgent", new AddStoryCommand(expectedStory));
     }
 }

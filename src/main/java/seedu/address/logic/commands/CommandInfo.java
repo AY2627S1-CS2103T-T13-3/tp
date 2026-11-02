@@ -93,7 +93,11 @@ public class CommandInfo {
      */
     public Command parse(String arguments) throws ParseException {
         requireNonNull(parser, "Parser has not been configured for command: " + commandWord);
-        return parser.parse(arguments);
+        try {
+            return parser.parse(arguments);
+        } catch (ParseException pe) {
+            throw new ParseException(pe.getMessage() + "\nCommand format: " + format, pe);
+        }
     }
 
     @Override

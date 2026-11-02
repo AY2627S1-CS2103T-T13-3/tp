@@ -12,7 +12,7 @@ public class UnshortcutCommandParser implements Parser<UnshortcutCommand> {
     public UnshortcutCommand parse(String args) throws ParseException {
         String shortcut = args.trim();
         if (shortcut.isEmpty() || !shortcut.matches("\\S+")) {
-            throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, UnshortcutCommand.MESSAGE_USAGE));
+            throw new ParseException(MESSAGE_INVALID_COMMAND_FORMAT);
         }
         return new UnshortcutCommand(shortcut);
     }

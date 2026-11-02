@@ -8,7 +8,7 @@ PressMemo is a **desktop application for journalists and reporters to manage con
 This guide describes the features implemented for PressMemo v1.4.
 
 * Table of Contents
-  {:toc}
+{:toc}
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -23,18 +23,18 @@ This guide describes the features implemented for PressMemo v1.4.
 
 4. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar pressmemo.jar`.<br>
    A GUI with the **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels similar to the one below should appear in a few seconds. On the first run, the app contains sample contacts, stories and follow-ups.<br>
-   ![Ui](images/Ui.png)
+   ![Ui](images/QuickstartUi.png)
 
 5. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to open the help window.<br>
    Some example commands you can try:
 
     * `list` : Displays all contacts, stories and follow-ups.
 
-    * `addcontact n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01` : Adds a contact named `John Doe` to PressMemo.
+    * `addcontact n/Jane Smith p/91234567 e/janesmith@example.com a/Jane street, block 987, #10-10` : Adds a contact named `Jane Smith` to PressMemo.
 
-    * `assign ci/1 si/1` : Assigns the 1st displayed contact to the 1st displayed story.
+    * `assign ci/1 si/2` : Assigns the 1st displayed contact to the 2nd displayed story.
 
-    * `deletefollowup 1` : Deletes the follow-up at index 1.
+    * `deletefollowup 1` : Deletes the 1st displayed follow-up.
 
     * `shortcut s/ls c/list` : Defines `ls` as a shortcut for `list`.
 
@@ -59,9 +59,6 @@ This guide describes the features implemented for PressMemo v1.4.
   For example, `[t/TAG]…​` may be omitted, or written as `t/friend` or `t/friend t/family`.
 * Prefixed parameters can be in any order.<br>
   For example, if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
-* Each command only accepts its specified prefixes.<br>
-  For example, if the command specifies `ci/CONTACT_INDEX`, `n/NAME` will result in an error.
-* The `/` character is reserved for prefixes and cannot be used in command words, preambles and fields.
 * Extraneous parameters for commands that take no parameters, such as `help`, `exit`, `clear`, and `list`, are not allowed.<br>
   For example, `help 123` will result in an error.
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
@@ -69,22 +66,26 @@ This guide describes the features implemented for PressMemo v1.4.
 
 ### Common input types
 
-| Input type     | Definition                                                                                                                                             | Format/s                                                                                                                                                                                                             | Examples                   |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| user string    | A typed unit of text input.<br><br>Behaviour for invalid `user string`s is unspecified, and may result in unexpected behaviour such as error messages. | Valid `user string`s comprise only non-control ascii characters (0x20 - 0x7E), excluding forward slash '/' (0x2F). It cannot start with a space (0x20).<br><br>Any spaces at the end of`user string`s are truncated. | wumpus<br><br>wumpus farts |
-| word           | A `user string` that does not contain spaces                                                                                                           | Does not contain spaces.                                                                                                                                                                                             | wumpus<br><br>wumpusfarts  |
-| Contact Index  | A `word` representing the 1-based position of a `Contact` in the contact panel                                                                         | Integer between and including 1 and the number of `Contact`s in the contact panel<br><br>If the contact panel is empty, there is no valid `Contact Index`                                                            | 1                          |
-| Story Index    | A `word` representing the 1-based position of a `Story` in the story panel                                                                             | Integer between and including 1 and the number of `Story`s in the story panel<br><br>If the story panel is empty, there is no valid `Story Index`                                                                    | 2                          |
-| Followup Index | A `word` representing the 1-based position of a `Followup` in the followup panel                                                                       | Integer between and including 1 and the number of `Followup`s in the followup panel<br><br>If the followup panel is empty, there is no valid `Followup Index`                                                        | 1                          |
+| Input type        | Definition                                                                | Format/s                                                                                                                                                                                       | Examples                                      |
+|-------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
+| `user-string`     | A sequence of characters.                                                 | Must contain one or more characters, with at least one non-space character.<br><br>Any forward slash must be escaped using backslash (\\).<br><br>Any spaces at the start and end are ignored. | wumpus<br><br>wumpus farts<br><br>date 3\\/12 |
+| `word`            | A `user-string` that does not contain spaces or forward slashes.          | Must not contain spaces or forward slashes                                                                                                                                                     | wumpus<br><br>wumpus,farts!                   |
+| `contact-index`   | A number representing the position of a `Contact` in the contact panel.   | Integer between 1 and the number of `Contact`s in the contact panel<br><br>If the contact panel is empty, there is no valid `contact-index`                                                    | 1                                             |
+| `story-index`     | A number representing the position of a `Story` in the story panel.       | Integer between 1 and the number of `Story`s in the story panel<br><br>If the story panel is empty, there is no valid `story-index`                                                            | 2                                             |
+| `followup-index`  | A number representing the position of a `Followup` in the followup panel. | Integer between 1 and the number of `Followup`s in the followup panel<br><br>If the followup panel is empty, there is no valid `followup-index`                                                | 1                                             |
 
 ### Viewing help: `help`
 
-Shows a message explaining how to access the help page.
-
+Toggles the help panel which lists all default commands and their formats. 
 
 Format: `help`
 
-You can also open the help window from the **Help** menu or by pressing `F1`. For the latest instructions about story, follow-up, and shortcut commands, refer to this User Guide.
+![Ui with Help Panel](images/UiWithHelpPanel.png)
+
+* Enter `help` to open or close the help panel. The link to the user guide will also be shown in the message panel. Alternatively, use the **Help** menu at the top. 
+* Use the scrollbar or select the command panel and use the up and down arrow keys to view the command list.
+* The help panel displays only the default commands and does not include any custom shortcuts you have created. 
+* For the latest instructions about contact, story, follow-up, and shortcut commands, refer to this User Guide.
 
 ### Adding a contact: `addcontact`
 
@@ -96,7 +97,7 @@ Format: `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
 * Names contain only letters, digits, and spaces. A contact with exactly the same name already in PressMemo cannot be added.
 * Phone numbers contain between 3 and 15 digits and no other characters. Emails must have a valid `word@word` format.
 * Tag names contain only letters and digits, without spaces.
-* Adding a contact shows the full contact list.
+* Adding a contact preserves any active contact filter. The new contact will appear in the contact list if it matches the active filter.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A contact can have any number of tags, including zero.
@@ -244,7 +245,7 @@ Examples:
 
 > **Tip / Note:**
 > * No two stories can have the same name. The provided `STORY_NAME` must not already exist in PressMemo.
-> * `addstory` refreshes the story panel to show all stories in PressMemo 
+> * `addstory` preserves any active story filter; the new story will appear in the story panel if it matches the active filter.
 > * The new story starts with no assigned contacts.
 
 ### Examples
@@ -257,7 +258,7 @@ Examples:
   * **Input / Action:** `addstory find wumpus t/smelly t/at 2, 2`
   * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel with the tags "smelly" and "at 2, 2"
 
-### Common Errors & Troubleshooting (optional, feature-specific)
+### Common Errors & Troubleshooting
 
 | Error Message / Symptom                     | Cause                                                                    | How to Fix                                                                              |
 | :------------------------------------------ | :----------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
@@ -376,7 +377,7 @@ Format: `addfollowup DESCRIPTION ci/CONTACT_INDEX`
 * Follow-ups belong to contacts, not directly to stories; deleting a story does not remove a contact's follow-ups.
 * Use `listfollowups` to show all follow-ups or filter follow-ups by assigned contact in the **FOLLOW-UPS** panel.
 * Editing a contact's name updates their follow-up references. Deleting a contact also removes their follow-ups.
-* New reminders appear in the **FOLLOW-UPS** panel.
+* `addfollowup` preserves any active follow-up filter; the new reminder will appear in the **FOLLOW-UPS** panel if it matches the active filter.
 
 Examples:
 * `addfollowup Prepare interview questions ci/1`
@@ -489,6 +490,22 @@ Advanced users can update records directly by editing these JSON files while the
 If the data file is invalid or cannot be read, PressMemo starts with empty contact, story, and follow-up lists. A missing data file results in sample data. An invalid file may be overwritten after the next successful command, so restore your backup before running commands.<br>
 Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g., if a value entered is outside of the acceptable range). Therefore, edit the data files only if you are confident that you can update them correctly.
 </div>
+
+--------------------------------------------------------------------------------------------------------------------
+
+## Common Issues and Troubleshooting
+
+| Error Messages / Symptoms                                                                                                                                                                        | Causes                                                                                                                                                                 | How to Fix                                                                                                                                                       |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| <br>`The story index 100 is invalid for the displayed list of 9 story(ies).`<br>                                                                                                                 | The Contact Index, Story Index, or Followup Index provided is greater than the number of items currently displayed in the corresponding panel (or the panel is empty). | Check the index numbers displayed in the corresponding panel (Contacts, Stories, or Follow-ups). Run `list`, to show all items, if the item you need is missing. |
+| `Index must be a positive integer.`                                                                                                                                                              | The Contact Index, Story Index, or Followup Index is not a positive integer.                                                                                           | Ensure the index is a positive integer with no signs, decimals, or letters.                                                                                      |
+| `Unrecognised prefix or unescaped forward slash in "a/b". To use a forward slash as text, escape it with a backslash, e.g. "\/".`<br><br>`The following prefix(es) should not be duplicated: n/` | The provided text contains an unrecognised prefix or unescaped forward slash.                                                                                          | Only use supported prefixes, and escape forwad slashes intended to be part of a `user-string` (using \\/)                                                        |
+| `This command does not accept parameters.`                                                                                                                                                       | Unexpected text was entered after the command word (and before any prefixes).                                                                                          | Remove the extraneous text after the command word (and before any prefixes).                                                                                     |
+| `Missing required input: STORY_NAME.`                                                                                                                                                            | The command expects text input after the command word (and before any prefixes), but none was entered.                                                                 | Provide the required preamble text immediately after the command word (and before any prefixes).                                                                 |
+| `The following prefix(es) should not be duplicated: n/`                                                                                                                                          | A prefix was provided multiple times in the same command, even though at most one is supported.                                                                        | Remove duplicate prefixes.                                                                                                                                       |
+| `Missing required input: ci/.`                                                                                                             | One or more compulsory prefixes were omitted                                                                                                                           | Include all mandatory prefixes and their values as indicated in the command usage message.                                                                       |
+| `Unknown command: womp.`                                                                                                                                                                         | The `command-word` was mistyped, or uses incorrect casing.<br>`command-word`a are case-sensitive.                                                                      | Enter a valid `command-word` or shortcut.<br><br>Type `help` to view all available commands.<br><br>Type `shortcut` to view all available shortcuts.             |
+| `Data file at data\addressbook.json could not be loaded. Will be starting with an empty PressMemo.                                                                                               | The data file's contents are corrupted, or PressMemo does not have permission to read the file.                                                                        | Avoid editing the data file directly unless you know what you are doing.<br><br>Make sure you give PressMemo permissions to read and write the data file.<br>    |
 
 --------------------------------------------------------------------------------------------------------------------
 

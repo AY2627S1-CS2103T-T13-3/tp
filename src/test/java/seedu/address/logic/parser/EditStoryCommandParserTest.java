@@ -1,7 +1,5 @@
 package seedu.address.logic.parser;
 
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_USER_STRING;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_STORYNAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_STORYTAG_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_CRIME;
@@ -28,15 +26,13 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditStoryCommand;
 import seedu.address.logic.commands.EditStoryCommand.EditStoryDescriptor;
 import seedu.address.model.story.StoryName;
-import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditStoryDescriptorBuilder;
 
 public class EditStoryCommandParserTest {
 
     private static final String TAG_EMPTY = " " + PREFIX_TAG;
 
-    private static final String MESSAGE_INVALID_FORMAT =
-            String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditStoryCommand.MESSAGE_USAGE);
+    private static final String MESSAGE_INVALID_FORMAT = ParserUtil.MESSAGE_INVALID_INDEX;
     private EditStoryCommandParser parser = new EditStoryCommandParser();
 
     @Test
@@ -71,7 +67,8 @@ public class EditStoryCommandParserTest {
         assertParseFailure(parser, "1 some random string", MESSAGE_INVALID_FORMAT);
 
         // invalid prefix being parsed as preamble
-        assertParseFailure(parser, "1 i/ string", MESSAGE_INVALID_USER_STRING);
+        assertParseFailure(parser, "1 i/ string",
+                Messages.getErrorMessageForInvalidUserString("1 i/ string"));
     }
 
     @Test
@@ -79,16 +76,11 @@ public class EditStoryCommandParserTest {
         assertParseFailure(parser, "1" + INVALID_STORYNAME_DESC, StoryName.MESSAGE_CONSTRAINTS); // invalid name
         assertParseFailure(parser, "1 n/", StoryName.MESSAGE_CONSTRAINTS); // empty name
         assertParseFailure(parser, "1 n/   ", StoryName.MESSAGE_CONSTRAINTS); // whitespace name
-        assertParseFailure(parser, "1 n/Story/1", MESSAGE_INVALID_USER_STRING); // slash in name
+        assertParseFailure(parser, "1 n/Story/1",
+                Messages.getErrorMessageForInvalidUserString("Story/1")); // slash in name
 
-        assertParseFailure(parser, "1" + INVALID_STORYTAG_DESC, Tag.MESSAGE_CONSTRAINTS); // invalid tag
-        assertParseFailure(parser, "1 t/tag/1", MESSAGE_INVALID_USER_STRING); // slash in tag
-
-        // while parsing {@code PREFIX_TAG} alone will reset the tags of the {@code Story} being edited,
-        // parsing it together with a valid tag results in error
-        assertParseFailure(parser, "1" + TAG_DESC_SINGAPORE + TAG_DESC_MALAYSIA + TAG_EMPTY, Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1" + TAG_DESC_SINGAPORE + TAG_EMPTY + TAG_DESC_MALAYSIA, Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1" + TAG_EMPTY + TAG_DESC_SINGAPORE + TAG_DESC_MALAYSIA, Tag.MESSAGE_CONSTRAINTS);
+        assertParseFailure(parser, "1 t/tag/1",
+                Messages.getErrorMessageForInvalidUserString("tag/1")); // slash in tag
 
         // multiple invalid values, but only the first invalid value is captured
         assertParseFailure(parser, "1" + INVALID_STORYNAME_DESC + INVALID_STORYTAG_DESC,
