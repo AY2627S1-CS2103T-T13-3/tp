@@ -101,6 +101,7 @@ This guide describes the features implemented for PressMemo v1.4.
 `addcontact NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]…​`
 
 #### Parameters
+
 | Parameter  | Type           | Description                         | Examples              |
 |------------|----------------|-------------------------------------|-----------------------|
 | `NAME`     | `user-string`  | Name of the contact to add          | Jane Smith            |
@@ -317,6 +318,7 @@ This command does not accept parameters. Any extraneous characters will result i
 `findcontact KEYWORD [MORE_KEYWORDS]`
 
 #### Parameters & Constraints
+
 | Parameter       | Type   | Description                                        |
 |-----------------|--------|----------------------------------------------------|
 | `KEYWORD`       | `word` | The word to search for in the contact names        |
