@@ -264,6 +264,58 @@ Examples:
 | :------------------------------------------ | :----------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
 | Error: there is already a story named {xxx} | Trying to add a story named {xxx} when {xxx} already exists in PressMemo | delete the existing story named {xxx} first<br><br>OR<br><br>use a different story name |
 
+### Editing a story: `editstory`
+
+- **Objective:** Updates the name or tags of an existing story.
+
+#### Usage / Command Format
+
+`editstory INDEX [n/STORY_NAME] [t/TAG]…`
+
+#### Parameters & Constraints
+
+| Parameter        | Type          | Description                                                   | Examples              |
+| :--------------- | :------------ | :------------------------------------------------------------ | :-------------------- |
+| `INDEX`          | `story-index` | Story to edit from the displayed **STORIES** panel            | `1`                   |
+| `n/STORY_NAME`   | `user-string` | New story name                                                | Election investigation |
+| `t/TAG`          | `user-string` | New tag for the story; repeat to replace the tags with several tags | urgent                |
+
+> **Tip / Note:**
+> * Provide at least one of `n/STORY_NAME` or `t/TAG`.
+> * Values not supplied are preserved.
+> * Supplying one or more `t/TAG` values replaces all existing tags.
+>   * Empty `t/` values are ignored. For example, `editstory 2 t/ t/urgent t/politics` replaces the tags with `urgent` and `politics`.
+>   * If every supplied `t/` value is empty, such as `t/` or `t/ t/`, all tags are removed.
+> * The new name must not duplicate another story's name.
+> * Editing a story preserves its assigned contacts and updates the story name shown in those contacts' assignments.
+> * The current story filter is preserved. If the edited name no longer matches the filter, the story is no longer displayed but remains saved in PressMemo.
+
+#### Examples
+
+* **Example 1: Rename a story**
+  * **Input / Action:** `editstory 1 n/Election investigation`
+  * **Expected Outcome:** Changes the first displayed story's name to `Election investigation` while preserving its tags and assigned contacts.
+
+* **Example 2: Replace a story's tags**
+  * **Input / Action:** `editstory 2 t/urgent t/politics`
+  * **Expected Outcome:** Replaces the second displayed story's tags with `urgent` and `politics` while preserving its name and assigned contacts.
+
+* **Example 3: Include empty and non-empty tag values**
+  * **Input / Action:** `editstory 2 t/ t/urgent t/politics`
+  * **Expected Outcome:** Replaces the second displayed story's tags with `urgent` and `politics`; the empty `t/` value is ignored.
+
+* **Example 4: Remove all tags**
+  * **Input / Action:** `editstory 1 t/`
+  * **Expected Outcome:** Removes all tags from the first displayed story while preserving its name and assigned contacts.
+
+#### Common Errors & Troubleshooting
+
+| Error Message / Symptom | Cause | How to Fix |
+| :--- | :--- | :--- |
+| `At least one field to edit must be provided.` | Neither `n/STORY_NAME` nor `t/TAG` was supplied. | Provide a new name, one or more tags, or `t/` to clear all tags. |
+| `Error: there is already a story named "Election investigation"!` | Another story already has the requested name. | Choose a different story name. |
+| `Story names should not be blank or start with whitespace` | The supplied story name is blank. | Provide a non-blank story name. |
+
 ## Filter stories by name: `findstories`
 
 - **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and displays them in the story panel.
@@ -662,6 +714,7 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 | **Delete story**                  | `deletestory INDEX`<br> e.g., `deletestory 2`                                                                                                                                       |
 | **Edit**                          | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`                                          |
 | **Edit follow-up**                | `editfollowup INDEX [d/DESCRIPTION] [ci/CONTACT_INDEX]`<br> e.g., `editfollowup 1 d/Call tomorrow ci/2`                                                                             |
+| **Edit story**                    | `editstory INDEX [n/STORY_NAME] [t/TAG]…​`<br> e.g., `editstory 1 n/Election investigation t/urgent`                                                                            |
 | **Find**                          | `findcontact KEYWORD [MORE_KEYWORDS]`<br> e.g., `findcontact James Jake`                                                                                                            |
 | **Find follow-ups**               | `findfollowups KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findfollowups interview meeting`                                                                                              |
 | **Find stories**                  | `findstories STORY_NAME [MORE_KEYWORDS]...`<br> e.g., `findstories Housing Investigation`                                                                                           |
