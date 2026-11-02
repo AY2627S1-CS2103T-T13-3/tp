@@ -117,7 +117,6 @@ public class ModelManager implements Model {
     @Override
     public void addContact(Contact contact) {
         addressBook.addContact(contact);
-        updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS);
     }
 
     @Override
@@ -140,7 +139,6 @@ public class ModelManager implements Model {
     @Override
     public void addStory(Story story) {
         addressBook.addStory(story);
-        updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES);
     }
 
     @Override
@@ -182,7 +180,6 @@ public class ModelManager implements Model {
     @Override
     public void addFollowup(Followup followup) {
         addressBook.addFollowup(followup);
-        updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
     }
 
     @Override
