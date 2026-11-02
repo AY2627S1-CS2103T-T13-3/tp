@@ -193,15 +193,15 @@ The assign feature establishes a bidirectional link between an existing contact 
 
 #### Model Execution Details
 
-Unlike creation or deletion commands where parsing constitutes the primary logic flow, the assign command's core complexity lies in the `Model` component, which maintains immutability and bidirectional consistency across `Person` and `Story` instances.
+Unlike creation or deletion commands where parsing constitutes the primary logic flow, the assign command's core complexity lies in the `Model` component, which maintains immutability and bidirectional consistency across `Contact` and `Story` instances.
 
 When `AssignCommand#execute(model)` is invoked:
-1. `AssignCommand` retrieves the target `Person` and `Story` from the filtered lists using the provided indices.
+1. `AssignCommand` retrieves the target `Contact` and `Story` from the filtered lists using the provided indices.
 2. `AssignCommand` calls `Model#assignStory(target, story)`.
 3. `ModelManager` delegates this call to `AddressBook#assignStory(target, story)`.
-4. `AddressBook` invokes `target.assign(story)`, returning a new immutable `Person` containing the updated story set.
-5. `AddressBook` invokes `story.assign(target)`, returning a new immutable `Story` containing the updated person set.
-6. `AddressBook` replaces the old `Person` and `Story` in `UniquePersonList` and `UniqueStoryList` with their updated immutable counterparts.
+4. `AddressBook` invokes `target.assign(story)`, returning a new immutable `Contact` containing the updated story set.
+5. `AddressBook` invokes `story.assign(target)`, returning a new immutable `Story` containing the updated contact set.
+6. `AddressBook` replaces the old `Contact` and `Story` in `UniqueContactList` and `UniqueStoryList` with their updated immutable counterparts.
 7. `AssignCommand` resets the filtered contact and story lists so the updated entries are reflected across the interface.
 
 The sequence diagram below illustrates the interactions within the `Model` component during the execution of `assign ci/1 si/1`:
@@ -212,12 +212,12 @@ The sequence diagram below illustrates the interactions within the `Model` compo
 
 **Aspect: How associations between contacts and stories are stored:**
 
-* **Alternative 1 (current choice):** Bidirectional references inside `Person` and `Story` models.
+* **Alternative 1 (current choice):** Bidirectional references inside `Contact` and `Story` models.
   * Pros: Direct and efficient lookups when rendering contact cards and story cards in the UI without requiring joint table queries or complex searches.
   * Cons: Both entities must be updated concurrently in `AddressBook` whenever an assignment, unassignment, contact edit, or story edit occurs.
 
 * **Alternative 2:** Separate association list or join table in `AddressBook`.
-  * Pros: Decouples `Person` and `Story` models from referencing each other directly.
+  * Pros: Decouples `Contact` and `Story` models from referencing each other directly.
   * Cons: Increases overhead for looking up relationships and requires managing a separate association list during serialization and deserialization.
 ## `addstory`
 
@@ -333,8 +333,168 @@ The sequence diagram below illustrates the interactions within the Logic and Mod
 5. `LogicManager` executes the `ListFollowupsCommand` object.
 6. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the ActiveContactList from `Model` and obtains the Contact corresponding to `CONTACT_INDEX`
 7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` request Model to update the ActiveFollowupFilter to match follow-ups linked to the specified Contact. Else, `ListFollowupsCommand` request Model to update ActiveFollowupFilter to match the whole ArchiveFollowupList
-8. `Model` refreshes the ActiveStoryList for the updated ActiveFollowupFilter.
+8. `Model` refreshes the ActiveFollowupList for the updated ActiveFollowupFilter.
 9. `UI` updates the follow-up panel accordingly.
+
+## `editcontact`
+
+- **Objective:** Edits the details of an existing contact in PressMemo.
+
+<img src="images/editcontact-example.png" width="726" />
+
+### API
+
+* **Command:** `editcontact INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`
+* **Parameters**: refer to [user guide](UserGuide.md#editing-a-contact-editcontact)
+* **Description:**
+	* Replaces specified field values of the contact identified by `INDEX` in the displayed contact list and synchronizes linked story assignments and follow-up references.
+* **Preconditions:** 
+	* `INDEX` must be a valid positive 1-based integer within the range of the displayed contact list.
+	* At least one field to edit (`n/`, `p/`, `e/`, `a/`, `t/`) must be provided.
+	* If `n/NAME` is provided, the new name must not be identical to another existing contact in PressMemo.
+* **Postconditions:** 
+	* The target contact in ArchiveContactList is updated with the specified field values.
+	* If the contact name changed, all assigned `Story` records in ArchiveStoryList and all linked `Followup` records in ArchiveFollowupList are updated with the new name.
+	* ActiveContactList filter is preserved so the contact remains displayed if it satisfies the active filter.
+* **Exceptions:** 
+	* if no field prefixes are provided: displays error message for ParseException (`At least one field to edit must be provided.`)
+	* if `INDEX` is not a positive integer: displays error message for ParseException (`Index must be a positive integer.`)
+	* if `INDEX` is greater than the displayed list size: displays error message for CommandException (`The contact index %1$d is invalid for the displayed list of %2$d contact(s).`)
+	* if the edited name duplicates another existing contact: displays error message for CommandException (`Error: there is already a contact named "%1$s"!`)
+	* if field constraints are violated: displays error message for ParseException (e.g. `Phone numbers should not be blank or start with whitespace`)
+
+### Implementation details
+
+The sequence diagram below illustrates the interactions within the Logic and Model components when executing `editcontact 1 n/Betsy`:
+
+![EditContactSequenceDiagram](images/EditContactSequenceDiagram.png)
+
+#### Execution flow
+
+1. The user enters `editcontact 1 n/Betsy` into the command bar.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates an `EditContactCommandParser` to parse the arguments.
+4. `EditContactCommandParser` tokenizes prefixes, parses index `1`, creates an `EditContactDescriptor` with the new name, and returns an `EditContactCommand` object.
+5. `LogicManager` executes the `EditContactCommand` with `model`.
+6. `EditContactCommand` retrieves the displayed contact list from `Model#getFilteredContactList()` and obtains the contact at index `1`.
+7. `EditContactCommand` creates `editedContact` using `EditContactDescriptor#createEditedContact(contactToEdit)`.
+8. `EditContactCommand` verifies that `model.hasContact(editedContact)` is false (ensuring the new name is unique).
+9. `EditContactCommand` calls `Model#setContact(contactToEdit, editedContact)`.
+10. `ModelManager` notifies `activeStoryFilter` and `activeFollowupFilter` of the contact update, then delegates to `AddressBook#setContact(contactToEdit, editedContact)`.
+11. `AddressBook` updates the contact in `UniqueContactList`, updates assigned contacts in `UniqueStoryList`, and updates contact names on all associated `Followup` items in `UniqueFollowupList`.
+12. `EditContactCommand` returns a `CommandResult` containing the edited contact details to `LogicManager`.
+
+### Design Considerations
+
+- **Aspect: Tag replacement vs incremental modification**
+
+|          | Chosen                                                                                                                                                                             | Alternative                                                                                           |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Pros** | **Atomic replacement** (`t/TAG` replaces all existing tags, `t/` clears all tags) provides predictable, stateless behavior and mirrors standard CLI parameter replacement semantics. | **Incremental tag modification** preserves existing tags effortlessly when adding single tags.        |
+| **Cons** | Users must re-enter existing tags alongside new tags when adding tags to a contact with many existing classifications.                                                             | Increases parsing complexity (requiring distinct `+t/` vs `-t/` syntax or separate tagging commands). |
+
+## `listcontacts`
+
+- **Objective:** Lists all contacts in PressMemo, or filters contacts assigned to a specified story in the Active Story List.
+
+<img src="images/listcontacts-example.png" width="726" />
+
+### API
+
+* **Command:** `listcontacts [si/STORY_INDEX]`
+* **Parameters**: refer to [user guide](UserGuide.md#listing-contacts-listcontacts)
+* **Description:**
+	* Updates the ActiveContactList to display either all contacts from the ArchiveContactList or only those associated with the story identified by `STORY_INDEX`.
+* **Preconditions:** 
+	* If `si/STORY_INDEX` is specified, `STORY_INDEX` must be a valid positive 1-based index within the bounds of the displayed story list.
+* **Postconditions:** 
+	* If no `si/STORY_INDEX` is provided, ActiveContactFilter matches all contacts.
+	* If `STORY_INDEX` is provided, ActiveContactFilter matches only contacts assigned to the story identified by `STORY_INDEX`.
+	* ActiveContactList is refreshed for the updated ActiveContactFilter.
+	* The contact panel header filter badge updates dynamically (e.g. `[All]` vs `[Filtered by story: "..."]`).
+	* ArchiveContactList, ActiveStoryList, and ActiveFollowupList are unchanged.
+* **Exceptions:** 
+	* if `STORY_INDEX` is not a positive integer: displays error message for ParseException (`Index must be a positive integer.`)
+	* if `STORY_INDEX` is greater than the displayed story count: displays error message for CommandException (`The story index %1$d is invalid for the displayed list of %2$d story(ies).`)
+	* if duplicate `si/` prefixes are entered: displays error message for ParseException (`The following prefix(es) should not be duplicated: si/`)
+
+### Implementation details
+
+#### Execution flow
+
+1. The user enters the `listcontacts` command as an input string.
+2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
+3. `AddressBookParser` creates a `ListContactsCommandParser` to parse the command arguments.
+4. `ListContactsCommandParser` parses the optional `si/` prefix. If present, it extracts the story index and creates a `ListContactsCommand(Index)` object; otherwise, it creates `ListContactsCommand()`.
+5. `LogicManager` executes the `ListContactsCommand` object.
+6. If a story index is specified:
+   a. `ListContactsCommand` retrieves the target story from `Model#getFilteredStoryList()`.
+   b. It creates a `ContactAssignedToStoryPredicate` initialized with the target story.
+   c. It calls `Model#updateFilteredContactList(predicate)`.
+7. If no story index is specified:
+   a. `ListContactsCommand` calls `Model#updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS)`.
+8. `Model` updates `contactFilterStatusProperty`, causing the UI badge in `MainWindow` to reactively update its label and CSS styling.
+9. `UI` displays the updated contact list and returns the command feedback in the message panel.
+
+### Design Considerations
+
+- **Aspect: Filter persistence when contacts or stories are edited**
+
+|          | Chosen                                                                                                                                                                          | Alternative                                                                                             |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **Pros** | **Updating predicate targets** dynamically when contacts/stories are edited keeps the user's filtered view intact without unexpectedly resetting to all contacts.             | **Resetting filter to All** on any edit is simpler to implement.                                        |
+| **Cons** | Requires model logic to detect whether an active predicate targets an entity undergoing modification and refresh the predicate reference.                                      | Disrupts the user's workflow by closing the filtered view whenever a minor update (e.g. phone) is made. |
+
+## `shortcut`
+
+- **Objective:** Lists all user-defined command shortcuts, or creates/updates a 1-to-1 shortcut alias for a PressMemo command word.
+
+<img src="images/shortcut-example.png" width="726" />
+
+### API
+
+* **Command:** `shortcut` (to list shortcuts) or `shortcut s/SHORTCUT c/COMMAND` (to assign a shortcut)
+* **Parameters**: refer to [user guide](UserGuide.md#listing-shortcuts-shortcut)
+* **Description:**
+	* When invoked without parameters, lists all assigned shortcuts sorted alphabetically by shortcut name.
+	* When invoked with `s/` and `c/`, creates or reassigns a 1-to-1 alias mapping between a shortcut token and a built-in command word.
+* **Preconditions:** 
+	* For assignment: `SHORTCUT` must not be blank, contain whitespace, or contain forward slashes (`/`), and cannot match a built-in command word. `COMMAND` must be an assignable PressMemo command word.
+* **Postconditions:** 
+	* For listing: User preferences and model data are unchanged. The sorted list of shortcuts is output to the message panel.
+	* For assignment: The new shortcut mapping is saved to `UserPrefs` immediately, and any existing shortcut mapped to the same command is replaced.
+* **Exceptions:** 
+	* if extraneous arguments or invalid prefix format: displays error message for ParseException (`Invalid command format.`)
+	* if `SHORTCUT` matches a built-in command word: displays error message for CommandException (`The shortcut "%1$s" is a built-in command and cannot be reassigned.`)
+	* if `SHORTCUT` contains whitespace or forward slashes: displays error message for CommandException (`The shortcut "%1$s" cannot contain whitespace or forward slashes.`)
+	* if `COMMAND` is not an assignable command: displays error message for CommandException (`Unknown command: %s.`)
+
+### Implementation details
+
+The sequence diagram below illustrates the interactions when the user executes the `shortcut` command in listing mode:
+
+![ShortcutListSequenceDiagram](images/ShortcutListSequenceDiagram.png)
+
+#### Execution flow (Listing mode)
+
+1. The user enters `shortcut` into the command bar without arguments.
+2. `LogicManager` passes the input string to `AddressBookParser`.
+3. `AddressBookParser` invokes `ShortcutCommandParser#parse("")`.
+4. `ShortcutCommandParser` detects no arguments (or only whitespace) and returns `new ShortcutCommand()`.
+5. `LogicManager` executes the `ShortcutCommand`.
+6. `ShortcutCommand` queries `Model#getShortcuts()`, which returns the current shortcut mappings stored in `UserPrefs`.
+7. If the shortcut map is empty, `ShortcutCommand` returns a `CommandResult` with `MESSAGE_NO_SHORTCUTS`.
+8. If shortcuts are present, `ShortcutCommand` sorts the entries alphabetically by shortcut name, formats each entry as `shortcut -> commandWord`, and constructs the output message.
+9. `UI` displays the formatted list in the message panel.
+
+### Design Considerations
+
+- **Aspect: 1-to-1 Bijective Mapping Constraint**
+
+|          | Chosen                                                                                                                                                                                | Alternative                                                                          |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Pros** | **1-to-1 bidirectional mapping** ensures predictable, unambiguous alias lookups and clean reverse lookups in the UI and help commands. Reassigning automatically removes stale aliases. | **Many-to-one mapping** allows multiple shortcuts for the same command word.        |
+| **Cons** | Users cannot have multiple aliases for the same command (e.g. both `c` and `cls` for `clear`).                                                                                       | Increases chance of user confusion and bloats the shortcut list in small interfaces. |
 
 ### \[Proposed\] Undo/redo feature
 
@@ -489,6 +649,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | senior journalist                                              | assign a role to a contact                                   | record the type of liaison or source relationship involved                               |
 | `* *`    | journalist communicating with different contacts               | record a contact's preferred contact method                  | know the best way to reach each source                                                   |
 | `* *`    | journalist managing sources known by different names           | record a contact's alias                                     | identify the same contact when a different name is used                                  |
+| `* *`    | journalist managing contacts with evolving classifications     | add new tags to a contact without replacing existing tags    | maintain and expand a contact's classifications incrementally without re-entering all current tags |
 | `* *`    | journalist adding a new source                                 | receive a duplicate-contact warning                          | avoid creating records with an existing phone number or email address                    |
 | `* *`    | journalist who often contacts certain sources                  | mark a contact as a favourite                                | access frequently used contacts more easily                                              |
 | `* *`    | journalist with inactive sources                               | archive and restore contacts                                 | keep inactive records available without cluttering the active list                       |
@@ -535,33 +696,35 @@ Use case ends.
 - System will inform the user in the console that an invalid name was used
 - Use case ends
 
-#### Use Case: UC2 - List contacts matching a filter
+#### Use Case: UC2 - List contacts (all or assigned to a story)
 
 Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS and Ext. 2a, the ActiveContactList is updated to include exactly the contacts that match the specified filter
-- The ActiveStoryList and story panel remain unchanged
+- At the end of MSS, the ActiveContactList is updated to show either all contacts from ArchiveContactList (if no story index is specified) or only the contacts assigned to the specified story in the ActiveStoryList.
+- The ActiveStoryList and ActiveFollowupList remain unchanged.
 
 ##### MSS:
 
-1. User specifies the filter
-2. User requests to list all contacts matching the filter
-3. System updates the contact panel to display the matching contacts
+1. User requests to list contacts, optionally specifying a story index (`si/STORY_INDEX`).
+2. If a story index was specified, System updates ActiveContactFilter to match only contacts assigned to that story. Otherwise, System updates ActiveContactFilter to match all contacts.
+3. System refreshes ActiveContactList and updates the contact panel.
+4. System informs the user in the console that contacts have been listed.
 
 Use case ends.
 
 ##### Extensions:
 
-1a. User specifies an undefined filter
+1a. User specifies an invalid story index (not a positive integer or larger than the number of stories displayed).
 
-- System will inform the user in the console that the specified filter is invalid.
+- 1a1. System informs the user in the console of the invalid index.
 - Use case ends.
 
-2a. There are no contacts matching the filter.
+2a. There are no contacts assigned to the specified story.
 
-- System will inform the user in the contact panel that there are no matching contacts
+- 2a1. System updates the contact panel to display an empty list.
+- 2a2. System informs the user in the console that 0 contacts are listed (`0 contact(s) listed!`).
 - Use case ends.
 
 #### Use Case: UC3 - List stories matching a filter
@@ -691,6 +854,53 @@ Use case ends.
 - PressMemo shows an error message.
 - Use case resumes at step 2.
 
+#### Use Case: UC7 - Edit a contact
+
+Actor: User
+
+##### Guarantees:
+
+- At the end of MSS, the specified contact in the ArchiveContactList is updated with the new details.
+- Any assigned stories and follow-ups associated with the contact are updated with the new contact name if the name is modified.
+- Active filters on contacts, stories, or follow-ups referencing this contact are updated accordingly.
+
+##### MSS:
+
+1. User requests to list contacts.
+2. System displays a list of contacts in the contact panel.
+3. User requests to edit a specific contact by providing its displayed index and one or more field values to update.
+4. System updates the contact in the ArchiveContactList and updates linked stories and follow-ups.
+5. System refreshes the contact panel with the updated details.
+6. System informs the user in the console that the contact has been successfully edited.
+
+Use case ends.
+
+##### Extensions:
+
+1a. The contact list is empty.
+
+- Use case ends.
+
+3a. User provides an invalid contact index (not a positive integer or larger than the number of contacts displayed).
+
+- 3a1. System informs the user in the console of the invalid index.
+- Use case ends.
+
+3b. User does not specify any fields to edit.
+
+- 3b1. System informs the user in the console that at least one field to edit must be provided.
+- Use case ends.
+
+3c. User provides an invalid field value (e.g., invalid phone format, invalid email format, invalid tag name, unescaped forward slash).
+
+- 3c1. System informs the user in the console of the specific field constraints.
+- Use case ends.
+
+3d. The edited contact's name duplicates another existing contact's name in the ArchiveContactList.
+
+- 3d1. System informs the user in the console that a contact with this name already exists.
+- Use case ends.
+
 #### Use Case: UC8 - Find stories by keywords
 
 Actor: User
@@ -782,6 +992,29 @@ Use case ends.
 
 - 2a1. System updates the followup panel to display an empty list.
 - 2a2. System informs the user in the console that 0 follow-ups are listed (`0 followup(s) listed!`).
+- Use case ends.
+
+#### Use Case: UC11 - List command shortcuts
+
+Actor: User
+
+##### Guarantees:
+
+- Active shortcuts currently saved in User Preferences are retrieved and displayed in the message panel without modifying any contact, story, or follow-up data.
+
+##### MSS:
+
+1. User requests to list shortcuts by entering the `shortcut` command without parameters.
+2. System retrieves the user's configured shortcuts from user preferences.
+3. System displays the formatted list of shortcuts alphabetically in the message panel.
+
+Use case ends.
+
+##### Extensions:
+
+2a. No shortcuts have been configured yet.
+
+- 2a1. System informs the user in the message panel that no shortcuts are set (`No shortcuts have been set yet. Use 'shortcut s/SHORTCUT c/COMMAND' to assign one.`).
 - Use case ends.
 
 ### Non-Functional Requirements
