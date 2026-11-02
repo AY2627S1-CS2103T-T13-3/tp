@@ -828,6 +828,14 @@ Examples:
 * **Example 2:** Add a shortcut assignment
   * **Input / Action:** `shortcut s/a c/addcontact` 
   * **Expected Outcome:** Assigns `a` as a shortcut for `addcontact`. You can then enter `a John Tan p/91234567 e/john@example.com a/Singapore` to add a contact.
+  
+#### Common Errors & Troubleshooting
+
+| Error Message / Symptom                                             | Cause                                                 | How to Fix                                                   |
+|:--------------------------------------------------------------------|:------------------------------------------------------|:-------------------------------------------------------------|
+| `{xxx} is a built-in command word and cannot beused as a shortcut.` | The shortcut matches a built-in command word.         | Choose a shortcut alias that is not a built-in command word. |
+| `The shortcut {xxx} cannot contain whitespace or forward slashes.`  | The shortcut contains spaces or forward slashes.      | Choose a shotcut alias that does not contain spaces or `/`.  |
+| `{xxx} is not a command that can be assgined a shortcut.`           | The command word is not recognized or not assignable. | Provide a valid assignable PressMemo command word.           |
 
 ### Removing a command shortcut: `unshortcut`
 
