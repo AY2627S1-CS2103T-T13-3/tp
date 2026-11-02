@@ -124,8 +124,8 @@ public class JsonUserPrefsStorageTest {
     }
 
     @Test
-    public void readUserPrefs_invalidShortcutsInFile_invalidShortcutsDiscarded() throws Exception {
-        String prefsWithInvalidShortcuts = "{\n"
+    public void readUserPrefs_shortcutsInFile_readCorrectly() throws Exception {
+        String prefsWithShortcuts = "{\n"
                 + "  \"guiSettings\" : {\n"
                 + "    \"windowWidth\" : 1000.0,\n"
                 + "    \"windowHeight\" : 500.0,\n"
@@ -138,21 +138,23 @@ public class JsonUserPrefsStorageTest {
                 + "  \"shortcuts\" : {\n"
                 + "    \"shortcutToCommandWord\" : {\n"
                 + "      \"ls\" : \"list\",\n"
-                + "      \"inv space\" : \"list\",\n"
-                + "      \"inv/slash\" : \"list\",\n"
+                + "      \"inv space\" : \"findstories\",\n"
+                + "      \"inv/slash\" : \"findcontacts\",\n"
                 + "      \"cl\" : \"clear\"\n"
                 + "    }\n"
                 + "  }\n"
                 + "}";
 
-        Path prefsFilePath = testFolder.resolve("InvalidShortcutsPrefs.json");
-        Files.writeString(prefsFilePath, prefsWithInvalidShortcuts);
+        Path prefsFilePath = testFolder.resolve("ShortcutsPrefs.json");
+        Files.writeString(prefsFilePath, prefsWithShortcuts);
 
         JsonUserPrefsStorage jsonUserPrefsStorage = new JsonUserPrefsStorage(prefsFilePath);
         UserPrefs readBack = jsonUserPrefsStorage.readUserPrefs().get();
 
         Map<String, String> expectedShortcuts = Map.of(
                 "ls", "list",
+                "inv space", "findstories",
+                "inv/slash", "findcontacts",
                 "cl", "clear"
         );
         assertEquals(expectedShortcuts, readBack.getShortcuts());

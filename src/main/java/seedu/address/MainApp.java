@@ -42,7 +42,7 @@ public class MainApp extends Application {
     public static final String MESSAGE_PREFERENCES_CORRUPTED = "Preference file at %s could not be loaded."
             + " Using default preferences.";
     public static final String MESSAGE_INVALID_SHORTCUTS_DISCARDED = "Invalid shortcuts detected in %s "
-            + "were discarded.";
+            + "were discarded: %s";
 
     private static final Logger logger = LogsCenter.getLogger(MainApp.class);
     private static final Path USER_PREFS_FILE_PATH = Paths.get("preferences.json");
@@ -84,7 +84,8 @@ public class MainApp extends Application {
             Path prefsPath = storage != null && storage.getUserPrefsFilePath() != null
                     ? storage.getUserPrefsFilePath()
                     : USER_PREFS_FILE_PATH;
-            String errorMsg = String.format(MESSAGE_INVALID_SHORTCUTS_DISCARDED, prefsPath);
+            String discardedList = String.join(", ", logicManager.getDiscardedShortcuts());
+            String errorMsg = String.format(MESSAGE_INVALID_SHORTCUTS_DISCARDED, prefsPath, discardedList);
             logger.warning(errorMsg);
             initialLoadErrors.add(errorMsg);
         }

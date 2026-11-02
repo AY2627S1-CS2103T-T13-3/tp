@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -269,6 +270,8 @@ public class LogicManagerTest {
         testModel.assignShortcut("ls", "list");
         testModel.assignShortcut("exit", "clear");
         testModel.assignShortcut("inv", "notACommand");
+        testModel.assignShortcut("inv/slash", "findcontacts");
+        testModel.assignShortcut("inv space", "findstories");
 
         JsonAddressBookStorage addressBookStorage =
                 new JsonAddressBookStorage(temporaryFolder.resolve("addressBook.json"));
@@ -279,10 +282,12 @@ public class LogicManagerTest {
         LogicManager testLogicManager = new LogicManager(testModel, testStorage);
 
         assertTrue(testLogicManager.hasDiscardedShortcuts());
+        assertEquals(List.of("exit", "inv", "inv/slash", "inv space"), testLogicManager.getDiscardedShortcuts());
         assertEquals(Map.of("ls", "list"), testModel.getShortcuts());
 
         LogicManager cleanLogicManager = new LogicManager(testModel, testStorage);
         assertFalse(cleanLogicManager.hasDiscardedShortcuts());
+        assertTrue(cleanLogicManager.getDiscardedShortcuts().isEmpty());
     }
 
     /**

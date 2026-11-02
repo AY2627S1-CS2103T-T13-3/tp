@@ -163,14 +163,16 @@ public class MainAppTest {
         StorageManager storageManager = new StorageManager(abStorage, prefsStorage);
 
         Model model = new ModelManager();
-        model.assignShortcut("exit", "list");
+        model.assignShortcut("exit", "clear");
+        model.assignShortcut("inv/slash", "list");
 
         Logic logic = mainApp.initLogicManager(model, storageManager);
         assertNotNull(logic);
 
         List<String> errors = mainApp.getInitialLoadErrors();
         assertEquals(1, errors.size());
-        String expectedMessage = String.format(MainApp.MESSAGE_INVALID_SHORTCUTS_DISCARDED, prefsPath);
+        String expectedMessage = String.format(MainApp.MESSAGE_INVALID_SHORTCUTS_DISCARDED, prefsPath,
+                "exit, inv/slash");
         assertEquals(expectedMessage, errors.get(0));
         assertEquals(expectedMessage, mainApp.getInitialLoadMessage());
     }

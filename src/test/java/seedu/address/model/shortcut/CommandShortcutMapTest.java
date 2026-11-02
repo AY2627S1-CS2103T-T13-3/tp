@@ -12,48 +12,14 @@ import org.junit.jupiter.api.Test;
 public class CommandShortcutMapTest {
 
     @Test
-    public void isValidShortcutPattern() {
-        assertFalse(CommandShortcutMap.isValidShortcutPattern(null));
-        assertFalse(CommandShortcutMap.isValidShortcutPattern(""));
-        assertFalse(CommandShortcutMap.isValidShortcutPattern(" "));
-        assertFalse(CommandShortcutMap.isValidShortcutPattern("a b"));
-        assertFalse(CommandShortcutMap.isValidShortcutPattern("/"));
-        assertFalse(CommandShortcutMap.isValidShortcutPattern("/a"));
-        assertFalse(CommandShortcutMap.isValidShortcutPattern("a/"));
-        assertFalse(CommandShortcutMap.isValidShortcutPattern("a/b"));
-
-        assertTrue(CommandShortcutMap.isValidShortcutPattern("a"));
-        assertTrue(CommandShortcutMap.isValidShortcutPattern("ab"));
-        assertTrue(CommandShortcutMap.isValidShortcutPattern("ab1"));
-        assertTrue(CommandShortcutMap.isValidShortcutPattern("1a"));
-        assertTrue(CommandShortcutMap.isValidShortcutPattern("a-b"));
-        assertTrue(CommandShortcutMap.isValidShortcutPattern("Abc"));
-        assertTrue(CommandShortcutMap.isValidShortcutPattern("ABC"));
-        assertTrue(CommandShortcutMap.isValidShortcutPattern("list"));
-    }
-
-    @Test
-    public void assignShortcut_invalidSyntax_returnsFalseAndNotAdded() {
-        CommandShortcutMap shortcuts = new CommandShortcutMap();
-
-        assertFalse(shortcuts.assignShortcut("a b", "list"));
-        assertFalse(shortcuts.assignShortcut("a/b", "list"));
-        assertFalse(shortcuts.assignShortcut("", "list"));
-        assertTrue(shortcuts.asMap().isEmpty());
-    }
-
-    @Test
-    public void constructorWithMap_discardsInvalidMappings() {
-        Map<String, String> initialMappings = Map.of(
-                "ls", "list",
-                "c", "clear",
-                "inv/slash", "list",
-                "inv space", "list"
-        );
+    public void constructorWithMap_replacesDuplicateMappings() {
+        Map<String, String> initialMappings = new java.util.LinkedHashMap<>();
+        initialMappings.put("l", "list");
+        initialMappings.put("ls", "list");
 
         CommandShortcutMap shortcuts = new CommandShortcutMap(initialMappings);
 
-        assertEquals(Map.of("ls", "list", "c", "clear"), shortcuts.asMap());
+        assertEquals(Map.of("ls", "list"), shortcuts.asMap());
     }
 
     @Test

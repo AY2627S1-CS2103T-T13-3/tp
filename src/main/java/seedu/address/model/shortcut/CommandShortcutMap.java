@@ -7,21 +7,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import seedu.address.commons.core.LogsCenter;
 
 /**
  * Stores the user's command shortcuts and keeps the mapping one-to-one.
  */
 public class CommandShortcutMap {
-
-    public static final String SHORTCUT_VALIDATION_REGEX = "^[^\\s/]+$";
-
-    private static final Logger logger = LogsCenter.getLogger(CommandShortcutMap.class);
 
     private final Map<String, String> shortcutToCommandWord = new LinkedHashMap<>();
 
@@ -32,7 +25,6 @@ public class CommandShortcutMap {
 
     /**
      * Creates a shortcut map containing the supplied mappings.
-     * Any invalid mappings are discarded and logged.
      */
     @JsonCreator
     public CommandShortcutMap(@JsonProperty("shortcutToCommandWord") Map<String, String> shortcuts) {
@@ -42,28 +34,12 @@ public class CommandShortcutMap {
     }
 
     /**
-     * Returns true if {@code shortcut} conforms to the shortcut syntax requirements.
-     */
-    public static boolean isValidShortcutPattern(String shortcut) {
-        return shortcut != null && shortcut.matches(SHORTCUT_VALIDATION_REGEX);
-    }
-
-    /**
      * Assigns {@code shortcut} to {@code commandWord}.
      * Any previous shortcut for the command, and any previous command for the shortcut, is replaced.
-     * If the mapping violates shortcut syntax,
-     * the mapping is discarded, a warning is logged, and {@code false} is returned.
      */
     public boolean assignShortcut(String shortcut, String commandWord) {
         requireNonNull(shortcut);
         requireNonNull(commandWord);
-
-        if (!isValidShortcutPattern(shortcut)) {
-            logger.warning(String.format("Discarding invalid shortcut mapping '%s' -> '%s': "
-                    + "shortcuts cannot contain whitespace or forward slashes.",
-                    shortcut, commandWord));
-            return false;
-        }
 
         shortcutToCommandWord.entrySet().removeIf(entry -> entry.getValue().equals(commandWord));
         shortcutToCommandWord.put(shortcut, commandWord);
