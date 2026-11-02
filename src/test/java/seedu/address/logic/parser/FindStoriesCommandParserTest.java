@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
-import seedu.address.logic.commands.FindStoriesCommand;
 import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
@@ -53,7 +52,7 @@ public class FindStoriesCommandParserTest {
 
     @Test
     public void parse_emptyArg_throwsParseException() {
-        String expectedMessage = String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindStoriesCommand.MESSAGE_USAGE);
+        String expectedMessage = MESSAGE_INVALID_COMMAND_FORMAT;
         assertParseFailure(parser, "     ", expectedMessage);
         assertParseFailure(parser, "", expectedMessage);
         assertParseFailure(parser, "\t \r \n", expectedMessage);

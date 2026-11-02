@@ -12,10 +12,10 @@ import seedu.address.commons.util.StringUtil;
 public class Name {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Contact names should not be blank or start with a whitespace";
+            "Contact names should not be blank or start with whitespace";
 
     /*
-     * The first character of the name must not be a whitespace
+     * The first character of the name must not be whitespace
      */
     public static final String VALIDATION_REGEX = "^\\S.*$";
 

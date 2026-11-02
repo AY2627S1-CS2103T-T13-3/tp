@@ -12,10 +12,10 @@ import seedu.address.commons.util.StringUtil;
 public class FollowupDescription {
 
     public static final String MESSAGE_CONSTRAINTS =
-            "Follow-up descriptions should not be blank or start with a whitespace";
+            "Follow-up descriptions should not be blank or start with whitespace";
 
     /*
-     * The first character of the description must not be a whitespace
+     * The first character of the description must not be whitespace
      */
     public static final String VALIDATION_REGEX = "^\\S.*$";
 

@@ -22,8 +22,7 @@ public class FindStoryCommandParser implements Parser<FindStoriesCommand> {
         ArgumentMultimap argMap = ArgumentTokenizer.tokenize(args);
         String trimmedArgs = argMap.getPreamble();
         if (trimmedArgs.isEmpty()) {
-            throw new ParseException(
-                    String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindStoriesCommand.MESSAGE_USAGE));
+            throw new ParseException(MESSAGE_INVALID_COMMAND_FORMAT);
         }
 
         String[] storyNameKeywords = trimmedArgs.split("\\s+");

@@ -56,6 +56,28 @@ public class CommandInfoTest {
     }
 
     @Test
+    public void parse_parserThrowsParseException_appendsCommandFormat() {
+        Parser<ListCommand> failingParser = args -> {
+            throw new ParseException("Invalid input");
+        };
+        CommandInfo info = new CommandInfo("test", "test p/PARAMETER", "desc", failingParser);
+        String expectedMessage = "Invalid input\nCommand format: test p/PARAMETER";
+
+        assertThrows(ParseException.class, expectedMessage, () -> info.parse("invalid"));
+    }
+
+    @Test
+    public void parse_errorContainingExample_appendsCommandFormat() {
+        Parser<ListCommand> failingParser = args -> {
+            throw new ParseException("Invalid input\nExample: test p/value");
+        };
+        CommandInfo info = new CommandInfo("test", "test p/PARAMETER", "desc", failingParser);
+        String expectedMessage = "Invalid input\nExample: test p/value\nCommand format: test p/PARAMETER";
+
+        assertThrows(ParseException.class, expectedMessage, () -> info.parse("invalid"));
+    }
+
+    @Test
     public void parse_unconfiguredParser_throwsNullPointerException() {
         CommandInfo info = new CommandInfo("list", "list", "desc");
         assertThrows(NullPointerException.class, () -> info.parse(""));

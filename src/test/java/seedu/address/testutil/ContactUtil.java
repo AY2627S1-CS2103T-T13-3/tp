@@ -30,7 +30,7 @@ public class ContactUtil {
      */
     public static String getContactDetails(Contact contact) {
         StringBuilder sb = new StringBuilder();
-        sb.append(PREFIX_NAME + contact.getName().toString() + " ");
+        sb.append(contact.getName().toString()).append(" ");
         sb.append(PREFIX_PHONE + contact.getPhone().toString() + " ");
         sb.append(PREFIX_EMAIL + contact.getEmail().toString() + " ");
         sb.append(PREFIX_ADDRESS + contact.getAddress().toString() + " ");

@@ -28,6 +28,7 @@ import seedu.address.model.followup.FollowupIsForContactPredicate;
 import seedu.address.model.story.Story;
 import seedu.address.model.story.StoryAssignedToContactPredicate;
 import seedu.address.model.story.StoryName;
+import seedu.address.model.story.StoryNameContainsKeywordsPredicate;
 import seedu.address.model.story.exceptions.StoryNotFoundException;
 import seedu.address.testutil.AddressBookBuilder;
 import seedu.address.testutil.ContactBuilder;
@@ -390,4 +391,89 @@ public class ModelManagerTest {
         modelManager.updateFilteredFollowupList(PREDICATE_SHOW_ALL_FOLLOWUPS);
         assertEquals(Model.FILTER_STATUS_ALL, modelManager.getFollowupFilterStatusProperty().getValue());
     }
+
+    @Test
+    public void addContact_withActiveFilter_preservesFilter() {
+        ModelManager modelManager = new ModelManager();
+        Contact matchingContact1 = new ContactBuilder().withName("Alice Pauline").build();
+        Contact nonMatchingContact = new ContactBuilder().withName("Bob Choo").build();
+        Contact matchingContact2 = new ContactBuilder().withName("Alice Tan").build();
+
+        modelManager.addContact(matchingContact1);
+
+        NameContainsKeywordsPredicate predicate = new NameContainsKeywordsPredicate(List.of("Alice"));
+        modelManager.updateFilteredContactList(predicate);
+        assertEquals(List.of(matchingContact1), modelManager.getFilteredContactList());
+        assertEquals(predicate.toString(), modelManager.getContactFilterStatusProperty().getValue());
+
+        // Adding non-matching contact does not reset filter; contact is hidden from filtered view
+        modelManager.addContact(nonMatchingContact);
+        assertEquals(List.of(matchingContact1), modelManager.getFilteredContactList());
+        assertEquals(predicate.toString(), modelManager.getContactFilterStatusProperty().getValue());
+        assertTrue(modelManager.hasContact(nonMatchingContact));
+
+        // Adding matching contact preserves filter and appears in filtered view
+        modelManager.addContact(matchingContact2);
+        assertEquals(List.of(matchingContact1, matchingContact2), modelManager.getFilteredContactList());
+        assertEquals(predicate.toString(), modelManager.getContactFilterStatusProperty().getValue());
+    }
+
+    @Test
+    public void addStory_withActiveFilter_preservesFilter() {
+        ModelManager modelManager = new ModelManager();
+        Story matchingStory1 = new Story(new StoryName("Alpha Investigation"), Set.of());
+        Story nonMatchingStory = new Story(new StoryName("Beta Report"), Set.of());
+        Story matchingStory2 = new Story(new StoryName("Alpha Editorial"), Set.of());
+
+        modelManager.addStory(matchingStory1);
+
+        StoryNameContainsKeywordsPredicate predicate =
+                new StoryNameContainsKeywordsPredicate(List.of("Alpha"));
+        modelManager.updateFilteredStoryList(predicate);
+        assertEquals(List.of(matchingStory1), modelManager.getFilteredStoryList());
+        assertEquals(predicate.toString(), modelManager.getStoryFilterStatusProperty().getValue());
+
+        // Adding non-matching story does not reset filter; story is hidden from filtered view
+        modelManager.addStory(nonMatchingStory);
+        assertEquals(List.of(matchingStory1), modelManager.getFilteredStoryList());
+        assertEquals(predicate.toString(), modelManager.getStoryFilterStatusProperty().getValue());
+        assertTrue(modelManager.hasStory(nonMatchingStory));
+
+        // Adding matching story preserves filter and appears in filtered view
+        modelManager.addStory(matchingStory2);
+        assertEquals(List.of(matchingStory1, matchingStory2), modelManager.getFilteredStoryList());
+        assertEquals(predicate.toString(), modelManager.getStoryFilterStatusProperty().getValue());
+    }
+
+    @Test
+    public void addFollowup_withActiveFilter_preservesFilter() {
+        ModelManager modelManager = new ModelManager();
+        Contact alice = new ContactBuilder().withName("Alice Pauline").build();
+        Contact benson = new ContactBuilder().withName("Benson Meier").build();
+        modelManager.addContact(alice);
+        modelManager.addContact(benson);
+
+        Followup matchingFollowup1 = new Followup(new FollowupDescription("Call Alice"), alice.getName());
+        Followup nonMatchingFollowup = new Followup(new FollowupDescription("Call Benson"), benson.getName());
+        Followup matchingFollowup2 = new Followup(new FollowupDescription("Email Alice"), alice.getName());
+
+        modelManager.addFollowup(matchingFollowup1);
+
+        FollowupIsForContactPredicate predicate = new FollowupIsForContactPredicate(alice);
+        modelManager.updateFilteredFollowupList(predicate);
+        assertEquals(List.of(matchingFollowup1), modelManager.getFilteredFollowupList());
+        assertEquals(predicate.toString(), modelManager.getFollowupFilterStatusProperty().getValue());
+
+        // Adding non-matching followup does not reset filter; followup is hidden from filtered view
+        modelManager.addFollowup(nonMatchingFollowup);
+        assertEquals(List.of(matchingFollowup1), modelManager.getFilteredFollowupList());
+        assertEquals(predicate.toString(), modelManager.getFollowupFilterStatusProperty().getValue());
+        assertTrue(modelManager.hasFollowup(nonMatchingFollowup));
+
+        // Adding matching followup preserves filter and appears in filtered view
+        modelManager.addFollowup(matchingFollowup2);
+        assertEquals(List.of(matchingFollowup1, matchingFollowup2), modelManager.getFilteredFollowupList());
+        assertEquals(predicate.toString(), modelManager.getFollowupFilterStatusProperty().getValue());
+    }
 }
+

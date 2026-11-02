@@ -97,7 +97,7 @@ Format: `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
 * Names contain only letters, digits, and spaces. A contact with exactly the same name already in PressMemo cannot be added.
 * Phone numbers contain between 3 and 15 digits and no other characters. Emails must have a valid `word@word` format.
 * Tag names contain only letters and digits, without spaces.
-* Adding a contact shows the full contact list.
+* Adding a contact preserves any active contact filter. The new contact will appear in the contact list if it matches the active filter.
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
 A contact can have any number of tags, including zero.
@@ -245,7 +245,7 @@ Examples:
 
 > **Tip / Note:**
 > * No two stories can have the same name. The provided `STORY_NAME` must not already exist in PressMemo.
-> * `addstory` refreshes the story panel to show all stories in PressMemo 
+> * `addstory` preserves any active story filter; the new story will appear in the story panel if it matches the active filter.
 > * The new story starts with no assigned contacts.
 
 ### Examples
@@ -377,7 +377,7 @@ Format: `addfollowup DESCRIPTION ci/CONTACT_INDEX`
 * Follow-ups belong to contacts, not directly to stories; deleting a story does not remove a contact's follow-ups.
 * Use `listfollowups` to show all follow-ups or filter follow-ups by assigned contact in the **FOLLOW-UPS** panel.
 * Editing a contact's name updates their follow-up references. Deleting a contact also removes their follow-ups.
-* New reminders appear in the **FOLLOW-UPS** panel.
+* `addfollowup` preserves any active follow-up filter; the new reminder will appear in the **FOLLOW-UPS** panel if it matches the active filter.
 
 Examples:
 * `addfollowup Prepare interview questions ci/1`

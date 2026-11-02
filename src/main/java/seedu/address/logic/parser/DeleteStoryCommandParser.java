@@ -15,12 +15,8 @@ public class DeleteStoryCommandParser implements Parser<DeleteStoryCommand> {
      * @throws ParseException if the user input does not conform to the expected format
      */
     public DeleteStoryCommand parse(String args) throws ParseException {
-        try {
-            Index index = ParserUtil.parseIndex(args);
-            return new DeleteStoryCommand(index);
-        } catch (ParseException pe) {
-            throw new ParseException(pe.getMessage() + "\n" + DeleteStoryCommand.MESSAGE_USAGE, pe);
-        }
+        Index index = ParserUtil.parseIndex(args);
+        return new DeleteStoryCommand(index);
     }
 
 }
