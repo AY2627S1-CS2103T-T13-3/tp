@@ -235,7 +235,7 @@ The sequence diagram below illustrates the interactions within the `Model` compo
 	* A story with the specified name and tags is added to the ArchiveStoryList
 	* ActiveStoryList is refreshed for the updated ArchiveStoryList.
 * **Exceptions:** 
-	* if `STORY_NAME` is the name of some existing story in ArchiveStoryList: displays error message for CommandException (duplicate story) 
+	* if `STORY_NAME` is the name of some existing story in ArchiveStoryList: console displays error message
 
 ### Implementation details
 
@@ -259,7 +259,7 @@ The sequence diagram below illustrates the interactions within the `Model` compo
 * **Command:** `findstories STORY_NAME [MORE_KEYWORDS]...`
 * **Parameters**: refer to [user guide](UserGuide.md#locating-stories-by-name-findstories)
 * **Description:**
-	* Set the Active Story List to contain exactly the stories from the Archive Story List whose names contain at least one of the specified keywords.
+	* Set the ActiveStoryFilter to match exactly the stories from the ArchiveStoryList whose names contain at least one of the specified keywords.
 * **Preconditions:** 
 	* At least one keyword is provided in the command arguments.
 * **Postconditions:** 
@@ -267,11 +267,9 @@ The sequence diagram below illustrates the interactions within the `Model` compo
 	* ActiveStoryList is refreshed for the updated ActiveStoryFilter.
 	* ArchiveStoryList is unchanged.
 * **Exceptions:** 
-	* if no keywords are provided: displays error message for ParseException (invalid command format)
+	* if no keywords are provided: console displays error message
 
 ### Implementation details
-
-The sequence diagram below illustrates the interactions within the Model component when the user executes a `findstories` command.
 
 <!-- Note: FindStorySequenceDiagram.puml is located in docs/diagrams/FindStorySequenceDiagram.puml -->
 
@@ -311,7 +309,7 @@ The sequence diagram below illustrates the interactions within the Model compone
 * **Command:** `listfollowups [ci/CONTACT_INDEX]`
 * **Parameters**: refer to [user guide](UserGuide.md#listing-follow-ups-listfollowups)
 * **Description:**
-	* Updates the ActiveFollowupList to display either all follow-ups from the ArchiveFollowupList or only those associated with the contact identified by `CONTACT_INDEX`.
+	* Updates the ActiveFollowupList to display either all follow-ups from the ArchiveFollowupList or only those linked to the contact identified by `CONTACT_INDEX`.
 * **Preconditions:** 
 	* If `ci/CONTACT_INDEX` is specified, `CONTACT_INDEX` must be valid
 * **Postconditions:** 
@@ -322,8 +320,6 @@ The sequence diagram below illustrates the interactions within the Model compone
 
 ### Implementation details
 
-The sequence diagram below illustrates the interactions within the Logic and Model components when the user executes `listfollowups ci/1`.
-
 #### Execution flow
 
 1. The user enters the `listfollowups` command as an input string.
@@ -332,7 +328,7 @@ The sequence diagram below illustrates the interactions within the Logic and Mod
 4. `ListFollowupsCommandParser` parses the story name and tags and creates a `ListFollowupsCommand` object.
 5. `LogicManager` executes the `ListFollowupsCommand` object.
 6. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the ActiveContactList from `Model` and obtains the Contact corresponding to `CONTACT_INDEX`
-7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` request Model to update the ActiveFollowupFilter to match follow-ups linked to the specified Contact. Else, `ListFollowupsCommand` request Model to update ActiveFollowupFilter to match the whole ArchiveFollowupList
+7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` request Model to update the ActiveFollowupFilter to match follow-ups linked to the specified Contact. Else, `ListFollowupsCommand` request Model to update ActiveFollowupFilter to match all follow-ups.
 8. `Model` refreshes the ActiveFollowupList for the updated ActiveFollowupFilter.
 9. `UI` updates the follow-up panel accordingly.
 
@@ -627,7 +623,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *`  | investigative journalist                                       | view all active contacts                                     | quickly browse my source network                                                         |
 | `* * *`  | investigative journalist                                       | edit a contact's details                                     | keep my database accurate without recreating contacts                                    |
 | `* * *`  | investigative journalist                                       | delete a contact                                             | remove obsolete contacts from my database                                                |
-| `* * *`  | journalist with frequent story assignments                     | add a story with optional tags                               | record a new story                                                                       |
+| `* * *`  | journalist with frequent story assignments                     | add a story                                                  | record a new story                                                                       |
 | `* * *`  | journalist working on different types of stories               | add tags to stories                                          | categorise different types of stories                                                    |
 | `* * *`  | journalist working on several assignments                      | view all stories                                             | keep track of stories I have worked on                                                   |
 | `* * *`  | journalist covering a developing story                         | edit a story's name                                          | keep the story title current and relevant                                                |
@@ -657,7 +653,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | reporter speaking to a source                                  | append a timestamped note to a contact                       | keep a chronological record of statements and interactions                               |
 | `* *`    | busy reporter managing several leads                           | schedule a follow-up or deadline                             | avoid missing promised callbacks, interviews, or verification work                       |
 | `* *`    | busy reporter                                                  | view pending follow-ups and deadlines                        | see upcoming work in chronological order and recognise overdue items                     |
-| `* *`    | busy reporter liaising with multiple contacts                  | view the follow-ups for a particular contact                 | track upcoming tasks and meetings involving that specific person                         |
+| `* *`    | reporter with multiple to-dos                                  | view all follow-ups                                          | keep track of all my pending follow-up actions                                           |
+| `* *`    | busy reporter liaising with multiple contacts                  | view the follow-ups for a particular contact                 | track upcoming tasks involving that specific person                                      |
 | `* *`    | busy reporter managing multiple tasks                          | find follow-ups by keywords in their descriptions            | quickly locate specific tasks and reminders without browsing all follow-ups              |
 | `*`      | time-pressured reporter using the terminal                     | use command aliases and tab completion                       | query and record information without typing full commands or memorising IDs              |
 | `*`      | investigative journalist sharing a screen or working in public | use a redacted display mode                                  | protect confidential identities and contact details from shoulder-surfing                |
@@ -689,7 +686,6 @@ Use case ends.
 1a. Crucial details are missing
 
 - System will inform the user in the console that details are missing
-- Use case ends.
 
 1b.  Another contact with the same name already existis
 
@@ -796,14 +792,14 @@ Actor: User
 ##### Guarantees:
 
 - At the end of MSS, the new story is added to the ArchiveStoryList
-- At the end of MSS, ActiveStoryList is updated to show all stories from the ArchiveStoryList (any active story filter is cleared, ActiveStoryList = ArchiveStoryList)
+- At the end of MSS, ActiveStoryList is updated for the new ArchiveStoryList
 - ActiveContactList, ActiveFollowupList, and all other archive lists remain unchanged
 
 ##### MSS:
 
 1. User requests to add a story by providing the story name and optional tags
 2. System adds the story to the ArchiveStoryList
-3. System updates the ActiveStoryList to show all stories and updates the story panel
+3. System updates the ActiveStoryList by applying the ActiveStoryFilter to the updates ArchiveStoryList
 4. System informs the user in the console that the story has been added successfully
 
 Use case ends.
@@ -820,7 +816,7 @@ Use case ends.
 - 1b1. System informs the user in the console of the story name constraints.
 - Use case ends.
 
-1c. User provides an invalid tag (e.g. non-alphanumeric tag name).
+1c. User provides an invalid tag (e.g. containing forward slash).
 
 - 1c1. System informs the user in the console of the tag constraints.
 - Use case ends.
@@ -913,7 +909,7 @@ Actor: User
 ##### MSS:
 
 1. User requests to find stories by providing one or more search keywords
-2. System filters stories whose names contain at least one of the specified keywords (case-insensitive, whole-word match)
+2. System updates ActiveStoryFilter to match stories whose names contain at least one of the specified keywords (case-insensitive, whole-word match)
 3. System updates the ActiveStoryList and story panel to display the matching stories
 4. System informs the user in the console of the number of matching stories listed
 
@@ -944,7 +940,7 @@ Actor: User
 ##### MSS:
 
 1. User requests to list follow-ups, optionally specifying a contact index
-2. If a contact index was specified, System filters the follow-ups to include only those associated with the specified contact
+2. If a contact index was specified, System updates ActiveFollowupFilter to match the follow-ups linked to the specified contact
 3. System updates the ActiveFollowupList and followup panel to display the follow-ups
 4. System informs the user in the console that the follow-ups have been listed successfully
 
