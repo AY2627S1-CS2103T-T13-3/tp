@@ -9,11 +9,11 @@ end box
 box Model MODEL_COLOR_T1
 participant ":ModelManager" as ModelManager MODEL_COLOR
 participant ":AddressBook" as AddressBook MODEL_COLOR
-participant "target:Person" as TargetPerson MODEL_COLOR
+participant "target:Contact" as TargetContact MODEL_COLOR
 participant "story:Story" as TargetStory MODEL_COLOR
-participant "assignedPerson:Person" as AssignedPerson MODEL_COLOR
+participant "assignedContact:Contact" as AssignedContact MODEL_COLOR
 participant "assignedStory:Story" as AssignedStory MODEL_COLOR
-participant ":UniquePersonList" as UniquePersonList MODEL_COLOR
+participant ":UniqueContactList" as UniqueContactList MODEL_COLOR
 participant ":UniqueStoryList" as UniqueStoryList MODEL_COLOR
 end box
 
@@ -26,23 +26,23 @@ activate ModelManager
 ModelManager -> AddressBook : assignStory(target, story)
 activate AddressBook
 
-AddressBook -> TargetPerson : assign(story)
-activate TargetPerson
+AddressBook -> TargetContact : assign(story)
+activate TargetContact
 
-create AssignedPerson
-TargetPerson -> AssignedPerson
-activate AssignedPerson
-AssignedPerson --> TargetPerson
-deactivate AssignedPerson
+create AssignedContact
+TargetContact -> AssignedContact : new Contact(...)
+activate AssignedContact
+AssignedContact --> TargetContact
+deactivate AssignedContact
 
-TargetPerson --> AddressBook : assignedPerson
-deactivate TargetPerson
+TargetContact --> AddressBook : assignedContact
+deactivate TargetContact
 
 AddressBook -> TargetStory : assign(target)
 activate TargetStory
 
 create AssignedStory
-TargetStory -> AssignedStory
+TargetStory -> AssignedStory : new Story(...)
 activate AssignedStory
 AssignedStory --> TargetStory
 deactivate AssignedStory
@@ -50,10 +50,10 @@ deactivate AssignedStory
 TargetStory --> AddressBook : assignedStory
 deactivate TargetStory
 
-AddressBook -> UniquePersonList : setPerson(target, assignedPerson)
-activate UniquePersonList
-UniquePersonList --> AddressBook
-deactivate UniquePersonList
+AddressBook -> UniqueContactList : setContact(target, assignedContact)
+activate UniqueContactList
+UniqueContactList --> AddressBook
+deactivate UniqueContactList
 
 AddressBook -> UniqueStoryList : setStory(story, assignedStory)
 activate UniqueStoryList
@@ -63,16 +63,6 @@ deactivate UniqueStoryList
 AddressBook --> ModelManager
 deactivate AddressBook
 
-ModelManager --> AssignCommand
-deactivate ModelManager
-
-AssignCommand -> ModelManager : updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS)
-activate ModelManager
-ModelManager --> AssignCommand
-deactivate ModelManager
-
-AssignCommand -> ModelManager : updateFilteredStoryList(PREDICATE_SHOW_ALL_STORIES)
-activate ModelManager
 ModelManager --> AssignCommand
 deactivate ModelManager
 
