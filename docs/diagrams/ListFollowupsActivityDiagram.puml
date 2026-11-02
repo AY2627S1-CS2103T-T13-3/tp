@@ -1,0 +1,35 @@
+@startuml
+skin rose
+skinparam ActivityFontSize 15
+skinparam ArrowFontSize 12
+
+|User|
+start
+:Execute the listfollowups command;
+
+|Logic|
+:LogicManager receives the input;
+:Parse the command and optional
+CONTACT_INDEX;
+:LogicManager executes the
+ListFollowupsCommand;
+
+if () then ([Is ci/ specified?])
+    :Retrieve the ActiveContactList,
+    validate CONTACT_INDEX, and
+    obtain the corresponding Contact;
+    :Request Model to filter follow-ups
+    linked to the specified Contact;
+else ([else])
+    :Request Model to show
+    all follow-ups;
+endif
+
+|Model|
+:Refresh the ActiveFollowupList;
+
+|UI|
+:Update the follow-up panel;
+
+stop
+@enduml
