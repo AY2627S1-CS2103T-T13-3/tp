@@ -500,6 +500,18 @@ The sequence diagram below illustrates the interactions when the user executes t
 8. If shortcuts are present, `ShortcutCommand` sorts the entries alphabetically by shortcut name, formats each entry as `shortcut -> commandWord`, and constructs the output message.
 9. `UI` displays the formatted list in the message panel.
 
+#### Execution flow (Listing mode)
+
+1. The user enters `shortcut s/SHORTCUT c/COMMAND` into the command bar.
+2. `LogicManager` passes the input string to `AddressBookParser`.
+3. `AddressBookParser` invokes `ShortcutCommandParser#parse("s/SHORTCUT c/COMMAND")`
+4. `ShortcutCommandParser` detects argument `s/SHORTCUT c/COMMAND` and returns `new ShortcutCommand(SHORTCUT, COMMAND)`.
+5. `LogicManager` executes the `ShortcutCommand`.
+6. `ShortcutCommand` calls `Model#assignShortcut(SHORTCUT, COMMAND)` which assigns the `SHORTCUT` for the `COMMAND`.
+7. If the command word had not been assigned a shortcut previously, `ShortcutCommand` returns a `CommandResult` with `MESSAGE_SUCCESS`.
+8. If the command word had been assigned a shortcut previously, `ShortcutCommand` returns a `CommandResult` with `MESSAGE_SUCCESS` and `MESSAGE_SHORTCUT_REPLACED`.
+9. `UI` displays the corresponding message in the message panel.
+
 ### Design Considerations
 
 - **Aspect: Shortcut-to-command mapping relationship (One-to-one vs. Many-to-one)**
