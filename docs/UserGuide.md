@@ -239,8 +239,8 @@ Examples:
 
 | Parameter    | Type          | Description              | Examples                  |
 | :----------- | :------------ | :----------------------- | :------------------------ |
-| `STORY_NAME` | `user string` | name of the story to add | wumpus<br><br>find wumpus |
-| TAG          | `user string` | a tag for the story      | smelly                    |
+| `STORY_NAME` | `user-string` | name of the story to add | wumpus<br><br>find wumpus |
+| TAG          | `user-string` | a tag for the story      | smelly                    |
 
 
 > **Tip / Note:**
@@ -349,9 +349,9 @@ Examples:
 
 ### Parameters & Constraints
 
-| Parameter | Type          | Description                                                        | Examples |
-| :-------- | :------------ | :----------------------------------------------------------------- | :------- |
-| `INDEX`   | `Story Index` | 1-based index of the story to delete from the displayed story list | `1`      |
+| Parameter | Type          | Description                                        | Examples |
+| :-------- | :------------ | :------------------------------------------------ | :------- |
+| `INDEX`   | `Story Index` Index of the story to delete from the story panel el | `1`      |
 
 > **Tip / Note:**
 > * Deleting a story automatically unassigns it from all contacts originally assigned to it. The contacts themselves remain in PressMemo.
