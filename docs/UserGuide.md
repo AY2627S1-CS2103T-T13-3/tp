@@ -477,7 +477,7 @@ Examples:
 
 ## Finding follow-ups by description: `findfollowups`
 
-- **Objective:** Finds follow-ups whose descriptions contain any of the given keywords and displays them in the **FOLLOW-UPS** panel.
+- **Objective:** Finds follow-ups whose descriptions contain any of the given keywords and display them in the **FOLLOW-UPS** panel.
 
 ### Usage / Command Format
 
@@ -485,10 +485,10 @@ Examples:
 
 ### Parameters & Constraints
 
-| Parameter       | Type   | Description                                                 | Examples          |
-| :-------------- | :----- | :---------------------------------------------------------- | :---------------- |
-| `KEYWORD`       | `word` | First keyword to search for in follow-up descriptions       | interview         |
-| `MORE_KEYWORDS` | `word` | Additional keywords to search for in follow-up descriptions | meeting call      |
+| Parameter       | Type   | Description                                                 | Examples |
+| :-------------- | :----- | :---------------------------------------------------------- |:---------|
+| `KEYWORD`       | `word` | First keyword to search for in follow-up descriptions       | interview |
+| `MORE_KEYWORDS` | `word` | Additional keywords to search for in follow-up descriptions | meeting  |
 
 > **Tip / Note:**
 > * The search is case-insensitive; for example, `interview` matches `Interview`.
@@ -513,6 +513,7 @@ Examples:
 * **Example 3: Search with no matches**
   * **Input / Action:** `findfollowups nonexistentkeyword`
   * **Expected Outcome:** Displays an empty **FOLLOW-UPS** panel and reports `0 followup(s) listed!`.
+    * As there are no follow-ups that whose descriptions contain `nonexistentkeyword`.
 
 ### Common Errors & Troubleshooting
 
