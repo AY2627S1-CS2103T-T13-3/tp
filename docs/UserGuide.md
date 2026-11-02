@@ -157,12 +157,6 @@ This command does not accept parameters. Any extraneous characters will result i
   * **Input / Action:** `list`
   * **Expected Outcome:** Both **CONTACTS** and **STORIES** panels display all entries, and both panel header filter badges update to `[All]`.
 
-#### Common Errors & Troubleshooting
-
-| Error Message / Symptom | Cause | How to Fix |
-| :--- | :--- | :--- |
-| `This command does not accept parameters.` | Extraneous text was entered after the command word. | Remove any arguments and run `list` alone. |
-
 ### Listing contacts: `listcontacts`
 
 - **Objective:** Displays all contacts, or only contacts assigned to a selected story.
@@ -193,14 +187,6 @@ This command does not accept parameters. Any extraneous characters will result i
 * **Example 2: Filter contacts by assigned story**
   * **Input / Action:** `listcontacts si/1`
   * **Expected Outcome:** Displays only contacts assigned to the first story currently displayed in the **STORIES** panel.
-
-#### Common Errors & Troubleshooting
-
-| Error Message / Symptom | Cause | How to Fix |
-| :--- | :--- | :--- |
-| `The story index 100 is invalid for the displayed list of 9 story(ies).` | The provided story index is greater than the number of displayed stories (or the panel is empty). | Check the index numbers displayed in the **STORIES** panel or run `liststories` to view all stories. |
-| `Index must be a positive integer.` | The story index is not a positive integer. | Ensure the index is a positive whole number (e.g. `1`, `2`). |
-| `The following prefix(es) should not be duplicated: si/` | Prefix `si/` was entered multiple times in the same command. | Specify at most one `si/` prefix. |
 
 ### Listing stories: `liststories`
 
@@ -267,15 +253,11 @@ Examples:
 | :--- | :--- | :--- |
 | `At least one field to edit must be provided.` | No fields (`n/`, `p/`, `e/`, `a/`, `t/`) were specified after the index. | Provide at least one field to update. |
 | `Error: there is already a contact named "Alex Yeoh"!` | The edited name duplicates another existing contact in PressMemo. | Use a unique contact name. |
-| `The contact index 5 is invalid for the displayed list of 2 contact(s).` | The provided index is greater than the number of contacts displayed (or the list is empty). | Check the index numbers displayed in the **CONTACTS** panel or run `listcontacts` to view all contacts. |
-| `Index must be a positive integer.` | The index provided is zero, negative, or not a whole number. | Provide a positive integer index (e.g. `1`, `2`). |
+| `Contact names should not be blank or start with whitespace` | The contact name is blank or begins with whitespace. | Enter a name that does not start with whitespace. |
 | `Phone numbers should not be blank or start with whitespace` | The phone number is blank or begins with whitespace. | Enter a phone number that does not start with whitespace. |
 | `Emails should not be blank or start with whitespace` | The email address is blank or begins with whitespace. | Enter an email address that does not start with whitespace. |
-| `Contact names should not be blank or start with whitespace` | The contact name is blank or begins with whitespace. | Enter a name that does not start with whitespace. |
 | `Addresses should not be blank or start with whitespace` | The address is blank or begins with whitespace. | Enter an address that does not start with whitespace. |
 | `Tag names should not be blank or start with whitespace` | A tag name begins with a space or contains only whitespace after `t/`. | Enter a non-blank tag name without leading whitespace (or use `t/` without spaces to clear tags). |
-| `Unrecognised prefix or unescaped forward slash in "a/b". To use a forward slash as text, escape it with a backslash, e.g. "\/".` | An unescaped forward slash was entered or an unrecognized prefix was used. | Escape any forward slash intended as text with `\/`. |
-| `The following prefix(es) should not be duplicated: n/` | A single-value prefix (`n/`, `p/`, `e/`, `a/`) was provided multiple times. | Specify each single-value prefix only once. |
 
 ### Locating contacts by name: `findcontact`
 
@@ -679,7 +661,6 @@ Examples:
 | `The shortcut "list" is a built-in command and cannot be reassigned.` | The shortcut matches a built-in command word. | Choose a shortcut alias that is not a built-in command word. |
 | `The shortcut "my ls" cannot contain whitespace or forward slashes.` | The shortcut contains spaces or forward slashes. | Use only lowercase letters and digits without spaces or `/`. |
 | `Unknown command: invalidcmd.` | The command word is not recognized or not assignable. | Provide a valid assignable PressMemo command word. |
-| `The following prefix(es) should not be duplicated: s/` | Prefix `s/` or `c/` was specified multiple times. | Specify each prefix only once. |
 
 ### Removing a command shortcut: `unshortcut`
 
