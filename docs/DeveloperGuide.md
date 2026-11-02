@@ -467,12 +467,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *`  | investigative journalist                                       | view all active contacts                                     | quickly browse my source network                                                         |
 | `* * *`  | investigative journalist                                       | edit a contact's details                                     | keep my database accurate without recreating contacts                                    |
 | `* * *`  | investigative journalist                                       | delete a contact                                             | remove obsolete contacts from my database                                                |
-| `* * *`  | journalist with frequent story assignments                     | add a story                                                  | record a new story                                                                       |
+| `* * *`  | journalist with frequent story assignments                     | add a story with optional tags                               | record a new story                                                                       |
 | `* * *`  | journalist working on different types of stories               | add tags to stories                                          | categorise different types of stories                                                    |
 | `* * *`  | journalist working on several assignments                      | view all stories                                             | keep track of stories I have worked on                                                   |
 | `* * *`  | journalist covering a developing story                         | edit a story's name                                          | keep the story title current and relevant                                                |
 | `* * *`  | journalist with obsolete assignments                           | delete a story                                               | remove cancelled, shelved, or irrelevant stories without deleting their contacts         |
-| `* * *`  | journalist working on many stories simultaneously              | find stories by keywords                                     | quickly locate stories among a huge list                                                 |
+| `* * *`  | journalist working on many stories simultaneously              | find stories by keywords in their names                      | quickly locate relevant stories among a huge list                                        |
 | `* * *`  | journalist liaising with several contacts for a story          | assign a contact to a story                                  | record the sources involved in that story                                                |
 | `* * *`  | journalist correcting a source assignment                      | unassign a contact from a story                              | remove an irrelevant or incorrect association while retaining the contact                |
 | `* * *`  | journalist managing a story                                    | list contacts assigned to a story                            | know which sources are needed for that story                                             |
@@ -496,7 +496,8 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *`    | reporter speaking to a source                                  | append a timestamped note to a contact                       | keep a chronological record of statements and interactions                               |
 | `* *`    | busy reporter managing several leads                           | schedule a follow-up or deadline                             | avoid missing promised callbacks, interviews, or verification work                       |
 | `* *`    | busy reporter                                                  | view pending follow-ups and deadlines                        | see upcoming work in chronological order and recognise overdue items                     |
-| `* *`    | busy reporter liaising with multiple contacts                  | view the follow-ups for a particuluar contact                | track upcoming tasks and meetings involving that specific person                         |
+| `* *`    | busy reporter liaising with multiple contacts                  | view the follow-ups for a particular contact                 | track upcoming tasks and meetings involving that specific person                         |
+| `* *`    | busy reporter managing multiple tasks                          | find follow-ups by keywords in their descriptions            | quickly locate specific tasks and reminders without browsing all follow-ups              |
 | `*`      | time-pressured reporter using the terminal                     | use command aliases and tab completion                       | query and record information without typing full commands or memorising IDs              |
 | `*`      | investigative journalist sharing a screen or working in public | use a redacted display mode                                  | protect confidential identities and contact details from shoulder-surfing                |
 | `*`      | journalist handing a story to desk editors                     | export filtered source dossiers as Markdown or plain text    | let editors and fact-checkers verify attribution without access to my command-line setup |
@@ -631,28 +632,39 @@ Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS, the new story is added to the ArchiveStoryList and displayed in the story panel
-- At the end of MSS, ActiveStoryList is updated to show all stories (ActiveStoryList = ArchiveStoryList)
+- At the end of MSS, the new story is added to the ArchiveStoryList
+- At the end of MSS, ActiveStoryList is updated to show all stories from the ArchiveStoryList (any active story filter is cleared, ActiveStoryList = ArchiveStoryList)
+- ActiveContactList, ActiveFollowupList, and all other archive lists remain unchanged
 
 ##### MSS:
 
 1. User requests to add a story by providing the story name and optional tags
 2. System adds the story to the ArchiveStoryList
-3. System updates the ActiveStoryList and story panel to display all stories
+3. System updates the ActiveStoryList to show all stories and updates the story panel
 4. System informs the user in the console that the story has been added successfully
 
 Use case ends.
 
 ##### Extensions:
 
-1a. Crucial details are missing or format is invalid (e.g. blank story name or invalid tag format).
+1a. User does not provide a story name (empty command preamble).
 
-- System informs the user in the console of the invalid command format.
+- 1a1. System informs the user in the console of the invalid command format.
 - Use case ends.
 
-1b. A story with the same name already exists in the ArchiveStoryList.
+1b. User provides an invalid story name (e.g. blank or containing an unescaped forward slash `/`).
 
-- System informs the user in the console that the story already exists.
+- 1b1. System informs the user in the console of the story name constraints.
+- Use case ends.
+
+1c. User provides an invalid tag (e.g. non-alphanumeric tag name).
+
+- 1c1. System informs the user in the console of the tag constraints.
+- Use case ends.
+
+1d. A story with the same name already exists in the ArchiveStoryList.
+
+- 1d1. System informs the user in the console that a story with the specified name already exists.
 - Use case ends.
 
 #### Use Case: UC6 - Delete a contact
@@ -690,8 +702,8 @@ Actor: User
 
 ##### MSS:
 
-1. User request to find stories, providing one or more search keywords
-2. System filters stories whose names contain at least one of the specified keywords
+1. User requests to find stories by providing one or more search keywords
+2. System filters stories whose names contain at least one of the specified keywords (case-insensitive, whole-word match)
 3. System updates the ActiveStoryList and story panel to display the matching stories
 4. System informs the user in the console of the number of matching stories listed
 
@@ -701,13 +713,13 @@ Use case ends.
 
 1a. User does not provide any keywords (empty search query).
 
-- System informs the user in the console of the invalid command format.
+- 1a1. System informs the user in the console of the invalid command format.
 - Use case ends.
 
 2a. No stories match the specified keywords.
 
-- System updates the story panel to display an empty list.
-- System informs the user in the console that 0 stories are matched.
+- 2a1. System updates the story panel to display an empty list.
+- 2a2. System informs the user in the console that 0 stories are listed (`0 story(ies) listed!`).
 - Use case ends.
 
 #### Use Case: UC9 - List follow-ups
@@ -739,6 +751,37 @@ Use case ends.
 
 - 2a1. System updates the followup panel to display an empty list.
 - 2a2. System informs the user in the console that no followups have been matched.
+- Use case ends.
+
+#### Use Case: UC10 - Find follow-ups by keywords
+
+Actor: User
+
+##### Guarantees:
+
+- At the end of MSS and Ext. 2a, the ActiveFollowupList is updated to include exactly the follow-ups from the ArchiveFollowupList whose descriptions contain at least one of the specified keywords (case-insensitive, whole-word match)
+- The ActiveContactList, ActiveStoryList, and ArchiveFollowupList remain unchanged
+
+##### MSS:
+
+1. User requests to find follow-ups by providing one or more search keywords
+2. System filters follow-ups whose descriptions contain at least one of the specified keywords (case-insensitive, whole-word match)
+3. System updates the ActiveFollowupList and followup panel to display the matching follow-ups
+4. System informs the user in the console of the number of matching follow-ups listed
+
+Use case ends.
+
+##### Extensions:
+
+1a. User does not provide any keywords (empty search query).
+
+- 1a1. System informs the user in the console of the invalid command format.
+- Use case ends.
+
+2a. No follow-ups match the specified keywords.
+
+- 2a1. System updates the followup panel to display an empty list.
+- 2a2. System informs the user in the console that 0 follow-ups are listed (`0 followup(s) listed!`).
 - Use case ends.
 
 ### Non-Functional Requirements
