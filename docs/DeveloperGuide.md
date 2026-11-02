@@ -233,7 +233,7 @@ The sequence diagram below illustrates the interactions within the `Model` compo
 	* `STORY_NAME` is not the name of any existing story in ArchiveStoryList
 * **Postconditions:** 
 	* A story with the specified name and tags is added to the ArchiveStoryList
-	* ActiveStoryList = ArchiveStoryList 
+	* ActiveStoryList is refreshed for the updated ArchiveStoryList.
 * **Exceptions:** 
 	* if `STORY_NAME` is the name of some existing story in ArchiveStoryList: displays error message for CommandException (duplicate story) 
 
@@ -247,7 +247,7 @@ The sequence diagram below illustrates the interactions within the `Model` compo
 5. `LogicManager` executes the `AddStoryCommand` object.
 6. `AddStoryCommand` verifies that the specified story name is not the name of any existing story in ArchiveStoryList.
 7. `AddStoryCommand` requests `Model` to add a new `Story` object with no assigned contacts and with the specified name and tags to PressMemo.
-8. `Model` sets `ActiveStoryList` to `ArchiveStoryList`.  
+8. `Model` adds the `Story` to ActiveStoryList if it matches the ActiveStoryFilter.
 9. `UI` updates the story panel accordingly. 
 
 ## `findstories`
@@ -263,7 +263,8 @@ The sequence diagram below illustrates the interactions within the `Model` compo
 * **Preconditions:** 
 	* At least one keyword is provided in the command arguments.
 * **Postconditions:** 
-	* ActiveStoryList contains exactly the stories from ArchiveStoryList whose names match at least one keyword in a case-insensitive, full-word comparison.
+	* ActiveStoryFilter is updated to match exactly the stories from  whose names match at least one keyword in a case-insensitive, full-word comparison.
+	* ActiveStoryList is refreshed for the updated ActiveStoryFilter.
 	* ArchiveStoryList is unchanged.
 * **Exceptions:** 
 	* if no keywords are provided: displays error message for ParseException (invalid command format)
@@ -275,14 +276,12 @@ The sequence diagram below illustrates the interactions within the Model compone
 <!-- Note: FindStorySequenceDiagram.puml is located in docs/diagrams/FindStorySequenceDiagram.puml -->
 
 #### Execution flow
-
-- The user enters a `findstories` command. The command arguments are parsed by `AddressBookParser` and `FindStoryCommandParser`, which instantiates a `FindStoryCommand`. When executed, the command updates the filtered story list in `Model`, displaying matching stories in the GUI.
 1. The user enters the `findstories` command as an input string.
 2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
 3. `AddressBookParser` creates a `FindStoryCommandParser` to parse the command arguments.
 4. `FindStoryCommandParser` parses the arguments into keywords and creates a `FindStoryCommand` object.
 5. `LogicManager` executes the `FindStoryCommand` object.
-6. `FindStoryCommand` requests `Model` to update the filter predicate of the `ActiveStoryList` to match at least one of the provided keywords.
+6. `FindStoryCommand` requests `Model` to update the ActiveStoryFilter to match exactly the stories from whose names match at least one keyword in a case-insensitive, full-word comparison.
 7. `Model` updates the `ActiveStoryList`.
 8. `FindStoryCommand` returns a `CommandResult` containing the number of matching stories.
 9. `UI` updates the story panel accordingly. 
@@ -316,10 +315,10 @@ The sequence diagram below illustrates the interactions within the Model compone
 * **Preconditions:** 
 	* If `ci/CONTACT_INDEX` is specified, `CONTACT_INDEX` must be valid
 * **Postconditions:** 
-	* ActiveFollowupList is updated:
-		* If no `ci/CONTACT_INDEX` is provided, ActiveFollowupList = ArchiveFollowupList
-		* If `CONTACT_INDEX` is provided, ActiveFollowupList displays only followups linked to the contact identified by `CONTACT_INDEX`
-- ArchiveFollowupList is unchanged.
+	* If no `ci/CONTACT_INDEX` is provided, ActiveFollowupFilter matches all follow-ups
+	* If `CONTACT_INDEX` is provided, ActiveFollowupFilter matches only followups linked to the contact identified by `CONTACT_INDEX`
+	* ActiveFollowupList is refreshed for the updated ActiveFollowupFilter.
+	- ArchiveFollowupList is unchanged.
 
 ### Implementation details
 
@@ -327,14 +326,15 @@ The sequence diagram below illustrates the interactions within the Logic and Mod
 
 #### Execution flow
 
-1. The user enters `listfollowups` as an input string.
+1. The user enters the `listfollowups` command as an input string.
 2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
 3. `AddressBookParser` creates an `ListFollowupsCommandParser` to parse the command arguments.
 4. `ListFollowupsCommandParser` parses the story name and tags and creates a `ListFollowupsCommand` object.
 5. `LogicManager` executes the `ListFollowupsCommand` object.
 6. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the ActiveContactList from `Model` and obtains the Contact corresponding to `CONTACT_INDEX`
-7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` request Model to update the filter predicate of ActiveFollowupList to match Followups linked to the specified Contact. Else, `ListFollowupsCommand` request Model to update ActiveFollowupList to include the whole ArchiveFollowupList
-8. `UI` updates the followup panel accordingly.
+7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` request Model to update the ActiveFollowupFilter to match follow-ups linked to the specified Contact. Else, `ListFollowupsCommand` request Model to update ActiveFollowupFilter to match the whole ArchiveFollowupList
+8. `Model` refreshes the ActiveStoryList for the updated ActiveFollowupFilter.
+9. `UI` updates the follow-up panel accordingly.
 
 ### \[Proposed\] Undo/redo feature
 
@@ -773,14 +773,14 @@ Use case ends.
 
 #### Input data types
 
-| Input type       | Definition                                                                                                                                                                                                        | Format/s                                                                                                                                                                                                         | Examples                                         |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| escape character | A character that escapes the next character if it is forward slash. An escape character used this way will not be part of a user string.<br><br>Otherwise, the escape character is treated as a normal character. | The escape character is backslash.                                                                                                                                                                               | \                                                |
-| user string      | A typed unit of text input from the user.<br><br>Behaviour for invalid `user string`s is unspecified, and may result in unexpected behaviour such as error messages.                                              | A valid `user string` consists of one or more characters, of which at least one is not a space.<br><br>Any forward slash must be escaped.<br><br>Any spaces at the start and end of`user string`s are truncated. | wumpus<br><br>wumpus farts<br><br>birthday 3\/12 |
-| word             | A `user string` that does not contain spaces or escaped forward slashes                                                                                                                                           | Does not contain spaces or escaped forward slashes.                                                                                                                                                              | wumpus<br><br>wumpus,farts!                      |
-| Contact Index    | A `word` representing the 1-based position of a `Contact` in the `Active Contact List`, used to identify that Contact in `command`s                                                                               | Integer between and including 1 and the number of `Contact`s in the `Active Contact List`.<br><br>If the `Active Contact List` is empty, there is no valid `Contact Index`                                       | 1                                                |
-| Story Index      | A `word` representing the 1-based position of a `Story` in the `Active Story List`, used to identify that `Story` in `command`s                                                                                   | Integer between and including 1 and the number of `Story`s in the `Active Story List`<br><br>If the `Active Story List` is empty, there is no valid `Story Index`                                                | 2                                                |
-| Followup Index   | A `word` representing the 1-based position of a `Followup` in the `Active Followup List`, used to identify that `Followup` in `command`s                                                                          | Integer between and including 1 and the number of `Followup`s in the `Active Followup List`<br><br>If the `Active Followup List` is empty, there is no valid `Followup Index`                                    | 1                                                |
+| Input type       | Definition                                                                                                                                                                                                        | Format/s                                                                                                                                                                                                 | Examples                                         |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| escape character | A character that escapes the next character if it is forward slash. An escape character used this way will not be part of a user string.<br><br>Otherwise, the escape character is treated as a normal character. | The escape character is backslash.                                                                                                                                                                       | \                                                |
+| user string      | A typed unit of text input from the user.<br><br>Behaviour for invalid `user string`s is unspecified, and may result in unexpected behaviour such as error messages.                                              | A valid `user string` consists of one or more characters. It cannot start with a space. <br><br>Any forward slash must be escaped.<br><br>Any trailing spaces at the end of`user string`s are truncated. | wumpus<br><br>wumpus farts<br><br>birthday 3\/12 |
+| word             | A `user string` that does not contain spaces or escaped forward slashes                                                                                                                                           | Does not contain spaces or escaped forward slashes.                                                                                                                                                      | wumpus<br><br>wumpus,farts!                      |
+| Contact Index    | A `word` representing the 1-based position of a `Contact` in the `Active Contact List`, used to identify that Contact in `command`s                                                                               | Integer between and including 1 and the number of `Contact`s in the `Active Contact List`.<br><br>If the `Active Contact List` is empty, there is no valid `Contact Index`                               | 1                                                |
+| Story Index      | A `word` representing the 1-based position of a `Story` in the `Active Story List`, used to identify that `Story` in `command`s                                                                                   | Integer between and including 1 and the number of `Story`s in the `Active Story List`<br><br>If the `Active Story List` is empty, there is no valid `Story Index`                                        | 2                                                |
+| Followup Index   | A `word` representing the 1-based position of a `Followup` in the `Active Followup List`, used to identify that `Followup` in `command`s                                                                          | Integer between and including 1 and the number of `Followup`s in the `Active Followup List`<br><br>If the `Active Followup List` is empty, there is no valid `Followup Index`                            | 1                                                |
 
 #### Command format
 
@@ -815,7 +815,9 @@ Use case ends.
 * **Archive Story List**: The list containing all stories stored in PressMemo, including stories that are not currently displayed in the Active Story List.
 * **Archive Followup List**: The list containing all follow-ups stored in PressMemo, including stories that are not currently displayed in the Active Story List.
 * **Filter**: A condition used to select a subset of Contacts, Stories or Follow-ups displayed to the user.
-
+* **Active Contact Filter**: The currently active filter over the Archive Contact List, which determines the Active Contact List.
+* **Active Story Filter**: The currently active filter over the Archive Story List, which determines the Active Story List.
+* **Active Followup Filter**: The currently active filter over the Archive Followup List, which determines the Active Followup List.
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Appendix: Instructions for manual testing**

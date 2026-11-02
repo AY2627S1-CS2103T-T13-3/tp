@@ -1,0 +1,76 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":AddStoryCommandParser" as AddStoryCommandParser LOGIC_COLOR
+participant "a:AddStoryCommand" as AddStoryCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant "m:Model" as Model MODEL_COLOR
+end box
+
+[-> LogicManager : execute("addstory Investigation t/urgent")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("addstory Investigation t/urgent")
+activate AddressBookParser
+
+create AddStoryCommandParser
+AddressBookParser -> AddStoryCommandParser
+activate AddStoryCommandParser
+
+AddStoryCommandParser --> AddressBookParser
+deactivate AddStoryCommandParser
+
+AddressBookParser -> AddStoryCommandParser : parse("Investigation t/urgent")
+activate AddStoryCommandParser
+
+create AddStoryCommand
+AddStoryCommandParser -> AddStoryCommand
+activate AddStoryCommand
+
+AddStoryCommand --> AddStoryCommandParser :
+deactivate AddStoryCommand
+
+AddStoryCommandParser --> AddressBookParser : a
+deactivate AddStoryCommandParser
+'Hidden arrow to position the destroy marker below the end of the activation bar.
+AddStoryCommandParser -[hidden]-> AddressBookParser
+destroy AddStoryCommandParser
+
+AddressBookParser --> LogicManager : a
+deactivate AddressBookParser
+
+LogicManager -> AddStoryCommand : execute(m)
+activate AddStoryCommand
+
+AddStoryCommand -> Model : hasStory(toAdd)
+activate Model
+
+Model --> AddStoryCommand : false
+deactivate Model
+
+AddStoryCommand -> Model : addStory(toAdd)
+activate Model
+
+Model --> AddStoryCommand
+deactivate Model
+
+create CommandResult
+AddStoryCommand -> CommandResult
+activate CommandResult
+
+CommandResult --> AddStoryCommand
+deactivate CommandResult
+
+AddStoryCommand --> LogicManager : r
+deactivate AddStoryCommand
+
+[<--LogicManager
+deactivate LogicManager
+@enduml
