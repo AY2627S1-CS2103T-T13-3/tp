@@ -706,27 +706,40 @@ Examples:
   * **Input / Action:** `listfollowups ci/1`
   * **Expected Outcome:** Displays only follow-ups linked to the first displayed contact in the **FOLLOW-UPS** panel. 
 
-#### Managing command shortcuts: `shortcut`
+### Managing command shortcuts: `shortcut`
 
-Creates a custom alias for a command or displays all saved aliases.
+* **Objective:** Creates a custom alias for a command or displays all saved aliases.
 
-Format: `shortcut [s/SHORTCUT c/COMMAND_WORD]`
+<img alt="shortcut example" src="images/shortcut-example.png" width="726" height="593">
 
-* `shortcut` without arguments lists the existing shortcuts alphabetically, or reports that none are assigned.
-* `shortcut s/SHORTCUT c/COMMAND_WORD` assigns an alias to a command.
-* A shortcut must start with a lowercase letter and may contain only lowercase letters and digits (e.g., `ls`, `a1`, `ds`).
-* Built-in command words cannot be reused as shortcut names.
-* Only the following commands can be assigned shortcuts: `addcontact`, `addstory`, `assign`, `clear`, `deletecontact`, `deletestory`, `editcontact`, `exit`, `findcontact`, `findstory`, `help`, `list`, `liststories`, and `unassign`.
-* Other commands, including `listcontacts`, `addfollowup`, `deletefollowup`, `shortcut`, and `unshortcut`, are not supported as shortcut targets in this version.
-* Each command can have at most one shortcut, and each shortcut can refer to one command. Reassigning a shortcut or command replaces conflicting mappings.
-* Once assigned, type the shortcut in place of the command word and keep any required arguments.
-* Shortcuts are saved in `preferences.json` and remain available after restarting the app.
+#### Usage / Command Format
 
-Examples:
-* `shortcut` — lists all existing shortcuts.
-* `shortcut s/ls c/list` — assigns `ls` to `list`; you can then enter `ls`.
-* `shortcut s/a c/addcontact` — assigns `a` to `addcontact`; you can then enter `a n/John Tan p/91234567 e/john@example.com a/Singapore`.
-* `shortcut s/ds c/deletestory` — assigns `ds` to `deletestory`.
+`shortcut [s/SHORTCUT c/COMMAND_WORD]`
+
+#### Parameters & Constraints
+
+| Parameter      | Type     | Description                            | Examples |
+|:---------------|:---------|:---------------------------------------|:---------|
+| `SHORTCUT`     | `word`   | The alias created for the command word | ls       |
+| `COMMAND_WORD` | `word`   | The original command word in PressMemo | list     |
+
+> **Tip / Note:**
+> * Use `shortcut` without arguments to list the existing shortcuts.
+> * Use `shortcut s/SHORTCUT c/COMMAND_WORD` to assign an alias to a command word.
+> * Default built-in command words cannot be reused as shortcut names. For example, `list` cannot be used as a shortcut for `listcontacts`.
+> * `shortcut` and `unshortcut` command cannot be assigned shortcuts.
+> * Each command can have at most one shortcut, and each shortcut can refer to one command. Reassigning a shortcut or command replaces conflicting assignments.
+> * Once assigned, type the shortcut in place of the command word and keep any required arguments.
+> * Shortcuts are saved in `preferences.json` and remain available after restarting the app.
+
+#### Examples
+
+* **Example 1:** List all shortcut assignments
+  * **Input / Action:** `shortcut`
+  * **Expected Outcome:** All existing shortcut assignments are listed.
+* **Example 2:** Add a shortcut assignment
+  * **Input / Action:** `shortcut s/a c/addcontact` 
+  * **Expected Outcome:** Assigns `a` as a shortcut for `addcontact`. You can then enter `a John Tan p/91234567 e/john@example.com a/Singapore` to add a contact.
 
 ### Removing a command shortcut: `unshortcut`
 
