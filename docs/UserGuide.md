@@ -389,7 +389,7 @@ Examples:
 >   * Each follow-up belong to exactly one contact
 > * Editing a contact's name updates the contact name shown on their follow-ups. 
 > * Deleting a contact also deletes all follow-ups linked to them.
-> * Adding a follow-up resets the **FOLLOW-UPS** panel to display all follow-ups.
+> * Adding a follow-up retains the **FOLLOW-UPS** panel filter. New follow-ups are displayed if they match the existing filter.
 
 ### Examples
 
