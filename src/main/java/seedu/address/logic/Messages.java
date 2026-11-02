@@ -18,6 +18,8 @@ public class Messages {
     public static final String MESSAGE_INVALID_USER_STRING =
             "Unrecognised prefix or unescaped forward slash in \"%s\".";
     public static final String MESSAGE_INVALID_COMMAND_FORMAT = "Invalid command format!\n%1$s";
+    public static final String MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS =
+            "Invalid Command: Command should not be used with parameters.";
     public static final String MESSAGE_INVALID_CONTACT_DISPLAYED_INDEX =
             "The contact index %1$d is invalid for the displayed list of %2$d contact(s).";
     public static final String MESSAGE_INVALID_STORY_DISPLAYED_INDEX =

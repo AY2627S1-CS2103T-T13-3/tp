@@ -1,7 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
-import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.Messages.MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS;
 
 import java.util.List;
 import java.util.Map;
@@ -141,7 +141,7 @@ public final class CommandWords {
         return arguments -> {
             requireNonNull(arguments);
             if (!arguments.trim().isEmpty()) {
-                throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, messageUsage));
+                throw new ParseException(MESSAGE_COMMAND_DOES_NOT_ACCEPT_PARAMETERS + "\n" + messageUsage);
             }
             return supplier.get();
         };
