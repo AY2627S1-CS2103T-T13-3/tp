@@ -364,15 +364,15 @@ Examples:
   * **Input / Action:** `deletestory 2`
   * **Expected Outcome:** Deletes the 2nd story from the story panel. Identifying information about the recently-deleted story is displayed in the console.
 
-## Adding a follow-up: `addfollowup`
+### Adding a follow-up: `addfollowup`
 
 - **Objective:** Adds a follow-up reminder and links it to an existing contact.
 
-### Usage / Command Format
+#### Usage / Command Format
 
 `addfollowup DESCRIPTION ci/CONTACT_INDEX`
 
-### Parameters & Constraints
+#### Parameters & Constraints
 
 | Parameter          | Type            | Description                                                            | Examples                    |
 | :----------------- | :-------------- | :--------------------------------------------------------------------- | :-------------------------- |
@@ -391,27 +391,27 @@ Examples:
 > * Deleting a contact also deletes all follow-ups linked to them.
 > * Adding a follow-up retains the **FOLLOW-UPS** panel filter. New follow-ups are displayed if they match the existing filter.
 
-### Examples
+#### Examples
 
 * **Example 1: Add a follow-up to the first displayed contact**
   * **Input / Action:** `addfollowup Prepare interview questions ci/1`
   * **Expected Outcome:** Adds the follow-up `Prepare interview questions` and links it to the first contact in the displayed **CONTACTS** panel.
 
-### Common Errors & Troubleshooting
+#### Common Errors & Troubleshooting
 
 | Error Message / Symptom                                                                 | Cause                                                                                                   | How to Fix                                                        |
 |:----------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------| :---------------------------------------------------------------- |
 | `Error: there is already a followup "Check back for interview" for the contact "Alex"!` | The contact (Alex) already has a follow-up with exactly the same description (Check back for interview) | Use a different description or edit the existing follow-up        |
 
-## Editing a follow-up: `editfollowup`
+### Editing a follow-up: `editfollowup`
 
 - **Objective:** Updates the description or linked contact of an existing follow-up.
 
-### Usage / Command Format
+#### Usage / Command Format
 
 `editfollowup INDEX [d/DESCRIPTION] [ci/CONTACT_INDEX]`
 
-### Parameters & Constraints
+#### Parameters & Constraints
 
 | Parameter          | Type             | Description                                                                     | Examples      |
 | :----------------- | :--------------- | :------------------------------------------------------------------------------ | :------------ |
@@ -428,7 +428,7 @@ Examples:
 > * The edited follow-up cannot duplicate another follow-up linked to the same contact.
 > * The current follow-up filter on **FOLLOW-UPS** panel is preserved. If the edited follow-up no longer matches that filter, it disappears from the displayed **FOLLOW-UPS** panel but remains saved in PressMemo.
 
-### Examples
+#### Examples
 
 * **Example 1: Edit only the description**
   * **Input / Action:** `editfollowup 1 d/Call tomorrow`
@@ -438,7 +438,7 @@ Examples:
   * **Input / Action:** `editfollowup 1 d/Call tomorrow ci/2`
   * **Expected Outcome:** Changes the first displayed follow-up's description to `Call tomorrow` and replaces the linked contact with the second displayed contact.
 
-### Common Errors & Troubleshooting
+#### Common Errors & Troubleshooting
 
 | Error Message / Symptom                                                              | Cause                                                                                 | How to Fix                                                  |
 |:-------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------|:------------------------------------------------------------|
@@ -446,15 +446,15 @@ Examples:
 | `Error: there is already a followup "Test" for the contact "Alex"!`                  | The edited followup is a duplicate of another follow-up for the linked contact (Alex) | Use a different description or contact                      |
 | `Follow-up descriptions should not be blank or start with whitespace`                | `DESCRIPTION` is blank                                                                | Enter a non-blank description |
 
-## Deleting a follow-up: `deletefollowup`
+### Deleting a follow-up: `deletefollowup`
 
 - **Objective:** Deletes the specified follow-up reminder from PressMemo.
 
-### Usage / Command Format
+#### Usage / Command Format
 
 `deletefollowup INDEX`
 
-### Parameters & Constraints
+#### Parameters & Constraints
 
 | Parameter | Type             | Description                                               | Examples |
 | :-------- | :--------------- | :-------------------------------------------------------- | :------- |
@@ -465,7 +465,7 @@ Examples:
 > * Deleting a follow-up does not delete its linked contact.
 > * Deletion cannot be undone.
 
-### Examples
+#### Examples
 
 * **Example 1: Delete from the full follow-up list**
   * **Input / Action:** `listfollowups`, followed by `deletefollowup 1`
@@ -475,15 +475,15 @@ Examples:
   * **Input / Action:** `findfollowups interview`, followed by `deletefollowup 1`
   * **Expected Outcome:** Deletes the first follow-up displayed in the filtered **FOLLOW-UPS** panel.
 
-## Finding follow-ups by description: `findfollowups`
+### Finding follow-ups by description: `findfollowups`
 
 - **Objective:** Finds follow-ups whose descriptions contain any of the given keywords and display them in the **FOLLOW-UPS** panel.
 
-### Usage / Command Format
+#### Usage / Command Format
 
 `findfollowups KEYWORD [MORE_KEYWORDS]...`
 
-### Parameters & Constraints
+#### Parameters & Constraints
 
 | Parameter       | Type   | Description                                                 | Examples |
 | :-------------- | :----- | :---------------------------------------------------------- |:---------|
@@ -500,7 +500,7 @@ Examples:
 > * The search replaces the current follow-up filter and searches all saved follow-ups. The **CONTACTS** and **STORIES** panels remain unchanged.
 > * Use `listfollowups` to display all follow-ups again.
 
-### Examples
+#### Examples
 
 * **Example 1: Search using one keyword**
   * **Input / Action:** `findfollowups interview`
@@ -515,7 +515,7 @@ Examples:
   * **Expected Outcome:** Displays an empty **FOLLOW-UPS** panel and reports `0 followup(s) listed!`.
     * As there are no follow-ups that whose descriptions contain `nonexistentkeyword`.
 
-### Common Errors & Troubleshooting
+#### Common Errors & Troubleshooting
 
 | Error Message / Symptom                                         | Cause                                                | How to Fix                                                        |
 | :-------------------------------------------------------------- | :--------------------------------------------------- | :---------------------------------------------------------------- |
