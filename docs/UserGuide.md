@@ -30,7 +30,7 @@ This guide describes the features implemented for PressMemo v1.4.
 
     * `list` : Displays all contacts, stories and follow-ups.
 
-    * `addcontact n/Jane Smith p/91234567 e/janesmith@example.com a/Jane street, block 987, #10-10` : Adds a contact named `Jane Smith` to PressMemo.
+    * `addcontact Jane Smith p/91234567 e/janesmith@example.com a/Jane street, block 987, #10-10` : Adds a contact named `Jane Smith` to PressMemo.
 
     * `assign ci/1 si/2` : Assigns the 1st displayed contact to the 2nd displayed story.
 
@@ -52,13 +52,13 @@ This guide describes the features implemented for PressMemo v1.4.
 **:information_source: Notes about the command format:**<br>
 
 * Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
-  For example, in `addcontact n/NAME`, replace `NAME` with a value such as `John Doe`.
+  For example, in `addcontact p/PHONE`, replace `PHONE` with a value such as `98765432`.
 * Items in square brackets are optional.<br>
-  For example, `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
+  For example, `p/PHONE [t/TAG]` can be used as `p/98765432 t/friend` or as `p/98765432`.
 * Items followed by `…`​ can appear zero or more times.<br>
   For example, `[t/TAG]…​` may be omitted, or written as `t/friend` or `t/friend t/family`.
 * Prefixed parameters can be in any order.<br>
-  For example, if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
+  For example, if the command specifies `e/EMAIL p/PHONE`, `p/PHONE e/EMAIL` is also acceptable.
 * Extraneous parameters for commands that take no parameters, such as `help`, `exit`, `clear`, and `list`, are not allowed.<br>
   For example, `help 123` will result in an error.
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
@@ -83,7 +83,7 @@ Format: `help`
 ![Ui with Help Panel](images/UiWithHelpPanel.png)
 
 * Enter `help` to open or close the help panel. The link to the user guide will also be shown in the message panel. Alternatively, use the **Help** menu at the top. 
-* Use the scrollbar or select the command panel and use the up and down arrow keys to view the command list.
+* Use the scrollbar or select the command panel and use the up and down arrow keys to navigate the command list.
 * The help panel displays only the default commands and does not include any custom shortcuts you have created. 
 * For the latest instructions about contact, story, follow-up, and shortcut commands, refer to this User Guide.
 
@@ -91,9 +91,9 @@ Format: `help`
 
 Adds a contact to PressMemo.
 
-Format: `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
+Format: `addcontact NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]…​`
 
-* All four fields (`n/`, `p/`, `e/`, and `a/`) are required and cannot be blank.
+* `NAME`, `p/PHONE`, `e/EMAIL` and `a/ADDRESS` must be specified exactly once and cannot be blank.
 * Names contain only letters, digits, and spaces. A contact with exactly the same name already in PressMemo cannot be added.
 * Phone numbers contain between 3 and 15 digits and no other characters. Emails must have a valid `word@word` format.
 * Tag names contain only letters and digits, without spaces.
