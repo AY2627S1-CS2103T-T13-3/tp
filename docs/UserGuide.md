@@ -380,7 +380,7 @@ Examples:
 
 > **Tip / Note:**
 > * Enter `DESCRIPTION` as plain text before `ci/`; it does not use a prefix.
-> * `DESCRIPTION` cannot be blank or contain a forward slash (`/`). Leading and trailing whitespace is removed.
+> * `DESCRIPTION` cannot be blank. Leading and trailing whitespace is removed.
 > * A contact cannot have two follow-ups with exactly the same description. Description comparison is case-sensitive.
 > * Follow-ups belong to contacts, not directly to stories. Deleting a story does not remove a contact's follow-ups.
 > * Editing a contact's name updates the contact name shown on their follow-ups. Deleting a contact also deletes all follow-ups linked to them.
@@ -398,11 +398,10 @@ Examples:
 
 ### Common Errors & Troubleshooting
 
-| Error Message / Symptom                          | Cause                                                                 | How to Fix                                                        |
-| :----------------------------------------------- | :-------------------------------------------------------------------- | :---------------------------------------------------------------- |
-| `This followup already exists for CONTACT_NAME.` | The contact already has a follow-up with exactly the same description | Use a different description or edit the existing follow-up        |
-| `The contact index provided is invalid.`          | `CONTACT_INDEX` is outside the displayed contact list                 | Choose an index currently shown in the **CONTACTS** panel          |
-| `Descriptions can take any values except forward slash (/), and should not be blank` | `DESCRIPTION` is blank or contains `/` | Enter a non-blank description without a forward slash |
+| Error Message / Symptom                                                              | Cause                                                                 | How to Fix                                                        |
+|:-------------------------------------------------------------------------------------|:----------------------------------------------------------------------| :---------------------------------------------------------------- |
+| `Error: there is already a followup "DESCRIPTION" for the contact "CONTACT NAME"!`   | The contact already has a follow-up with exactly the same description | Use a different description or edit the existing follow-up        |
+| `The contact index CONTACT_INDEX is invalid for the displayed list of X contact(s).` | `CONTACT_INDEX` is outside the displayed contact list                 | Choose an index currently shown in the **CONTACTS** panel          |
 
 ## Editing a follow-up: `editfollowup`
 
@@ -439,12 +438,13 @@ Examples:
 
 ### Common Errors & Troubleshooting
 
-| Error Message / Symptom                                     | Cause                                                               | How to Fix                                                    |
-| :---------------------------------------------------------- | :------------------------------------------------------------------ | :------------------------------------------------------------ |
-| `At least one field to edit must be provided.`              | Neither `d/DESCRIPTION` nor `ci/CONTACT_INDEX` was supplied          | Provide at least one field to update                          |
-| `This followup already exists for this contact.`             | The edited values duplicate another follow-up for the linked contact | Use a different description or contact                        |
-| `The followup index provided is invalid.`                    | `INDEX` is outside the displayed follow-up list                      | Choose an index currently shown in the **FOLLOW-UPS** panel   |
-| `The contact index provided is invalid.`                     | `CONTACT_INDEX` is outside the displayed contact list                | Choose an index currently shown in the **CONTACTS** panel     |
+| Error Message / Symptom                                                                | Cause                                                                | How to Fix                                                  |
+|:---------------------------------------------------------------------------------------|:---------------------------------------------------------------------|:------------------------------------------------------------|
+| `At least one field to edit must be provided.`                                         | Neither `d/DESCRIPTION` nor `ci/CONTACT_INDEX` was supplied          | Provide at least one field to update                        |
+| `Error: there is already a followup "DESCRIPTION" for the contact "CONTACT_NAME"!.`    | The edited values duplicate another follow-up for the linked contact | Use a different description or contact                      |
+| `The followup index FOLLOWUP INDEX is invalid for the displayed list of X followup(s).` | `INDEX` is outside the displayed follow-up list                      | Choose an index currently shown in the **FOLLOW-UPS** panel |
+| `The contact index provided is invalid.`                                               | `CONTACT_INDEX` is outside the displayed contact list                | Choose an index currently shown in the **CONTACTS** panel   |
+| `Follow-up descriptions should not be blank or start with a whitespace`                | `DESCRIPTION` is blank   | Enter a non-blank description |
 
 ## Deleting a follow-up: `deletefollowup`
 
@@ -498,7 +498,8 @@ Examples:
 
 > **Tip / Note:**
 > * The search is case-insensitive; for example, `interview` matches `Interview`.
-> * Only full words match; for example, `inter` does not match `interview`.
+> * Only complete whitespace-separated words match; for example, `inter` does not match `interview`.
+> * Punctuation is treated as part of a word. For example, `interview` does not match `interview,`, but `interview,` does.
 > * Keyword order does not matter.
 > * Follow-ups matching at least one keyword are returned (an `OR` search).
 > * The search considers only follow-up descriptions, not linked contact names.
@@ -517,13 +518,13 @@ Examples:
 
 * **Example 3: Search with no matches**
   * **Input / Action:** `findfollowups nonexistentkeyword`
-  * **Expected Outcome:** Displays an empty **FOLLOW-UPS** panel and reports that no follow-ups were found.
+  * **Expected Outcome:** Displays an empty **FOLLOW-UPS** panel and reports `0 followup(s) listed!`.
 
 ### Common Errors & Troubleshooting
 
 | Error Message / Symptom                                         | Cause                                                | How to Fix                                                        |
 | :-------------------------------------------------------------- | :--------------------------------------------------- | :---------------------------------------------------------------- |
-| `0 followup(s) listed!` when matches were expected              | The search used a partial word or the wrong keywords | Use complete words that appear in the follow-up descriptions      |
+| `0 followup(s) listed!` when matches were expected              | The search used a partial word, mismatched punctuation, or the wrong keywords | Use complete whitespace-separated words, including their punctuation, from the follow-up descriptions |
 | Invalid command format                                          | No search keyword was supplied                       | Provide at least one keyword, e.g., `findfollowups interview`     |
 
 ## Listing follow-ups: `listfollowups`
