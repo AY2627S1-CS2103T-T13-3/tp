@@ -47,7 +47,7 @@ public class UniqueStoryList implements Iterable<Story> {
         if (contains(toAdd)) {
             throw new DuplicateStoryException();
         }
-        internalList.add(toAdd);
+        internalList.addFirst(toAdd);
     }
 
     /**

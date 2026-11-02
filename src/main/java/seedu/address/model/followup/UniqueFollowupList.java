@@ -44,7 +44,7 @@ public class UniqueFollowupList implements Iterable<Followup> {
         if (contains(toAdd)) {
             throw new DuplicateFollowupException();
         }
-        internalList.add(toAdd);
+        internalList.addFirst(toAdd);
     }
 
     /**

@@ -45,7 +45,7 @@ public class UniqueContactList implements Iterable<Contact> {
         if (contains(toAdd)) {
             throw new DuplicateContactException();
         }
-        internalList.add(toAdd);
+        internalList.addFirst(toAdd);
     }
 
     /**
