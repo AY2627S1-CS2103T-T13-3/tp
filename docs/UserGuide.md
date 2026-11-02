@@ -307,22 +307,48 @@ This command does not accept parameters. Any extraneous characters will result i
 | `Addresses should not be blank or start with whitespace` | The address is blank or begins with whitespace. | Enter an address that does not start with whitespace. |
 | `Tag names should not be blank or start with whitespace` | A tag name begins with a space or contains only whitespace after `t/`. | Enter a non-blank tag name without leading whitespace (or use `t/` without spaces to clear tags). |
 
-### Locating contacts by name: `findcontact`
+### Finding contacts by name: `findcontacts`
 
-Finds contacts whose names contain any of the given keywords.
+- **Objective:** Finds contacts whose names contain any of the given keywords.
 
-Format: `findcontact KEYWORD [MORE_KEYWORDS]`
+<img src="images/findcontacts-example.png" alt="Finding contacts" width="726" height="593">
 
-* The search is case-insensitive; for example, `hans` matches `Hans`.
-* Keyword order does not matter; for example, `Hans Bo` matches `Bo Hans`.
-* The search considers only names.
-* Only full words match; for example, `Han` does not match `Hans`.
-* Contacts matching at least one keyword are returned (an `OR` search); for example, `Hans Bo` returns `Hans Gruber` and `Bo Yang`.
-* The search replaces the current contact filter and searches all contacts. It does not change the story list. Use `listcontacts` to show all contacts again without changing the story list.
+#### Usage / Command Format
+`findcontact KEYWORD [MORE_KEYWORDS]`
 
-Examples:
-* `findcontact John` returns `john` and `John Doe`
-* `findcontact alex david` returns `Alex Yeoh`, `David Li`
+#### Parameters & Constraints
+| Parameter       | Type   | Description                                        |
+|-----------------|--------|----------------------------------------------------|
+| `KEYWORD`       | `word` | The word to search for in the contact names        |
+| `MORE_KEYWORDS` | `word` | Additional keywords to search for in contact names |
+
+> **Tip / Note:**
+> * The search is case-insensitive; for example, `hans` matches `Hans`.
+> * Keyword order does not matter; for example, `Hans Bo` matches `Bo Hans`.
+> * The search considers only contact names.
+> * Only full words match; for example, `Han` does not match `Hans`.
+> * Contacts matching at least one keyword are returned (an `OR` search); for example, `Hans Bo` returns `Hans Gruber` and `Bo Yang`.
+> * The search replaces the current contact filter and searches all contacts. It does not change the story list. Use `listcontacts` to show all contacts again without changing the story list.
+
+#### Examples
+
+* **Example 1:** Single keyword search
+  * **Input / Action:** `findcontacts John`
+  * **Expected Outcome:** Displays all contacts with `John` as a word in their name. A message in the console indicates the number of matches found. Matches `john` and `John Doe`.
+
+* **Example 2:** Multiple keywords search
+  * **Input / Action:** `findstories alex david`
+  * **Expected Outcome:** Displays all contacts whose names contain either `alex` or `david`. A message in the console indicates the number of matches found. Matches `Alex Yeoh` and `David Li`.
+
+* **Example 3:** Search with no matches
+  * **Input / Action:** `findstories nameDoesNotExist` when there is no contact whose name contains `nameDoesNotExist`
+  * **Expected Outcome:** The contact panel displays no contacts. A message in the console indicates that no matches were found.
+
+#### Common Errors & Troubleshooting
+
+| Error Message / Symptom                                     | Cause                                                                 | How to Fix                                                                    |
+|:------------------------------------------------------------|:----------------------------------------------------------------------|:------------------------------------------------------------------------------|
+| `0 contact(s) listed!` when matching contacts were expected | Search keywords were partial words (e.g., `Alex` instead of `Alexis`) | Ensure full words are used in the search keyword, e.g., `findcontacts Alexis` |
 
 
 ### Deleting a contact: `deletecontact`
