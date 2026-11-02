@@ -35,9 +35,7 @@ public class AddStoryCommandParserTest {
      *    - T3: Multiple unique tags ("t/urgent t/breaking")
      *    - T4: Duplicate tags ("t/urgent t/breaking t/urgent" -> deduplicated)
      *    Invalid:
-     *    - T_INV1: Empty tag value ("t/")
-     *    - T_INV2: Whitespace tag ("t/   ")
-     *    - T_INV3: Forward slash in tag ("t/urgent/tag")
+     *    - T_INV1: Forward slash in tag ("t/urgent/tag")
      */
     @Test
     public void parse_allPairsCombinations_success() {
@@ -102,20 +100,20 @@ public class AddStoryCommandParserTest {
         assertParseFailure(parser, "Invalid/Story t/urgent",
                 Messages.getErrorMessageForInvalidUserString("Invalid/Story"));
 
-        // T_INV1: Empty tag value
-        assertParseFailure(parser, "Valid Story t/", Tag.MESSAGE_CONSTRAINTS);
-
-        // T_INV2: Whitespace only tag value
-        assertParseFailure(parser, "Valid Story t/   ", Tag.MESSAGE_CONSTRAINTS);
-
-        // T_INV3: Tag containing forward slash
+        // T_INV1: Tag containing forward slash
         assertParseFailure(parser, "Valid Story t/invalid/tag",
                 Messages.getErrorMessageForInvalidUserString("invalid/tag"));
 
         // Valid tag followed by invalid tag in isolation
-        assertParseFailure(parser, "Valid Story t/urgent t/   ", Tag.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, "Valid Story t/urgent t/invalid/tag",
                 Messages.getErrorMessageForInvalidUserString("invalid/tag"));
+    }
+
+    @Test
+    public void parse_emptyTagsIgnored_success() {
+        Story expectedStory = new Story(new StoryName("Valid Story"), Set.of(new Tag("urgent")));
+
+        assertParseSuccess(parser, "Valid Story t/ t/urgent t/", new AddStoryCommand(expectedStory));
     }
 
     @Test

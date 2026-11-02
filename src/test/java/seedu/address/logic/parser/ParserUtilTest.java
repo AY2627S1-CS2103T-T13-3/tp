@@ -285,6 +285,11 @@ public class ParserUtilTest {
     }
 
     @Test
+    public void parseTags_emptyAndValidValues_returnsValidTagSet() throws Exception {
+        assertEquals(Set.of(new Tag(VALID_TAG_1)), ParserUtil.parseTags(List.of("", VALID_TAG_1, "")));
+    }
+
+    @Test
     public void parseTags_collectionWithValidTags_returnsTagSet() throws Exception {
         Set<Tag> actualTagSet = ParserUtil.parseTags(List.of(VALID_TAG_1, VALID_TAG_2));
         Set<Tag> expectedTagSet = Set.of(new Tag(VALID_TAG_1), new Tag(VALID_TAG_2));
@@ -305,6 +310,12 @@ public class ParserUtilTest {
     @Test
     public void parseTagsForEdit_emptyValue_returnsEmptyTagSet() throws Exception {
         assertEquals(Optional.of(Set.of()), ParserUtil.parseTagsForEdit(List.of("")));
+    }
+
+    @Test
+    public void parseTagsForEdit_emptyAndValidValues_returnsValidTagSet() throws Exception {
+        assertEquals(Optional.of(Set.of(new Tag(VALID_TAG_1))),
+                ParserUtil.parseTagsForEdit(List.of("", VALID_TAG_1, "")));
     }
 
     @Test

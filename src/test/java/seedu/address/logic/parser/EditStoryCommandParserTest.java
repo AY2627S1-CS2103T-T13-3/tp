@@ -26,7 +26,6 @@ import seedu.address.logic.Messages;
 import seedu.address.logic.commands.EditStoryCommand;
 import seedu.address.logic.commands.EditStoryCommand.EditStoryDescriptor;
 import seedu.address.model.story.StoryName;
-import seedu.address.model.tag.Tag;
 import seedu.address.testutil.EditStoryDescriptorBuilder;
 
 public class EditStoryCommandParserTest {
@@ -81,15 +80,8 @@ public class EditStoryCommandParserTest {
         assertParseFailure(parser, "1 n/Story/1",
                 Messages.getErrorMessageForInvalidUserString("Story/1")); // slash in name
 
-        assertParseFailure(parser, "1" + INVALID_STORYTAG_DESC, Tag.MESSAGE_CONSTRAINTS); // invalid tag
         assertParseFailure(parser, "1 t/tag/1",
                 Messages.getErrorMessageForInvalidUserString("tag/1")); // slash in tag
-
-        // while parsing {@code PREFIX_TAG} alone will reset the tags of the {@code Story} being edited,
-        // parsing it together with a valid tag results in error
-        assertParseFailure(parser, "1" + TAG_DESC_SINGAPORE + TAG_DESC_MALAYSIA + TAG_EMPTY, Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1" + TAG_DESC_SINGAPORE + TAG_EMPTY + TAG_DESC_MALAYSIA, Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, "1" + TAG_EMPTY + TAG_DESC_SINGAPORE + TAG_DESC_MALAYSIA, Tag.MESSAGE_CONSTRAINTS);
 
         // multiple invalid values, but only the first invalid value is captured
         assertParseFailure(parser, "1" + INVALID_STORYNAME_DESC + INVALID_STORYTAG_DESC,
