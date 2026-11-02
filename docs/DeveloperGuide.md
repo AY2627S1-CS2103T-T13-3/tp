@@ -228,6 +228,8 @@ The following sequence diagram illustrates the interactions within the Model com
 
 - **Objective:** Adds a story to PressMemo
 
+<img src="images/addstory-example.png" width="726" height="593">
+
 ### API
 
 * **Command:** `addstory STORY_NAME [t/TAG]…`
@@ -243,6 +245,13 @@ The following sequence diagram illustrates the interactions within the Model com
 	* if `STORY_NAME` is the name of some existing story in ArchiveStoryList: console displays error message
 
 ### Implementation details
+
+Each `Story` contains a story name and a set of tags. Upon creation, the `Story` has no assigned contacts (list of assigned contact names is empty).
+
+The `addstory` command creates the new `Story` object and `AddressBook`	adds it to the end of the ArchiveStoryList.
+
+The following sequence diagram illustrates the interactions within the `Logic` component during the execution of a valid `addstory Investigation t/urgent` command where the ArchiveStoryList does not contain a story with the same name.
+![Addstory sequence diagram](images/AddStorySequenceDiagram.png)
 
 #### Execution flow
 1. The user enters the `addstory` command as an input string.

@@ -307,22 +307,48 @@ This command does not accept parameters. Any extraneous characters will result i
 | `Addresses should not be blank or start with whitespace` | The address is blank or begins with whitespace. | Enter an address that does not start with whitespace. |
 | `Tag names should not be blank or start with whitespace` | A tag name begins with a space or contains only whitespace after `t/`. | Enter a non-blank tag name without leading whitespace (or use `t/` without spaces to clear tags). |
 
-### Locating contacts by name: `findcontact`
+### Finding contacts by name: `findcontacts`
 
-Finds contacts whose names contain any of the given keywords.
+- **Objective:** Finds contacts whose names contain any of the given keywords.
 
-Format: `findcontact KEYWORD [MORE_KEYWORDS]`
+<img src="images/findcontacts-example.png" alt="Finding contacts" width="726" height="593">
 
-* The search is case-insensitive; for example, `hans` matches `Hans`.
-* Keyword order does not matter; for example, `Hans Bo` matches `Bo Hans`.
-* The search considers only names.
-* Only full words match; for example, `Han` does not match `Hans`.
-* Contacts matching at least one keyword are returned (an `OR` search); for example, `Hans Bo` returns `Hans Gruber` and `Bo Yang`.
-* The search replaces the current contact filter and searches all contacts. It does not change the story list. Use `listcontacts` to show all contacts again without changing the story list.
+#### Usage / Command Format
+`findcontact KEYWORD [MORE_KEYWORDS]`
 
-Examples:
-* `findcontact John` returns `john` and `John Doe`
-* `findcontact alex david` returns `Alex Yeoh`, `David Li`
+#### Parameters & Constraints
+| Parameter       | Type   | Description                                        |
+|-----------------|--------|----------------------------------------------------|
+| `KEYWORD`       | `word` | The word to search for in the contact names        |
+| `MORE_KEYWORDS` | `word` | Additional keywords to search for in contact names |
+
+> **Tip / Note:**
+> * The search is case-insensitive; for example, `hans` matches `Hans`.
+> * Keyword order does not matter; for example, `Hans Bo` matches `Bo Hans`.
+> * The search considers only contact names.
+> * Only full words match; for example, `Han` does not match `Hans`.
+> * Contacts matching at least one keyword are returned (an `OR` search); for example, `Hans Bo` returns `Hans Gruber` and `Bo Yang`.
+> * The search replaces the current contact filter and searches all contacts. It does not change the story list. Use `listcontacts` to show all contacts again without changing the story list.
+
+#### Examples
+
+* **Example 1:** Single keyword search
+  * **Input / Action:** `findcontacts John`
+  * **Expected Outcome:** Displays all contacts with `John` as a word in their name. A message in the console indicates the number of matches found. Matches `john` and `John Doe`.
+
+* **Example 2:** Multiple keywords search
+  * **Input / Action:** `findstories alex david`
+  * **Expected Outcome:** Displays all contacts whose names contain either `alex` or `david`. A message in the console indicates the number of matches found. Matches `Alex Yeoh` and `David Li`.
+
+* **Example 3:** Search with no matches
+  * **Input / Action:** `findstories nameDoesNotExist` when there is no contact whose name contains `nameDoesNotExist`
+  * **Expected Outcome:** The contact panel displays no contacts. A message in the console indicates that no matches were found.
+
+#### Common Errors & Troubleshooting
+
+| Error Message / Symptom                                     | Cause                                                                 | How to Fix                                                                    |
+|:------------------------------------------------------------|:----------------------------------------------------------------------|:------------------------------------------------------------------------------|
+| `0 contact(s) listed!` when matching contacts were expected | Search keywords were partial words (e.g., `Alex` instead of `Alexis`) | Ensure full words are used in the search keyword, e.g., `findcontacts Alexis` |
 
 
 ### Deleting a contact: `deletecontact`
@@ -794,10 +820,11 @@ Examples:
   * **Input / Action:** `listfollowups ci/1`
   * **Expected Outcome:** Displays only follow-ups linked to the first displayed contact in the **FOLLOW-UPS** panel. 
 
-#### Managing command shortcuts: `shortcut`
+### Managing command shortcuts: `shortcut`
 
-- **Objective:** Displays all saved command shortcuts or assigns a custom 1-to-1 alias to a PressMemo command.
-![shortcut](images/shortcut-example.png)
+* **Objective:** Creates a custom alias for a command or displays all saved aliases.
+
+<img alt="shortcut example" src="images/shortcut-example.png" width="726" height="593">
 
 #### Usage / Command Format
 
@@ -805,38 +832,36 @@ Examples:
 
 #### Parameters & Constraints
 
-| Parameter        | Type          | Description                                                                                     | Examples |
-| :--------------- | :------------ | :---------------------------------------------------------------------------------------------- | :------- |
-| `s/SHORTCUT`     | `user-string` | (Optional) Custom shortcut alias (must contain only lowercase letters and digits)               | `ls`     |
-| `c/COMMAND_WORD` | `word`        | (Optional) Built-in command word to map to (must be an assignable command)                      | `list`   |
+| Parameter      | Type     | Description                            | Examples |
+|:---------------|:---------|:---------------------------------------|:---------|
+| `SHORTCUT`     | `word`   | The alias created for the command word | ls       |
+| `COMMAND_WORD` | `word`   | The original command word in PressMemo | list     |
 
 > **Tip / Note:**
-> * `shortcut` without arguments lists all existing shortcuts in alphabetical order.
-> * `shortcut s/SHORTCUT c/COMMAND_WORD` assigns a 1-to-1 alias between the shortcut and the command word.
-> * A shortcut must start with a lowercase letter and contain only lowercase letters and digits (e.g., `ls`, `a1`, `ds`). Shortcuts cannot contain whitespace or forward slashes.
-> * Built-in command words cannot be used as shortcut names.
-> * Supported assignable commands: `addcontact`, `addstory`, `assign`, `clear`, `deletecontact`, `deletestory`, `editcontact`, `exit`, `findcontact`, `findstory`, `help`, `list`, `liststories`, and `unassign`.
-> * Other commands (`listcontacts`, `addfollowup`, `deletefollowup`, `shortcut`, `unshortcut`) cannot be assigned shortcuts.
-> * Each command can have at most one shortcut, and each shortcut can map to at most one command. Assigning an existing command to a new shortcut automatically replaces the old mapping.
-> * Shortcuts are saved in `preferences.json` and persist across application restarts.
+> * Use `shortcut` without arguments to list the existing shortcuts.
+> * Use `shortcut s/SHORTCUT c/COMMAND_WORD` to assign an alias to a command word.
+> * Default built-in command words cannot be reused as shortcut names. For example, `list` cannot be used as a shortcut for `listcontacts`.
+> * `shortcut` and `unshortcut` command cannot be assigned shortcuts.
+> * Each command can have at most one shortcut, and each shortcut can refer to one command. Reassigning a shortcut or command replaces conflicting assignments.
+> * Once assigned, type the shortcut in place of the command word and keep any required arguments.
+> * Shortcuts are saved in `preferences.json` and remain available after restarting the app.
 
 #### Examples
 
-* **Example 1: List all existing shortcuts**
+* **Example 1:** List all shortcut assignments
   * **Input / Action:** `shortcut`
-  * **Expected Outcome:** Displays all active shortcuts formatted alphabetically (e.g., `Available shortcuts:\nls -> list`).
-
-* **Example 2: Assign a new shortcut**
-  * **Input / Action:** `shortcut s/ls c/list`
-  * **Expected Outcome:** Assigns shortcut `ls` to `list`. You can now enter `ls` in place of `list`.
-
+  * **Expected Outcome:** All existing shortcut assignments are listed.
+* **Example 2:** Add a shortcut assignment
+  * **Input / Action:** `shortcut s/a c/addcontact` 
+  * **Expected Outcome:** Assigns `a` as a shortcut for `addcontact`. You can then enter `a John Tan p/91234567 e/john@example.com a/Singapore` to add a contact.
+  
 #### Common Errors & Troubleshooting
 
-| Error Message / Symptom | Cause | How to Fix |
-| :--- | :--- | :--- |
-| `The shortcut "list" is a built-in command and cannot be reassigned.` | The shortcut matches a built-in command word. | Choose a shortcut alias that is not a built-in command word. |
-| `The shortcut "my ls" cannot contain whitespace or forward slashes.` | The shortcut contains spaces or forward slashes. | Use only lowercase letters and digits without spaces or `/`. |
-| `Unknown command: invalidcmd.` | The command word is not recognized or not assignable. | Provide a valid assignable PressMemo command word. |
+| Error Message / Symptom                                             | Cause                                                 | How to Fix                                                   |
+|:--------------------------------------------------------------------|:------------------------------------------------------|:-------------------------------------------------------------|
+| `{xxx} is a built-in command word and cannot beused as a shortcut.` | The shortcut matches a built-in command word.         | Choose a shortcut alias that is not a built-in command word. |
+| `The shortcut {xxx} cannot contain whitespace or forward slashes.`  | The shortcut contains spaces or forward slashes.      | Choose a shotcut alias that does not contain spaces or `/`.  |
+| `{xxx} is not a command that can be assgined a shortcut.`           | The command word is not recognized or not assignable. | Provide a valid assignable PressMemo command word.           |
 
 ### Removing a command shortcut: `unshortcut`
 
@@ -871,11 +896,23 @@ Examples:
 
 ### Clearing all entries: `clear`
 
-Clears all contacts, stories, assignments, and follow-ups from PressMemo.
+* **Objective:** Clears all contacts, stories, assignments, and follow-ups from PressMemo.
 
-Format: `clear`
+<img alt="Clear command example" src="images/clear-example.png" width="726" height="593">
 
-This affects all records, including those hidden by filters. User preferences and command shortcuts are not removed. There is no confirmation prompt or undo command; back up your data files first if you may need them later.
+#### Usage / Command Format
+`clear`
+
+#### Parameters & Constraints
+* No parameters are allowed. Adding extra parameters results in an error.
+
+<div markdown="span" class="alert alert-warning"> **Caution:**
+Clearing removes all existing contacts, stories, assignments and followups from PressMemo permanently. There is no confirmation prompt for the command and once the data has been cleared, it cannot be recovered back. Therefore, clear PressMemo only if you are sure you do not need the data anymore.  
+</div>
+
+> **Tip / Note:**
+> * Clearing affects all contacts, stories, assignments and followups, including those hidden by filters.
+> * User preferences and command shortcuts are not removed by clearing. To remove shortcuts, use the `unshortcut` command.
 
 ### Exiting the program: `exit`
 
