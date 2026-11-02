@@ -226,16 +226,18 @@ Examples:
 * `list` followed by `deletecontact 2` deletes the 2nd contact in PressMemo.
 * `findcontact Betsy` followed by `deletecontact 1` deletes the 1st contact in the results of the `findcontact` command.
 
-## Adding a story: `addstory`
+### Adding a story: `addstory`
 
 - **Objective:** Adds a story to PressMemo
-![addstory](images/addstory-example.png)
 
-### Usage / Command Format
+<img src="images/addstory-example.png" width="726" height="593">
+
+
+#### Usage / Command Format
 
 `addstory STORY_NAME [t/TAG]…`
 
-### Parameters
+#### Parameters
 
 | Parameter    | Type          | Description              | Examples                  |
 | :----------- | :------------ | :----------------------- | :------------------------ |
@@ -248,7 +250,7 @@ Examples:
 > * `addstory` preserves any active story filter; the new story will appear in the story panel if it matches the active filter.
 > * The new story starts with no assigned contacts.
 
-### Examples
+#### Examples
 
 * **Example 1: valid and unique story name, no tags 
   * **Input / Action:** `addstory find wumpus`
@@ -258,7 +260,7 @@ Examples:
   * **Input / Action:** `addstory find wumpus t/smelly t/at 2, 2`
   * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel with the tags "smelly" and "at 2, 2"
 
-### Common Errors & Troubleshooting
+#### Common Errors & Troubleshooting
 
 | Error Message / Symptom                     | Cause                                                                    | How to Fix                                                                              |
 | :------------------------------------------ | :----------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
@@ -316,16 +318,17 @@ Examples:
 | `Error: there is already a story named "Election investigation"!` | Another story already has the requested name. | Choose a different story name. |
 | `Story names should not be blank or start with whitespace` | The supplied story name is blank. | Provide a non-blank story name. |
 
-## Filter stories by name: `findstories`
+### Filter stories by name: `findstories`
 
 - **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and displays them in the story panel.
-![findstories](images/findstories-example.png)
 
-### Usage / Command Format
+<img src="images/findstories-example.png" width="726" height="593">
+
+#### Usage / Command Format
 
 `findstories STORY_NAME [MORE_KEYWORDS]...`
 
-### Parameters & Constraints
+#### Parameters & Constraints
 
 | Parameter       | Type   | Description                                      | Examples   |
 | :-------------- | :----- | :----------------------------------------------- | :--------- |
@@ -340,7 +343,7 @@ Examples:
 > * The **STORIES** panel is updated without changing the **CONTACTS** or **FOLLOW-UPS** panels.
 > * To display all stories again, use `liststories` or `list`.
 
-### Examples
+#### Examples
 
 * **Example 1: Single keyword search**
   * **Input / Action:** `findstories wumpus`
@@ -354,7 +357,7 @@ Examples:
   * **Input / Action:** `findstories wompusDoesNotExist` when there is no story whose name contains `wompusDoesNotExist`
   * **Expected Outcome:** The story panel displays no stories. A message in the console indicates that no matches were found.
 
-### Common Errors & Troubleshooting
+#### Common Errors & Troubleshooting
 
 | Error Message / Symptom                                    | Cause                                                                           | How to Fix                                                                   |
 | :--------------------------------------------------------- | :------------------------------------------------------------------------------ | :--------------------------------------------------------------------------- |
@@ -390,16 +393,17 @@ Examples:
 
 * `unassign ci/1 si/1` removes the assignment between the 1st displayed contact and the 1st displayed story.
 
-## Deleting a story: `deletestory`
+### Deleting a story: `deletestory`
 
 - **Objective:** Deletes the specified story from PressMemo.
-![deletestory](images/deletestory-example.png)
 
-### Usage / Command Format
+<img src="images/deletestory-example.png" width="726" height="593">
+
+#### Usage / Command Format
 
 `deletestory INDEX`
 
-### Parameters & Constraints
+#### Parameters & Constraints
 
 | Parameter | Type          | Description                                        | Examples |
 | :-------- | :------------ | :------------------------------------------------ | :------- |
@@ -410,7 +414,7 @@ Examples:
 > * Follow-ups are unaffected.
 > * Deletion cannot be undone.
 
-### Examples
+#### Examples
 
 * **Example 1: Deleting a story from the full story list**
   * **Input / Action:** `deletestory 2`
@@ -574,16 +578,17 @@ Examples:
 | `0 followup(s) listed!` when matches were expected              | The search used a partial word, mismatched punctuation, or the wrong keywords | Use complete whitespace-separated words, including their punctuation, from the follow-up descriptions |
 | `Invalid command format.`                                       | No search keyword was supplied                       | Provide at least one keyword, e.g., `findfollowups interview`     |
 
-## Listing follow-ups: `listfollowups`
+### Listing follow-ups: `listfollowups`
 
 - **Objective:** Displays follow-ups in the follow-ups panel, optionally filtering them by assigned contact.
-![listfollowups](images/listfollowups-example.png)
 
-### Usage / Command Format
+<img src="images/listfollowups-example.png" width="726" height="593">
+
+#### Usage / Command Format
 
 `listfollowups [ci/CONTACT_INDEX]`
 
-### Parameters & Constraints
+#### Parameters & Constraints
 
 | Parameter          | Type            | Description                                       | Examples |
 | :----------------- | :-------------- | :------------------------------------------------ | :------- |
@@ -594,7 +599,7 @@ Examples:
 > * If `ci/CONTACT_INDEX` is provided, `listfollowups` displays only follow-ups linked to that contact.
 > * `listfollowups` only updates the **FOLLOW-UPS** panel; the **CONTACTS** and **STORIES** panels remain unchanged.
 
-### Examples
+#### Examples
 
 * **Example 1: List all follow-ups**
   * **Input / Action:** `listfollowups`
@@ -604,7 +609,7 @@ Examples:
   * **Input / Action:** `listfollowups ci/1`
   * **Expected Outcome:** Displays only follow-ups linked to the first displayed contact in the **FOLLOW-UPS** panel. 
 
-### Managing command shortcuts: `shortcut`
+#### Managing command shortcuts: `shortcut`
 
 Creates a custom alias for a command or displays all saved aliases.
 
