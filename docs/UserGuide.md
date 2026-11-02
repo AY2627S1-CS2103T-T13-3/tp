@@ -30,7 +30,7 @@ This guide describes the features implemented for PressMemo v1.4.
 
     * `list` : Displays all contacts, stories and follow-ups.
 
-    * `addcontact n/Jane Smith p/91234567 e/janesmith@example.com a/Jane street, block 987, #10-10` : Adds a contact named `Jane Smith` to PressMemo.
+    * `addcontact Jane Smith p/91234567 e/janesmith@example.com a/Jane street, block 987, #10-10` : Adds a contact named `Jane Smith` to PressMemo.
 
     * `assign ci/1 si/2` : Assigns the 1st displayed contact to the 2nd displayed story.
 
@@ -52,13 +52,13 @@ This guide describes the features implemented for PressMemo v1.4.
 **:information_source: Notes about the command format:**<br>
 
 * Words in `UPPER_CASE` are the parameters to be supplied by the user.<br>
-  For example, in `addcontact n/NAME`, replace `NAME` with a value such as `John Doe`.
+  For example, in `addcontact p/PHONE`, replace `PHONE` with a value such as `98765432`.
 * Items in square brackets are optional.<br>
-  For example, `n/NAME [t/TAG]` can be used as `n/John Doe t/friend` or as `n/John Doe`.
+  For example, `p/PHONE [t/TAG]` can be used as `p/98765432 t/friend` or as `p/98765432`.
 * Items followed by `…`​ can appear zero or more times.<br>
   For example, `[t/TAG]…​` may be omitted, or written as `t/friend` or `t/friend t/family`.
 * Prefixed parameters can be in any order.<br>
-  For example, if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
+  For example, if the command specifies `e/EMAIL p/PHONE`, `p/PHONE e/EMAIL` is also acceptable.
 * Extraneous parameters for commands that take no parameters, such as `help`, `exit`, `clear`, and `list`, are not allowed.<br>
   For example, `help 123` will result in an error.
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
@@ -76,36 +76,58 @@ This guide describes the features implemented for PressMemo v1.4.
 
 ### Viewing help: `help`
 
-Toggles the help panel which lists all default commands and their formats. 
-
-Format: `help`
+* **Objective:** Toggles the help panel which lists all default commands and their formats. 
 
 ![Ui with Help Panel](images/UiWithHelpPanel.png)
 
-* Enter `help` to open or close the help panel. The link to the user guide will also be shown in the message panel. Alternatively, use the **Help** menu at the top. 
-* Use the scrollbar or select the command panel and use the up and down arrow keys to view the command list.
-* The help panel displays only the default commands and does not include any custom shortcuts you have created. 
-* For the latest instructions about contact, story, follow-up, and shortcut commands, refer to this User Guide.
+#### Usage / Command Format
+`help`
+
+#### Parameters
+* No parameters are allowed. Adding extra parameters results in an error.
+
+> **Tip / Note:**
+> * Enter `help` to open or close the help panel. Alternatively, use the **Help** menu at the top. The link to the user guide will also be shown in the message panel.
+> * Use the scrollbar or select the command panel and use the up and down arrow keys to navigate the command list.
+> * The help panel displays only the default commands and does not include any custom shortcuts you have created. 
+> * For the latest instructions about contact, story, follow-up, and shortcut commands, refer to this User Guide.
 
 ### Adding a contact: `addcontact`
 
-Adds a contact to PressMemo.
+* **Objective:** Adds a contact to PressMemo.
 
-Format: `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​`
+![Add Contact Example](images/addcontact-example.png)
+#### Usage / Command Format
+`addcontact NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]…​`
 
-* All four fields (`n/`, `p/`, `e/`, and `a/`) are required and cannot be blank.
-* Names contain only letters, digits, and spaces. A contact with exactly the same name already in PressMemo cannot be added.
-* Phone numbers contain between 3 and 15 digits and no other characters. Emails must have a valid `word@word` format.
-* Tag names contain only letters and digits, without spaces.
-* Adding a contact preserves any active contact filter. The new contact will appear in the contact list if it matches the active filter.
+#### Parameters
+| Parameter  | Type           | Description                         | Examples              |
+|------------|----------------|-------------------------------------|-----------------------|
+| `NAME`     | `user-string`  | Name of the contact to add          | Jane Smith            |
+| `PHONE`    | `user-string`  | Phone number of the contact to add  | 98765432              |
+| `EMAIL`    | `user-string`  | Email address of the contact to add | janesmith@example.com |
+| `ADDRESS`  | `user-string`  | Address of the contact to add       | 1 Kent Ridge Drive    |
 
-<div markdown="span" class="alert alert-primary">:bulb: **Tip:**
-A contact can have any number of tags, including zero.
-</div>
+> **Tip / Note:**
+> * `NAME`, `p/PHONE`, `e/EMAIL` and `a/ADDRESS` must be specified exactly once and cannot be blank.
+> * A contact with exactly the same name already in PressMemo cannot be added. For example, if a contact with the name `John Doe` already exists in PressMemo, adding another contact with the name `John Doe` is not allowed, but adding a contact with the name `john doe` is allowed.
+> * A contact can have any number of tags, including zero.
+> * The new contact will be added to the end of the contact list.
+> * Adding a contact preserves any active contact filter. The new contact will appear in the contact list if it matches the active filter.
 
-Examples:
-* `addcontact n/John Doe p/98765432 e/johnd@example.com a/John street, block 123, #01-01`
-* `addcontact n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+#### Examples
+* **Example 1:** Valid and unique contact with no tags
+  * **Input / Action:** `addcontact Jane Smith p/91234567 e/janesmith@example.com a/Jane street, block 123, #01-01`
+  * **Expected Outcome:** The contact named "Jane Smith" is added to the contacts in PressMemo and displayed in the contact panel without tags.
+* **Example 2:** Valid and unique contact with 2 tags
+  * **Input / Action:** `addcontact Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
+  * **Expected Outcome:** The contact named "Betsy Crowe" is added to the contacts in PressMemo and displayed in the contact panel with the tags "friend" and "criminal".
+
+#### Common Errors & Troubleshooting
+
+| Error Message / Symptom                       | Cause                                                                      | How to Fix                                                                                  |
+|:----------------------------------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------|
+| Error: there is already a contact named {xxx} | Trying to add a contact named {xxx} when {xxx} already exists in PressMemo | Delete the existing contact named {xxx} first<br><br>OR<br><br>Use a different contact name |
 
 ### Listing contacts and stories (refactored commands)
 
