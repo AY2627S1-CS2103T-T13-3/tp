@@ -420,6 +420,8 @@ Examples:
 
 > **Tip / Note:**
 > * At least one of `d/DESCRIPTION` or `ci/CONTACT_INDEX` must be provided.
+> * A follow-up can be linked to only one contact at a time. 
+>   * Linking it to a new contact replaces the existing link.
 > * Existing values are preserved for fields that are not provided.
 > * The same description constraints as `addfollowup` apply.
 > * The edited follow-up cannot duplicate another follow-up linked to the same contact.
@@ -433,15 +435,15 @@ Examples:
 
 * **Example 2: Edits both the description and linked contact**
   * **Input / Action:** `editfollowup 1 d/Call tomorrow ci/2`
-  * **Expected Outcome:** Changes the first displayed follow-up's description to `Call tomorrow` and changes the linked contact to the second displayed contact.
+  * **Expected Outcome:** Changes the first displayed follow-up's description to `Call tomorrow` and replaces the linked contact with the second displayed contact.
 
 ### Common Errors & Troubleshooting
 
-| Error Message / Symptom                                                                 | Cause                                                                                 | How to Fix                                                  |
-|:----------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------|:------------------------------------------------------------|
-| `At least one field to edit must be provided.`                                          | Neither `d/DESCRIPTION` nor `ci/CONTACT_INDEX` was supplied                           | Provide at least one field to update                        |
-| `Error: there is already a followup "Test" for the contact "Alex"!.`                    | The edited followup is a duplicate of another follow-up for the linked contact (Alex) | Use a different description or contact                      |
-| `Follow-up descriptions should not be blank or start with a whitespace`                 | `DESCRIPTION` is blank                                                                | Enter a non-blank description |
+| Error Message / Symptom                                                              | Cause                                                                                 | How to Fix                                                  |
+|:-------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------|:------------------------------------------------------------|
+| `At least one field to edit must be provided.`                                       | Neither `d/DESCRIPTION` nor `ci/CONTACT_INDEX` was supplied                           | Provide at least one field to update                        |
+| `Error: there is already a followup "Test" for the contact "Alex"!`                  | The edited followup is a duplicate of another follow-up for the linked contact (Alex) | Use a different description or contact                      |
+| `Follow-up descriptions should not be blank or start with whitespace`                | `DESCRIPTION` is blank                                                                | Enter a non-blank description |
 
 ## Deleting a follow-up: `deletefollowup`
 
