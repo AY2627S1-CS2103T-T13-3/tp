@@ -38,7 +38,7 @@ public final class CommandWords {
 
     private static final List<CommandInfo> COMMAND_INFOS = List.of(
             new CommandInfo(AddContactCommand.COMMAND_WORD,
-                    "addcontact n/NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]...",
+                    "addcontact NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]...",
                     "Adds a contact to PressMemo.",
                     new AddContactCommandParser()),
             new CommandInfo(EditContactCommand.COMMAND_WORD,
