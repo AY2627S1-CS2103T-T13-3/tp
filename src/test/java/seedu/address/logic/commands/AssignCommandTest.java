@@ -8,6 +8,8 @@ import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showContactAtIndex;
 import static seedu.address.logic.commands.CommandTestUtil.showStoryAtIndex;
 import static seedu.address.testutil.Assert.assertThrows;
+import static seedu.address.testutil.TypicalContacts.BENSON;
+import static seedu.address.testutil.TypicalContacts.CARL;
 import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_STORY;
@@ -15,6 +17,10 @@ import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_CONTACT;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_STORY;
 import static seedu.address.testutil.TypicalStories.STORY_A;
 import static seedu.address.testutil.TypicalStories.STORY_B;
+import static seedu.address.testutil.TypicalStories.STORY_C;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,6 +29,7 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.Messages;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
+import seedu.address.model.StateAwarePredicate;
 import seedu.address.model.UserPrefs;
 import seedu.address.model.contact.Contact;
 import seedu.address.model.story.Story;
@@ -190,5 +197,160 @@ public class AssignCommandTest {
                 + "{storyIndex=" + STORY_INDEX + ", contactIndex=" + CONTACT_INDEX + "}";
 
         assertEquals(expected, command.toString());
+    }
+
+    private static StateAwarePredicate<Contact, Story> createContactPredicate(Contact... contacts) {
+        List<Contact> targetContacts = Arrays.asList(contacts);
+        return new StateAwarePredicate<>() {
+            @Override
+            public boolean test(Contact contact) {
+                return targetContacts.stream().anyMatch(c -> c.getName().equals(contact.getName()));
+            }
+        };
+    }
+
+    private static StateAwarePredicate<Story, Contact> createStoryPredicate(Story... stories) {
+        List<Story> targetStories = Arrays.asList(stories);
+        return new StateAwarePredicate<>() {
+            @Override
+            public boolean test(Story story) {
+                return targetStories.stream().anyMatch(s -> s.getName().equals(story.getName()));
+            }
+        };
+    }
+
+    @Test
+    public void execute_allPairsCombinations_success() {
+        // Equivalence Partitioning & All-Pairs combinations across:
+        // Factor 1: Contact List State (CF_UNFILTERED, CF_FILTERED)
+        // Factor 2: Story List State (SF_UNFILTERED, SF_FILTERED)
+        // Factor 3: Contact Index (Index 1, Index 2)
+        // Factor 4: Story Index (Index 1, Index 2)
+        // 6 test cases cover 100% of all 24 pairwise combinations.
+
+        // TC 1: (CF_UNFILTERED, SF_UNFILTERED, CI_1, SI_1)
+        {
+            Model localModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+            localModel.addStory(STORY_A);
+            localModel.addStory(STORY_B);
+            localModel.addStory(STORY_C);
+            Model localExpectedModel = new ModelManager(localModel.getAddressBook(), new UserPrefs());
+
+            Contact contact = localModel.getFilteredContactList().get(0);
+            Story story = localModel.getFilteredStoryList().get(0);
+
+            AssignCommand assignCommand = new AssignCommand(Index.fromOneBased(1), Index.fromOneBased(1));
+            localExpectedModel.assignStory(contact, story);
+
+            String expectedMessage = String.format(AssignCommand.MESSAGE_SUCCESS, contact.getName(), story.getName());
+            assertCommandSuccess(assignCommand, localModel, expectedMessage, localExpectedModel);
+        }
+
+        // TC 2: (CF_UNFILTERED, SF_FILTERED, CI_2, SI_2)
+        {
+            Model localModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+            localModel.addStory(STORY_A);
+            localModel.addStory(STORY_B);
+            localModel.addStory(STORY_C);
+            localModel.updateFilteredStoryList(createStoryPredicate(STORY_B, STORY_C));
+
+            Model localExpectedModel = new ModelManager(localModel.getAddressBook(), new UserPrefs());
+            localExpectedModel.updateFilteredStoryList(createStoryPredicate(STORY_B, STORY_C));
+
+            Contact contact = localModel.getFilteredContactList().get(1);
+            Story story = localModel.getFilteredStoryList().get(1);
+
+            AssignCommand assignCommand = new AssignCommand(Index.fromOneBased(2), Index.fromOneBased(2));
+            localExpectedModel.assignStory(contact, story);
+
+            String expectedMessage = String.format(AssignCommand.MESSAGE_SUCCESS, contact.getName(), story.getName());
+            assertCommandSuccess(assignCommand, localModel, expectedMessage, localExpectedModel);
+        }
+
+        // TC 3: (CF_FILTERED, SF_UNFILTERED, CI_2, SI_2)
+        {
+            Model localModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+            localModel.addStory(STORY_A);
+            localModel.addStory(STORY_B);
+            localModel.addStory(STORY_C);
+            localModel.updateFilteredContactList(createContactPredicate(BENSON, CARL));
+
+            Model localExpectedModel = new ModelManager(localModel.getAddressBook(), new UserPrefs());
+            localExpectedModel.updateFilteredContactList(createContactPredicate(BENSON, CARL));
+
+            Contact contact = localModel.getFilteredContactList().get(1);
+            Story story = localModel.getFilteredStoryList().get(1);
+
+            AssignCommand assignCommand = new AssignCommand(Index.fromOneBased(2), Index.fromOneBased(2));
+            localExpectedModel.assignStory(contact, story);
+
+            String expectedMessage = String.format(AssignCommand.MESSAGE_SUCCESS, contact.getName(), story.getName());
+            assertCommandSuccess(assignCommand, localModel, expectedMessage, localExpectedModel);
+        }
+
+        // TC 4: (CF_FILTERED, SF_FILTERED, CI_1, SI_1)
+        {
+            Model localModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+            localModel.addStory(STORY_A);
+            localModel.addStory(STORY_B);
+            localModel.addStory(STORY_C);
+            localModel.updateFilteredContactList(createContactPredicate(BENSON, CARL));
+            localModel.updateFilteredStoryList(createStoryPredicate(STORY_B, STORY_C));
+
+            Model localExpectedModel = new ModelManager(localModel.getAddressBook(), new UserPrefs());
+            localExpectedModel.updateFilteredContactList(createContactPredicate(BENSON, CARL));
+            localExpectedModel.updateFilteredStoryList(createStoryPredicate(STORY_B, STORY_C));
+
+            Contact contact = localModel.getFilteredContactList().get(0);
+            Story story = localModel.getFilteredStoryList().get(0);
+
+            AssignCommand assignCommand = new AssignCommand(Index.fromOneBased(1), Index.fromOneBased(1));
+            localExpectedModel.assignStory(contact, story);
+
+            String expectedMessage = String.format(AssignCommand.MESSAGE_SUCCESS, contact.getName(), story.getName());
+            assertCommandSuccess(assignCommand, localModel, expectedMessage, localExpectedModel);
+        }
+
+        // TC 5: (CF_UNFILTERED, SF_FILTERED, CI_1, SI_2)
+        {
+            Model localModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+            localModel.addStory(STORY_A);
+            localModel.addStory(STORY_B);
+            localModel.addStory(STORY_C);
+            localModel.updateFilteredStoryList(createStoryPredicate(STORY_B, STORY_C));
+
+            Model localExpectedModel = new ModelManager(localModel.getAddressBook(), new UserPrefs());
+            localExpectedModel.updateFilteredStoryList(createStoryPredicate(STORY_B, STORY_C));
+
+            Contact contact = localModel.getFilteredContactList().get(0);
+            Story story = localModel.getFilteredStoryList().get(1);
+
+            AssignCommand assignCommand = new AssignCommand(Index.fromOneBased(2), Index.fromOneBased(1));
+            localExpectedModel.assignStory(contact, story);
+
+            String expectedMessage = String.format(AssignCommand.MESSAGE_SUCCESS, contact.getName(), story.getName());
+            assertCommandSuccess(assignCommand, localModel, expectedMessage, localExpectedModel);
+        }
+
+        // TC 6: (CF_FILTERED, SF_UNFILTERED, CI_2, SI_1)
+        {
+            Model localModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+            localModel.addStory(STORY_A);
+            localModel.addStory(STORY_B);
+            localModel.addStory(STORY_C);
+            localModel.updateFilteredContactList(createContactPredicate(BENSON, CARL));
+
+            Model localExpectedModel = new ModelManager(localModel.getAddressBook(), new UserPrefs());
+            localExpectedModel.updateFilteredContactList(createContactPredicate(BENSON, CARL));
+
+            Contact contact = localModel.getFilteredContactList().get(1);
+            Story story = localModel.getFilteredStoryList().get(0);
+
+            AssignCommand assignCommand = new AssignCommand(Index.fromOneBased(1), Index.fromOneBased(2));
+            localExpectedModel.assignStory(contact, story);
+
+            String expectedMessage = String.format(AssignCommand.MESSAGE_SUCCESS, contact.getName(), story.getName());
+            assertCommandSuccess(assignCommand, localModel, expectedMessage, localExpectedModel);
+        }
     }
 }
