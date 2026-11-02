@@ -6,6 +6,7 @@ import static seedu.address.logic.commands.CommandTestUtil.PREDICATE_SHOW_NO_FOL
 import static seedu.address.logic.commands.CommandTestUtil.PREDICATE_SHOW_NO_STORIES;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 import static seedu.address.logic.commands.CommandTestUtil.showContactAtIndex;
+import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalContacts.getTypicalAddressBook;
 import static seedu.address.testutil.TypicalFollowups.FOLLOWUP_A;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_CONTACT;
@@ -55,6 +56,11 @@ public class ListCommandTest {
                 expectedModel.getFilteredFollowupList().size()
         );
         assertCommandSuccess(new ListCommand(), model, expectedMessage, expectedModel);
+    }
+
+    @Test
+    public void execute_nullModel_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> new ListCommand().execute(null));
     }
 
     @Test
