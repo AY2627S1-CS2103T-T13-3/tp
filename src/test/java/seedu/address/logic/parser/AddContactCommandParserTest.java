@@ -8,7 +8,6 @@ import static seedu.address.logic.commands.CommandTestUtil.INVALID_ADDRESS_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_EMAIL_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_NAME_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.INVALID_PHONE_DESC;
-import static seedu.address.logic.commands.CommandTestUtil.INVALID_TAG_DESC;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.NAME_DESC_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.PHONE_DESC_AMY;
@@ -37,7 +36,6 @@ import seedu.address.model.contact.Contact;
 import seedu.address.model.contact.Email;
 import seedu.address.model.contact.Name;
 import seedu.address.model.contact.Phone;
-import seedu.address.model.tag.Tag;
 import seedu.address.testutil.ContactBuilder;
 
 public class AddContactCommandParserTest {
@@ -184,10 +182,6 @@ public class AddContactCommandParserTest {
         assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + INVALID_ADDRESS_DESC
                 + TAG_DESC_HUSBAND + TAG_DESC_FRIEND, Address.MESSAGE_CONSTRAINTS);
 
-        // invalid tag
-        assertParseFailure(parser, NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB
-                + INVALID_TAG_DESC + VALID_TAG_FRIEND, Tag.MESSAGE_CONSTRAINTS);
-
         // two invalid values, only first invalid value reported
         assertParseFailure(parser, INVALID_NAME_DESC + PHONE_DESC_BOB + EMAIL_DESC_BOB + INVALID_ADDRESS_DESC,
                 Name.MESSAGE_CONSTRAINTS);
@@ -290,30 +284,35 @@ public class AddContactCommandParserTest {
         // Name edge cases: empty, invalid name containing fslash
         assertParseFailure(parser, " n/" + validPhone + validEmail + validAddress, Name.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, " n/Al/ice" + validPhone + validEmail + validAddress,
-                Messages.getErrorMessageForInvalidUserString("the n/ argument", "Al/ice"));
+                Messages.getErrorMessageForInvalidUserString("Al/ice"));
 
         // Phone edge cases: empty, whitespace only, contains fslash
         assertParseFailure(parser, validName + " p/" + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + " p/   " + validEmail + validAddress, Phone.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + " p/12/34" + validEmail + validAddress,
-                Messages.getErrorMessageForInvalidUserString("the p/ argument", "12/34"));
+                Messages.getErrorMessageForInvalidUserString("12/34"));
 
         // Email edge cases: empty, whitespace only, contains fslash
         assertParseFailure(parser, validName + validPhone + " e/" + validAddress, Email.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + " e/   " + validAddress, Email.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + " e/alice/@example.com" + validAddress,
-                Messages.getErrorMessageForInvalidUserString("the e/ argument", "alice/@example.com"));
+                Messages.getErrorMessageForInvalidUserString("alice/@example.com"));
 
         // Address edge cases: empty, whitespace only
         assertParseFailure(parser, validName + validPhone + validEmail + " a/", Address.MESSAGE_CONSTRAINTS);
         assertParseFailure(parser, validName + validPhone + validEmail + " a/   ", Address.MESSAGE_CONSTRAINTS);
 
-        // Tag edge cases: empty, whitespace only, contains fslash
-        assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/",
-                Tag.MESSAGE_CONSTRAINTS);
-        assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/   ",
-                Tag.MESSAGE_CONSTRAINTS);
+        // Tag containing fslash
         assertParseFailure(parser, validName + validPhone + validEmail + validAddress + " t/tag/1",
-                Messages.getErrorMessageForInvalidUserString("the t/ argument", "tag/1"));
+                Messages.getErrorMessageForInvalidUserString("tag/1"));
+    }
+
+    @Test
+    public void parse_emptyTagsIgnored_success() {
+        Contact expectedContact = new ContactBuilder(BOB).withTags(VALID_TAG_FRIEND).build();
+        String requiredFields = NAME_DESC_BOB + PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB;
+
+        assertParseSuccess(parser, requiredFields + " t/" + TAG_DESC_FRIEND + " t/",
+                new AddContactCommand(expectedContact));
     }
 }
