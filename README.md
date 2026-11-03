@@ -12,11 +12,14 @@ Journalists manage many contacts across several stories, often while working und
 
 Journalists and reporters who manage multiple sources and stories, and prefer using a command-line interface (CLI).
 
-## Features to Implement
-
-- Add, list, and delete contact records.
-- Create and list stories, and delete stories that are no longer active.
-- Assign contacts to stories and remove those associations.
-- Find contacts associated with a story and view the stories associated with a contact.
+## Key features
+* Add contacts and stories
+* Assign stories to a contact
+* Add follow-ups for a contact
+* Tag contacts and stories with additional information 
+* List all contacts, stories and follow-ups in a single window 
+* Find contacts, stories and follow-ups by keyword search
+* Find contacts, stories and follow-ups linked to a particular contact or story
+* Create shortcuts for commands
 
 This project is based on the AddressBook-Level3 project created by the [SE-EDU initiative](https://se-education.org).

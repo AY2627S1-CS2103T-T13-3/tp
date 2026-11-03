@@ -9,7 +9,20 @@ title: Developer Guide
 
 ## **Acknowledgements**
 
-* _{List the sources of reused or adapted ideas, code, documentation, and third-party libraries here, with links to the originals.}_
+- PressMemo is based on [AddressBook Level 3](https://github.com/se-edu/addressbook-level3), made by [SE-EDU](https://se-edu.github.io/)
+- PressMemo is extended to add functionality targetted at busy journalists who have to handle multiple stories, follow-ups and contacts simultaneously.
+- The following components and resources were re-used or adapted from AddressBook-Level3:
+	* **Architecture & Design**: The architecture (`Main`, `UI`, `Logic`, `Model`, `Storage`, and `Commons`) and facade design pattern (`*Manager` implementations).
+	* **Logic & Parser Framework**: The command execution workflow, command patterns (`Command`, `CommandResult`), and prefix tokenization (`ArgumentTokenizer`, `CliSyntax`, `ParserUtil`).
+	* **Model Component**: The base `Person` domain model and its attributes were adapted into `Contact` (along with `UniqueContactList`), the `Tag` system, and observable list bindings (`FilteredList`). Stories and follow-ups were implemented in a similar fashion.
+	* **Storage Framework**: JSON serialization and file persistence infrastructure built on Jackson (`JsonAddressBookStorage`, `JsonSerializableAddressBook`, `JsonAdapted*`, `JsonUserPrefsStorage`).
+	* **UI Component**: JavaFX and FXML GUI scaffolding (`UiPart`, `MainWindow`, `CommandBox`, `ResultDisplay`, `StatusBarFooter`).
+	* **Documentation**: Developer Guide and User Guide layout and structure, PlantUML architecture and sequence diagrams. 
+	* **Testing Infrastructure**: Test utilities (`CommandTestUtil`, model stubs), Gradle build configuration, and GitHub Actions CI workflows.
+* **Third-Party Libraries**:
+	* [JavaFX](https://openjfx.io/) for the graphical user interface.
+	* [Jackson](https://github.com/FasterXML/jackson) for JSON data storage serialization and deserialization.
+	* [JUnit 5](https://junit.org/junit5/) for automated testing.
 
 --------------------------------------------------------------------------------------------------------------------
 
