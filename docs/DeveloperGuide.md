@@ -500,7 +500,7 @@ The sequence diagram below illustrates the interactions when the user executes t
 8. If shortcuts are present, `ShortcutCommand` sorts the entries alphabetically by shortcut name, formats each entry as `shortcut -> commandWord`, and constructs the output message.
 9. `UI` displays the formatted list in the message panel.
 
-#### Execution flow (Listing mode)
+#### Execution flow (Adding mode)
 
 1. The user enters `shortcut s/SHORTCUT c/COMMAND` into the command bar.
 2. `LogicManager` passes the input string to `AddressBookParser`.
