@@ -833,16 +833,17 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Parameters & Constraints
 
-| Parameter      | Type     | Description                            | Examples |
-|:---------------|:---------|:---------------------------------------|:---------|
-| `SHORTCUT`     | `word`   | The alias created for the command word | ls       |
-| `COMMAND_WORD` | `word`   | The original command word in PressMemo | list     |
+| Parameter        | Type   | Description                            | Examples |
+|:-----------------|:-------|:---------------------------------------|:---------|
+| `s/SHORTCUT`     | `word` | The alias created for the command word | `ls`     |
+| `c/COMMAND_WORD` | `word` | The built-in command word to alias     | `list`   |
 
 > **Tip / Note:**
 > * Use `shortcut` without arguments to list the existing shortcuts.
 > * Use `shortcut s/SHORTCUT c/COMMAND_WORD` to assign an alias to a command word.
+> * `SHORTCUT` and `COMMAND_WORD` must each be a word that does not contain forward slashes (`/`).
 > * Default built-in command words cannot be reused as shortcut names. For example, `list` cannot be used as a shortcut for `listcontacts`.
-> * `shortcut` and `unshortcut` command cannot be assigned shortcuts.
+> * All built-in commands except `shortcut` and `unshortcut` can be assigned shortcuts.
 > * Each command can have at most one shortcut, and each shortcut can refer to one command. Reassigning a shortcut or command replaces conflicting assignments.
 > * Once assigned, type the shortcut in place of the command word and keep any required arguments.
 > * Shortcuts are saved in `preferences.json` and remain available after restarting the app.
@@ -855,7 +856,7 @@ This command does not accept parameters. Any extraneous characters will result i
 * **Example 2:** Add a shortcut assignment
   * **Input / Action:** `shortcut s/a c/addcontact` 
   * **Expected Outcome:** Assigns `a` as a shortcut for `addcontact`. You can then enter `a John Tan p/91234567 e/john@example.com a/Singapore` to add a contact.
-  
+
 #### Common Errors & Troubleshooting
 
 | Error Message / Symptom                                             | Cause                                                 | How to Fix                                                   |
@@ -877,7 +878,7 @@ This command does not accept parameters. Any extraneous characters will result i
 
 | Parameter  | Type          | Description                                    | Examples |
 | :--------- | :------------ | :--------------------------------------------- | :------- |
-| `SHORTCUT` | `user-string` | Existing shortcut alias to remove from PressMemo | `ls`     |
+| `SHORTCUT` | `word` | Existing shortcut alias to remove from PressMemo | `ls`     |
 
 > **Tip / Note:**
 > * `SHORTCUT` must match an existing assigned shortcut alias.
@@ -887,13 +888,13 @@ This command does not accept parameters. Any extraneous characters will result i
 
 * **Example 1: Remove an assigned shortcut**
   * **Input / Action:** `unshortcut ls`
-  * **Expected Outcome:** Displays `Removed shortcut: ls -> list`. Typing `ls` will now report an unknown command.
+  * **Expected Outcome:** Displays `Shortcut 'ls' removed.` Typing `ls` will now report an unknown command.
 
 #### Common Errors & Troubleshooting
 
 | Error Message / Symptom | Cause | How to Fix |
 | :--- | :--- | :--- |
-| `The shortcut "ls" is not assigned to any command.` | The specified shortcut does not exist. | Run `shortcut` to view all active shortcuts, then verify the shortcut name. |
+| `Shortcut 'ls' does not exist.` | The specified shortcut does not exist. | Run `shortcut` to view all active shortcuts, then verify the shortcut name. |
 
 ### Clearing all entries: `clear`
 
