@@ -35,7 +35,7 @@ import seedu.address.ui.UiManager;
  */
 public class MainApp extends Application {
 
-    public static final String VERSION = "V1.4.1";
+    public static final String VERSION = "V1.6";
 
     public static final String MESSAGE_DATA_FILE_CORRUPTED = "Data file at %s could not be loaded."
             + " Will be starting with an empty PressMemo.";

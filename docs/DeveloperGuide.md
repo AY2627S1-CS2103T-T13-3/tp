@@ -9,7 +9,20 @@ title: Developer Guide
 
 ## **Acknowledgements**
 
-* _{List the sources of reused or adapted ideas, code, documentation, and third-party libraries here, with links to the originals.}_
+- PressMemo is based on [AddressBook Level 3](https://github.com/se-edu/addressbook-level3), made by [SE-EDU](https://se-edu.github.io/)
+- PressMemo is extended to add functionality targetted at busy journalists who have to handle multiple stories, follow-ups and contacts simultaneously.
+- The following components and resources were re-used or adapted from AddressBook-Level3:
+	* **Architecture & Design**: The architecture (`Main`, `UI`, `Logic`, `Model`, `Storage`, and `Commons`) and facade design pattern (`*Manager` implementations).
+	* **Logic & Parser Framework**: The command execution workflow, command patterns (`Command`, `CommandResult`), and prefix tokenization (`ArgumentTokenizer`, `CliSyntax`, `ParserUtil`).
+	* **Model Component**: The base `Person` domain model and its attributes were adapted into `Contact` (along with `UniqueContactList`), the `Tag` system, and observable list bindings (`FilteredList`). Stories and follow-ups were implemented in a similar fashion.
+	* **Storage Framework**: JSON serialization and file persistence infrastructure built on Jackson (`JsonAddressBookStorage`, `JsonSerializableAddressBook`, `JsonAdapted*`, `JsonUserPrefsStorage`).
+	* **UI Component**: JavaFX and FXML GUI scaffolding (`UiPart`, `MainWindow`, `CommandBox`, `ResultDisplay`, `StatusBarFooter`).
+	* **Documentation**: Developer Guide and User Guide layout and structure, PlantUML architecture and sequence diagrams. 
+	* **Testing Infrastructure**: Test utilities (`CommandTestUtil`, model stubs), Gradle build configuration, and GitHub Actions CI workflows.
+* **Third-Party Libraries**:
+	* [JavaFX](https://openjfx.io/) for the graphical user interface.
+	* [Jackson](https://github.com/FasterXML/jackson) for JSON data storage serialization and deserialization.
+	* [JUnit 5](https://junit.org/junit5/) for automated testing.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -339,15 +352,15 @@ The sequence diagram below illustrates the interactions within the Model compone
 
 #### Execution flow
 
-1. The user enters the `listfollowups` command as an input string.
-2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
-3. `AddressBookParser` creates an `ListFollowupsCommandParser` to parse the command arguments.
-4. `ListFollowupsCommandParser` parses the optional `CONTACT_INDEX` and creates a `ListFollowupsCommand` object.
-5. `LogicManager` executes the `ListFollowupsCommand` object.
-6. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the ActiveContactList from `Model`, validates the index, and obtains the corresponding Contact. 
-7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` requests `Model` to update the ActiveFollowupFilter to match follow-ups linked to the specified Contact. Otherwise, it requests `Model` to update the ActiveFollowupFilter to match all follow-ups.
-8. `Model` refreshes the ActiveFollowupList for the updated ActiveFollowupFilter.
-9. `UI` updates the follow-up panel accordingly.
+1. The user enters the `listfollowups` command with an optional `ci/CONTACT_INDEX` as an input string.
+2. `LogicManager` passes the input string to `AddressBookParser`, which delegates argument parsing to `ListFollowupsCommandParser`.
+3. `ListFollowupsCommandParser` parses the optional `CONTACT_INDEX` and returns a `ListFollowupsCommand`.
+4. `LogicManager` executes the `ListFollowupsCommand` object.
+5. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the contact from the ActiveContactList and validates the index
+	* If `CONTACT_INDEX` is specified, it retrieves the ActiveContactList, validates the index, obtains the corresponding contact, and requests `Model` to show follow-ups linked to that contact.
+	* Otherwise, it requests `Model` to show all follow-ups.
+6. `Model` refreshes the ActiveFollowupList for the updated ActiveFollowupFilter.
+7. `UI` updates the follow-up panel accordingly.
 
 The activity diagram below shows the branching logic depending on whether `CONTACT_INDEX` is specified:
 ![ListFollowupActivityDiagram](images/ListFollowupsActivityDiagram.png)
@@ -523,95 +536,6 @@ The sequence diagram below illustrates the interactions when the user executes t
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | **Pros** | **One-to-one mapping** ensures predictable, unambiguous alias lookups: each command has at most one shortcut alias, enabling clean bidirectional lookups in UI panels and help views without stale or conflicting aliases. | **Many-to-one mapping** allows users to define multiple alias variations for the same command word based on personal typing habits (e.g., both `c` and `cls` for `clear`). |
 | **Cons** | Users cannot assign multiple aliases to the same command (reassigning a command automatically overrides its previous shortcut).                                                       | Increases chance of alias collisions, user confusion, and bloats the shortcut list in small interfaces. |
-
-### \[Proposed\] Undo/redo feature
-
-#### Proposed Implementation
-
-The proposed undo/redo mechanism is facilitated by `VersionedAddressBook`. It extends `AddressBook` with an undo/redo history, stored internally as an `addressBookStateList` and `currentStatePointer`. Additionally, it implements the following operations:
-
-* `VersionedAddressBook#commit()` — Saves the current address book state in its history.
-* `VersionedAddressBook#undo()` — Restores the previous address book state from its history.
-* `VersionedAddressBook#redo()` — Restores a previously undone address book state from its history.
-
-These operations are exposed in the `Model` interface as `Model#commitAddressBook()`, `Model#undoAddressBook()` and `Model#redoAddressBook()` respectively.
-
-Given below is an example usage scenario and how the undo/redo mechanism behaves at each step.
-
-Step 1. The user launches the application for the first time. The `VersionedAddressBook` will be initialized with the initial address book state, and the `currentStatePointer` pointing to that single address book state.
-
-![UndoRedoState0](images/UndoRedoState0.png)
-
-Step 2. The user executes `deletecontact 5` command to delete the 5th contact in the address book. The `deletecontact` command calls `Model#commitAddressBook()`, causing the modified state of the address book after the `deletecontact 5` command executes to be saved in the `addressBookStateList`, and the `currentStatePointer` is shifted to the newly inserted address book state.
-
-![UndoRedoState1](images/UndoRedoState1.png)
-
-Step 3. The user executes `addcontact n/David …​` to add a new contact. The `addcontact` command also calls `Model#commitAddressBook()`, causing another modified address book state to be saved into the `addressBookStateList`.
-
-![UndoRedoState2](images/UndoRedoState2.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** If a command fails its execution, it will not call `Model#commitAddressBook()`, so the address book state will not be saved into the `addressBookStateList`.
-
-</div>
-
-Step 4. The user now decides that adding the contact was a mistake, and decides to undo that action by executing the `undo` command. The `undo` command will call `Model#undoAddressBook()`, which will shift the `currentStatePointer` once to the left, pointing it to the previous address book state, and restores the address book to that state.
-
-![UndoRedoState3](images/UndoRedoState3.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** If the `currentStatePointer` is at index 0, pointing to the initial AddressBook state, then there are no previous AddressBook states to restore. The `undo` command uses `Model#canUndoAddressBook()` to check if this is the case. If so, it will return an error to the user rather
-than attempting to perform the undo.
-
-</div>
-
-The following sequence diagram shows how an undo operation goes through the `Logic` component:
-
-![UndoSequenceDiagram](images/UndoSequenceDiagram-Logic.png)
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `UndoCommand` should end at the destroy marker (X), but due to a limitation of PlantUML, it continues to the end of the diagram.
-
-</div>
-
-Similarly, how an undo operation goes through the `Model` component is shown below:
-
-![UndoSequenceDiagram](images/UndoSequenceDiagram-Model.png)
-
-The `redo` command does the opposite — it calls `Model#redoAddressBook()`, which shifts the `currentStatePointer` once to the right, pointing to the previously undone state, and restores the address book to that state.
-
-<div markdown="span" class="alert alert-info">:information_source: **Note:** If the `currentStatePointer` is at index `addressBookStateList.size() - 1`, pointing to the latest address book state, then there are no undone AddressBook states to restore. The `redo` command uses `Model#canRedoAddressBook()` to check if this is the case. If so, it will return an error to the user rather than attempting to perform the redo.
-
-</div>
-
-Step 5. The user then decides to execute the command `list`. Commands that do not modify the address book, such as `list`, will usually not call `Model#commitAddressBook()`, `Model#undoAddressBook()` or `Model#redoAddressBook()`. Thus, the `addressBookStateList` remains unchanged.
-
-![UndoRedoState4](images/UndoRedoState4.png)
-
-Step 6. The user executes `clear`, which calls `Model#commitAddressBook()`. Since the `currentStatePointer` is not pointing at the end of the `addressBookStateList`, all address book states after the `currentStatePointer` will be purged. Reason: It no longer makes sense to redo the `addcontact n/David …​` command. This is the behavior that most modern desktop applications follow.
-
-![UndoRedoState5](images/UndoRedoState5.png)
-
-The following activity diagram summarizes what happens when a user executes a new command:
-
-<img src="images/CommitActivityDiagram.png" width="250" />
-
-#### Design considerations:
-
-**Aspect: How undo & redo execute:**
-
-* **Alternative 1 (current choice):** Saves the entire address book.
-  * Pros: Easy to implement.
-  * Cons: May have performance issues in terms of memory usage.
-
-* **Alternative 2:** Individual command knows how to undo/redo by
-  itself.
-  * Pros: Will use less memory (e.g. for `deletecontact`, just save the contact being deleted).
-  * Cons: We must ensure that the implementation of each individual command is correct.
-
-_{more aspects and alternatives to be added}_
-
-### \[Proposed\] Data archiving
-
-_{Explain here how the data archiving feature will be implemented}_
-
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -995,29 +919,22 @@ Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS and Ext. 2a, the ActiveFollowupList is updated to show either all follow-ups from the ArchiveFollowupList (if no contact index is specified) or only the follow-ups associated with the specified contact in the ActiveContactList
-- ActiveContactList, ActiveStoryList, and all archive lists remain unchanged
+- At the end of MSS, System displays all follow-ups or those linked to the specified contact.
+- No stored data is modified.
 
 ##### MSS:
 
 1. User requests to list follow-ups, optionally specifying a contact index.
-2. If a contact index was specified, System updates ActiveFollowupFilter to match the follow-ups linked to the specified contact. Otherwise, System updates ActiveFollowupFilter to match all follow-ups.
-3. System updates the ActiveFollowupList and followup panel to display the follow-ups.
-4. System informs the user in the console that the follow-ups have been listed successfully.
+2. System updates the follow-up panel with all follow-ups if no index was specified or those linked to the specified contact index. The displayed list is empty if there are no matches.
+3. System informs the user that the follow-ups have been listed successfully.
 
 Use case ends.
 
 ##### Extensions:
 
-1a. User specifies an invalid contact index (not a positive integer or larger than the number of contacts displayed).
+2a. The specified contact index is invalid.
 
-- 1a1. System informs the user in the console of the invalid index.
-- Use case ends.
-
-2a. There are no follow-ups associated with the specified contact.
-
-- 2a1. System updates the followup panel to display an empty list.
-- 2a2. System displays `Listed 0 followup(s) assigned to CONTACT_NAME` in the console.
+- 2a1. System informs the user and leaves the displayed follow-ups unchanged.
 - Use case ends.
 
 #### Use Case: UC10 - Find follow-ups by keywords
