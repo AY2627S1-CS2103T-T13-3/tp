@@ -998,8 +998,8 @@ Actor: User
 ##### MSS:
 
 1. User requests to list follow-ups, optionally specifying a contact index.
-2. System displays all follow-ups if no index was specified, or those linked to the specified contact. The displayed list is empty if there are no matches.
-3. System displays `Listed all N followup(s).` or `Listed N followup(s) assigned to CONTACT_NAME`, where `N` may be 0.
+2. System updates the follow-up panel with all follow-ups if no index was specified or those linked to the specified contact index. The displayed list is empty if there are no matches.
+3. System informs the user that the follow-ups have been listed successfully.
 
 Use case ends.
 
