@@ -1,0 +1,83 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant "f:FindStoriesCommand" as FindStoriesCommand LOGIC_COLOR
+participant "r:CommandResult" as CommandResult LOGIC_COLOR
+end box
+
+box Model MODEL_COLOR_T1
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant "predicate:StoryNameContainsKeywordsPredicate" as Predicate MODEL_COLOR
+participant "filteredStories:FilteredList" as FilteredStories MODEL_COLOR
+participant "s:Story" as Story MODEL_COLOR
+participant "name:StoryName" as StoryName MODEL_COLOR
+end box
+
+[-> FindStoriesCommand : execute(model)
+activate FindStoriesCommand
+
+FindStoriesCommand -> ModelManager : updateFilteredStoryList(predicate)
+activate ModelManager
+
+ModelManager -> FilteredStories : setPredicate(predicate)
+activate FilteredStories
+
+loop for each story s in addressBook
+    FilteredStories -> Predicate : test(s)
+    activate Predicate
+
+    Predicate -> Story : isNameMatching(keyword)
+    activate Story
+
+    Story -> StoryName : isMatching(keyword)
+    activate StoryName
+
+    StoryName --> Story : isMatch
+    deactivate StoryName
+
+    Story --> Predicate : isMatch
+    deactivate Story
+
+    Predicate --> FilteredStories : isMatch
+    deactivate Predicate
+end
+
+FilteredStories --> ModelManager
+deactivate FilteredStories
+
+ModelManager -> Predicate : toString()
+activate Predicate
+
+Predicate --> ModelManager : filterStatus
+deactivate Predicate
+
+ModelManager -> ModelManager : storyFilterStatus.set(filterStatus)
+
+ModelManager --> FindStoriesCommand
+deactivate ModelManager
+
+FindStoriesCommand -> ModelManager : getFilteredStoryList()
+activate ModelManager
+
+ModelManager --> FindStoriesCommand : filteredStories
+deactivate ModelManager
+
+FindStoriesCommand -> FilteredStories : size()
+activate FilteredStories
+
+FilteredStories --> FindStoriesCommand : count
+deactivate FilteredStories
+
+create CommandResult
+FindStoriesCommand -> CommandResult : CommandResult(overviewMessage)
+activate CommandResult
+
+CommandResult --> FindStoriesCommand : r
+deactivate CommandResult
+
+[<-- FindStoriesCommand : r
+deactivate FindStoriesCommand
+
+@enduml
