@@ -23,7 +23,8 @@ This guide describes the features implemented for PressMemo v1.4.
 
 4. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar pressmemo.jar`.<br>
    A GUI with the **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels similar to the one below should appear in a few seconds. On the first run, the app contains sample contacts, stories and follow-ups.<br>
-   ![Ui](images/QuickstartUi.png)
+   
+   <img src="images/QuickstartUi.png" alt="Finding contacts" width="726" height="593">
 
 5. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to toggle the help panel.<br>
    Some example commands you can try:
@@ -78,7 +79,7 @@ This guide describes the features implemented for PressMemo v1.4.
 
 * **Objective:** Toggles the help panel which lists all default commands and their formats. 
 
-![Ui with Help Panel](images/UiWithHelpPanel.png)
+<img src="images/UiWithHelpPanel.png" alt="Finding contacts" width="726" height="593">
 
 #### Usage / Command Format
 `help`
