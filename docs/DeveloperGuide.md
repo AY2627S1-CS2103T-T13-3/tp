@@ -338,15 +338,15 @@ The sequence diagram below illustrates the interactions within the Model compone
 
 #### Execution flow
 
-1. The user enters the `listfollowups` command as an input string.
-2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
-3. `AddressBookParser` creates an `ListFollowupsCommandParser` to parse the command arguments.
-4. `ListFollowupsCommandParser` parses the optional `CONTACT_INDEX` and creates a `ListFollowupsCommand` object.
-5. `LogicManager` executes the `ListFollowupsCommand` object.
-6. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the ActiveContactList from `Model`, validates the index, and obtains the corresponding Contact. 
-7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` requests `Model` to update the ActiveFollowupFilter to match follow-ups linked to the specified Contact. Otherwise, it requests `Model` to update the ActiveFollowupFilter to match all follow-ups.
-8. `Model` refreshes the ActiveFollowupList for the updated ActiveFollowupFilter.
-9. `UI` updates the follow-up panel accordingly.
+1. The user enters the `listfollowups` command with an optional `ci/CONTACT_INDEX` as an input string.
+2. `LogicManager` passes the input string to `AddressBookParser`, which delegates argument parsing to `ListFollowupsCommandParser`.
+3. `ListFollowupsCommandParser` parses the optional `CONTACT_INDEX` and returns a `ListFollowupsCommand`.
+4. `LogicManager` executes the `ListFollowupsCommand` object.
+5. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the contact from the ActiveContactList and validates the index
+	* If `CONTACT_INDEX` is specified, it retrieves the ActiveContactList, validates the index, obtains the corresponding contact, and requests `Model` to show follow-ups linked to that contact.
+	* Otherwise, it requests `Model` to show all follow-ups.
+6. `Model` refreshes the ActiveFollowupList for the updated ActiveFollowupFilter.
+7. `UI` updates the follow-up panel accordingly.
 
 The activity diagram below shows the branching logic depending on whether `CONTACT_INDEX` is specified:
 ![ListFollowupActivityDiagram](images/ListFollowupsActivityDiagram.png)
@@ -994,29 +994,22 @@ Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS and Ext. 2a, the ActiveFollowupList is updated to show either all follow-ups from the ArchiveFollowupList (if no contact index is specified) or only the follow-ups associated with the specified contact in the ActiveContactList
-- ActiveContactList, ActiveStoryList, and all archive lists remain unchanged
+- At the end of MSS, System displays all follow-ups or those linked to the specified contact.
+- No stored data is modified.
 
 ##### MSS:
 
 1. User requests to list follow-ups, optionally specifying a contact index.
-2. If a contact index was specified, System updates ActiveFollowupFilter to match the follow-ups linked to the specified contact. Otherwise, System updates ActiveFollowupFilter to match all follow-ups.
-3. System updates the ActiveFollowupList and followup panel to display the follow-ups.
-4. System informs the user in the console that the follow-ups have been listed successfully.
+2. System updates the follow-up panel with all follow-ups if no index was specified or those linked to the specified contact index. The displayed list is empty if there are no matches.
+3. System informs the user that the follow-ups have been listed successfully.
 
 Use case ends.
 
 ##### Extensions:
 
-1a. User specifies an invalid contact index (not a positive integer or larger than the number of contacts displayed).
+2a. The specified contact index is invalid.
 
-- 1a1. System informs the user in the console of the invalid index.
-- Use case ends.
-
-2a. There are no follow-ups associated with the specified contact.
-
-- 2a1. System updates the followup panel to display an empty list.
-- 2a2. System displays `Listed 0 followup(s) assigned to CONTACT_NAME` in the console.
+- 2a1. System informs the user and leaves the displayed follow-ups unchanged.
 - Use case ends.
 
 #### Use Case: UC10 - Find follow-ups by keywords
