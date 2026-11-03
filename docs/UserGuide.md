@@ -5,7 +5,7 @@ title: User Guide
 
 PressMemo is a **desktop application for journalists and reporters to manage contacts, stories, and follow-ups, optimized for use through a Command Line Interface (CLI)** while retaining the benefits of a Graphical User Interface (GUI). If you type quickly, PressMemo can help you organize sources across multiple stories and track follow-up reminders faster than traditional GUI applications.
 
-This guide describes the features implemented for PressMemo v1.4.
+This guide describes the features implemented for PressMemo v1.6.
 
 * Table of Contents
 {:toc}
@@ -23,7 +23,8 @@ This guide describes the features implemented for PressMemo v1.4.
 
 4. Open a terminal, `cd` to the folder containing the JAR file, and run `java -jar pressmemo.jar`.<br>
    A GUI with the **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels similar to the one below should appear in a few seconds. On the first run, the app contains sample contacts, stories and follow-ups.<br>
-   ![Ui](images/QuickstartUi.png)
+   
+   <img src="images/QuickstartUi.png" alt="Finding contacts" width="726" height="593">
 
 5. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to toggle the help panel.<br>
    Some example commands you can try:
@@ -78,7 +79,7 @@ This guide describes the features implemented for PressMemo v1.4.
 
 * **Objective:** Toggles the help panel which lists all default commands and their formats. 
 
-![Ui with Help Panel](images/UiWithHelpPanel.png)
+<img src="images/UiWithHelpPanel.png" alt="Finding contacts" width="726" height="593">
 
 #### Usage / Command Format
 `help`
@@ -126,9 +127,9 @@ This guide describes the features implemented for PressMemo v1.4.
 
 #### Common Errors & Troubleshooting
 
-| Error Message / Symptom                       | Cause                                                                      | How to Fix                                                                                  |
-|:----------------------------------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------|
-| Error: there is already a contact named {xxx} | Trying to add a contact named {xxx} when {xxx} already exists in PressMemo | Delete the existing contact named {xxx} first<br><br>OR<br><br>Use a different contact name |
+| Error Message / Symptom                             | Cause                                                                                  | How to Fix                                                                                       |
+|:----------------------------------------------------|:---------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------|
+| Error: there is already a contact named `Alex Yeoh` | Trying to add a contact named `Alex Yeoh` when `Alex Yeoh` already exists in PressMemo | Delete the existing contact named `Alex Yeoh` first<br><br>OR<br><br>Use a different contact name |
 
 ### Listing contacts, stories, and follow-ups
 
@@ -319,6 +320,7 @@ This command does not accept parameters. Any extraneous characters will result i
 `findcontacts KEYWORD [MORE_KEYWORDS]...`
 
 #### Parameters & Constraints
+
 | Parameter       | Type   | Description                                        |
 |-----------------|--------|----------------------------------------------------|
 | `KEYWORD`       | `word` | The word to search for in the contact names        |
@@ -423,9 +425,9 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Common Errors & Troubleshooting
 
-| Error Message / Symptom                     | Cause                                                                    | How to Fix                                                                              |
-| :------------------------------------------ | :----------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
-| Error: there is already a story named {xxx} | Trying to add a story named {xxx} when {xxx} already exists in PressMemo | delete the existing story named {xxx} first<br><br>OR<br><br>use a different story name |
+| Error Message / Symptom                               | Cause                                                                                        | How to Fix                                                                                        |
+|:------------------------------------------------------|:---------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|
+| Error: there is already a story named `Investigation` | Trying to add a story named `Investigation` when `Investigation` already exists in PressMemo | Delete the existing story named `Investigation` first<br><br>OR<br><br>use a different story name |
 
 ### Editing a story: `editstory`
 
@@ -866,11 +868,11 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Common Errors & Troubleshooting
 
-| Error Message / Symptom                                              | Cause                                                 | How to Fix                                                   |
-|:---------------------------------------------------------------------|:------------------------------------------------------|:-------------------------------------------------------------|
-| `{xxx} is a built-in command word and cannot be used as a shortcut.` | The shortcut matches a built-in command word.         | Choose a shortcut alias that is not a built-in command word. |
-| `The shortcut {xxx} cannot contain whitespace or forward slashes.`   | The shortcut contains spaces or forward slashes.      | Choose a shortcut alias that does not contain spaces or `/`. |
-| `{xxx} is not a command that can be assigned a shortcut.`            | The command word is not recognized or not assignable. | Provide a valid assignable PressMemo command word.           |
+| Error Message / Symptom                                                            | Cause                                                 | How to Fix                                                   |
+|:-----------------------------------------------------------------------------------|:------------------------------------------------------|:-------------------------------------------------------------|
+| `list is a built-in command word and cannot be used as a shortcut.`                | The shortcut matches a built-in command word.         | Choose a shortcut alias that is not a built-in command word. |
+| `The shortcut "a b" cannot contain whitespace or forward slashes.`                 | The shortcut contains spaces or forward slashes.      | Choose a shortcut alias that does not contain spaces or `/`. |
+| `shortcut/unshortcut/notCommand is not a command that can be assigned a shortcut.` | The command word is not recognized or not assignable. | Provide any built-in command word except `shortcut` and `unshortcut`.          |
 
 ### Removing a command shortcut: `unshortcut`
 
@@ -949,16 +951,16 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 ## Common Issues and Troubleshooting
 
 | Error Messages / Symptoms                                                                                                                                                                        | Causes                                                                                                                                                                 | How to Fix                                                                                                                                                       |
-| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | <br>`The story index 100 is invalid for the displayed list of 9 story(ies).`<br>                                                                                                                 | The Contact Index, Story Index, or Followup Index provided is greater than the number of items currently displayed in the corresponding panel (or the panel is empty). | Check the index numbers displayed in the corresponding panel (Contacts, Stories, or Follow-ups). Run `list`, to show all items, if the item you need is missing. |
 | `Index must be a positive integer.`                                                                                                                                                              | The Contact Index, Story Index, or Followup Index is not a positive integer.                                                                                           | Ensure the index is a positive integer with no signs, decimals, or letters.                                                                                      |
 | `Unrecognised prefix or unescaped forward slash in "a/b". To use a forward slash as text, escape it with a backslash, e.g. "\/".`<br><br>`The following prefix(es) should not be duplicated: n/` | The provided text contains an unrecognised prefix or unescaped forward slash.                                                                                          | Only use supported prefixes, and escape forward slashes intended to be part of a `user-string` (using \\/)                                                       |
 | `This command does not accept parameters.`                                                                                                                                                       | Unexpected text was entered after the command word (and before any prefixes).                                                                                          | Remove the extraneous text after the command word (and before any prefixes).                                                                                     |
 | `Missing required input: STORY_NAME.`                                                                                                                                                            | The command expects text input after the command word (and before any prefixes), but none was entered.                                                                 | Provide the required preamble text immediately after the command word (and before any prefixes).                                                                 |
 | `The following prefix(es) should not be duplicated: n/`                                                                                                                                          | A prefix was provided multiple times in the same command, even though at most one is supported.                                                                        | Remove duplicate prefixes.                                                                                                                                       |
-| `Missing required input: ci/.`                                                                                                             | One or more compulsory prefixes were omitted                                                                                                                           | Include all mandatory prefixes and their values as indicated in the command usage message.                                                                       |
+| `Missing required input: ci/.`                                                                                                                                                                   | One or more compulsory prefixes were omitted                                                                                                                           | Include all mandatory prefixes and their values as indicated in the command usage message.                                                                       |
 | `Unknown command: womp.`                                                                                                                                                                         | The `command-word` was mistyped, or uses incorrect casing.<br>`command-word` is case-sensitive.                                                                        | Enter a valid `command-word` or shortcut.<br><br>Type `help` to view all available commands.<br><br>Type `shortcut` to view all available shortcuts.             |
-| `Data file at data\addressbook.json could not be loaded. Will be starting with an empty PressMemo.`                                                                                               | The data file's contents are corrupted, or PressMemo does not have permission to read the file.                                                                        | Avoid editing the data file directly unless you know what you are doing.<br><br>Make sure you give PressMemo permissions to read and write the data file.<br>    |
+| `Data file at data\addressbook.json could not be loaded. Will be starting with an empty PressMemo.`                                                                                              | The data file's contents are corrupted, or PressMemo does not have permission to read the file.                                                                        | Avoid editing the data file directly unless you know what you are doing.<br><br>Make sure you give PressMemo permissions to read and write the data file.<br>    |
 
 --------------------------------------------------------------------------------------------------------------------
 

@@ -3,68 +3,81 @@
 skinparam ArrowFontStyle plain
 
 box Logic LOGIC_COLOR_T1
-participant ":LogicManager" as LogicManager LOGIC_COLOR
-participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
-participant ":FindStoryCommandParser" as FindStoryCommandParser LOGIC_COLOR
-participant "f:FindStoryCommand" as FindStoryCommand LOGIC_COLOR
+participant "f:FindStoriesCommand" as FindStoriesCommand LOGIC_COLOR
 participant "r:CommandResult" as CommandResult LOGIC_COLOR
 end box
 
 box Model MODEL_COLOR_T1
-participant "m:Model" as Model MODEL_COLOR
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant "predicate:StoryNameContainsKeywordsPredicate" as Predicate MODEL_COLOR
+participant "filteredStories:FilteredList" as FilteredStories MODEL_COLOR
+participant "s:Story" as Story MODEL_COLOR
+participant "name:StoryName" as StoryName MODEL_COLOR
 end box
 
-[-> LogicManager : execute("findstories housing investigation")
-activate LogicManager
+[-> FindStoriesCommand : execute(model)
+activate FindStoriesCommand
 
-LogicManager -> AddressBookParser : parseCommand("findstories housing investigation")
-activate AddressBookParser
+FindStoriesCommand -> ModelManager : updateFilteredStoryList(predicate)
+activate ModelManager
 
-create FindStoryCommandParser
-AddressBookParser -> FindStoryCommandParser
-activate FindStoryCommandParser
+ModelManager -> FilteredStories : setPredicate(predicate)
+activate FilteredStories
 
-FindStoryCommandParser --> AddressBookParser
-deactivate FindStoryCommandParser
+loop for each story s in addressBook
+    FilteredStories -> Predicate : test(s)
+    activate Predicate
 
-AddressBookParser -> FindStoryCommandParser : parse("housing investigation")
-activate FindStoryCommandParser
+    Predicate -> Story : isNameMatching(keyword)
+    activate Story
 
-create FindStoryCommand
-FindStoryCommandParser -> FindStoryCommand
-activate FindStoryCommand
+    Story -> StoryName : isMatching(keyword)
+    activate StoryName
 
-FindStoryCommand --> FindStoryCommandParser :
-deactivate FindStoryCommand
+    StoryName --> Story : isMatch
+    deactivate StoryName
 
-FindStoryCommandParser --> AddressBookParser : f
-deactivate FindStoryCommandParser
-'Hidden arrow to position the destroy marker below the end of the activation bar.
-FindStoryCommandParser -[hidden]-> AddressBookParser
-destroy FindStoryCommandParser
+    Story --> Predicate : isMatch
+    deactivate Story
 
-AddressBookParser --> LogicManager : f
-deactivate AddressBookParser
+    Predicate --> FilteredStories : isMatch
+    deactivate Predicate
+end
 
-LogicManager -> FindStoryCommand : execute(m)
-activate FindStoryCommand
+FilteredStories --> ModelManager
+deactivate FilteredStories
 
-FindStoryCommand -> Model : updateFilteredStoryList(predicate)
-activate Model
+ModelManager -> Predicate : toString()
+activate Predicate
 
-Model --> FindStoryCommand
-deactivate Model
+Predicate --> ModelManager : filterStatus
+deactivate Predicate
+
+ModelManager -> ModelManager : storyFilterStatus.set(filterStatus)
+
+ModelManager --> FindStoriesCommand
+deactivate ModelManager
+
+FindStoriesCommand -> ModelManager : getFilteredStoryList()
+activate ModelManager
+
+ModelManager --> FindStoriesCommand : filteredStories
+deactivate ModelManager
+
+FindStoriesCommand -> FilteredStories : size()
+activate FilteredStories
+
+FilteredStories --> FindStoriesCommand : count
+deactivate FilteredStories
 
 create CommandResult
-FindStoryCommand -> CommandResult
+FindStoriesCommand -> CommandResult : CommandResult(overviewMessage)
 activate CommandResult
 
-CommandResult --> FindStoryCommand
+CommandResult --> FindStoriesCommand : r
 deactivate CommandResult
 
-FindStoryCommand --> LogicManager : r
-deactivate FindStoryCommand
+[<-- FindStoriesCommand : r
+deactivate FindStoriesCommand
 
-[<--LogicManager
-deactivate LogicManager
 @enduml
