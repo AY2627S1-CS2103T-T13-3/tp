@@ -233,10 +233,11 @@ The following sequence diagram illustrates the interactions within the Model com
 
 - **Aspect:** Maintaining assignments between contacts and stories.
 
-| | Chosen: Store assignments in both Contact and Story | Alternative: Maintain a separate association collection |
-| --- | --- | --- |
-| **Pros** | Allows contacts and stories to retrieve their assignments directly without additional relationship lookups. | Stores each association in one central location, avoiding duplicated relationship information. |
-| **Cons** | Requires updating both records to maintain consistency whenever an assignment changes. | Requires additional lookups to retrieve assignments and management of a separate association collection. |
+|          | Chosen: Store assignments in both Contact and Story                                                         | Alternative: Maintain a separate association collection                                                  |
+|----------|-------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| **Pros** | Allows contacts and stories to retrieve their assignments directly without additional relationship lookups. | Stores each association in one central location, avoiding duplicated relationship information.           |
+| **Cons** | Requires updating both records to maintain consistency whenever an assignment changes.                      | Requires additional lookups to retrieve assignments and management of a separate association collection. |
+
 ## `addstory`
 
 - **Objective:** Adds a story to PressMemo
@@ -1067,6 +1068,7 @@ Use case ends.
 * **Active Contact Filter**: The currently active filter over the Archive Contact List, which determines the Active Contact List.
 * **Active Story Filter**: The currently active filter over the Archive Story List, which determines the Active Story List.
 * **Active Followup Filter**: The currently active filter over the Archive Followup List, which determines the Active Followup List.
+
 --------------------------------------------------------------------------------------------------------------------
 
 ## Appendix: Instructions for manual testing
