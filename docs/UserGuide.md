@@ -399,10 +399,10 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Parameters
 
-| Parameter    | Type          | Description              | Examples                  |
-| :----------- | :------------ | :----------------------- | :------------------------ |
-| `STORY_NAME` | `user-string` | name of the story to add | wumpus<br><br>find wumpus |
-| TAG          | `user-string` | a tag for the story      | smelly                    |
+| Parameter     | Type          | Description              | Examples                  |
+|:--------------| :------------ | :----------------------- | :------------------------ |
+| `STORY_NAME`  | `user-string` | name of the story to add | wumpus<br><br>find wumpus |
+| `t/TAG`       | `user-string` | a tag for the story      | smelly                    |
 
 
 > **Tip / Note:**
@@ -412,11 +412,11 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Examples
 
-* **Example 1: valid and unique story name, no tags 
+* **Example 1:** valid and unique story name, no tags 
   * **Input / Action:** `addstory find wumpus`
   * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel without tags
 
-* **Example 2: valid and unique story name with 2 tags 
+* **Example 2:** valid and unique story name with 2 tags 
   * **Input / Action:** `addstory find wumpus t/smelly t/at 2, 2`
   * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel with the tags "smelly" and "at 2, 2"
 
@@ -619,8 +619,8 @@ This command does not accept parameters. Any extraneous characters will result i
 #### Parameters & Constraints
 
 | Parameter | Type          | Description                                        | Examples |
-| :-------- | :------------ | :------------------------------------------------ | :------- |
-| `INDEX`   | `Story Index` Index of the story to delete from the story panel el | `1`      |
+| :-------- |:--------------|:---------------------------------------------------| :------- |
+| `INDEX`   | `story-index` | Index of the story to delete from the story panel  | `1`      |
 
 > **Tip / Note:**
 > * Deleting a story automatically unassigns it from all contacts originally assigned to it. The contacts themselves remain in PressMemo.
@@ -636,7 +636,8 @@ This command does not accept parameters. Any extraneous characters will result i
 ### Adding a follow-up: `addfollowup`
 
 - **Objective:** Adds a follow-up reminder and links it to an existing contact.
-- ![addfollowup](images/addfollowup-example.png)
+
+![addfollowup](images/addfollowup-example.png)
 
 #### Usage / Command Format
 
@@ -976,28 +977,28 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 
 ## Command summary
 
-| Action                            | Format, Examples                                                                                                                                                                    |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Add**                           | `addcontact NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `addcontact James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague` |
-| **Add follow-up**                 | `addfollowup DESCRIPTION ci/CONTACT_INDEX`<br> e.g., `addfollowup Interview prep ci/1`                                                                                              |
-| **Add story**                     | `addstory STORY_NAME`<br> e.g., `addstory Housing Investigation`                                                                                                                    |
-| **Assign**                        | `assign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `assign ci/1 si/2`                                                                                                               |
-| **Clear all entries**             | `clear`                                                                                                                                                                             |
-| **Delete**                        | `deletecontact INDEX`<br> e.g., `deletecontact 3`                                                                                                                                   |
-| **Delete follow-up**              | `deletefollowup INDEX`<br> e.g., `deletefollowup 1`                                                                                                                                 |
-| **Delete story**                  | `deletestory INDEX`<br> e.g., `deletestory 2`                                                                                                                                       |
-| **Edit**                          | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`                                          |
-| **Edit follow-up**                | `editfollowup INDEX [d/DESCRIPTION] [ci/CONTACT_INDEX]`<br> e.g., `editfollowup 1 d/Call tomorrow ci/2`                                                                             |
-| **Edit story**                    | `editstory INDEX [n/STORY_NAME] [t/TAG]…​`<br> e.g., `editstory 1 n/Election investigation t/urgent`                                                                            |
-| **Find contacts**                 | `findcontacts KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findcontacts James Jake`                                                                                                       |
-| **Find follow-ups**               | `findfollowups KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findfollowups interview meeting`                                                                                              |
-| **Find stories**                  | `findstories STORY_NAME [MORE_KEYWORDS]...`<br> e.g., `findstories Housing Investigation`                                                                                           |
-| **List all entries**              | `list` (clears the contact, story, and follow-up filters)                                                                                                                           |
-| **List contacts**                 | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)                                        |
-| **List follow-ups**               | `listfollowups [ci/CONTACT_INDEX]`<br> e.g., `listfollowups` (all follow-ups) or `listfollowups ci/1` (follow-ups for contact 1)                   |
-| **List stories**                  | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)                                         |
-| **Manage shortcuts**              | `shortcut [s/SHORTCUT c/COMMAND_WORD]`<br> e.g., `shortcut` or `shortcut s/ls c/list`                                                                                               |
-| **Remove shortcut**               | `unshortcut SHORTCUT`<br> e.g., `unshortcut ls`                                                                                                                                     |
-| **Unassign**                      | `unassign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `unassign ci/1 si/2`                                                                                                           |
-| **Help**                          | `help`                                                                                                                                                                              |
-| **Exit**                          | `exit`                                                                                                                                                                              |
+| Action                | Format, Examples                                                                                                                                                                    |
+|-----------------------| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Add contact**       | `addcontact NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `addcontact James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague` |
+| **Add follow-up**     | `addfollowup DESCRIPTION ci/CONTACT_INDEX`<br> e.g., `addfollowup Interview prep ci/1`                                                                                              |
+| **Add story**         | `addstory STORY_NAME`<br> e.g., `addstory Housing Investigation`                                                                                                                    |
+| **Assign**            | `assign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `assign ci/1 si/2`                                                                                                               |
+| **Clear all entries** | `clear`                                                                                                                                                                             |
+| **Delete contact**    | `deletecontact INDEX`<br> e.g., `deletecontact 3`                                                                                                                                   |
+| **Delete follow-up**  | `deletefollowup INDEX`<br> e.g., `deletefollowup 1`                                                                                                                                 |
+| **Delete story**      | `deletestory INDEX`<br> e.g., `deletestory 2`                                                                                                                                       |
+| **Edit contact**      | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`                                          |
+| **Edit follow-up**    | `editfollowup INDEX [d/DESCRIPTION] [ci/CONTACT_INDEX]`<br> e.g., `editfollowup 1 d/Call tomorrow ci/2`                                                                             |
+| **Edit story**        | `editstory INDEX [n/STORY_NAME] [t/TAG]…​`<br> e.g., `editstory 1 n/Election investigation t/urgent`                                                                            |
+| **Find contacts**     | `findcontacts KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findcontacts James Jake`                                                                                                       |
+| **Find follow-ups**   | `findfollowups KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findfollowups interview meeting`                                                                                              |
+| **Find stories**      | `findstories STORY_NAME [MORE_KEYWORDS]...`<br> e.g., `findstories Housing Investigation`                                                                                           |
+| **List all entries**  | `list` (clears the contact, story, and follow-up filters)                                                                                                                           |
+| **List contacts**     | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)                                        |
+| **List follow-ups**   | `listfollowups [ci/CONTACT_INDEX]`<br> e.g., `listfollowups` (all follow-ups) or `listfollowups ci/1` (follow-ups for contact 1)                   |
+| **List stories**      | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)                                         |
+| **Manage shortcuts**  | `shortcut [s/SHORTCUT c/COMMAND_WORD]`<br> e.g., `shortcut` or `shortcut s/ls c/list`                                                                                               |
+| **Remove shortcut**   | `unshortcut SHORTCUT`<br> e.g., `unshortcut ls`                                                                                                                                     |
+| **Unassign**          | `unassign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `unassign ci/1 si/2`                                                                                                           |
+| **Help**              | `help`                                                                                                                                                                              |
+| **Exit**              | `exit`                                                                                                                                                                              |
