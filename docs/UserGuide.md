@@ -129,19 +129,21 @@ This guide describes the features implemented for PressMemo v1.4.
 |:----------------------------------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------|
 | Error: there is already a contact named {xxx} | Trying to add a contact named {xxx} when {xxx} already exists in PressMemo | Delete the existing contact named {xxx} first<br><br>OR<br><br>Use a different contact name |
 
-### Listing contacts and stories (refactored commands)
+### Listing contacts, stories, and follow-ups
 
-PressMemo provides separate commands for displaying both lists, displaying contacts only, or displaying stories only. They also let you filter one list by an entry in the other.
+PressMemo provides `list` for displaying all three lists, as well as separate commands for displaying or filtering an individual list.
 
-| Command | Effect on CONTACTS | Effect on STORIES |
-| --- | --- | --- |
-| `list` | Shows all contacts | Shows all stories |
-| `listcontacts` | Shows all contacts | Unchanged |
-| `listcontacts si/1` | Shows contacts assigned to displayed story 1 | Unchanged |
-| `liststories` | Unchanged | Shows all stories |
-| `liststories ci/1` | Unchanged | Shows stories assigned to displayed contact 1 |
+| Command | Effect on CONTACTS | Effect on STORIES | Effect on FOLLOW-UPS |
+| --- | --- | --- | --- |
+| `list` | Shows all contacts | Shows all stories | Shows all follow-ups |
+| `listcontacts` | Shows all contacts | Unchanged | Unchanged |
+| `listcontacts si/1` | Shows contacts assigned to displayed story 1 | Unchanged | Unchanged |
+| `liststories` | Unchanged | Shows all stories | Unchanged |
+| `liststories ci/1` | Unchanged | Shows stories assigned to displayed contact 1 | Unchanged |
+| `listfollowups` | Unchanged | Unchanged | Shows all follow-ups |
+| `listfollowups ci/1` | Unchanged | Unchanged | Shows follow-ups linked to displayed contact 1 |
 
-For the filtered commands, indices are taken from the **currently displayed lists**, not necessarily the full lists. If no contacts or stories match a filter, the relevant panel becomes empty.
+For the filtered commands, indices are taken from the **currently displayed lists**, not necessarily the full lists. If no entries match a filter, the relevant panel becomes empty.
 
 <div markdown="block" class="alert alert-info">
 
@@ -155,9 +157,9 @@ Each panel header (**CONTACTS**, **STORIES**, and **FOLLOW-UPS**) displays an ac
 This visual badge ensures you always know whether the displayed index numbers (e.g., `1`, `2`, `3`) correspond to the complete list or a filtered subset, eliminating index ambiguity!
 </div>
 
-### Listing all contacts and stories: `list`
+### Listing all contacts, stories, and follow-ups: `list`
 
-- **Objective:** Displays all contacts and stories, removing any active contact and story filters.
+- **Objective:** Displays all contacts, stories, and follow-ups, removing all active filters.
 ![list](images/list-example.png)
 
 #### Usage / Command Format
@@ -169,15 +171,14 @@ This visual badge ensures you always know whether the displayed index numbers (e
 This command does not accept parameters. Any extraneous characters will result in an error.
 
 > **Tip / Note:**
-> * `list` resets both the **CONTACTS** and **STORIES** panels together.
-> * It does not reset or separately filter follow-ups; those remain visible in the **FOLLOW-UPS** panel.
-> * Use `listcontacts` or `liststories` if you want to filter or reset only one panel.
+> * `list` resets the **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels together.
+> * Use `listcontacts`, `liststories`, or `listfollowups` if you want to filter or reset only one panel.
 
 #### Examples
 
-* **Example 1: Reset all active contact and story filters**
+* **Example 1: Reset all active filters**
   * **Input / Action:** `list`
-  * **Expected Outcome:** Both **CONTACTS** and **STORIES** panels display all entries, and both panel header filter badges update to `[All]`.
+  * **Expected Outcome:** The **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels display all entries, and all three panel header filter badges update to `[All]`.
 
 ### Listing contacts: `listcontacts`
 
@@ -986,7 +987,7 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 | **Find contacts**                 | `findcontacts KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findcontacts James Jake`                                                                                                       |
 | **Find follow-ups**               | `findfollowups KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findfollowups interview meeting`                                                                                              |
 | **Find stories**                  | `findstories STORY_NAME [MORE_KEYWORDS]...`<br> e.g., `findstories Housing Investigation`                                                                                           |
-| **List all contacts and stories** | `list` (clears both filters)                                                                                                                                                        |
+| **List all entries**              | `list` (clears the contact, story, and follow-up filters)                                                                                                                           |
 | **List contacts**                 | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)                                        |
 | **List follow-ups**               | `listfollowups [ci/CONTACT_INDEX]`<br> e.g., `listfollowups` (all follow-ups) or `listfollowups ci/1` (follow-ups for contact 1)                   |
 | **List stories**                  | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)                                         |
