@@ -859,11 +859,11 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Common Errors & Troubleshooting
 
-| Error Message / Symptom                                             | Cause                                                 | How to Fix                                                   |
-|:--------------------------------------------------------------------|:------------------------------------------------------|:-------------------------------------------------------------|
-| `{xxx} is a built-in command word and cannot beused as a shortcut.` | The shortcut matches a built-in command word.         | Choose a shortcut alias that is not a built-in command word. |
-| `The shortcut {xxx} cannot contain whitespace or forward slashes.`  | The shortcut contains spaces or forward slashes.      | Choose a shotcut alias that does not contain spaces or `/`.  |
-| `{xxx} is not a command that can be assgined a shortcut.`           | The command word is not recognized or not assignable. | Provide a valid assignable PressMemo command word.           |
+| Error Message / Symptom                                              | Cause                                                 | How to Fix                                                   |
+|:---------------------------------------------------------------------|:------------------------------------------------------|:-------------------------------------------------------------|
+| `{xxx} is a built-in command word and cannot be used as a shortcut.` | The shortcut matches a built-in command word.         | Choose a shortcut alias that is not a built-in command word. |
+| `The shortcut {xxx} cannot contain whitespace or forward slashes.`   | The shortcut contains spaces or forward slashes.      | Choose a shortcut alias that does not contain spaces or `/`. |
+| `{xxx} is not a command that can be assigned a shortcut.`            | The command word is not recognized or not assignable. | Provide a valid assignable PressMemo command word.           |
 
 ### Removing a command shortcut: `unshortcut`
 
