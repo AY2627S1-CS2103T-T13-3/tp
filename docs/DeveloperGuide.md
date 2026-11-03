@@ -321,16 +321,16 @@ The following sequence diagram illustrates the interactions within the `Logic` c
 ### API
 
 * **Command:** `listfollowups [ci/CONTACT_INDEX]`
-* **Parameters**: refer to [user guide](UserGuide.md#listing-follow-ups-listfollowups)
+* **Parameters:** Refer to the [User Guide](UserGuide.md#listing-follow-ups-listfollowups).
 * **Description:**
 	* Updates the ActiveFollowupList to display either all follow-ups from the ArchiveFollowupList or only those linked to the contact identified by `CONTACT_INDEX`.
 * **Preconditions:** 
-	* If `ci/CONTACT_INDEX` is specified, `CONTACT_INDEX` must be valid
+	* If `ci/CONTACT_INDEX` is specified, `CONTACT_INDEX` must be a valid index in the ActiveContactList.
 * **Postconditions:** 
-	* If no `ci/CONTACT_INDEX` is provided, ActiveFollowupFilter matches all follow-ups
-	* If `CONTACT_INDEX` is provided, ActiveFollowupFilter matches only followups linked to the contact identified by `CONTACT_INDEX`
+	* If no `ci/CONTACT_INDEX` is provided, ActiveFollowupFilter matches all follow-ups.
+	* If `CONTACT_INDEX` is provided, ActiveFollowupFilter matches only follow-ups linked to the contact identified by `CONTACT_INDEX`.
 	* ActiveFollowupList is refreshed for the updated ActiveFollowupFilter.
-	- ArchiveFollowupList is unchanged.
+	* ArchiveFollowupList is unchanged.
 
 ### Implementation details
 
@@ -339,12 +339,15 @@ The following sequence diagram illustrates the interactions within the `Logic` c
 1. The user enters the `listfollowups` command as an input string.
 2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
 3. `AddressBookParser` creates an `ListFollowupsCommandParser` to parse the command arguments.
-4. `ListFollowupsCommandParser` parses the story name and tags and creates a `ListFollowupsCommand` object.
+4. `ListFollowupsCommandParser` parses the optional `CONTACT_INDEX` and creates a `ListFollowupsCommand` object.
 5. `LogicManager` executes the `ListFollowupsCommand` object.
-6. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the ActiveContactList from `Model` and obtains the Contact corresponding to `CONTACT_INDEX`
-7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` request Model to update the ActiveFollowupFilter to match follow-ups linked to the specified Contact. Else, `ListFollowupsCommand` request Model to update ActiveFollowupFilter to match all follow-ups.
+6. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the ActiveContactList from `Model`, validates the index, and obtains the corresponding Contact. 
+7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` requests `Model` to update the ActiveFollowupFilter to match follow-ups linked to the specified Contact. Otherwise, it requests `Model` to update the ActiveFollowupFilter to match all follow-ups.
 8. `Model` refreshes the ActiveFollowupList for the updated ActiveFollowupFilter.
 9. `UI` updates the follow-up panel accordingly.
+
+The activity diagram below shows the branching logic depending on whether `CONTACT_INDEX` is specified:
+![ListFollowupActivityDiagram](images/ListFollowupsActivityDiagram.png)
 
 ## `editcontact`
 
@@ -713,7 +716,7 @@ Use case ends.
 
 - System will inform the user in the console that details are missing
 
-1b.  Another contact with the same name already existis
+1b.  Another contact with the same name already exists
 
 - System will inform the user in the console that an invalid name was used
 - Use case ends
@@ -992,24 +995,24 @@ Actor: User
 
 ##### MSS:
 
-1. User requests to list follow-ups, optionally specifying a contact index
-2. If a contact index was specified, System updates ActiveFollowupFilter to match the follow-ups linked to the specified contact
-3. System updates the ActiveFollowupList and followup panel to display the follow-ups
-4. System informs the user in the console that the follow-ups have been listed successfully
+1. User requests to list follow-ups, optionally specifying a contact index.
+2. If a contact index was specified, System updates ActiveFollowupFilter to match the follow-ups linked to the specified contact. Otherwise, System updates ActiveFollowupFilter to match all follow-ups.
+3. System updates the ActiveFollowupList and followup panel to display the follow-ups.
+4. System informs the user in the console that the follow-ups have been listed successfully.
 
 Use case ends.
 
 ##### Extensions:
 
-1a. User specifies an invalid contact index  (not positive integer or larger than the number of contacts displayed).
+1a. User specifies an invalid contact index (not a positive integer or larger than the number of contacts displayed).
 
-- System informs the user in the console of the invalid index.
+- 1a1. System informs the user in the console of the invalid index.
 - Use case ends.
 
 2a. There are no follow-ups associated with the specified contact.
 
 - 2a1. System updates the followup panel to display an empty list.
-- 2a2. System informs the user in the console that no followups have been matched.
+- 2a2. System displays `Listed 0 followup(s) assigned to CONTACT_NAME` in the console.
 - Use case ends.
 
 #### Use Case: UC10 - Find follow-ups by keywords
@@ -1135,10 +1138,10 @@ Use case ends.
 * **Data Files**: The local JSON files used by PressMemo to store application data between sessions.
 * **Active Contact List**: The list of contacts currently displayed in the Contact Panel. Contacts in this list can be referenced using their ContactIndex.
 * **Active Story List**: The list of stories currently displayed in the Story Panel. Stories in this list can be referenced using their StoryIndex.
-* **Active Followup List**: The list of follow-ups currently displayed in the Story Panel. Stories in this list can be referenced using their StoryIndex.
+* **Active Followup List**: The list of follow-ups currently displayed in the Followup Panel. Follow-ups in this list can be referenced using their FollowupIndex.
 * **Archive Contact List**: The list containing all contacts stored in PressMemo, including contacts that are not currently displayed in the Active Contact List.
 * **Archive Story List**: The list containing all stories stored in PressMemo, including stories that are not currently displayed in the Active Story List.
-* **Archive Followup List**: The list containing all follow-ups stored in PressMemo, including stories that are not currently displayed in the Active Story List.
+* **Archive Followup List**: The list containing all follow-ups stored in PressMemo, including follow-ups that are not currently displayed in the Active Followup List.
 * **Filter**: A condition used to select a subset of Contacts, Stories or Follow-ups displayed to the user.
 * **Active Contact Filter**: The currently active filter over the Archive Contact List, which determines the Active Contact List.
 * **Active Story Filter**: The currently active filter over the Archive Story List, which determines the Active Story List.
