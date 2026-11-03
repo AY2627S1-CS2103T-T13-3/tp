@@ -752,33 +752,35 @@ Use case ends.
 - 2a2. System informs the user in the console that 0 contacts are listed (`0 contact(s) listed!`).
 - Use case ends.
 
-#### Use Case: UC3 - List stories matching a filter
+#### Use Case: UC3 - List stories (all or assigned to a contact)
 
 Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the stories that match the specified filter
-- The ActiveContactList  and contact panel remain unchanged
+- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to show either all stories from the ArchiveStoryList (if no contact index is specified) or only the stories assigned to the specified contact in the ActiveContactList.
+- ActiveContactList, ActiveFollowupList, and all archive lists remain unchanged.
 
 ##### MSS:
 
-1. User specifies the filter
-2. User requests to list all stories matching the filter
-3. System updates the story panel to display the matching stories
+1. User requests to list stories, optionally specifying a contact index.
+2. If a contact index was specified, System updates ActiveStoryFilter to match the stories assigned to the specified contact. Otherwise, System updates ActiveStoryFilter to match all stories.
+3. System updates the ActiveStoryList and story panel to display the stories.
+4. System informs the user in the console that the stories have been listed successfully.
 
 Use case ends.
 
 ##### Extensions:
 
-1a. User specifies an undefined filter
+1a. User specifies an invalid contact index (not a positive integer or larger than the number of contacts displayed).
 
-- System will inform the user in the console that the specified filter is invalid.
+- 1a1. System informs the user in the console of the invalid index.
 - Use case ends.
 
-2a. There are no stories matching the filter.
+2a. There are no stories assigned to the specified contact.
 
-- System will inform the user in the story panel that there are no matching stories
+- 2a1. System updates the story panel to display an empty list.
+- 2a2. System displays `Listed 0 story(ies) assigned to CONTACT_NAME` in the console.
 - Use case ends.
 
 #### Use Case: UC4 - Assign contact to story
@@ -1152,266 +1154,462 @@ Use case ends.
 
 Given below are instructions to test PressMemo manually.
 
-> **Note:** These instructions only provide a starting point for testers to work on; testers are expected to do more *exploratory* testing.
+> **Note:** These instructions provide a starting point for manual testing. Testers are encouraged to conduct additional exploratory testing.
 >
-> Unless otherwise specified, test cases assume the default sample data containing 7 contacts, 2 stories and 2 follow-ups. Run tests that modify or delete data independently, using a fresh test folder where necessary. All indices refer to the currently displayed lists.
+> Unless otherwise specified, begin each numbered test group with a fresh copy of the default sample data (7 contacts, 2 stories and 2 follow-ups). Use a separate empty folder for tests that modify or delete records. Run the test cases within each group **in the order shown**, unless stated otherwise. Indices refer to the entries **currently displayed** in their respective panels, and may change after filtering or deletion.
+>
+> The default sample data contains Alex Yeoh (contact 1), Bernice Yu (contact 2) and Charlotte Oliveiro (contact 3). The two stories are *Cybersecurity Data Breach* (story 1) and *Fresh Graduate Unemployment* (story 2). Alex is assigned to story 1; Bernice is assigned to both stories; Charlotte is assigned to story 2. The follow-ups are *Attend Press Conference* (Alex) and *Meet for interview* (Bernice).
 
 ### Launch and shutdown
 
-1. Initial launch
-
-    1. Download the JAR file and copy it into an empty folder.
-
-    2. Open a terminal in that folder and run `java -jar pressmemo.jar`, replacing the filename if necessary.
-
-       Expected: The GUI opens with sample contacts, stories and follow-ups. The initial window size may not be optimal.
+1. Launching PressMemo for the first time
+	1. Prerequisites: Copy the released JAR file into an empty folder with write permission.
+	2. Test case: Open a terminal in that folder and run `java -jar pressmemo.jar` (replace the filename if necessary).\
+	   Expected: PressMemo opens with the CONTACTS, STORIES and FOLLOW-UPS panels, showing 7 sample contacts, 2 sample stories and 2 sample follow-ups.
+	3. Test case: Enter `exit`.\
+	   Expected: PressMemo closes without an error.
 
 2. Saving window preferences
+	1. Prerequisites: Launch PressMemo in a writable test folder.
+	2. Test case: Resize and move the application window, close PressMemo, then relaunch it from the same folder.\
+	   Expected: The saved window size and position are restored.
 
-    1. Resize the window and move it to a different location. Close PressMemo.
+### Viewing help
 
-    2. Relaunch the JAR file from the same folder.
+1. Opening and closing the help panel
+	1. Test case: `help`\
+	   Expected: The help panel opens and displays the built-in commands and their formats.
+	2. Test case: `help`\
+	   Expected: The help panel closes.
+	3. Test case: Open the help panel using the Help menu.\
+	   Expected: The same help panel is shown.
+	4. Test case: `help extra`\
+	   Expected: An error indicates that the command does not accept parameters. The additional text is not treated as a command.
 
-       Expected: The most recent window size and position are retained.
+### Adding contacts
 
-### Adding, editing and deleting contacts
+1. Adding valid contacts
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `addcontact Test User p/91234567 e/test@example.com a/Singapore`\
+	   Expected: Test User is added as the eighth contact with the given phone, email and address, without tags.
+	3. Test case: `addcontact Jane Smith t/source e/jane@example.com a/1 Kent Ridge Drive p/98765432 t/urgent`\
+	   Expected: Jane Smith is added with both `source` and `urgent` tags, despite the prefixed fields being in a different order.
+	4. Test case: `addcontact Research\/Reporter p/81234567 e/research@example.com a/Block 1\/2 t/news\/source`\
+	   Expected: The contact is added with the name `Research/Reporter`, address `Block 1/2` and tag `news/source`. The escaped forward slashes are treated as literal characters.
 
-1. Adding and editing a contact
+2. Rejecting invalid or duplicate contacts
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `addcontact Alex Yeoh p/11111111 e/another@example.com a/Singapore`\
+	   Expected: An error indicates that the contact name already exists; the existing Alex Yeoh record is unchanged.
+	3. Test case: `addcontact Missing Address p/91234567 e/missing@example.com`\
+	   Expected: An error indicates that the compulsory address is missing. No contact is added.
+	4. Test case: `addcontact Blank Phone p/ e/blank@example.com a/Singapore`\
+	   Expected: An error indicates that the phone cannot be blank. No contact is added.
+	5. Test case: `addcontact Test/User p/91234567 e/test@example.com a/Singapore`\
+	   Expected: An error is shown for the unescaped forward slash. No contact is added.
+	6. Test case: `addcontact Duplicate Prefix p/91234567 p/98765432 e/test@example.com a/Singapore`\
+	   Expected: An error identifies the duplicated `p/` prefix. No contact is added.
 
-    1. Prerequisites: Use the default sample data and run `list`.
+3. Adding while the contact list is filtered
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `findcontacts Alex`, followed by `addcontact Test User p/91234567 e/test@example.com a/Singapore`\
+	   Expected: The new contact is saved, but the CONTACTS panel remains filtered to Alex; Test User does not appear because the name does not match the active filter.
+	3. Test case: `listcontacts`\
+	   Expected: All contacts, including Test User, are displayed.
 
-    2. Test case: `addcontact Test User p/91234567 e/test@example.com a/Singapore`
+### Editing contacts
 
-       Expected: Test User is successfully added to PressMemo with the specified details.
+1. Editing details and tags
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `editcontact 1 p/91234567 e/newalex@example.com`\
+	   Expected: Alex Yeoh's phone number and email are updated; his name, address, tags and story assignment are preserved.
+	3. Test case: `editcontact 1 t/source t/urgent`\
+	   Expected: Alex Yeoh's existing tags are replaced with `source` and `urgent`.
+	4. Test case: `editcontact 1 t/`\
+	   Expected: All tags are removed from Alex Yeoh without changing his other details.
+	5. Test case: `editcontact 1 a/Office 1\/2`\
+	   Expected: The address becomes `Office 1/2`.
 
-    3. Test case: `findcontacts Test`, followed by `editcontact 1 p/98765432`
+2. Editing a contact linked to other records
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `editcontact 1 n/Alexander Yeoh`\
+	   Expected: Alex Yeoh is renamed to Alexander Yeoh. His assignment to Cybersecurity Data Breach is preserved, and his name is updated in that story and in the *Attend Press Conference* follow-up.
 
-       Expected: Test User is displayed and their phone number is updated to 98765432.
+3. Rejecting invalid contact edits
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `editcontact 1`\
+	   Expected: An error indicates that at least one field must be provided.
+	3. Test case: `editcontact 1 n/Bernice Yu`\
+	   Expected: An error indicates that the new name duplicates an existing contact. Neither contact changes.
+	4. Test case: `editcontact 1 n/`\
+	   Expected: An error indicates that the contact name cannot be blank.
+	5. Test case: `editcontact 0 p/91234567`\
+	   Expected: An invalid-index error is shown. No contact is edited.
+	6. Test case: `editcontact 8 p/91234567`\
+	   Expected: An error indicates that the contact index is outside the displayed list.
 
-2. Deleting a contact
+### Finding contacts
 
-    1. Prerequisites: Use the default sample data and run `list`.
+1. Searching contacts by name
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `findcontacts Alex`\
+	   Expected: Only Alex Yeoh is displayed in CONTACTS; the contact filter indicator shows that a filter is active.
+	3. Test case: `findcontacts alex`\
+	   Expected: Alex Yeoh is still found because search is case-insensitive.
+	4. Test case: `findcontacts Alex Bernice`\
+	   Expected: Both Alex Yeoh and Bernice Yu are displayed because at least one keyword must match.
+	5. Test case: `findcontacts Ale`\
+	   Expected: No contacts are displayed because partial words do not match `Alex`.
+	6. Test case: `findcontacts nonexistentkeyword`\
+	   Expected: The CONTACTS panel is empty, and a message indicates that zero contacts were found.
+	7. Test case: `listcontacts`\
+	   Expected: All seven sample contacts are displayed and the CONTACTS filter is cleared.
 
-    2. Test case: `deletecontact 2`
+2. Rejecting invalid search input
+	1. Test case: `findcontacts`\
+	   Expected: An error indicates that at least one search keyword is required.
 
-       Expected: Bernice Yu is deleted from PressMemo. Her story assignments and associated follow-ups are also removed.
+### Listing contacts and stories
 
-    3. Test case: `deletecontact 0`
-
-       Expected: No contact is deleted. An error message indicates that the index is invalid.
-
-### Finding and listing contacts
-
-1. Finding contacts by name
-
-    1. Prerequisites: Use the default sample data.
-
-    2. Test case: `findcontacts Alex`
-
-       Expected: Only contacts with names matching Alex are displayed in the CONTACTS panel.
-
-    3. Test case: `listcontacts`
-
-       Expected: All contacts are displayed again.
+1. Listing and resetting individual panels
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `findcontacts Alex`, followed by `listcontacts`\
+	   Expected: All seven contacts are displayed again; the STORIES panel is unchanged.
+	3. Test case: `findstories Graduate`, followed by `liststories`\
+	   Expected: Both sample stories are displayed again; the CONTACTS panel is unchanged.
 
 2. Listing contacts assigned to a story
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `listcontacts si/1`\
+	   Expected: Only Alex Yeoh and Bernice Yu are shown, because they are assigned to Cybersecurity Data Breach. STORIES remains unchanged.
+	3. Test case: `listcontacts si/2`\
+	   Expected: Only Bernice Yu and Charlotte Oliveiro are shown, because they are assigned to Fresh Graduate Unemployment.
+	4. Test case: `listcontacts`\
+	   Expected: All seven contacts are shown again.
 
-    1. Prerequisites: Use the default sample data and run `list`.
+3. Listing stories assigned to a contact
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `liststories ci/2`\
+	   Expected: Both sample stories are displayed, because Bernice Yu is assigned to both.
+	3. Test case: `liststories ci/4`\
+	   Expected: No stories are displayed, because David Li has no assigned stories.
+	4. Test case: `liststories`\
+	   Expected: Both sample stories are displayed again.
 
-    2. Test case: `listcontacts si/1`
+4. Using indices from filtered lists
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `findstories Graduate`, followed by `listcontacts si/1`\
+	   Expected: Only Bernice Yu and Charlotte Oliveiro are shown, because story index 1 now refers to the displayed Fresh Graduate Unemployment story.
+	3. Test case: `list`, followed by `findcontacts Bernice`, followed by `liststories ci/1`\
+	   Expected: Both stories are shown, because contact index 1 now refers to Bernice Yu in the filtered CONTACTS panel.
 
-       Expected: Only contacts assigned to the first displayed story are shown in the CONTACTS panel.
+5. Resetting all three lists
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `findcontacts Alex`, then `findstories Graduate`, then `findfollowups interview`, then `list`\
+	   Expected: CONTACTS shows all seven contacts, STORIES shows both stories, and FOLLOW-UPS shows both sample follow-ups. All three filters are cleared.
+	3. Test case: `listfollowups`\
+	   Expected: Both sample follow-ups remain displayed.
 
-    3. Test case: `list`
+6. Rejecting invalid list parameters
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `listcontacts si/0`\
+	   Expected: An invalid-index error is shown; the current list is not replaced with unrelated results.
+	3. Test case: `liststories ci/99`\
+	   Expected: An error indicates that the contact index is outside the displayed list.
+	4. Test case: `list extra`\
+	   Expected: An error indicates that `list` does not accept parameters.
 
-       Expected: All contacts, stories and follow-ups are displayed, clearing the active filters.
+### Adding stories
 
-### Adding, editing and deleting stories
+1. Adding valid stories
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `addstory Housing Investigation`\
+	   Expected: Housing Investigation is added without tags or assigned contacts.
+	3. Test case: `addstory Election Coverage t/urgent t/politics`\
+	   Expected: Election Coverage is added with both specified tags and no assigned contacts.
+	4. Test case: `addstory Research\/Investigation t/news\/analysis`\
+	   Expected: A story named `Research/Investigation` with the tag `news/analysis` is added.
 
-1. Adding and editing a story
+2. Rejecting invalid or duplicate stories
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `addstory Cybersecurity Data Breach`\
+	   Expected: An error indicates that a story with this name already exists.
+	3. Test case: `addstory t/urgent`\
+	   Expected: An error indicates that the required story name is missing.
+	4. Test case: `addstory Research/Investigation`\
+	   Expected: An error is shown for the unescaped forward slash.
 
-    1. Prerequisites: Use the default sample data and run `list`.
+3. Adding a story while filtering
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `findstories Cybersecurity`, followed by `addstory Housing Investigation`\
+	   Expected: The story is saved, but it does not appear in the filtered STORIES panel because its name does not match `Cybersecurity`.
+	3. Test case: `liststories`\
+	   Expected: All three stories, including Housing Investigation, are displayed.
 
-    2. Test case: `addstory Test Investigation`
+### Editing stories
 
-       Expected: A new story named Test Investigation is added to PressMemo.
+1. Editing story names and tags
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `editstory 1 n/Cybersecurity Investigation`\
+	   Expected: The first story is renamed and remains assigned to Alex Yeoh and Bernice Yu. The new story name is reflected in their contact cards.
+	3. Test case: `editstory 1 t/urgent t/technology`\
+	   Expected: The story's existing tags are replaced with `urgent` and `technology`; its assigned contacts remain unchanged.
+	4. Test case: `editstory 1 t/`\
+	   Expected: All tags are removed from that story without removing its assigned contacts.
 
-    3. Test case: `findstories Investigation`, followed by `editstory 1 n/Updated Investigation`
+2. Rejecting invalid story edits
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `editstory 1`\
+	   Expected: An error indicates that at least one field must be provided.
+	3. Test case: `editstory 1 n/Fresh Graduate Unemployment`\
+	   Expected: An error indicates that the name is already used by another story.
+	4. Test case: `editstory 1 n/`\
+	   Expected: An error indicates that the story name cannot be blank.
+	5. Test case: `editstory 0 n/Test`\
+	   Expected: An invalid-index error is shown.
 
-       Expected: The newly added story is renamed to Updated Investigation.
+### Finding stories
 
-2. Deleting a story
+1. Searching story names
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `findstories Cybersecurity`\
+	   Expected: Only Cybersecurity Data Breach is displayed.
+	3. Test case: `findstories cybersecurity`\
+	   Expected: The same story is displayed because search is case-insensitive.
+	4. Test case: `findstories Cybersecurity Graduate`\
+	   Expected: Both sample stories are displayed because the search matches either keyword.
+	5. Test case: `findstories Cyber`\
+	   Expected: No stories are displayed because partial words do not match.
+	6. Test case: `findstories nonexistentkeyword`\
+	   Expected: No stories are displayed and the result message reports zero matches.
+	7. Test case: `liststories`\
+	   Expected: Both sample stories are displayed again.
+	8. Test case: `findstories`\
+	   Expected: An error indicates that a keyword is required.
 
-    1. Prerequisites: Use the default sample data and run `list`.
+### Assigning and unassigning contacts and stories
 
-    2. Test case: `deletestory 2`
+1. Creating and checking assignments
+	1. Prerequisites: Use the default sample data and run `list`. Alex Yeoh is not assigned to Fresh Graduate Unemployment.
+	2. Test case: `assign ci/1 si/2`\
+	   Expected: Alex Yeoh is assigned to Fresh Graduate Unemployment. The assignment is visible in both Alex's contact card and the story's assigned contacts.
+	3. Test case: `assign ci/1 si/2`\
+	   Expected: An error indicates that this assignment already exists. No duplicate relationship is created.
 
-       Expected: The second displayed story is deleted. Its assignments are removed from associated contacts, but the contacts remain in PressMemo.
+2. Reversing prefix order
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `assign si/2 ci/1`\
+	   Expected: Alex Yeoh is successfully assigned to Fresh Graduate Unemployment, showing that prefix order is flexible.
 
-### Finding and listing stories
+3. Removing an existing assignment
+	1. Prerequisites: Use the default sample data and run `list`. Alex Yeoh is initially assigned to Cybersecurity Data Breach.
+	2. Test case: `unassign ci/1 si/1`\
+	   Expected: Alex Yeoh is no longer assigned to Cybersecurity Data Breach. Both the contact and the story still exist.
+	3. Test case: `unassign ci/1 si/1`\
+	   Expected: An error indicates that no such assignment exists; no other assignments change.
 
-1. Finding stories by name
+4. Assigning using filtered indices
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `findcontacts Charlotte`, then `findstories Cybersecurity`, then `assign ci/1 si/1`\
+	   Expected: Charlotte Oliveiro is assigned to Cybersecurity Data Breach, since the indices refer to the currently displayed contact and story. The assignment remains after running `list`.
 
-    1. Prerequisites: Use the default sample data.
+5. Rejecting invalid assignment commands
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `assign ci/0 si/1`\
+	   Expected: An invalid contact-index error is shown.
+	3. Test case: `assign ci/1 si/99`\
+	   Expected: An error indicates that the story index is outside the displayed list.
+	4. Test case: `assign ci/1`\
+	   Expected: An error indicates that the `si/` parameter is missing.
+	5. Test case: `unassign ci/1 si/2`\
+	   Expected: An error indicates that Alex Yeoh is not assigned to Fresh Graduate Unemployment. No records are deleted.
 
-    2. Test case: `findstories Cybersecurity`
+### Deleting contacts and stories
 
-       Expected: Only stories whose names match Cybersecurity are displayed.
+1. Deleting a contact with linked records
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `deletecontact 2`\
+	   Expected: Bernice Yu is deleted, her assignments are removed from both stories, and her *Meet for interview* follow-up is deleted. Both stories and the other six contacts remain.
 
-    3. Test case: `liststories`
+2. Deleting a contact from filtered results
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `findcontacts Bernice`, followed by `deletecontact 1`\
+	   Expected: Bernice Yu is deleted, even though her index was 2 in the unfiltered list. Her linked assignments and follow-up are also removed.
 
-       Expected: All stories are displayed again.
+3. Rejecting invalid contact deletions
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `deletecontact 0`\
+	   Expected: An invalid-index error is shown, and no contact is deleted.
+	3. Test case: `deletecontact 99`\
+	   Expected: An out-of-range error is shown, and no contact is deleted.
+	4. Test case: `deletecontact abc`\
+	   Expected: An error indicates that the index must be a positive integer.
 
-2. Listing stories assigned to a contact
+4. Deleting a story with linked contacts
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `deletestory 1`\
+	   Expected: Cybersecurity Data Breach is deleted, and the story is removed from Alex Yeoh's and Bernice Yu's assignments. All seven contacts and both follow-ups remain.
+	3. Test case: `deletestory 0`\
+	   Expected: An invalid-index error is shown, and the remaining story is unchanged.
 
-    1. Prerequisites: Use the default sample data and run `list`.
+### Adding and editing follow-ups
 
-    2. Test case: `liststories ci/1`
+1. Adding valid follow-ups
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `addfollowup Call editor ci/1`\
+	   Expected: A follow-up named Call editor is added for Alex Yeoh.
+	3. Test case: `addfollowup Review notes\/sources ci/1`\
+	   Expected: A follow-up named `Review notes/sources` is added for Alex Yeoh.
+	4. Test case: `addfollowup Call editor ci/2`\
+	   Expected: Another follow-up named Call editor is added for Bernice Yu, because different contacts may have follow-ups with the same description.
 
-       Expected: Only Cybersecurity Data Breach is displayed, as it is the story initially assigned to Alex Yeoh.
+2. Rejecting duplicate or invalid follow-ups
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `addfollowup Attend Press Conference ci/1`\
+	   Expected: An error indicates that Alex Yeoh already has a follow-up with exactly this description.
+	3. Test case: `addfollowup Call editor ci/0`\
+	   Expected: An invalid contact-index error is shown, and no follow-up is added.
+	4. Test case: `addfollowup Call editor`\
+	   Expected: An error indicates that `ci/` is required.
+	5. Test case: `addfollowup ci/1`\
+	   Expected: An error indicates that the description is missing.
 
-    3. Test case: `liststories`
+3. Editing a follow-up's description or contact
+	1. Prerequisites: Use the default sample data and run `listfollowups`.
+	2. Test case: `editfollowup 1 d/Call newsroom`\
+	   Expected: The first displayed follow-up's description changes to Call newsroom; its linked contact remains unchanged.
+	3. Test case: `editfollowup 1 ci/2`\
+	   Expected: The same follow-up is relinked to Bernice Yu and is no longer linked to Alex Yeoh.
+	4. Test case: `listfollowups ci/2`\
+	   Expected: The relinked Call newsroom follow-up is listed under Bernice Yu.
 
-       Expected: Both sample stories are displayed again.
+4. Rejecting invalid follow-up edits
+	1. Prerequisites: Use the default sample data and run `listfollowups`.
+	2. Test case: `editfollowup 1`\
+	   Expected: An error indicates that at least one field must be provided.
+	3. Test case: `editfollowup 1 d/Meet for interview ci/2`\
+	   Expected: An error indicates that Bernice Yu already has a follow-up with this description. The existing follow-ups remain unchanged.
+	4. Test case: `editfollowup 0 d/Test`\
+	   Expected: An invalid follow-up-index error is shown.
 
-### Assigning and unassigning contacts
-
-1. Assigning a contact to a story
-
-    1. Prerequisites: Use the default sample data and run `list`. Alex Yeoh is not initially assigned to Fresh Graduate Unemployment.
-
-    2. Test case: `assign ci/1 si/2`
-
-       Expected: Alex Yeoh is successfully assigned to Fresh Graduate Unemployment. The assignment is reflected in both records.
-
-    3. Test case: `assign ci/1 si/2`
-
-       Expected: An error message indicates that Alex Yeoh is already assigned to Fresh Graduate Unemployment. No duplicate assignment is created.
-
-2. Unassigning a contact from a story
-
-    1. Prerequisites: Use the default sample data and run `list`. Alex Yeoh is initially assigned to Cybersecurity Data Breach.
-
-    2. Test case: `unassign ci/1 si/1`
-
-       Expected: Alex Yeoh is unassigned from Cybersecurity Data Breach. Both records remain in PressMemo.
-
-    3. Test case: `unassign ci/1 si/1`
-
-       Expected: An error message indicates that the contact is not assigned to the story. No further changes are made.
-
-### Adding, editing and deleting follow-ups
-
-1. Adding and editing a follow-up
-
-    1. Prerequisites: Use the default sample data and run `list`.
-
-    2. Test case: `addfollowup Call editor ci/1`
-
-       Expected: A new follow-up named Call editor is added and linked to Alex Yeoh.
-
-    3. Test case: `findfollowups Call`, followed by `editfollowup 1 d/Call editor tomorrow`
-
-       Expected: The follow-up's description is updated while remaining linked to Alex Yeoh.
-
-2. Deleting a follow-up
-
-    1. Prerequisites: Use the default sample data and run `listfollowups`.
-
-    2. Test case: `deletefollowup 1`
-
-       Expected: The first displayed follow-up is deleted without deleting its associated contact.
-
-### Finding and listing follow-ups
+### Finding, listing and deleting follow-ups
 
 1. Finding follow-ups by description
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `findfollowups interview`\
+	   Expected: Only *Meet for interview* is displayed in FOLLOW-UPS.
+	3. Test case: `findfollowups INTERVIEW`\
+	   Expected: The same follow-up is displayed because search is case-insensitive.
+	4. Test case: `findfollowups conference interview`\
+	   Expected: Both sample follow-ups are displayed because either full keyword may match.
+	5. Test case: `findfollowups inter`\
+	   Expected: No follow-ups are displayed because partial words do not match.
+	6. Test case: `findfollowups nonexistentkeyword`\
+	   Expected: No follow-ups are displayed, and the result message reports zero matches.
+	7. Test case: `listfollowups`\
+	   Expected: Both sample follow-ups are displayed again.
+	8. Test case: `findfollowups`\
+	   Expected: An error indicates that at least one keyword is required.
 
-    1. Prerequisites: Use the default sample data.
+2. Listing follow-ups for a contact
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `listfollowups ci/1`\
+	   Expected: Only *Attend Press Conference*, linked to Alex Yeoh, is displayed.
+	3. Test case: `listfollowups ci/4`\
+	   Expected: The FOLLOW-UPS panel is empty because David Li has no follow-ups.
+	4. Test case: `listfollowups`\
+	   Expected: Both sample follow-ups are displayed again.
 
-    2. Test case: `findfollowups interview`
+3. Deleting a follow-up from a filtered list
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `findfollowups interview`, followed by `deletefollowup 1`\
+	   Expected: Bernice Yu's *Meet for interview* follow-up is deleted. Bernice Yu remains in CONTACTS and retains her story assignments.
+	3. Test case: `listfollowups`\
+	   Expected: Only *Attend Press Conference* remains.
 
-       Expected: Only follow-ups containing the word interview in their descriptions are displayed.
+4. Rejecting invalid follow-up deletion
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `deletefollowup 0`\
+	   Expected: An invalid-index error is shown. No follow-up is deleted.
+	3. Test case: `deletefollowup 99`\
+	   Expected: An out-of-range error is shown. No follow-up is deleted.
 
-    3. Test case: `listfollowups`
+### Filter preservation after edits and relationship changes
 
-       Expected: All follow-ups are displayed again.
+1. Editing an entry so that it no longer matches a search
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `findcontacts Alex`, followed by `editcontact 1 n/Alexander Yeoh`\
+	   Expected: The CONTACTS panel becomes empty because the edited name no longer matches the active `Alex` filter. The contact remains saved and appears after `listcontacts`.
+	3. Test case: `liststories`, then `findstories Cybersecurity`, then `editstory 1 n/Technology Investigation`\
+	   Expected: The STORIES panel becomes empty because the edited name no longer matches the `Cybersecurity` filter. The story remains saved and appears after `liststories`.
 
-2. Listing follow-ups associated with a contact
+2. Editing an entry so that it no longer matches a follow-up search
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `findfollowups interview`, followed by `editfollowup 1 d/Call newsroom`\
+	   Expected: The FOLLOW-UPS panel becomes empty because the edited description no longer matches `interview`. The follow-up appears after `listfollowups`.
 
-    1. Prerequisites: Use the default sample data and run `list`.
+3. Checking linked names after renaming
+	1. Prerequisites: Use the default sample data and run `list`.
+	2. Test case: `liststories ci/1`, followed by `editcontact 1 n/Alexander Yeoh`\
+	   Expected: The visible Cybersecurity Data Breach assignment remains associated with Alexander Yeoh, and the displayed relationship reflects the updated name.
+	3. Test case: `listfollowups ci/1`\
+	   Expected: Alex's existing follow-up remains linked to the renamed contact and displays the updated name.
 
-    2. Test case: `listfollowups ci/1`
+### Managing shortcuts
 
-       Expected: Only follow-ups associated with Alex Yeoh are displayed in the FOLLOW-UPS panel.
+1. Creating, using and removing a shortcut
+	1. Prerequisites: Launch PressMemo with no custom shortcuts defined.
+	2. Test case: `shortcut s/ls c/list`\
+	   Expected: The alias `ls` is assigned to the `list` command.
+	3. Test case: `ls`\
+	   Expected: The `list` command is executed, resetting the CONTACTS, STORIES and FOLLOW-UPS filters.
+	4. Test case: `shortcut`\
+	   Expected: The configured `ls -> list` mapping is displayed.
+	5. Test case: `unshortcut ls`\
+	   Expected: The shortcut is removed.
+	6. Test case: `ls`\
+	   Expected: An unknown-command error is shown because the alias no longer exists.
 
-### Other commands
+2. Rejecting invalid shortcuts
+	1. Prerequisites: Launch PressMemo with no custom shortcuts defined.
+	2. Test case: `shortcut s/list c/addcontact`\
+	   Expected: An error indicates that a built-in command word cannot be used as a shortcut.
+	3. Test case: `shortcut s/ls c/notacommand`\
+	   Expected: An error indicates that the target is not a supported command.
+	4. Test case: `unshortcut missingalias`\
+	   Expected: An error indicates that the shortcut is not defined.
 
-1. Viewing help
+### Clearing data
 
-    1. Test case: `help`
+1. Clearing all entries, including filtered-out entries
+	1. Prerequisites: Use a separate folder with the default sample data.
+	2. Test case: `findcontacts Alex`, followed by `clear`\
+	   Expected: All contacts, stories, assignments and follow-ups are permanently removed, including records that were hidden by the contact filter.
+	3. Test case: `list`, followed by `listfollowups`\
+	   Expected: All three panels remain empty; no sample records are restored during the current run.
 
-       Expected: The help panel is displayed.
-
-    2. Test case: `help`
-
-       Expected: The help panel closes.
-
-2. Creating and removing shortcuts
-
-    1. Test case: `shortcut s/ls c/list`
-
-       Expected: A new shortcut `ls` is created for the `list` command.
-
-    2. Test case: `ls`
-
-       Expected: The `list` command is executed successfully.
-
-    3. Test case: `shortcut`
-
-       Expected: The list of configured shortcuts is displayed.
-
-    4. Test case: `unshortcut ls`
-
-       Expected: The shortcut `ls` is removed.
-
-3. Clearing all records
-
-    1. Prerequisites: Use a separate test folder containing sample data.
-
-    2. Test case: `clear`
-
-       Expected: All contacts, stories and follow-ups are deleted from PressMemo.
-
-4. Exiting PressMemo
-
-    1. Test case: `exit`
-
-       Expected: PressMemo closes successfully.
+2. Rejecting extraneous parameters
+	1. Prerequisites: Use the default sample data.
+	2. Test case: `clear extra`\
+	   Expected: An error indicates that `clear` does not accept parameters. None of the saved records are removed.
 
 ### Saving data
 
-1. Saving changes between launches
+1. Saving records between launches
+	1. Prerequisites: Use a writable test folder containing the default sample data.
+	2. Test case: `addstory Persistence Test`\
+	   Expected: Persistence Test is added, and the application saves its data to `data/addressbook.json`.
+	3. Test case: Close PressMemo and relaunch the JAR file from the same folder.\
+	   Expected: Persistence Test remains in the STORIES panel along with the two original sample stories.
 
-    1. Prerequisites: Use the default sample data.
+2. Handling a missing data file
+	1. Prerequisites: In a test folder, execute `addstory Temporary Test` to ensure `data/addressbook.json` exists, then close PressMemo.
+	2. Test case: Rename `data/addressbook.json` to `data/addressbook-backup.json`, then relaunch PressMemo.\
+	   Expected: PressMemo starts with the default sample records because the data file is missing. The temporary story is not shown.
 
-    2. Test case: `addstory Persistence Test`
-
-       Expected: A new story named Persistence Test is added.
-
-    3. Close PressMemo and relaunch the JAR file from the same folder.
-
-       Expected: Persistence Test remains in the STORIES panel, confirming that the changes were saved.
-
-2. Handling missing or corrupted data files
-
-    1. Prerequisites: Close PressMemo and use a separate test folder.
-
-    2. Rename `data/addressbook.json` to `data/addressbook-backup.json` and relaunch PressMemo.
-
-       Expected: PressMemo starts with the default sample data because the data file is missing.
-
-    3. Close PressMemo. Replace the contents of the newly created `data/addressbook.json` with invalid JSON, such as `not valid JSON`, then relaunch PressMemo.
-
-       Expected: PressMemo reports that the data file could not be loaded and starts with empty lists instead of crashing.
-
-    4. Close PressMemo and restore the original backup before using the application again.
+3. Handling a corrupted data file
+	1. Prerequisites: Use a separate test folder, ensure `data/addressbook.json` exists, close PressMemo, and save a backup of the file.
+	2. Test case: Replace the contents of `data/addressbook.json` with `not valid JSON`, then relaunch PressMemo.\
+	   Expected: PressMemo reports that the data file could not be loaded and starts with empty contact, story and follow-up lists without crashing.
+	3. Test case: Close PressMemo and restore the backed-up `data/addressbook.json` before making any further changes.\
+	   Expected: On the next launch, the original saved records are available again.
