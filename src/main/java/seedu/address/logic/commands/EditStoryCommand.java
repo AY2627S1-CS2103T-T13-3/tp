@@ -32,7 +32,7 @@ public class EditStoryCommand extends AddressBookMutatingCommand {
             + "by the index number used in the displayed story list. "
             + "Existing values will be overwritten by the input values.\n"
             + "Parameters: INDEX (must be a positive integer) "
-            + "[" + PREFIX_NAME + "STORYNAME] "
+            + "[" + PREFIX_NAME + "NAME] "
             + "[" + PREFIX_TAG + "TAG]...\n"
             + "Example: " + COMMAND_WORD + " 1 "
             + PREFIX_NAME + "Investigation "

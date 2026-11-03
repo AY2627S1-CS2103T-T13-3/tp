@@ -114,7 +114,7 @@ public class AddContactCommandParserTest {
     public void parse_compulsoryFieldMissing_failure() {
         // Missing unprefixed contact name.
         assertParseFailure(parser, PHONE_DESC_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB,
-                Messages.getErrorMessageForMissingRequiredInputs("contact name"));
+                Messages.getErrorMessageForMissingRequiredInputs("NAME"));
 
         // Missing phone prefix.
         assertParseFailure(parser, NAME_BOB + EMAIL_DESC_BOB + ADDRESS_DESC_BOB,
@@ -129,7 +129,7 @@ public class AddContactCommandParserTest {
                 Messages.getErrorMessageForMissingRequiredInputs(PREFIX_ADDRESS.toString()));
 
         // All required inputs missing.
-        assertParseFailure(parser, "", Messages.getErrorMessageForMissingRequiredInputs("contact name",
+        assertParseFailure(parser, "", Messages.getErrorMessageForMissingRequiredInputs("NAME",
                 PREFIX_PHONE.toString(), PREFIX_EMAIL.toString(), PREFIX_ADDRESS.toString()));
     }
 
@@ -254,7 +254,7 @@ public class AddContactCommandParserTest {
 
         // Name edge cases: missing name and unescaped forward slash.
         assertParseFailure(parser, "   " + validPhone + validEmail + validAddress,
-                Messages.getErrorMessageForMissingRequiredInputs("contact name"));
+                Messages.getErrorMessageForMissingRequiredInputs("NAME"));
         assertParseFailure(parser, " Al/ice" + validPhone + validEmail + validAddress,
                 Messages.getErrorMessageForInvalidUserString("Al/ice"));
 

@@ -35,7 +35,7 @@ public class AddContactCommandParser implements Parser<AddContactCommand> {
 
         List<String> missingInputs = new ArrayList<>();
         if (!argMultimap.hasPreamble()) {
-            missingInputs.add("contact name");
+            missingInputs.add("NAME");
         }
         argMultimap.getMissingPrefixes(PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS).stream()
                 .map(Prefix::toString)
