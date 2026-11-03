@@ -868,7 +868,7 @@ This command does not accept parameters. Any extraneous characters will result i
 |:-----------------------------------------------------------------------------------|:------------------------------------------------------|:-------------------------------------------------------------|
 | `list is a built-in command word and cannot be used as a shortcut.`                | The shortcut matches a built-in command word.         | Choose a shortcut alias that is not a built-in command word. |
 | `The shortcut "a b" cannot contain whitespace or forward slashes.`                 | The shortcut contains spaces or forward slashes.      | Choose a shortcut alias that does not contain spaces or `/`. |
-| `shortcut/unshortcut/notCommand is not a command that can be assigned a shortcut.` | The command word is not recognized or not assignable. | Provide a valid assignable PressMemo command word.           |
+| `shortcut/unshortcut/notCommand is not a command that can be assigned a shortcut.` | The command word is not recognized or not assignable. | Provide any built-in command word except `shortcut` and `unshortcut`.          |
 
 ### Removing a command shortcut: `unshortcut`
 
