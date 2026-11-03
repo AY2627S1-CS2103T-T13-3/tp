@@ -26,7 +26,7 @@ This guide describes the features implemented for PressMemo v1.6.
    
    <img src="images/QuickstartUi.png" alt="Finding contacts" width="726" height="593">
 
-5. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to toggle the help panel.<br>
+5. Type a command in the command box and press Enter to execute it. For example, type `help` and press Enter to toggle the help panel.<br>
    Some example commands you can try:
 
     * `list` : Displays all contacts, stories and follow-ups.
@@ -79,7 +79,7 @@ This guide describes the features implemented for PressMemo v1.6.
 
 * **Objective:** Toggles the help panel which lists all default commands and their formats. 
 
-<img src="images/UiWithHelpPanel.png" alt="Finding contacts" width="726" height="593">
+<img src="images/HelpPanel.png" alt="Display Help Panel" width="726" height="593">
 
 #### Usage / Command Format
 `help`
@@ -97,7 +97,8 @@ This guide describes the features implemented for PressMemo v1.6.
 
 * **Objective:** Adds a contact to PressMemo.
 
-![Add Contact Example](images/addcontact-example.png)
+<img src="images/addcontact-example.png" alt="Add Contact Command" width="726" height="593">
+
 #### Usage / Command Format
 `addcontact NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]…​`
 
