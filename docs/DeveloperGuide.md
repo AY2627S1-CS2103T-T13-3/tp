@@ -285,7 +285,9 @@ The following sequence diagram illustrates the interactions within the `Logic` c
 
 ### Implementation details
 
-<!-- Note: FindStorySequenceDiagram.puml is located in docs/diagrams/FindStorySequenceDiagram.puml -->
+The sequence diagram below illustrates the interactions within the Model component during the execution of `findstories keyword`:
+
+![[images/FindStoriesSequenceDiagram.png]]
 
 #### Execution flow
 1. The user enters the `findstories` command as an input string.
