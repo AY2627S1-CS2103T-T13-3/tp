@@ -195,7 +195,7 @@ This command does not accept parameters. Any extraneous characters will result i
 | `si/STORY_INDEX` | `story-index` | (Optional) Story to filter contacts by, from the displayed **STORIES** panel        | `1`      |
 
 > **Tip / Note:**
-> * `listcontacts` without parameters displays all contacts and clears any active contact filter (including `findcontact`).
+> * `listcontacts` without parameters displays all contacts and clears any active contact filter (including `findcontacts`).
 > * `listcontacts si/STORY_INDEX` displays only contacts assigned to that story in the **currently displayed story list**.
 > * The **STORIES** panel remains unchanged. If the selected story has no assigned contacts, the contact list becomes empty.
 > * The contact panel header filter badge updates dynamically (e.g. `[All]` or `[Filtered by story: "..."]`).
@@ -314,7 +314,7 @@ This command does not accept parameters. Any extraneous characters will result i
 <img src="images/findcontacts-example.png" alt="Finding contacts" width="726" height="593">
 
 #### Usage / Command Format
-`findcontact KEYWORD [MORE_KEYWORDS]`
+`findcontacts KEYWORD [MORE_KEYWORDS]...`
 
 #### Parameters & Constraints
 | Parameter       | Type   | Description                                        |
@@ -337,11 +337,11 @@ This command does not accept parameters. Any extraneous characters will result i
   * **Expected Outcome:** Displays all contacts with `John` as a word in their name. A message in the console indicates the number of matches found. Matches `john` and `John Doe`.
 
 * **Example 2:** Multiple keywords search
-  * **Input / Action:** `findstories alex david`
+  * **Input / Action:** `findcontacts alex david`
   * **Expected Outcome:** Displays all contacts whose names contain either `alex` or `david`. A message in the console indicates the number of matches found. Matches `Alex Yeoh` and `David Li`.
 
 * **Example 3:** Search with no matches
-  * **Input / Action:** `findstories nameDoesNotExist` when there is no contact whose name contains `nameDoesNotExist`
+  * **Input / Action:** `findcontacts nameDoesNotExist` when there is no contact whose name contains `nameDoesNotExist`
   * **Expected Outcome:** The contact panel displays no contacts. A message in the console indicates that no matches were found.
 
 #### Common Errors & Troubleshooting
@@ -382,7 +382,7 @@ This command does not accept parameters. Any extraneous characters will result i
     - **Expected Outcome:** The second displayed contact is deleted from PressMemo. Their associated story assignments and follow-ups are also removed, and a success message displays the deleted contact's details.
 
 - **Example 2: Deleting a contact from a filtered list**
-    - **Input / Action:** `findcontact Bernice` followed by `deletecontact 1`
+    - **Input / Action:** `findcontacts Bernice` followed by `deletecontact 1`
     - **Expected Outcome:** The first displayed contact in the filtered results is deleted from PressMemo, along with their associated story assignments and follow-ups.
 
 ### Adding a story: `addstory`
@@ -983,7 +983,7 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 | **Edit**                          | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`                                          |
 | **Edit follow-up**                | `editfollowup INDEX [d/DESCRIPTION] [ci/CONTACT_INDEX]`<br> e.g., `editfollowup 1 d/Call tomorrow ci/2`                                                                             |
 | **Edit story**                    | `editstory INDEX [n/STORY_NAME] [t/TAG]…​`<br> e.g., `editstory 1 n/Election investigation t/urgent`                                                                            |
-| **Find**                          | `findcontact KEYWORD [MORE_KEYWORDS]`<br> e.g., `findcontact James Jake`                                                                                                            |
+| **Find contacts**                 | `findcontacts KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findcontacts James Jake`                                                                                                       |
 | **Find follow-ups**               | `findfollowups KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findfollowups interview meeting`                                                                                              |
 | **Find stories**                  | `findstories STORY_NAME [MORE_KEYWORDS]...`<br> e.g., `findstories Housing Investigation`                                                                                           |
 | **List all contacts and stories** | `list` (clears both filters)                                                                                                                                                        |
