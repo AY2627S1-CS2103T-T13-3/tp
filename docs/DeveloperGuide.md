@@ -96,7 +96,7 @@ Panel | Card and layout | Displayed information
 ------|-----------------|----------------------
 `ContactListPanel` | `ContactCard`, `ContactListCard.fxml` | Displayed index, name, contact details, tags, and assigned story names. Displays `Stories: (none)` when unassigned.
 `StoryListPanel` | `StoryCard`, `StoryListCard.fxml` | Displayed index, story name, tags, assigned contact count, and contact names. Displays `Contacts: (none)` when unassigned.
-`FollowupListPanel` | `FollowupCard`, `FollowupListCard.fxml` | Displayed index, follow-up description, and contact name. Followups for the same contact are shown together by default.
+`FollowupListPanel` | `FollowupCard`, `FollowupListCard.fxml` | Displayed index, follow-up description, and contact name. Follow-ups for the same contact are shown together by default.
 `HelpPanel` | `HelpPanel.fxml` | Available built-in commands with syntax and descriptions. Can be toggled open/closed via `help`.
 
 The `UI` component,
@@ -119,13 +119,10 @@ The sequence diagram below illustrates the interactions within the `Logic` compo
 
 ![Interactions Inside the Logic Component for the `deletecontact 1` Command](images/DeleteSequenceDiagram.png)
 
-<div markdown="span" class="alert alert-info">:information_source: **Note:** The lifeline for `DeleteCommandParser` should end at the destroy marker (X), but due to a limitation of PlantUML, it continues to the end of the diagram.
-</div>
-
 How the `Logic` component works:
 
-1. When `Logic` is called upon to execute a command, the command is passed to an `AddressBookParser` object, which in turn creates a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
-1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which is executed by the `LogicManager`.
+1. When `Logic` is called upon to execute a command, the command is passed to an `AddressBookParser` object, which retrieves the matching `CommandInfo` from `CommandWords` and calls `CommandInfo#parse`. This delegates to the parser already created by `CommandWords` (e.g., `DeleteContactCommandParser`).
+1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteContactCommand`) which is executed by the `LogicManager`.
 1. The command can communicate with the `Model` when it is executed (e.g. to delete a contact).<br>
    Note that although this is shown as a single step in the diagram above for simplicity, the code can require several interactions between the command object and the `Model` to complete the operation.
 1. The result of the command execution is encapsulated as a `CommandResult` object which is returned from `Logic`.
@@ -135,8 +132,8 @@ Here are the other classes in `Logic` (omitted from the class diagram above) tha
 <img src="images/ParserClasses.png" width="600"/>
 
 How the parsing works:
-* When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name, e.g., `AddCommandParser`). The parser uses the other classes shown above to parse the user command and create an `XYZCommand` object (e.g., `AddCommand`). The `AddressBookParser` returns that object as a `Command` object.
-* All `XYZCommandParser` classes, such as `AddCommandParser` and `DeleteCommandParser`, implement the `Parser` interface so they can be treated similarly where appropriate, for example during testing.
+* `CommandWords` creates the command parsers when its registry is initialized and stores them in `CommandInfo` objects. When called upon to parse a user command, `AddressBookParser` retrieves the `CommandInfo` for the resolved command word and calls its `parse` method. `CommandInfo` delegates to its existing `XYZCommandParser` (`XYZ` is a placeholder, e.g., `AddContactCommandParser`). The parser uses the other classes shown above to parse the arguments and create an `XYZCommand` object (e.g., `AddContactCommand`). `AddressBookParser` returns that object as a `Command` object.
+* All `XYZCommandParser` classes, such as `AddContactCommandParser` and `DeleteContactCommandParser`, implement the `Parser` interface so they can be treated similarly where appropriate, for example during testing.
 
 ### Model component
 **API** : [`Model.java`](https://github.com/AY2627S1-CS2103T-T13-3/tp/tree/master/src/main/java/seedu/address/model/Model.java)
@@ -192,13 +189,13 @@ This section describes some noteworthy details on how certain features are imple
 - **Description:**
     - Creates an assignment between the specified contact and story.
 - **Preconditions:**
-    - Both indices refer to existing entries in the Active Contact List and Active Story List, respectively.
+    - Both indices refer to existing entries in the ActiveContactList and ActiveStoryList, respectively.
     - The specified contact is not already assigned to the specified story.
 - **Postconditions:**
     - The specified story is added to the contact's assigned stories.
     - The specified contact is added to the story's assigned contacts.
     - Other assignments remain unchanged.
-    - The Active Contact Filter and Active Story Filter are not reset.
+    - The ActiveContactFilter and ActiveStoryFilter are not reset.
 - **Exceptions:**
     - If the command arguments are invalid: displays an error message for `ParseException`.
     - If either index is outside the corresponding Active List: displays an error message for `CommandException`.
@@ -218,10 +215,10 @@ The following sequence diagram illustrates the interactions within the Model com
 
 1. The user enters the `assign` command as an input string.
 2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
-3. `AddressBookParser` creates an `AssignCommandParser` to parse the command arguments.
+3. `AddressBookParser` retrieves the `CommandInfo` from `CommandWords` and calls its `parse` method, which delegates to the existing `AssignCommandParser`.
 4. `AssignCommandParser` uses `AssignmentParserUtil` to parse the contact and story indices and creates an `AssignCommand` object.
 5. `LogicManager` executes the `AssignCommand` object.
-6. `AssignCommand` retrieves the specified contact and story from the Active Contact List and Active Story List and checks that both indices are valid.
+6. `AssignCommand` retrieves the specified contact and story from the ActiveContactList and ActiveStoryList and checks that both indices are valid.
 7. `AssignCommand` checks whether the contact is already assigned to the story. If so, it throws a `CommandException`.
 8. Otherwise, `AssignCommand` calls `Model.assignStory(contact, story)`.
 9. `ModelManager` delegates the operation to `AddressBook.assignStory()`.
@@ -270,13 +267,13 @@ The following sequence diagram illustrates the interactions within the `Logic` c
 #### Execution flow
 1. The user enters the `addstory` command as an input string.
 2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
-3. `AddressBookParser` creates an `AddStoryCommandParser` to parse the command arguments.
+3. `AddressBookParser` retrieves the `CommandInfo` from `CommandWords` and calls its `parse` method, which delegates to the existing `AddStoryCommandParser`.
 4. `AddStoryCommandParser` parses the story name and tags and creates an `AddStoryCommand` object.
 5. `LogicManager` executes the `AddStoryCommand` object.
 6. `AddStoryCommand` verifies that the specified story name is not the name of any existing story in ArchiveStoryList.
 7. `AddStoryCommand` requests `Model` to add a new `Story` object with no assigned contacts and with the specified name and tags to PressMemo.
 8. `Model` adds the `Story` to ActiveStoryList if it matches the ActiveStoryFilter.
-9. `UI` updates the story panel accordingly. 
+9. `UI` updates the STORIES panel accordingly.
 
 ## `findstories`
 
@@ -291,7 +288,7 @@ The following sequence diagram illustrates the interactions within the `Logic` c
 * **Preconditions:** 
 	* At least one keyword is provided in the command arguments.
 * **Postconditions:** 
-	* ActiveStoryFilter is updated to match exactly the stories from  whose names match at least one keyword in a case-insensitive, full-word comparison.
+	* ActiveStoryFilter is updated to match exactly the stories from ArchiveStoryList whose names match at least one keyword in a case-insensitive, full-word comparison.
 	* ActiveStoryList is refreshed for the updated ActiveStoryFilter.
 	* ArchiveStoryList is unchanged.
 * **Exceptions:** 
@@ -301,18 +298,18 @@ The following sequence diagram illustrates the interactions within the `Logic` c
 
 The sequence diagram below illustrates the interactions within the Model component during the execution of `findstories keyword`:
 
-![[images/FindStoriesSequenceDiagram.png]]
+![Find stories sequence diagram](images/FindStoriesSequenceDiagram.png)
 
 #### Execution flow
 1. The user enters the `findstories` command as an input string.
 2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
-3. `AddressBookParser` creates a `FindStoryCommandParser` to parse the command arguments.
-4. `FindStoryCommandParser` parses the arguments into keywords and creates a `FindStoryCommand` object.
-5. `LogicManager` executes the `FindStoryCommand` object.
-6. `FindStoryCommand` requests `Model` to update the ActiveStoryFilter to match exactly the stories from whose names match at least one keyword in a case-insensitive, full-word comparison.
+3. `AddressBookParser` retrieves the `CommandInfo` from `CommandWords` and calls its `parse` method, which delegates to the existing `FindStoryCommandParser`.
+4. `FindStoryCommandParser` parses the arguments into keywords and creates a `FindStoriesCommand` object.
+5. `LogicManager` executes the `FindStoriesCommand` object.
+6. `FindStoriesCommand` requests `Model` to update the ActiveStoryFilter to match exactly the stories whose names match at least one keyword in a case-insensitive, full-word comparison.
 7. `Model` updates the `ActiveStoryList`.
-8. `FindStoryCommand` returns a `CommandResult` containing the number of matching stories.
-9. `UI` updates the story panel accordingly. 
+8. `FindStoriesCommand` returns a `CommandResult` containing the number of matching stories.
+9. `UI` updates the STORIES panel accordingly.
 
 ### Design Considerations
 
@@ -332,7 +329,7 @@ The sequence diagram below illustrates the interactions within the Model compone
 
 ## `listfollowups`
 
-- **Objective:** Lists all follow-ups in PressMemo, or filters the follow-ups assigned to a specified contact in the Active Contact List.
+- **Objective:** Lists all follow-ups in PressMemo, or filters the follow-ups assigned to a specified contact in the ActiveContactList.
 
 ### API
 
@@ -353,14 +350,14 @@ The sequence diagram below illustrates the interactions within the Model compone
 #### Execution flow
 
 1. The user enters the `listfollowups` command with an optional `ci/CONTACT_INDEX` as an input string.
-2. `LogicManager` passes the input string to `AddressBookParser`, which delegates argument parsing to `ListFollowupsCommandParser`.
+2. `LogicManager` passes the input string to `AddressBookParser`, which retrieves the `CommandInfo` from `CommandWords` and calls its `parse` method to delegate to the existing `ListFollowupsCommandParser`.
 3. `ListFollowupsCommandParser` parses the optional `CONTACT_INDEX` and returns a `ListFollowupsCommand`.
 4. `LogicManager` executes the `ListFollowupsCommand` object.
 5. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the contact from the ActiveContactList and validates the index
 	* If `CONTACT_INDEX` is specified, it retrieves the ActiveContactList, validates the index, obtains the corresponding contact, and requests `Model` to show follow-ups linked to that contact.
 	* Otherwise, it requests `Model` to show all follow-ups.
 6. `Model` refreshes the ActiveFollowupList for the updated ActiveFollowupFilter.
-7. `UI` updates the follow-up panel accordingly.
+7. `UI` updates the FOLLOW-UPS panel accordingly.
 
 The activity diagram below shows the branching logic depending on whether `CONTACT_INDEX` is specified:
 ![ListFollowupActivityDiagram](images/ListFollowupsActivityDiagram.png)
@@ -384,7 +381,7 @@ The activity diagram below shows the branching logic depending on whether `CONTA
 * **Postconditions:** 
 	* The target contact in ArchiveContactList is updated with the specified field values.
 	* If the contact name changed, all assigned `Story` records in ArchiveStoryList and all linked `Followup` records in ArchiveFollowupList are updated with the new name.
-	* ActiveContactList filter is preserved so the contact remains displayed if it satisfies the active filter.
+	* ActiveContactFilter is preserved so the contact remains displayed if it satisfies the active filter.
 * **Exceptions:** 
 	* if no field prefixes are provided: displays error message for ParseException (`At least one field to edit must be provided.`)
 	* if `INDEX` is not a positive integer: displays error message for ParseException (`Index must be a positive integer.`)
@@ -402,7 +399,7 @@ The sequence diagram below illustrates the interactions within the Logic and Mod
 
 1. The user enters `editcontact 1 n/Betsy` into the command bar.
 2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
-3. `AddressBookParser` creates an `EditContactCommandParser` to parse the arguments.
+3. `AddressBookParser` retrieves the `CommandInfo` from `CommandWords` and calls its `parse` method, which delegates to the existing `EditContactCommandParser`.
 4. `EditContactCommandParser` tokenizes prefixes, parses index `1`, creates an `EditContactDescriptor` with the new name, and returns an `EditContactCommand` object.
 5. `LogicManager` executes the `EditContactCommand` with `model`.
 6. `EditContactCommand` retrieves the displayed contact list from `Model#getFilteredContactList()` and obtains the contact at index `1`.
@@ -424,7 +421,7 @@ The sequence diagram below illustrates the interactions within the Logic and Mod
 
 ## `listcontacts`
 
-- **Objective:** Lists all contacts in PressMemo, or filters contacts assigned to a specified story in the Active Story List.
+- **Objective:** Lists all contacts in PressMemo, or filters contacts assigned to a specified story in the ActiveStoryList.
 
 <img src="images/listcontacts-example.png" width="726" />
 
@@ -440,7 +437,7 @@ The sequence diagram below illustrates the interactions within the Logic and Mod
 	* If no `si/STORY_INDEX` is provided, ActiveContactFilter matches all contacts.
 	* If `STORY_INDEX` is provided, ActiveContactFilter matches only contacts assigned to the story identified by `STORY_INDEX`.
 	* ActiveContactList is refreshed for the updated ActiveContactFilter.
-	* The contact panel header filter badge updates dynamically (e.g. `[All]` vs `[Filtered by story: "..."]`).
+	* The CONTACTS panel header filter badge updates dynamically (e.g. `[All]` vs `[Filtered by story: "..."]`).
 	* ArchiveContactList, ActiveStoryList, and ActiveFollowupList are unchanged.
 * **Exceptions:** 
 	* if `STORY_INDEX` is not a positive integer: displays error message for ParseException (`Index must be a positive integer.`)
@@ -453,14 +450,14 @@ The sequence diagram below illustrates the interactions within the Logic and Mod
 
 1. The user enters the `listcontacts` command as an input string.
 2. `LogicManager` receives the input string and passes it to `AddressBookParser`.
-3. `AddressBookParser` creates a `ListContactsCommandParser` to parse the command arguments.
-4. `ListContactsCommandParser` parses the optional `si/` prefix. If present, it extracts the story index and creates a `ListContactsCommand(Index)` object; otherwise, it creates `ListContactsCommand()`.
+3. `AddressBookParser` retrieves the `CommandInfo` from `CommandWords` and calls its `parse` method, which delegates to the existing `ListContactsCommandParser`.
+4. `ListContactsCommandParser` parses the optional `si/` prefix. If present, it extracts the story-index and creates a `ListContactsCommand(Index)` object; otherwise, it creates `ListContactsCommand()`.
 5. `LogicManager` executes the `ListContactsCommand` object.
-6. If a story index is specified:
+6. If a story-index is specified:
    a. `ListContactsCommand` retrieves the target story from `Model#getFilteredStoryList()`.
    b. It creates a `ContactAssignedToStoryPredicate` initialized with the target story.
    c. It calls `Model#updateFilteredContactList(predicate)`.
-7. If no story index is specified:
+7. If no story-index is specified:
    a. `ListContactsCommand` calls `Model#updateFilteredContactList(PREDICATE_SHOW_ALL_CONTACTS)`.
 8. `Model` updates `contactFilterStatusProperty`, causing the UI badge in `MainWindow` to reactively update its label and CSS styling.
 9. `UI` displays the updated contact list and returns the command feedback in the message panel.
@@ -508,7 +505,7 @@ The sequence diagram below illustrates the interactions when the user executes t
 
 1. The user enters `shortcut` into the command bar without arguments.
 2. `LogicManager` passes the input string to `AddressBookParser`.
-3. `AddressBookParser` invokes `ShortcutCommandParser#parse("")`.
+3. `AddressBookParser` retrieves the `CommandInfo` from `CommandWords` and calls `CommandInfo#parse("")`, which delegates to the existing `ShortcutCommandParser`.
 4. `ShortcutCommandParser` detects no arguments (or only whitespace) and returns `new ShortcutCommand()`.
 5. `LogicManager` executes the `ShortcutCommand`.
 6. `ShortcutCommand` queries `Model#getShortcuts()`, which returns the current shortcut mappings stored in `UserPrefs`.
@@ -520,7 +517,7 @@ The sequence diagram below illustrates the interactions when the user executes t
 
 1. The user enters `shortcut s/SHORTCUT c/COMMAND` into the command bar.
 2. `LogicManager` passes the input string to `AddressBookParser`.
-3. `AddressBookParser` invokes `ShortcutCommandParser#parse("s/SHORTCUT c/COMMAND")`
+3. `AddressBookParser` retrieves the `CommandInfo` from `CommandWords` and calls `CommandInfo#parse("s/SHORTCUT c/COMMAND")`, which delegates to the existing `ShortcutCommandParser`.
 4. `ShortcutCommandParser` detects argument `s/SHORTCUT c/COMMAND` and returns `new ShortcutCommand(SHORTCUT, COMMAND)`.
 5. `LogicManager` executes the `ShortcutCommand`.
 6. `ShortcutCommand` calls `Model#assignShortcut(SHORTCUT, COMMAND)` which assigns the `SHORTCUT` for the `COMMAND`.
@@ -566,7 +563,7 @@ The sequence diagram below illustrates the interactions when the user executes t
 * PressMemo serves as a contact command centre:
   * Storage of contact contextual information (E.g. Why do I have the contact?, What story are they related to?)
   * Storage of entity relations: Links between a story and contacts are stored (Role of contact)
-  * Task List with Contact: PressMemo stores crucial followup information.
+  * Task List with Contact: PressMemo stores crucial follow-up information.
 
 
 ### User stories
@@ -627,7 +624,7 @@ Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS, the contact is added to the ArchiveContactList
+- At the end of MSS, the contact is saved in PressMemo
 
 ##### MSS:
 
@@ -654,29 +651,28 @@ Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS, the ActiveContactList is updated to show either all contacts from ArchiveContactList (if no story index is specified) or only the contacts assigned to the specified story in the ActiveStoryList.
-- The ActiveStoryList and ActiveFollowupList remain unchanged.
+- At the end of MSS, the CONTACTS panel shows either all saved contacts (if no story-index is specified) or only the contacts assigned to the specified story.
+- The STORIES and FOLLOW-UPS panels remain unchanged.
 
 ##### MSS:
 
-1. User requests to list contacts, optionally specifying a story index (`si/STORY_INDEX`).
-2. If a story index was specified, System updates ActiveContactFilter to match only contacts assigned to that story. Otherwise, System updates ActiveContactFilter to match all contacts.
-3. System refreshes ActiveContactList and updates the contact panel.
-4. System informs the user in the console that contacts have been listed.
+1. User requests to list contacts, optionally specifying a story-index.
+2. System displays all contacts or only those assigned to the specified story in the CONTACTS panel.
+3. System informs the user in the console that contacts have been listed.
 
 Use case ends.
 
 ##### Extensions:
 
-1a. User specifies an invalid story index (not a positive integer or larger than the number of stories displayed).
+1a. User specifies an invalid story-index (not a positive integer or larger than the number of stories displayed).
 
 - 1a1. System informs the user in the console of the invalid index.
 - Use case ends.
 
 2a. There are no contacts assigned to the specified story.
 
-- 2a1. System updates the contact panel to display an empty list.
-- 2a2. System informs the user in the console that 0 contacts are listed (`0 contact(s) listed!`).
+- 2a1. System updates the CONTACTS panel to display an empty list.
+- 2a2. System informs the user in the console that 0 contacts are listed.
 - Use case ends.
 
 #### Use Case: UC3 - List stories (all or assigned to a contact)
@@ -685,29 +681,28 @@ Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to show either all stories from the ArchiveStoryList (if no contact index is specified) or only the stories assigned to the specified contact in the ActiveContactList.
-- ActiveContactList, ActiveFollowupList, and all archive lists remain unchanged.
+- At the end of MSS and Ext. 2a, the STORIES panel shows either all saved stories (if no contact-index is specified) or only the stories assigned to the specified contact.
+- The CONTACTS and FOLLOW-UPS panels and all saved data remain unchanged.
 
 ##### MSS:
 
-1. User requests to list stories, optionally specifying a contact index (`ci/CONTACT_INDEX`).
-2. If a contact index was specified, System updates ActiveStoryFilter to match the stories assigned to the specified contact. Otherwise, System updates ActiveStoryFilter to match all stories.
-3. System updates the ActiveStoryList and story panel to display the stories.
-4. System informs the user in the console that the stories have been listed successfully.
+1. User requests to list stories, optionally specifying a contact-index.
+2. System displays all stories or only those assigned to the specified contact in the STORIES panel.
+3. System informs the user in the console that the stories have been listed successfully.
 
 Use case ends.
 
 ##### Extensions:
 
-1a. User specifies an invalid contact index (not a positive integer or larger than the number of contacts displayed).
+1a. User specifies an invalid contact-index (not a positive integer or larger than the number of contacts displayed).
 
 - 1a1. System informs the user in the console of the invalid index.
 - Use case ends.
 
 2a. There are no stories assigned to the specified contact.
 
-- 2a1. System updates the story panel to display an empty list.
-- 2a2. System displays `Listed 0 story(ies) assigned to CONTACT_NAME` in the console.
+- 2a1. System updates the STORIES panel to display an empty list.
+- 2a2. System informs the user in the console that no stories are assigned to the specified contact.
 - Use case ends.
 
 #### Use Case: UC4 - Assign contact to story
@@ -716,19 +711,16 @@ Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS, the specified contact is assigned to the specified story in both the ArchiveContactList and ArchiveStoryList.
-- The assignment is reflected in the ActiveContactList and ActiveStoryList.
+- At the end of MSS, the specified contact is assigned to the specified story.
+- The assignment is reflected in the displayed contact and story details.
 - Existing assignments remain unchanged.
 
 ##### MSS:
 
 1. User identifies an existing contact and an existing story from their respective displayed lists.
-2. User requests to assign the contact to the story using their displayed indices.
-3. System verifies that both indices refer to existing entries in their respective Active Lists.
-4. System checks that the contact is not already assigned to the story.
-5. System updates both the contact and story records to reflect the assignment.
-6. System saves the updated information to storage.
-7. System informs the user that the contact has been successfully assigned to the story.
+2. User requests to assign the contact to the story using their contact-index and story-index.
+3. System assigns the contact to the story.
+4. System informs the user that the contact has been successfully assigned to the story.
 
 Use case ends.
 
@@ -739,19 +731,19 @@ Use case ends.
 - 2a1. System displays an error message indicating the invalid input.
 - Use case ends.
 
-3a. The specified contact index is outside the ActiveContactList.
+3a. The specified contact-index does not refer to a displayed contact.
 
-- 3a1. System displays an error message indicating that the contact index is invalid.
+- 3a1. System displays an error message indicating that the contact-index is invalid.
 - Use case ends.
 
-3b. The specified story index is outside the ActiveStoryList.
+3b. The specified story-index does not refer to a displayed story.
 
-- 3b1. System displays an error message indicating that the story index is invalid.
+- 3b1. System displays an error message indicating that the story-index is invalid.
 - Use case ends.
 
-4a. The contact is already assigned to the story.
+3c. The contact is already assigned to the story.
 
-- 4a1. System informs the user that the contact is already assigned to the specified story.
+- 3c1. System informs the user that the contact is already assigned to the specified story.
 - Use case ends.
 
 #### Use Case: UC5 - Add Story
@@ -760,22 +752,22 @@ Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS, the new story is added to the ArchiveStoryList
-- At the end of MSS, ActiveStoryList is updated for the new ArchiveStoryList
-- ActiveContactList, ActiveFollowupList, and all other archive lists remain unchanged
+- At the end of MSS, the new story is saved in PressMemo
+- The STORIES panel includes the new story if it matches the current story filter
+- The CONTACTS and FOLLOW-UPS panels and all other saved data remain unchanged
 
 ##### MSS:
 
 1. User requests to add a story by providing the story name and optional tags
-2. System adds the story to the ArchiveStoryList
-3. System updates the ActiveStoryList by applying the ActiveStoryFilter to the updates ArchiveStoryList
+2. System saves the new story
+3. System updates the STORIES panel according to the current story filter
 4. System informs the user in the console that the story has been added successfully
 
 Use case ends.
 
 ##### Extensions:
 
-1a. User does not provide a story name (empty command preamble).
+1a. User does not provide a story name.
 
 - 1a1. System informs the user in the console of the invalid command format.
 - Use case ends.
@@ -790,7 +782,7 @@ Use case ends.
 - 1c1. System informs the user in the console of the tag constraints.
 - Use case ends.
 
-1d. A story with the same name already exists in the ArchiveStoryList.
+1d. A story with the same name already exists.
 
 - 1d1. System informs the user in the console that a story with the specified name already exists.
 - Use case ends.
@@ -801,20 +793,18 @@ Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS, the specified contact is removed from the ArchiveContactList.
+- At the end of MSS, the specified contact is deleted from PressMemo.
 - The deleted contact's assignments are removed from all associated stories, without deleting the stories themselves.
-- All follow-ups associated with the deleted contact are removed from the ArchiveFollowupList.
-- The Active Lists reflect the updated data.
+- All follow-ups associated with the deleted contact are deleted.
+- The CONTACTS, STORIES and FOLLOW-UPS panels reflect the updated data.
 
 ##### MSS:
 
 1. User requests to list contacts.
-2. System displays the contact list.
-3. User requests to delete a specific contact using its displayed index.
-4. System verifies that the specified index refers to an existing contact in the ActiveContactList.
-5. System deletes the contact and removes its associated story assignments and follow-ups.
-6. System saves the updated information to storage.
-7. System displays a success message containing the deleted contact's details.
+2. System displays the contact list in the CONTACTS panel.
+3. User requests to delete a specific contact using its contact-index.
+4. System deletes the contact and removes its associated story assignments and follow-ups.
+5. System displays a success message containing the deleted contact's details.
 
 Use case ends.
 
@@ -830,9 +820,9 @@ Use case ends.
 - 3a1. System displays an error message indicating that the index must be a positive integer.
 - Use case ends.
 
-4a. The specified contact index is outside the ActiveContactList.
+3b. The specified contact-index does not refer to a displayed contact.
 
-- 4a1. System displays an error message indicating that the contact index is invalid.
+- 3b1. System displays an error message indicating that the contact-index is invalid.
 - Use case ends.
 
 #### Use Case: UC7 - Edit a contact
@@ -841,28 +831,28 @@ Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS, the specified contact in the ArchiveContactList is updated with the new details.
+- At the end of MSS, the specified contact's new details are saved.
 - Any assigned stories and follow-ups associated with the contact are updated with the new contact name if the name is modified.
-- Active filters on contacts, stories, or follow-ups referencing this contact are updated accordingly.
+- Current filters that refer to this contact continue to refer to it after the edit.
 
 ##### MSS:
 
 1. User requests to list contacts.
-2. System displays a list of contacts in the contact panel.
-3. User requests to edit a specific contact by providing its displayed index and one or more field values to update.
-4. System updates the contact in the ArchiveContactList and updates linked stories and follow-ups.
-5. System refreshes the contact panel with the updated details.
+2. System displays a list of contacts in the CONTACTS panel.
+3. User requests to edit a specific contact by providing its contact-index and one or more field values to update.
+4. System updates the contact's details and its linked stories and follow-ups.
+5. System refreshes the CONTACTS panel to reflect the changes.
 6. System informs the user in the console that the contact has been successfully edited.
 
 Use case ends.
 
 ##### Extensions:
 
-1a. The contact list is empty.
+2a. The contact list is empty.
 
 - Use case ends.
 
-3a. User provides an invalid contact index (not a positive integer or larger than the number of contacts displayed).
+3a. User provides an invalid contact-index (not a positive integer or larger than the number of contacts displayed).
 
 - 3a1. System informs the user in the console of the invalid index.
 - Use case ends.
@@ -877,7 +867,7 @@ Use case ends.
 - 3c1. System informs the user in the console of the specific field constraints.
 - Use case ends.
 
-3d. The edited contact's name duplicates another existing contact's name in the ArchiveContactList.
+3d. The edited contact's name duplicates another existing contact's name.
 
 - 3d1. System informs the user in the console that a contact with this name already exists.
 - Use case ends.
@@ -888,15 +878,14 @@ Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS and Ext. 2a, the ActiveStoryList is updated to include exactly the stories from the ArchiveStoryList whose names contain at least one of the specified keywords (case-insensitive, whole-word match)
-- The ActiveContactList, ActiveFollowupList, and ArchiveStoryList remain unchanged
+- At the end of MSS and Ext. 2a, the STORIES panel shows exactly the saved stories whose names contain at least one of the specified keywords (case-insensitive, whole-word match)
+- The CONTACTS and FOLLOW-UPS panels and all saved data remain unchanged
 
 ##### MSS:
 
 1. User requests to find stories by providing one or more search keywords
-2. System updates ActiveStoryFilter to match stories whose names contain at least one of the specified keywords (case-insensitive, whole-word match)
-3. System updates the ActiveStoryList and story panel to display the matching stories
-4. System informs the user in the console of the number of matching stories listed
+2. System displays the matching stories in the STORIES panel
+3. System informs the user in the console of the number of matching stories listed
 
 Use case ends.
 
@@ -909,8 +898,8 @@ Use case ends.
 
 2a. No stories match the specified keywords.
 
-- 2a1. System updates the story panel to display an empty list.
-- 2a2. System informs the user in the console that 0 stories are listed (`0 story(ies) listed!`).
+- 2a1. System updates the STORIES panel to display an empty list.
+- 2a2. System informs the user in the console that 0 stories are listed.
 - Use case ends.
 
 #### Use Case: UC9 - List follow-ups
@@ -924,15 +913,15 @@ Actor: User
 
 ##### MSS:
 
-1. User requests to list follow-ups, optionally specifying a contact index.
-2. System updates the follow-up panel with all follow-ups if no index was specified or those linked to the specified contact index. The displayed list is empty if there are no matches.
+1. User requests to list follow-ups, optionally specifying a contact-index.
+2. System displays all follow-ups or only those linked to the specified contact in the FOLLOW-UPS panel. The displayed list is empty if there are no matches.
 3. System informs the user that the follow-ups have been listed successfully.
 
 Use case ends.
 
 ##### Extensions:
 
-2a. The specified contact index is invalid.
+2a. The specified contact-index is invalid.
 
 - 2a1. System informs the user and leaves the displayed follow-ups unchanged.
 - Use case ends.
@@ -943,15 +932,14 @@ Actor: User
 
 ##### Guarantees:
 
-- At the end of MSS and Ext. 2a, the ActiveFollowupList is updated to include exactly the follow-ups from the ArchiveFollowupList whose descriptions contain at least one of the specified keywords (case-insensitive, whole-word match)
-- The ActiveContactList, ActiveStoryList, and ArchiveFollowupList remain unchanged
+- At the end of MSS and Ext. 2a, the FOLLOW-UPS panel shows exactly the saved follow-ups whose descriptions contain at least one of the specified keywords (case-insensitive, whole-word match)
+- The CONTACTS and STORIES panels and all saved data remain unchanged
 
 ##### MSS:
 
 1. User requests to find follow-ups by providing one or more search keywords
-2. System filters follow-ups whose descriptions contain at least one of the specified keywords (case-insensitive, whole-word match)
-3. System updates the ActiveFollowupList and followup panel to display the matching follow-ups
-4. System informs the user in the console of the number of matching follow-ups listed
+2. System displays the matching follow-ups in the FOLLOW-UPS panel
+3. System informs the user in the console of the number of matching follow-ups listed
 
 Use case ends.
 
@@ -964,8 +952,8 @@ Use case ends.
 
 2a. No follow-ups match the specified keywords.
 
-- 2a1. System updates the followup panel to display an empty list.
-- 2a2. System informs the user in the console that 0 follow-ups are listed (`0 followup(s) listed!`).
+- 2a1. System updates the FOLLOW-UPS panel to display an empty list.
+- 2a2. System informs the user in the console that 0 follow-ups are listed.
 - Use case ends.
 
 #### Use Case: UC11 - List command shortcuts
@@ -974,13 +962,12 @@ Actor: User
 
 ##### Guarantees:
 
-- Active shortcuts currently saved in User Preferences are retrieved and displayed in the message panel without modifying any contact, story, or follow-up data.
+- The user's configured command shortcuts are displayed in the message panel without modifying any contact, story, or follow-up data.
 
 ##### MSS:
 
-1. User requests to list shortcuts by entering the `shortcut` command without parameters.
-2. System retrieves the user's configured shortcuts from user preferences.
-3. System displays the formatted list of shortcuts alphabetically in the message panel.
+1. User requests to list configured command shortcuts.
+2. System displays the shortcuts alphabetically in the message panel.
 
 Use case ends.
 
@@ -988,7 +975,7 @@ Use case ends.
 
 2a. No shortcuts have been configured yet.
 
-- 2a1. System informs the user in the message panel that no shortcuts are set (`No shortcuts have been set yet. Use 'shortcut s/SHORTCUT c/COMMAND' to assign one.`).
+- 2a1. System informs the user in the message panel that no shortcuts are set.
 - Use case ends.
 
 ### Non-Functional Requirements
@@ -1016,40 +1003,40 @@ Use case ends.
 | 0      | console        | interface for inputting `command`s and viewing `response`s                     |
 | 1      | command bar    | widget for inputting `command`s                                                |
 | 2      | message panel  | widget that displays the response to the most recently input `command`, if any |
-| 3      | contact panel  | widget that displays the `Active Contact List`                                 |
-| 4      | story panel    | widget that displays the `Active Story List`                                   |
-| 5      | followup panel | widget that displays the `Active Followup List`                                |
+| 3      | CONTACTS panel  | widget that displays the `ActiveContactList`                                 |
+| 4      | STORIES panel    | widget that displays the `ActiveStoryList`                                   |
+| 5      | FOLLOW-UPS panel | widget that displays the `ActiveFollowupList`                                |
 | 6      | help panel     | toggle-able widget that displays the `help info` when active                   |
 
 #### Input data types
 
 | Input type       | Definition                                                                                                                                                                                                        | Format/s                                                                                                                                                                                                 | Examples                                         |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| escape character | A character that escapes the next character if it is forward slash. An escape character used this way will not be part of a user string.<br><br>Otherwise, the escape character is treated as a normal character. | The escape character is backslash.                                                                                                                                                                       | \                                                |
-| user string      | A typed unit of text input from the user.<br><br>Behaviour for invalid `user string`s is unspecified, and may result in unexpected behaviour such as error messages.                                              | A valid `user string` consists of one or more characters. It cannot start with a space. <br><br>Any forward slash must be escaped.<br><br>Any trailing spaces at the end of`user string`s are truncated. | wumpus<br><br>wumpus farts<br><br>birthday 3\/12 |
-| word             | A `user string` that does not contain spaces or escaped forward slashes                                                                                                                                           | Does not contain spaces or escaped forward slashes.                                                                                                                                                      | wumpus<br><br>wumpus,farts!                      |
-| Contact Index    | A `word` representing the 1-based position of a `Contact` in the `Active Contact List`, used to identify that Contact in `command`s                                                                               | Integer between and including 1 and the number of `Contact`s in the `Active Contact List`.<br><br>If the `Active Contact List` is empty, there is no valid `Contact Index`                               | 1                                                |
-| Story Index      | A `word` representing the 1-based position of a `Story` in the `Active Story List`, used to identify that `Story` in `command`s                                                                                   | Integer between and including 1 and the number of `Story`s in the `Active Story List`<br><br>If the `Active Story List` is empty, there is no valid `Story Index`                                        | 2                                                |
-| Followup Index   | A `word` representing the 1-based position of a `Followup` in the `Active Followup List`, used to identify that `Followup` in `command`s                                                                          | Integer between and including 1 and the number of `Followup`s in the `Active Followup List`<br><br>If the `Active Followup List` is empty, there is no valid `Followup Index`                            | 1                                                |
+| escape character | A character that escapes the next character if it is forward slash. An escape character used this way will not be part of a user-string.<br><br>Otherwise, the escape character is treated as a normal character. | The escape character is backslash.                                                                                                                                                                       | \                                                |
+| user-string      | A typed unit of text input from the user.<br><br>Behaviour for invalid `user-string`s is unspecified, and may result in unexpected behaviour such as error messages.                                              | A valid `user-string` consists of one or more characters. It cannot start with a space. <br><br>Any forward slash must be escaped.<br><br>Any trailing spaces at the end of`user-string`s are truncated. | wumpus<br><br>wumpus farts<br><br>birthday 3\/12 |
+| word             | A `user-string` that does not contain spaces or escaped forward slashes                                                                                                                                           | Does not contain spaces or escaped forward slashes.                                                                                                                                                      | wumpus<br><br>wumpus,farts!                      |
+| contact-index    | A `word` representing the 1-based position of a `Contact` in the `ActiveContactList`, used to identify that Contact in `command`s                                                                               | Integer between and including 1 and the number of `Contact`s in the `ActiveContactList`.<br><br>If the `ActiveContactList` is empty, there is no valid `contact-index`                               | 1                                                |
+| story-index      | A `word` representing the 1-based position of a `Story` in the `ActiveStoryList`, used to identify that `Story` in `command`s                                                                                   | Integer between and including 1 and the number of `Story`s in the `ActiveStoryList`<br><br>If the `ActiveStoryList` is empty, there is no valid `story-index`                                        | 2                                                |
+| followup-index   | A `word` representing the 1-based position of a `Followup` in the `ActiveFollowupList`, used to identify that `Followup` in `command`s                                                                          | Integer between and including 1 and the number of `Followup`s in the `ActiveFollowupList`<br><br>If the `ActiveFollowupList` is empty, there is no valid `followup-index`                            | 1                                                |
 
 #### Command format
 
 | Input type    | Definition                                                                                                                                       | Format/s                                                                                                                                                                                                          | Examples                          |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| command       | A single instruction from the user.<br>A user inputs a `command` using the `command bar`.<br>                                                    | A `command` comprises: a `command name` or `shortcut` followed by a `preamble`, and then a `argument list`.<br><br>`command name` is mandatory while the other parts may be optional (depending on the `command`) | editstory<br><br>1 n/ find wumpus |
-| command name  | A `word` specifying the type/ class of a `command`.                                                                                              | Must be space-separated from the `preamble` (or `argument list` if there is no `preamble`)<br>                                                                                                                    | editstory                         |
-| shortcut      | A `word` alias for a `command name`, defined by the user.<br><br>Using a shortcut in a command is equivalent to using the aliased `command name` | Must be space-separated from the `preamble` (or `argument list` if there is no `preamble`)<br><br>A shortcut must be defined by the user (using the `shortcut` command) before it can be used                     | ls                                |
-| preamble      | A `user string` specifying some behaviour of a command.                                                                                          | Must be space-separated from the `argument name` (and `argument list`, if any)                                                                                                                                    | 1<br><br>smelly wumpus            |
+| command       | A single instruction from the user.<br>A user inputs a `command` using the `command bar`.<br>                                                    | A `command` comprises: a `command word` or `shortcut` followed by a `preamble`, and then a `argument list`.<br><br>`command word` is mandatory while the other parts may be optional (depending on the `command`) | editstory<br><br>1 n/ find wumpus |
+| command word  | A `word` specifying the type/ class of a `command`.                                                                                              | Must be space-separated from the `preamble` (or `argument list` if there is no `preamble`)<br>                                                                                                                    | editstory                         |
+| shortcut      | A `word` alias for a `command word`, defined by the user.<br><br>Using a shortcut in a command is equivalent to using the aliased `command word` | Must be space-separated from the `preamble` (or `argument list` if there is no `preamble`)<br><br>A shortcut must be defined by the user (using the `shortcut` command) before it can be used                     | ls                                |
+| preamble      | A `user-string` specifying some behaviour of a command.                                                                                          | Must be space-separated from the `argument name` (and `argument list`, if any)                                                                                                                                    | 1<br><br>smelly wumpus            |
 | argument list | A list of `argument`s that specifies the behaviour of a `command`.                                                                               | The order of `argument`s does not matter; every permutation of the same `argument`s produces the same outcome                                                                                                     | n/ find wumpus t/ smelly          |
 | argument      | A specification of an aspect of a `command`                                                                                                      | Comprises a `prefix`, followed by a `field`.<br><br>`prefix` is mandatory while `field` may be optional (depending on the `command` and `argument`)                                                               | n/find wumpus<br><br>t/           |
 | prefix        | Identifies the aspect of a `command` specified by an `argument`                                                                                  | Comprises a `word` followed by a forward slash.<br><br>Must be space-separated from any previous item.                                                                                                            | n/<br><br>ci/                     |
-| field         | A `user string` that provides information for an `argument`                                                                                      | Must follow a `prefix`                                                                                                                                                                                            | find wumpus                       |
+| field         | A `user-string` that provides information for an `argument`                                                                                      | Must follow a `prefix`                                                                                                                                                                                            | find wumpus                       |
 
 #### Domain terms
 
 * **Contact**: A contact whose information is stored in PressMemo, including a name, phone number, and email address. A contact can optionally include any number of **tags**.
 * **Story**: A news story or topic managed in PressMemo that may be linked to one or more Contacts. A Story can optionally include any number of **tags**.
-* **Follow-up**: An action item, task or upcoming event related to a Contact. Each followup is described by a **description**. 
+* **Follow-up**: An action item, task or upcoming event related to a Contact. Each follow-up is described by a **description**.
 * **Assign**: To create a link between an existing Contact and an existing Story.
 * **Assigned Contact**: A Contact that has been linked to a particular Story.
 * **Assigned Story**: A Story that has been linked to a particular Contact.
@@ -1058,16 +1045,16 @@ Use case ends.
 #### Solution-specific terms
 
 * **Data Files**: The local JSON files used by PressMemo to store application data between sessions.
-* **Active Contact List**: The list of contacts currently displayed in the Contact Panel. Contacts in this list can be referenced using their ContactIndex.
-* **Active Story List**: The list of stories currently displayed in the Story Panel. Stories in this list can be referenced using their StoryIndex.
-* **Active Followup List**: The list of follow-ups currently displayed in the Followup Panel. Follow-ups in this list can be referenced using their FollowupIndex.
-* **Archive Contact List**: The list containing all contacts stored in PressMemo, including contacts that are not currently displayed in the Active Contact List.
-* **Archive Story List**: The list containing all stories stored in PressMemo, including stories that are not currently displayed in the Active Story List.
-* **Archive Followup List**: The list containing all follow-ups stored in PressMemo, including follow-ups that are not currently displayed in the Active Followup List.
+* **ActiveContactList**: The list of contacts currently displayed in the CONTACTS panel. Contacts in this list can be referenced using their contact-index.
+* **ActiveStoryList**: The list of stories currently displayed in the STORIES panel. Stories in this list can be referenced using their story-index.
+* **ActiveFollowupList**: The list of follow-ups currently displayed in the FOLLOW-UPS panel. Follow-ups in this list can be referenced using their followup-index.
+* **ArchiveContactList**: The list containing all contacts stored in PressMemo, including contacts that are not currently displayed in the ActiveContactList.
+* **ArchiveStoryList**: The list containing all stories stored in PressMemo, including stories that are not currently displayed in the ActiveStoryList.
+* **ArchiveFollowupList**: The list containing all follow-ups stored in PressMemo, including follow-ups that are not currently displayed in the ActiveFollowupList.
 * **Filter**: A condition used to select a subset of Contacts, Stories or Follow-ups displayed to the user.
-* **Active Contact Filter**: The currently active filter over the Archive Contact List, which determines the Active Contact List.
-* **Active Story Filter**: The currently active filter over the Archive Story List, which determines the Active Story List.
-* **Active Followup Filter**: The currently active filter over the Archive Followup List, which determines the Active Followup List.
+* **ActiveContactFilter**: The currently active filter over the ArchiveContactList, which determines the ActiveContactList.
+* **ActiveStoryFilter**: The currently active filter over the ArchiveStoryList, which determines the ActiveStoryList.
+* **ActiveFollowupFilter**: The currently active filter over the ArchiveFollowupList, which determines the ActiveFollowupList.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -1167,7 +1154,7 @@ Given below are instructions to test PressMemo manually.
 	5. Test case: `editcontact 0 p/91234567`\
 	   Expected: An invalid-index error is shown. No contact is edited.
 	6. Test case: `editcontact 8 p/91234567`\
-	   Expected: An error indicates that the contact index is outside the displayed list.
+	   Expected: An error indicates that the contact-index is outside the displayed list.
 
 ### Finding contacts
 
@@ -1284,9 +1271,9 @@ Given below are instructions to test PressMemo manually.
 4. Using indices from filtered lists
 	1. Prerequisites: Use the default sample data.
 	2. Test case: `findstories Graduate`, followed by `listcontacts si/1`\
-	   Expected: Only Bernice Yu and Charlotte Oliveiro are shown, because story index 1 now refers to the displayed Fresh Graduate Unemployment story.
+	   Expected: Only Bernice Yu and Charlotte Oliveiro are shown, because story-index 1 now refers to the displayed Fresh Graduate Unemployment story.
 	3. Test case: `list`, followed by `findcontacts Bernice`, followed by `liststories ci/1`\
-	   Expected: Both stories are shown, because contact index 1 now refers to Bernice Yu in the filtered CONTACTS panel.
+	   Expected: Both stories are shown, because contact-index 1 now refers to Bernice Yu in the filtered CONTACTS panel.
 
 5. Resetting all three lists
 	1. Prerequisites: Use the default sample data.
@@ -1300,7 +1287,7 @@ Given below are instructions to test PressMemo manually.
 	2. Test case: `listcontacts si/0`\
 	   Expected: An invalid-index error is shown; the current list is not replaced with unrelated results.
 	3. Test case: `liststories ci/99`\
-	   Expected: An error indicates that the contact index is outside the displayed list.
+	   Expected: An error indicates that the contact-index is outside the displayed list.
 	4. Test case: `list extra`\
 	   Expected: An error indicates that `list` does not accept parameters.
 
@@ -1335,7 +1322,7 @@ Given below are instructions to test PressMemo manually.
 	2. Test case: `assign ci/0 si/1`\
 	   Expected: An invalid contact-index error is shown.
 	3. Test case: `assign ci/1 si/99`\
-	   Expected: An error indicates that the story index is outside the displayed list.
+	   Expected: An error indicates that the story-index is outside the displayed list.
 	4. Test case: `assign ci/1`\
 	   Expected: An error indicates that the `si/` parameter is missing.
 	5. Test case: `unassign ci/1 si/2`\
@@ -1407,7 +1394,7 @@ Given below are instructions to test PressMemo manually.
 	3. Test case: `editfollowup 1 d/Meet for interview ci/2`\
 	   Expected: An error indicates that Bernice Yu already has a follow-up with this description. The existing follow-ups remain unchanged.
 	4. Test case: `editfollowup 0 d/Test`\
-	   Expected: An invalid follow-up-index error is shown.
+	   Expected: An invalid followup-index error is shown.
 
 ### Finding, listing and deleting follow-ups
 

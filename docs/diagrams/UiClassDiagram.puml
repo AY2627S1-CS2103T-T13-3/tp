@@ -40,7 +40,7 @@ MainWindow *-down-> "1" ContactListPanel
 MainWindow *-down-> "1" StoryListPanel
 MainWindow *-down-> "1" FollowupListPanel
 MainWindow *-down-> "1" StatusBarFooter
-MainWindow *-down-> "0..1" HelpPanel
+MainWindow *-down-> "1" HelpPanel
 
 ContactListPanel -down-> "*" ContactCard
 StoryListPanel -down-> "*" StoryCard

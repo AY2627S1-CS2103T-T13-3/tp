@@ -5,6 +5,8 @@ skinparam ArrowFontStyle plain
 box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant "CommandWords" as CommandWords LOGIC_COLOR
+participant "commandInfo:CommandInfo" as CommandInfo LOGIC_COLOR
 participant ":ShortcutCommandParser" as ShortcutCommandParser LOGIC_COLOR
 participant "s:ShortcutCommand" as ShortcutCommand LOGIC_COLOR
 participant "r:CommandResult" as CommandResult LOGIC_COLOR
@@ -20,14 +22,16 @@ activate LogicManager
 LogicManager -> AddressBookParser : parseCommand("shortcut")
 activate AddressBookParser
 
-create ShortcutCommandParser
-AddressBookParser -> ShortcutCommandParser
-activate ShortcutCommandParser
+AddressBookParser -> CommandWords : getCommandInfo("shortcut")
+activate CommandWords
 
-ShortcutCommandParser --> AddressBookParser
-deactivate ShortcutCommandParser
+CommandWords --> AddressBookParser : commandInfo
+deactivate CommandWords
 
-AddressBookParser -> ShortcutCommandParser : parse("")
+AddressBookParser -> CommandInfo : parse("")
+activate CommandInfo
+
+CommandInfo -> ShortcutCommandParser : parse("")
 activate ShortcutCommandParser
 
 create ShortcutCommand
@@ -37,11 +41,11 @@ activate ShortcutCommand
 ShortcutCommand --> ShortcutCommandParser : s
 deactivate ShortcutCommand
 
-ShortcutCommandParser --> AddressBookParser : s
+ShortcutCommandParser --> CommandInfo : s
 deactivate ShortcutCommandParser
-'Hidden arrow to position the destroy marker below the end of the activation bar.
-ShortcutCommandParser -[hidden]-> AddressBookParser
-destroy ShortcutCommandParser
+
+CommandInfo --> AddressBookParser : s
+deactivate CommandInfo
 
 AddressBookParser --> LogicManager : s
 deactivate AddressBookParser
