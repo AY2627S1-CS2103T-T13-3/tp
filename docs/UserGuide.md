@@ -101,12 +101,13 @@ This guide describes the features implemented for PressMemo v1.4.
 `addcontact NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]…​`
 
 #### Parameters
-| Parameter  | Type           | Description                         | Examples              |
-|------------|----------------|-------------------------------------|-----------------------|
-| `NAME`     | `user-string`  | Name of the contact to add          | Jane Smith            |
-| `PHONE`    | `user-string`  | Phone number of the contact to add  | 98765432              |
-| `EMAIL`    | `user-string`  | Email address of the contact to add | janesmith@example.com |
-| `ADDRESS`  | `user-string`  | Address of the contact to add       | 1 Kent Ridge Drive    |
+| Parameter   | Type            | Description                                    | Examples               |
+|-------------|-----------------|------------------------------------------------|------------------------|
+| `NAME`      | `user-string`   | Name of the contact to add                     | Jane Smith             |
+| `p/PHONE`   | `user-string`   | Phone number of the contact to add             | 98765432               |
+| `e/EMAIL`   | `user-string`   | Email address of the contact to add            | janesmith@example.com  |
+| `a/ADDRESS` | `user-string`   | Address of the contact to add                  | 1 Kent Ridge Drive     |
+| `t/TAG`     | `user-string`   | Tag to assign to the contact (can be repeated) | Singapore              |
 
 > **Tip / Note:**
 > * `NAME`, `p/PHONE`, `e/EMAIL` and `a/ADDRESS` must be specified exactly once and cannot be blank.
