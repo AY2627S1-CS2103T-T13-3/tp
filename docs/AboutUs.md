@@ -50,4 +50,4 @@ We are a team based in the [School of Computing, National University of Singapor
 [[github](https://github.com/Heshtin)]
 
 * Role: Documentation IC
-* Responsibilities: Documentation
+* Responsibilities: Ensures project documentation is accurate, consistent, and up to date.
