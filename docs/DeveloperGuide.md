@@ -271,6 +271,8 @@ The sequence diagram below illustrates the interactions within the `Model` compo
 
 ### Implementation details
 
+The sequence diagram below illustrates the interactions within the Model component during the execution of `findstories keyword`:
+
 ![[images/FindStoriesSequenceDiagram.png]]
 
 #### Execution flow
