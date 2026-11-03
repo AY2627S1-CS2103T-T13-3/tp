@@ -716,7 +716,7 @@ Use case ends.
 
 - System will inform the user in the console that details are missing
 
-1b.  Another contact with the same name already existis
+1b.  Another contact with the same name already exists
 
 - System will inform the user in the console that an invalid name was used
 - Use case ends
