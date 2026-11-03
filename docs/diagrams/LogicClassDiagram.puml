@@ -6,8 +6,9 @@ skinparam classBackgroundColor LOGIC_COLOR
 
 package Logic as LogicPackage {
 Class "<<interface>>\nParser" as Parser
-package "Parser Classes" as ParserClasses{
-}
+Class AddressBookParser
+Class CommandWords
+Class CommandInfo
 Class XYZCommand
 Class CommandResult
 Class "{abstract}\nCommand" as Command
@@ -27,9 +28,12 @@ Class HiddenOutside #FFFFFF
 HiddenOutside ..> Logic
 
 LogicManager .right.|> Logic
-LogicManager -down->"1" ParserClasses
-ParserClasses .up.|> Parser
-ParserClasses ..> XYZCommand : <<create>>
+LogicManager -down->"1" AddressBookParser
+AddressBookParser ..> CommandWords : <<use>>
+AddressBookParser ..> CommandInfo : <<use>>
+CommandWords --> "*" CommandInfo
+CommandInfo --> "0..1" Parser
+Parser ..> Command : <<use>>
 
 XYZCommand -up-|> Command
 LogicManager .left.> Command : <<execute>>
@@ -39,7 +43,7 @@ LogicManager -->"1" Storage : <<save>>
 Storage --[hidden] Model
 Command .[hidden]up.> Storage
 Command .right.> Model
-note right of XYZCommand: XYZCommand = AddCommand, \nFindCommand, etc
+note right of XYZCommand: XYZCommand = AddContactCommand, \nFindContactsCommand, etc
 
 Logic ..> CommandResult
 LogicManager .down.> CommandResult

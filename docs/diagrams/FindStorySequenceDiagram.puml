@@ -1,4 +1,4 @@
-@startuml
+@startuml FindStoriesSequenceDiagram
 !include style.puml
 skinparam ArrowFontStyle plain
 

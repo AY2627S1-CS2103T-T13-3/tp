@@ -5,6 +5,8 @@ skinparam ArrowFontStyle plain
 box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant "CommandWords" as CommandWords LOGIC_COLOR
+participant "commandInfo:CommandInfo" as CommandInfo LOGIC_COLOR
 participant ":AddStoryCommandParser" as AddStoryCommandParser LOGIC_COLOR
 participant "a:AddStoryCommand" as AddStoryCommand LOGIC_COLOR
 participant "r:CommandResult" as CommandResult LOGIC_COLOR
@@ -20,14 +22,16 @@ activate LogicManager
 LogicManager -> AddressBookParser : parseCommand("addstory Investigation t/urgent")
 activate AddressBookParser
 
-create AddStoryCommandParser
-AddressBookParser -> AddStoryCommandParser
-activate AddStoryCommandParser
+AddressBookParser -> CommandWords : getCommandInfo("addstory")
+activate CommandWords
 
-AddStoryCommandParser --> AddressBookParser
-deactivate AddStoryCommandParser
+CommandWords --> AddressBookParser : commandInfo
+deactivate CommandWords
 
-AddressBookParser -> AddStoryCommandParser : parse("Investigation t/urgent")
+AddressBookParser -> CommandInfo : parse("Investigation t/urgent")
+activate CommandInfo
+
+CommandInfo -> AddStoryCommandParser : parse("Investigation t/urgent")
 activate AddStoryCommandParser
 
 create AddStoryCommand
@@ -37,11 +41,11 @@ activate AddStoryCommand
 AddStoryCommand --> AddStoryCommandParser :
 deactivate AddStoryCommand
 
-AddStoryCommandParser --> AddressBookParser : a
+AddStoryCommandParser --> CommandInfo : a
 deactivate AddStoryCommandParser
-'Hidden arrow to position the destroy marker below the end of the activation bar.
-AddStoryCommandParser -[hidden]-> AddressBookParser
-destroy AddStoryCommandParser
+
+CommandInfo --> AddressBookParser : a
+deactivate CommandInfo
 
 AddressBookParser --> LogicManager : a
 deactivate AddressBookParser

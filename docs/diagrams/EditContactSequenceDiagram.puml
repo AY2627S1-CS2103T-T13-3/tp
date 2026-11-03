@@ -5,6 +5,8 @@ skinparam ArrowFontStyle plain
 box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant "CommandWords" as CommandWords LOGIC_COLOR
+participant "commandInfo:CommandInfo" as CommandInfo LOGIC_COLOR
 participant ":EditContactCommandParser" as EditContactCommandParser LOGIC_COLOR
 participant "e:EditContactCommand" as EditContactCommand LOGIC_COLOR
 participant "r:CommandResult" as CommandResult LOGIC_COLOR
@@ -21,14 +23,16 @@ activate LogicManager
 LogicManager -> AddressBookParser : parseCommand("editcontact 1 n/Betsy")
 activate AddressBookParser
 
-create EditContactCommandParser
-AddressBookParser -> EditContactCommandParser
-activate EditContactCommandParser
+AddressBookParser -> CommandWords : getCommandInfo("editcontact")
+activate CommandWords
 
-EditContactCommandParser --> AddressBookParser
-deactivate EditContactCommandParser
+CommandWords --> AddressBookParser : commandInfo
+deactivate CommandWords
 
-AddressBookParser -> EditContactCommandParser : parse("1 n/Betsy")
+AddressBookParser -> CommandInfo : parse("1 n/Betsy")
+activate CommandInfo
+
+CommandInfo -> EditContactCommandParser : parse("1 n/Betsy")
 activate EditContactCommandParser
 
 create EditContactCommand
@@ -38,11 +42,11 @@ activate EditContactCommand
 EditContactCommand --> EditContactCommandParser : e
 deactivate EditContactCommand
 
-EditContactCommandParser --> AddressBookParser : e
+EditContactCommandParser --> CommandInfo : e
 deactivate EditContactCommandParser
-'Hidden arrow to position the destroy marker below the end of the activation bar.
-EditContactCommandParser -[hidden]-> AddressBookParser
-destroy EditContactCommandParser
+
+CommandInfo --> AddressBookParser : e
+deactivate CommandInfo
 
 AddressBookParser --> LogicManager : e
 deactivate AddressBookParser

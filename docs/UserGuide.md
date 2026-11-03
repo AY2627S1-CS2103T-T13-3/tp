@@ -71,9 +71,9 @@ This guide describes the features implemented for PressMemo v1.6.
 |-------------------|---------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
 | `user-string`     | A sequence of characters.                                                 | Must contain one or more characters, with at least one non-space character.<br><br>Any forward slash must be escaped using backslash (\\).<br><br>Any spaces at the start and end are ignored. | wumpus<br><br>wumpus farts<br><br>date 3\\/12 |
 | `word`            | A `user-string` that does not contain spaces or forward slashes.          | Must not contain spaces or forward slashes                                                                                                                                                     | wumpus<br><br>wumpus,farts!                   |
-| `contact-index`   | A number representing the position of a `Contact` in the contact panel.   | Integer between 1 and the number of `Contact`s in the contact panel<br><br>If the contact panel is empty, there is no valid `contact-index`                                                    | 1                                             |
-| `story-index`     | A number representing the position of a `Story` in the story panel.       | Integer between 1 and the number of `Story`s in the story panel<br><br>If the story panel is empty, there is no valid `story-index`                                                            | 2                                             |
-| `followup-index`  | A number representing the position of a `Followup` in the followup panel. | Integer between 1 and the number of `Followup`s in the followup panel<br><br>If the followup panel is empty, there is no valid `followup-index`                                                | 1                                             |
+| `contact-index`   | A number representing the position of a `Contact` in the CONTACTS panel.   | Integer between 1 and the number of `Contact`s in the CONTACTS panel<br><br>If the CONTACTS panel is empty, there is no valid `contact-index`                                                    | 1                                             |
+| `story-index`     | A number representing the position of a `Story` in the STORIES panel.       | Integer between 1 and the number of `Story`s in the STORIES panel<br><br>If the STORIES panel is empty, there is no valid `story-index`                                                            | 2                                             |
+| `followup-index`  | A number representing the position of a `Followup` in the FOLLOW-UPS panel. | Integer between 1 and the number of `Followup`s in the FOLLOW-UPS panel<br><br>If the FOLLOW-UPS panel is empty, there is no valid `followup-index`                                                | 1                                             |
 
 ### Viewing help: `help`
 
@@ -116,15 +116,15 @@ This guide describes the features implemented for PressMemo v1.6.
 > * A contact with exactly the same name already in PressMemo cannot be added. For example, if a contact with the name `John Doe` already exists in PressMemo, adding another contact with the name `John Doe` is not allowed, but adding a contact with the name `john doe` is allowed.
 > * A contact can have any number of tags, including zero.
 > * The new contact will be added to the end of the contact list.
-> * Adding a contact preserves any active contact filter. The new contact will appear in the contact list if it matches the active filter.
+> * Adding a contact preserves the ActiveContactFilter. The new contact will appear in the contact list if it matches the active filter.
 
 #### Examples
 * **Example 1:** Valid and unique contact with no tags
   * **Input / Action:** `addcontact Jane Smith p/91234567 e/janesmith@example.com a/Jane street, block 123, #01-01`
-  * **Expected Outcome:** The contact named "Jane Smith" is added to the contacts in PressMemo and displayed in the contact panel without tags.
+  * **Expected Outcome:** The contact named "Jane Smith" is added to the contacts in PressMemo and displayed in the CONTACTS panel without tags.
 * **Example 2:** Valid and unique contact with 2 tags
   * **Input / Action:** `addcontact Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal`
-  * **Expected Outcome:** The contact named "Betsy Crowe" is added to the contacts in PressMemo and displayed in the contact panel with the tags "friend" and "criminal".
+  * **Expected Outcome:** The contact named "Betsy Crowe" is added to the contacts in PressMemo and displayed in the CONTACTS panel with the tags "friend" and "criminal".
 
 #### Common Errors & Troubleshooting
 
@@ -199,10 +199,10 @@ This command does not accept parameters. Any extraneous characters will result i
 | `si/STORY_INDEX` | `story-index` | (Optional) Story to filter contacts by, from the displayed **STORIES** panel        | `1`      |
 
 > **Tip / Note:**
-> * `listcontacts` without parameters displays all contacts and clears any active contact filter (including `findcontacts`).
+> * `listcontacts` without parameters displays all contacts and clears the ActiveContactFilter (including `findcontacts`).
 > * `listcontacts si/STORY_INDEX` displays only contacts assigned to that story in the **currently displayed story list**.
 > * The **STORIES** panel remains unchanged. If the selected story has no assigned contacts, the contact list becomes empty.
-> * The contact panel header filter badge updates dynamically (e.g. `[All]` or `[Filtered by story: "..."]`).
+> * The CONTACTS panel header filter badge updates dynamically (e.g. `[All]` or `[Filtered by story: "..."]`).
 
 #### Examples
 
@@ -228,13 +228,13 @@ This command does not accept parameters. Any extraneous characters will result i
 
 | Parameter | Type | Description | Examples |
 | --- | --- | --- | --- |
-| `ci/CONTACT_INDEX` | Contact Index | Optional 1-based index of the contact in the currently displayed CONTACTS panel, used to filter stories assigned to that contact. | `ci/1` |
+| `ci/CONTACT_INDEX` | contact-index | Optional 1-based index of the contact in the currently displayed CONTACTS panel, used to filter stories assigned to that contact. | `ci/1` |
 
 > **Tip / Note:**
 >
-> - Without `ci/CONTACT_INDEX`, `liststories` displays all stories and removes any active story filter.
+> - Without `ci/CONTACT_INDEX`, `liststories` displays all stories and removes the ActiveStoryFilter.
 > - With `ci/CONTACT_INDEX`, `liststories` displays only stories assigned to the specified contact.
-> - The contact index refers to the currently displayed CONTACTS panel, including any filtered results.
+> - The contact-index refers to the currently displayed CONTACTS panel, including any filtered results.
 > - The CONTACTS and FOLLOW-UPS panels remain unchanged.
 > - If the specified contact has no assigned stories, the STORIES panel becomes empty.
 > - Use `liststories` without parameters to display all stories again.
@@ -347,7 +347,7 @@ This command does not accept parameters. Any extraneous characters will result i
 
 * **Example 3:** Search with no matches
   * **Input / Action:** `findcontacts nameDoesNotExist` when there is no contact whose name contains `nameDoesNotExist`
-  * **Expected Outcome:** The contact panel displays no contacts. A message in the console indicates that no matches were found.
+  * **Expected Outcome:** The CONTACTS panel displays no contacts. A message in the console indicates that no matches were found.
 
 #### Common Errors & Troubleshooting
 
@@ -370,7 +370,7 @@ This command does not accept parameters. Any extraneous characters will result i
 
 | Parameter | Type | Description | Examples |
 | --- | --- | --- |----------|
-| `INDEX` | Contact Index | The 1-based index of the contact in the currently displayed CONTACTS panel. | `2`      |
+| `INDEX` | contact-index | The 1-based index of the contact in the currently displayed CONTACTS panel. | `2`      |
 
 > **Tip / Note:**
 >
@@ -411,18 +411,18 @@ This command does not accept parameters. Any extraneous characters will result i
 
 > **Tip / Note:**
 > * No two stories can have the same name. The provided `STORY_NAME` must not already exist in PressMemo.
-> * `addstory` preserves any active story filter; the new story will appear in the story panel if it matches the active filter.
+> * `addstory` preserves the ActiveStoryFilter; the new story will appear in the STORIES panel if it matches the active filter.
 > * The new story starts with no assigned contacts.
 
 #### Examples
 
 * **Example 1:** valid and unique story name, no tags 
   * **Input / Action:** `addstory find wumpus`
-  * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel without tags
+  * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the STORIES panel without tags
 
 * **Example 2:** valid and unique story name with 2 tags 
   * **Input / Action:** `addstory find wumpus t/smelly t/at 2, 2`
-  * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the story panel with the tags "smelly" and "at 2, 2"
+  * **Expected Outcome:** The story named "find wumpus" is added to the stories in PressMemo and displayed in the STORIES panel with the tags "smelly" and "at 2, 2"
 
 #### Common Errors & Troubleshooting
 
@@ -485,7 +485,7 @@ This command does not accept parameters. Any extraneous characters will result i
 
 ### Filter stories by name: `findstories`
 
-- **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and displays them in the story panel.
+- **Objective:** Finds stories whose names contain any of the given keywords (case-insensitive) and displays them in the STORIES panel.
 
 <img src="images/findstories-example.png" width="726" height="593">
 
@@ -520,7 +520,7 @@ This command does not accept parameters. Any extraneous characters will result i
 
 * **Example 3: Search with no matches**
   * **Input / Action:** `findstories wompusDoesNotExist` when there is no story whose name contains `wompusDoesNotExist`
-  * **Expected Outcome:** The story panel displays no stories. A message in the console indicates that no matches were found.
+  * **Expected Outcome:** The STORIES panel displays no stories. A message in the console indicates that no matches were found.
 
 #### Common Errors & Troubleshooting
 
@@ -542,8 +542,8 @@ This command does not accept parameters. Any extraneous characters will result i
 
 | Parameter | Type | Description | Examples |
 | --- | --- | --- | --- |
-| `ci/CONTACT_INDEX` | Contact Index | The 1-based index of the contact in the currently displayed contact list. | `ci/1` |
-| `si/STORY_INDEX` | Story Index | The 1-based index of the story in the currently displayed story list. | `si/2` |
+| `ci/CONTACT_INDEX` | contact-index | The 1-based index of the contact in the currently displayed contact list. | `ci/1` |
+| `si/STORY_INDEX` | story-index | The 1-based index of the story in the currently displayed story list. | `si/2` |
 
 > **Tip / Note:**
 >
@@ -583,8 +583,8 @@ This command does not accept parameters. Any extraneous characters will result i
 
 | Parameter | Type | Description | Examples |
 | --- | --- | --- |----------|
-| `ci/CONTACT_INDEX` | Contact Index | The 1-based index of the contact in the currently displayed contact list. | `ci/1`   |
-| `si/STORY_INDEX` | Story Index | The 1-based index of the story in the currently displayed story list. | `si/1`   |
+| `ci/CONTACT_INDEX` | contact-index | The 1-based index of the contact in the currently displayed contact list. | `ci/1`   |
+| `si/STORY_INDEX` | story-index | The 1-based index of the story in the currently displayed story list. | `si/1`   |
 
 > **Tip / Note:**
 >
@@ -624,7 +624,7 @@ This command does not accept parameters. Any extraneous characters will result i
 
 | Parameter | Type          | Description                                        | Examples |
 | :-------- |:--------------|:---------------------------------------------------| :------- |
-| `INDEX`   | `story-index` | Index of the story to delete from the story panel  | `1`      |
+| `INDEX`   | `story-index` | Index of the story to delete from the STORIES panel  | `1`      |
 
 > **Tip / Note:**
 > * Deleting a story automatically unassigns it from all contacts originally assigned to it. The contacts themselves remain in PressMemo.
@@ -635,7 +635,7 @@ This command does not accept parameters. Any extraneous characters will result i
 
 * **Example 1: Deleting a story from the full story list**
   * **Input / Action:** `deletestory 2`
-  * **Expected Outcome:** Deletes the 2nd story from the story panel. Identifying information about the recently-deleted story is displayed in the console.
+  * **Expected Outcome:** Deletes the 2nd story from the STORIES panel. Identifying information about the recently-deleted story is displayed in the console.
 
 ### Adding a follow-up: `addfollowup`
 
@@ -719,7 +719,7 @@ This command does not accept parameters. Any extraneous characters will result i
 | Error Message / Symptom                                                              | Cause                                                                                 | How to Fix                                                  |
 |:-------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------|:------------------------------------------------------------|
 | `At least one field to edit must be provided.`                                       | Neither `d/DESCRIPTION` nor `ci/CONTACT_INDEX` was supplied                           | Provide at least one field to update                        |
-| `Error: there is already a followup "Test" for the contact "Alex"!`                  | The edited followup is a duplicate of another follow-up for the linked contact (Alex) | Use a different description or contact                      |
+| `Error: there is already a followup "Test" for the contact "Alex"!`                  | The edited follow-up is a duplicate of another follow-up for the linked contact (Alex) | Use a different description or contact                      |
 | `Follow-up descriptions should not be blank or start with whitespace`                | `DESCRIPTION` is blank                                                                | Enter a non-blank description |
 
 ### Deleting a follow-up: `deletefollowup`
@@ -802,7 +802,7 @@ This command does not accept parameters. Any extraneous characters will result i
 
 ### Listing follow-ups: `listfollowups`
 
-- **Objective:** Displays follow-ups in the follow-ups panel, optionally filtering them by assigned contact.
+- **Objective:** Displays follow-ups in the FOLLOW-UPS panel, optionally filtering them by assigned contact.
 
 <img src="images/listfollowups-example.png" width="726" height="593">
 
@@ -814,7 +814,7 @@ This command does not accept parameters. Any extraneous characters will result i
 
 | Parameter          | Type            | Description                                       | Examples |
 | :----------------- | :-------------- | :------------------------------------------------ | :------- |
-| `ci/CONTACT_INDEX` | `Contact Index` | to display only follow-ups linked to this contact | 1        |
+| `ci/CONTACT_INDEX` | `contact-index` | to display only follow-ups linked to this contact | 1        |
 
 > **Tip / Note:**
 > * If `ci/CONTACT_INDEX` is omitted, `listfollowups` displays all follow-ups in PressMemo.
@@ -919,11 +919,11 @@ This command does not accept parameters. Any extraneous characters will result i
 * No parameters are allowed. Adding extra parameters results in an error.
 
 <div markdown="span" class="alert alert-warning"> **Caution:**
-Clearing removes all existing contacts, stories, assignments and followups from PressMemo permanently. There is no confirmation prompt for the command and once the data has been cleared, it cannot be recovered back. Therefore, clear PressMemo only if you are sure you do not need the data anymore.  
+Clearing removes all existing contacts, stories, assignments and follow-ups from PressMemo permanently. There is no confirmation prompt for the command and once the data has been cleared, it cannot be recovered back. Therefore, clear PressMemo only if you are sure you do not need the data anymore.
 </div>
 
 > **Tip / Note:**
-> * Clearing affects all contacts, stories, assignments and followups, including those hidden by filters.
+> * Clearing affects all contacts, stories, assignments and follow-ups, including those hidden by filters.
 > * User preferences and command shortcuts are not removed by clearing. To remove shortcuts, use the `unshortcut` command.
 
 ### Exiting the program: `exit`
@@ -953,8 +953,8 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 
 | Error Messages / Symptoms                                                                                                                                                                        | Causes                                                                                                                                                                 | How to Fix                                                                                                                                                       |
 | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <br>`The story index 100 is invalid for the displayed list of 9 story(ies).`<br>                                                                                                                 | The Contact Index, Story Index, or Followup Index provided is greater than the number of items currently displayed in the corresponding panel (or the panel is empty). | Check the index numbers displayed in the corresponding panel (Contacts, Stories, or Follow-ups). Run `list`, to show all items, if the item you need is missing. |
-| `Index must be a positive integer.`                                                                                                                                                              | The Contact Index, Story Index, or Followup Index is not a positive integer.                                                                                           | Ensure the index is a positive integer with no signs, decimals, or letters.                                                                                      |
+| <br>`The story index 100 is invalid for the displayed list of 9 story(ies).`<br>                                                                                                                 | The contact-index, story-index, or followup-index provided is greater than the number of items currently displayed in the corresponding panel (or the panel is empty). | Check the index numbers displayed in the corresponding panel (CONTACTS, STORIES, or FOLLOW-UPS). Run `list`, to show all items, if the item you need is missing. |
+| `Index must be a positive integer.`                                                                                                                                                              | The contact-index, story-index, or followup-index is not a positive integer.                                                                                           | Ensure the index is a positive integer with no signs, decimals, or letters.                                                                                      |
 | `Unrecognised prefix or unescaped forward slash in "a/b". To use a forward slash as text, escape it with a backslash, e.g. "\/".`<br><br>`The following prefix(es) should not be duplicated: n/` | The provided text contains an unrecognised prefix or unescaped forward slash.                                                                                          | Only use supported prefixes, and escape forward slashes intended to be part of a `user-string` (using \\/)                                                       |
 | `This command does not accept parameters.`                                                                                                                                                       | Unexpected text was entered after the command word (and before any prefixes).                                                                                          | Remove the extraneous text after the command word (and before any prefixes).                                                                                     |
 | `Missing required input: STORY_NAME.`                                                                                                                                                            | The command expects text input after the command word (and before any prefixes), but none was entered.                                                                 | Provide the required preamble text immediately after the command word (and before any prefixes).                                                                 |
