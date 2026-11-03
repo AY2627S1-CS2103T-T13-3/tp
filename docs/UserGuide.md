@@ -127,9 +127,9 @@ This guide describes the features implemented for PressMemo v1.6.
 
 #### Common Errors & Troubleshooting
 
-| Error Message / Symptom                       | Cause                                                                      | How to Fix                                                                                  |
-|:----------------------------------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------|
-| Error: there is already a contact named {xxx} | Trying to add a contact named {xxx} when {xxx} already exists in PressMemo | Delete the existing contact named {xxx} first<br><br>OR<br><br>Use a different contact name |
+| Error Message / Symptom                             | Cause                                                                                  | How to Fix                                                                                       |
+|:----------------------------------------------------|:---------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------|
+| Error: there is already a contact named `Alex Yeoh` | Trying to add a contact named `Alex Yeoh` when `Alex Yeoh` already exists in PressMemo | Delete the existing contact named `Alex Yeoh` first<br><br>OR<br><br>Use a different contact name |
 
 ### Listing contacts, stories, and follow-ups
 
@@ -425,9 +425,9 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Common Errors & Troubleshooting
 
-| Error Message / Symptom                     | Cause                                                                    | How to Fix                                                                              |
-| :------------------------------------------ | :----------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
-| Error: there is already a story named {xxx} | Trying to add a story named {xxx} when {xxx} already exists in PressMemo | delete the existing story named {xxx} first<br><br>OR<br><br>use a different story name |
+| Error Message / Symptom                               | Cause                                                                                        | How to Fix                                                                                        |
+|:------------------------------------------------------|:---------------------------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------|
+| Error: there is already a story named `Investigation` | Trying to add a story named `Investigation` when `Investigation` already exists in PressMemo | Delete the existing story named `Investigation` first<br><br>OR<br><br>use a different story name |
 
 ### Editing a story: `editstory`
 
@@ -867,11 +867,11 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Common Errors & Troubleshooting
 
-| Error Message / Symptom                                              | Cause                                                 | How to Fix                                                   |
-|:---------------------------------------------------------------------|:------------------------------------------------------|:-------------------------------------------------------------|
-| `{xxx} is a built-in command word and cannot be used as a shortcut.` | The shortcut matches a built-in command word.         | Choose a shortcut alias that is not a built-in command word. |
-| `The shortcut {xxx} cannot contain whitespace or forward slashes.`   | The shortcut contains spaces or forward slashes.      | Choose a shortcut alias that does not contain spaces or `/`. |
-| `{xxx} is not a command that can be assigned a shortcut.`            | The command word is not recognized or not assignable. | Provide a valid assignable PressMemo command word.           |
+| Error Message / Symptom                                                            | Cause                                                 | How to Fix                                                   |
+|:-----------------------------------------------------------------------------------|:------------------------------------------------------|:-------------------------------------------------------------|
+| `list is a built-in command word and cannot be used as a shortcut.`                | The shortcut matches a built-in command word.         | Choose a shortcut alias that is not a built-in command word. |
+| `The shortcut "a b" cannot contain whitespace or forward slashes.`                 | The shortcut contains spaces or forward slashes.      | Choose a shortcut alias that does not contain spaces or `/`. |
+| `shortcut/unshortcut/notCommand is not a command that can be assigned a shortcut.` | The command word is not recognized or not assignable. | Provide any built-in command word except `shortcut` and `unshortcut`.          |
 
 ### Removing a command shortcut: `unshortcut`
 
