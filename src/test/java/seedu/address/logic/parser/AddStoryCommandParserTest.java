@@ -84,7 +84,7 @@ public class AddStoryCommandParserTest {
     @Test
     public void parse_edgeCaseIsolatedInvalidInputs_failure() {
         // SN_INV1: Empty or whitespace-only preamble
-        String missingStoryNameMessage = Messages.getErrorMessageForMissingRequiredInputs("story name");
+        String missingStoryNameMessage = Messages.getErrorMessageForMissingRequiredInputs("NAME");
         assertParseFailure(parser, "", missingStoryNameMessage);
         assertParseFailure(parser, "     ", missingStoryNameMessage);
 

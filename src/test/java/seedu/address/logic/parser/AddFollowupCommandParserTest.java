@@ -84,8 +84,8 @@ public class AddFollowupCommandParserTest {
     public void parse_edgeCaseIsolatedInvalidInputs_failure() {
         // D_INV1: Missing or blank description
         String expectedAllMissingMessage = Messages.getErrorMessageForMissingRequiredInputs(
-                "description", PREFIX_CONTACTINDEX.toString());
-        String expectedMissingDescMessage = Messages.getErrorMessageForMissingRequiredInputs("description");
+                "DESCRIPTION", PREFIX_CONTACTINDEX.toString());
+        String expectedMissingDescMessage = Messages.getErrorMessageForMissingRequiredInputs("DESCRIPTION");
         assertParseFailure(parser, "", expectedAllMissingMessage);
         assertParseFailure(parser, "     ", expectedAllMissingMessage);
         assertParseFailure(parser, " ci/1", expectedMissingDescMessage);

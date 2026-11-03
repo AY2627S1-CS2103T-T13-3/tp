@@ -242,7 +242,7 @@ This command does not accept parameters. Any extraneous characters will result i
 
 | Parameter       | Type   | Description                                        |
 |-----------------|--------|----------------------------------------------------|
-| `KEYWORD`       | `word` | The word to search for in the contact names        |
+| `KEYWORD`       | `word` | The `word` to search for in the contact names        |
 | `MORE_KEYWORDS` | `word` | Additional keywords to search for in contact names |
 
 > **Tip / Note:**
@@ -374,18 +374,18 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Usage / Command Format
 
-`addstory STORY_NAME [t/TAG]…`
+`addstory NAME [t/TAG]…`
 
 #### Parameters & Constraints
 
 | Parameter     | Type          | Description              | Examples                  |
 |:--------------| :------------ | :----------------------- | :------------------------ |
-| `STORY_NAME`  | `user-string` | name of the story to add | wumpus<br><br>find wumpus |
+| `NAME`  | `user-string` | name of the story to add | wumpus<br><br>find wumpus |
 | `t/TAG`       | `user-string` | a tag for the story      | smelly                    |
 
 > **Tip / Note:**
 >
-> * No two stories can have the same name. The provided `STORY_NAME` must not already exist in PressMemo.
+> * No two stories can have the same name. The provided `NAME` must not already exist in PressMemo.
 > * `addstory` preserves the ActiveStoryFilter; the new story will appear in the **STORIES** panel if it matches the active filter.
 > * The new story starts with no assigned contacts.
 
@@ -425,7 +425,7 @@ This command does not accept parameters. Any extraneous characters will result i
 >
 > * Without `ci/CONTACT_INDEX`, `liststories` displays all stories and removes the ActiveStoryFilter.
 > * With `ci/CONTACT_INDEX`, `liststories` displays only stories assigned to the specified contact.
-> * The contact-index refers to the currently displayed **CONTACTS** panel, including any filtered results.
+> * The `contact-index` refers to the currently displayed **CONTACTS** panel, including any filtered results.
 > * The **CONTACTS** and **FOLLOW-UPS** panels remain unchanged.
 > * If the specified contact has no assigned stories, the **STORIES** panel becomes empty.
 > * Use `liststories` without parameters to display all stories again.
@@ -500,19 +500,19 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Usage / Command Format
 
-`editstory INDEX [n/STORY_NAME] [t/TAG]…`
+`editstory INDEX [n/NAME] [t/TAG]…`
 
 #### Parameters & Constraints
 
 | Parameter        | Type          | Description                                                   | Examples              |
 | :--------------- | :------------ | :------------------------------------------------------------ | :-------------------- |
 | `INDEX`          | `story-index` | Story to edit from the displayed **STORIES** panel            | `1`                   |
-| `n/STORY_NAME`   | `user-string` | New story name                                                | Election investigation |
+| `n/NAME`   | `user-string` | New story name                                                | Election investigation |
 | `t/TAG`          | `user-string` | New tag for the story; repeat to replace the tags with several tags | urgent                |
 
 > **Tip / Note:**
 >
-> * Provide at least one of `n/STORY_NAME` or `t/TAG`.
+> * Provide at least one of `n/NAME` or `t/TAG`.
 > * Values not supplied are preserved.
 > * Supplying one or more `t/TAG` values replaces all existing tags.
 >   * Empty `t/` values are ignored. For example, `editstory 2 t/ t/urgent t/politics` replaces the tags with `urgent` and `politics`.
@@ -543,7 +543,7 @@ This command does not accept parameters. Any extraneous characters will result i
 
 | Error Message / Symptom | Cause | How to Fix |
 | :--- | :--- | :--- |
-| `At least one field to edit must be provided.` | Neither `n/STORY_NAME` nor `t/TAG` was supplied. | Provide a new name, one or more tags, or `t/` to clear all tags. |
+| `At least one field to edit must be provided.` | Neither `n/NAME` nor `t/TAG` was supplied. | Provide a new name, one or more tags, or `t/` to clear all tags. |
 | `Error: there is already a story named "Election investigation"!` | Another story already has the requested name. | Choose a different story name. |
 | `Story names should not be blank or start with whitespace` | The supplied story name is blank. | Provide a non-blank story name. |
 
@@ -880,7 +880,7 @@ This command does not accept parameters. Any extraneous characters will result i
 >
 > * Use `shortcut` without arguments to list the existing shortcuts.
 > * Use `shortcut s/SHORTCUT c/COMMAND_WORD` to assign an alias to a command word.
-> * `SHORTCUT` and `COMMAND_WORD` must each be a word that does not contain forward slashes (`/`).
+> * `SHORTCUT` and `COMMAND_WORD` must each be a `word` that does not contain forward slashes (`/`).
 > * Default built-in command words cannot be reused as shortcut names. For example, `list` cannot be used as a shortcut for `listcontacts`.
 > * All built-in commands except `shortcut` and `unshortcut` can be assigned shortcuts.
 > * Each command can have at most one shortcut, and each shortcut can refer to one command. Reassigning a shortcut or command replaces conflicting assignments.
@@ -990,11 +990,11 @@ Clearing removes all existing contacts, stories, assignments and follow-ups from
 
 | Error Messages / Symptoms                                                                                                                                                                        | Causes                                                                                                                                                                 | How to Fix                                                                                                                                                       |
 | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| <br>`The story index 100 is invalid for the displayed list of 9 story(ies).`<br>                                                                                                                 | The contact-index, story-index, or followup-index provided is greater than the number of items currently displayed in the corresponding panel (or the panel is empty). | Check the index numbers displayed in the corresponding panel (**CONTACTS**, **STORIES**, or **FOLLOW-UPS**). Run `list`, to show all items, if the item you need is missing. |
-| `Index must be a positive integer.`                                                                                                                                                              | The contact-index, story-index, or followup-index is not a positive integer.                                                                                           | Ensure the index is a positive integer with no signs, decimals, or letters.                                                                                      |
+| <br>`The story index 100 is invalid for the displayed list of 9 story(ies).`<br>                                                                                                                 | The `contact-index`, `story-index`, or `followup-index` provided is greater than the number of items currently displayed in the corresponding panel (or the panel is empty). | Check the index numbers displayed in the corresponding panel (**CONTACTS**, **STORIES**, or **FOLLOW-UPS**). Run `list`, to show all items, if the item you need is missing. |
+| `Index must be a positive integer.`                                                                                                                                                              | The `contact-index`, `story-index`, or `followup-index` is not a positive integer.                                                                                           | Ensure the index is a positive integer with no signs, decimals, or letters.                                                                                      |
 | `Unrecognised prefix or unescaped forward slash in "a/b". To use a forward slash as text, escape it with a backslash, e.g. "\/".`<br><br>`The following prefix(es) should not be duplicated: n/` | The provided text contains an unrecognised prefix or unescaped forward slash.                                                                                          | Only use supported prefixes, and escape forward slashes intended to be part of a `user-string` (using \\/)                                                       |
 | `This command does not accept parameters.`                                                                                                                                                       | Unexpected text was entered after the command word (and before any prefixes).                                                                                          | Remove the extraneous text after the command word (and before any prefixes).                                                                                     |
-| `Missing required input: STORY_NAME.`                                                                                                                                                            | The command expects text input after the command word (and before any prefixes), but none was entered.                                                                 | Provide the required preamble text immediately after the command word (and before any prefixes).                                                                 |
+| `Missing required input: NAME.`                                                                                                                                                            | The command expects text input after the command word (and before any prefixes), but none was entered.                                                                 | Provide the required preamble text immediately after the command word (and before any prefixes).                                                                 |
 | `The following prefix(es) should not be duplicated: n/`                                                                                                                                          | A prefix was provided multiple times in the same command, even though at most one is supported.                                                                        | Remove duplicate prefixes.                                                                                                                                       |
 | `Missing required input: ci/.`                                                                                                                                                                   | One or more compulsory prefixes were omitted                                                                                                                           | Include all mandatory prefixes and their values as indicated in the command usage message.                                                                       |
 | `Unknown command: womp.`                                                                                                                                                                         | The `command word` was mistyped, or uses incorrect casing.<br>`command word` is case-sensitive.                                                                        | Enter a valid `command word` or shortcut.<br><br>Type `help` to view all available commands.<br><br>Type `shortcut` to view all available shortcuts.             |
@@ -1022,15 +1022,15 @@ Clearing removes all existing contacts, stories, assignments and follow-ups from
 |-----------------------| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Help**              | `help`                                                                                                                                                                              |
 | **List all entries**  | `list` (clears the contact, story, and follow-up filters)                                                                                                                           |
-| **Add contact**       | `addcontact NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…` <br> e.g., `addcontact James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague` |
+| **Add contact**       | `addcontact NAME p/PHONE e/EMAIL a/ADDRESS [t/TAG]…` <br> e.g., `addcontact James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague` |
 | **List contacts**     | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)                                        |
 | **Find contacts**     | `findcontacts KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findcontacts James Jake`                                                                                                       |
-| **Edit contact**      | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`                                          |
+| **Edit contact**      | `editcontact INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [t/TAG]…`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`                                          |
 | **Delete contact**    | `deletecontact INDEX`<br> e.g., `deletecontact 3`                                                                                                                                   |
-| **Add story**         | `addstory STORY_NAME [t/TAG]…`<br> e.g., `addstory Housing Investigation`                                                                                                                    |
+| **Add story**         | `addstory NAME [t/TAG]…`<br> e.g., `addstory Housing Investigation`                                                                                                                    |
 | **List stories**      | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)                                         |
 | **Find stories**      | `findstories STORY_NAME [MORE_KEYWORDS]...`<br> e.g., `findstories Housing Investigation`                                                                                           |
-| **Edit story**        | `editstory INDEX [n/STORY_NAME] [t/TAG]…`<br> e.g., `editstory 1 n/Election investigation t/urgent`                                                                            |
+| **Edit story**        | `editstory INDEX [n/NAME] [t/TAG]…`<br> e.g., `editstory 1 n/Election investigation t/urgent`                                                                            |
 | **Delete story**      | `deletestory INDEX`<br> e.g., `deletestory 2`                                                                                                                                       |
 | **Assign**            | `assign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `assign ci/1 si/2`                                                                                                               |
 | **Unassign**          | `unassign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `unassign ci/1 si/2`                                                                                                           |

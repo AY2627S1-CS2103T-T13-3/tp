@@ -25,7 +25,7 @@ public class AddStoryCommandParser implements Parser<AddStoryCommand> {
         ArgumentMultimap argMultimap = ArgumentTokenizer.tokenize(args, PREFIX_TAG);
 
         if (!argMultimap.hasPreamble()) {
-            throw new ParseException(Messages.getErrorMessageForMissingRequiredInputs("story name"));
+            throw new ParseException(Messages.getErrorMessageForMissingRequiredInputs("NAME"));
         }
 
         StoryName storyName = ParserUtil.parseStoryName(argMultimap.getPreamble());
