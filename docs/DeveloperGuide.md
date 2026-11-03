@@ -341,10 +341,10 @@ The following sequence diagram illustrates the interactions within the `Logic` c
 3. `AddressBookParser` creates an `ListFollowupsCommandParser` to parse the command arguments.
 4. `ListFollowupsCommandParser` parses the optional `CONTACT_INDEX` and creates a `ListFollowupsCommand` object.
 5. `LogicManager` executes the `ListFollowupsCommand` object.
-7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the ActiveContactList from `Model`, validates the index, and obtains the corresponding Contact. 
-8. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` requests `Model` to update the ActiveFollowupFilter to match follow-ups linked to the specified Contact. Otherwise, it requests `Model` to update the ActiveFollowupFilter to match all follow-ups.
-9. `Model` refreshes the ActiveFollowupList for the updated ActiveFollowupFilter.
-10. `UI` updates the follow-up panel accordingly.
+6. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` retrieves the ActiveContactList from `Model`, validates the index, and obtains the corresponding Contact. 
+7. If `CONTACT_INDEX` is specified, `ListFollowupsCommand` requests `Model` to update the ActiveFollowupFilter to match follow-ups linked to the specified Contact. Otherwise, it requests `Model` to update the ActiveFollowupFilter to match all follow-ups.
+8. `Model` refreshes the ActiveFollowupList for the updated ActiveFollowupFilter.
+9. `UI` updates the follow-up panel accordingly.
 
 The activity diagram below shows the branching logic depending on whether `CONTACT_INDEX` is specified:
 ![ListFollowupActivityDiagram](images/ListFollowupsActivityDiagram.png)
@@ -716,7 +716,7 @@ Use case ends.
 
 - System will inform the user in the console that details are missing
 
-1b.  Another contact with the same name already existis
+1b.  Another contact with the same name already exists
 
 - System will inform the user in the console that an invalid name was used
 - Use case ends

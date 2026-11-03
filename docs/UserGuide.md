@@ -25,7 +25,7 @@ This guide describes the features implemented for PressMemo v1.4.
    A GUI with the **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels similar to the one below should appear in a few seconds. On the first run, the app contains sample contacts, stories and follow-ups.<br>
    ![Ui](images/QuickstartUi.png)
 
-5. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to open the help window.<br>
+5. Type a command in the command box and press Enter to execute it. For example, type **`help`** and press Enter to toggle the help panel.<br>
    Some example commands you can try:
 
     * `list` : Displays all contacts, stories and follow-ups.
@@ -129,19 +129,21 @@ This guide describes the features implemented for PressMemo v1.4.
 |:----------------------------------------------|:---------------------------------------------------------------------------|:--------------------------------------------------------------------------------------------|
 | Error: there is already a contact named {xxx} | Trying to add a contact named {xxx} when {xxx} already exists in PressMemo | Delete the existing contact named {xxx} first<br><br>OR<br><br>Use a different contact name |
 
-### Listing contacts and stories (refactored commands)
+### Listing contacts, stories, and follow-ups
 
-PressMemo provides separate commands for displaying both lists, displaying contacts only, or displaying stories only. They also let you filter one list by an entry in the other.
+PressMemo provides `list` for displaying all three lists, as well as separate commands for displaying or filtering an individual list.
 
-| Command | Effect on CONTACTS | Effect on STORIES |
-| --- | --- | --- |
-| `list` | Shows all contacts | Shows all stories |
-| `listcontacts` | Shows all contacts | Unchanged |
-| `listcontacts si/1` | Shows contacts assigned to displayed story 1 | Unchanged |
-| `liststories` | Unchanged | Shows all stories |
-| `liststories ci/1` | Unchanged | Shows stories assigned to displayed contact 1 |
+| Command | Effect on CONTACTS | Effect on STORIES | Effect on FOLLOW-UPS |
+| --- | --- | --- | --- |
+| `list` | Shows all contacts | Shows all stories | Shows all follow-ups |
+| `listcontacts` | Shows all contacts | Unchanged | Unchanged |
+| `listcontacts si/1` | Shows contacts assigned to displayed story 1 | Unchanged | Unchanged |
+| `liststories` | Unchanged | Shows all stories | Unchanged |
+| `liststories ci/1` | Unchanged | Shows stories assigned to displayed contact 1 | Unchanged |
+| `listfollowups` | Unchanged | Unchanged | Shows all follow-ups |
+| `listfollowups ci/1` | Unchanged | Unchanged | Shows follow-ups linked to displayed contact 1 |
 
-For the filtered commands, indices are taken from the **currently displayed lists**, not necessarily the full lists. If no contacts or stories match a filter, the relevant panel becomes empty.
+For the filtered commands, indices are taken from the **currently displayed lists**, not necessarily the full lists. If no entries match a filter, the relevant panel becomes empty.
 
 <div markdown="block" class="alert alert-info">
 
@@ -155,9 +157,9 @@ Each panel header (**CONTACTS**, **STORIES**, and **FOLLOW-UPS**) displays an ac
 This visual badge ensures you always know whether the displayed index numbers (e.g., `1`, `2`, `3`) correspond to the complete list or a filtered subset, eliminating index ambiguity!
 </div>
 
-### Listing all contacts and stories: `list`
+### Listing all contacts, stories, and follow-ups: `list`
 
-- **Objective:** Displays all contacts and stories, removing any active contact and story filters.
+- **Objective:** Displays all contacts, stories, and follow-ups, removing all active filters.
 ![list](images/list-example.png)
 
 #### Usage / Command Format
@@ -169,15 +171,14 @@ This visual badge ensures you always know whether the displayed index numbers (e
 This command does not accept parameters. Any extraneous characters will result in an error.
 
 > **Tip / Note:**
-> * `list` resets both the **CONTACTS** and **STORIES** panels together.
-> * It does not reset or separately filter follow-ups; those remain visible in the **FOLLOW-UPS** panel.
-> * Use `listcontacts` or `liststories` if you want to filter or reset only one panel.
+> * `list` resets the **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels together.
+> * Use `listcontacts`, `liststories`, or `listfollowups` if you want to filter or reset only one panel.
 
 #### Examples
 
-* **Example 1: Reset all active contact and story filters**
+* **Example 1: Reset all active filters**
   * **Input / Action:** `list`
-  * **Expected Outcome:** Both **CONTACTS** and **STORIES** panels display all entries, and both panel header filter badges update to `[All]`.
+  * **Expected Outcome:** The **CONTACTS**, **STORIES**, and **FOLLOW-UPS** panels display all entries, and all three panel header filter badges update to `[All]`.
 
 ### Listing contacts: `listcontacts`
 
@@ -195,7 +196,7 @@ This command does not accept parameters. Any extraneous characters will result i
 | `si/STORY_INDEX` | `story-index` | (Optional) Story to filter contacts by, from the displayed **STORIES** panel        | `1`      |
 
 > **Tip / Note:**
-> * `listcontacts` without parameters displays all contacts and clears any active contact filter (including `findcontact`).
+> * `listcontacts` without parameters displays all contacts and clears any active contact filter (including `findcontacts`).
 > * `listcontacts si/STORY_INDEX` displays only contacts assigned to that story in the **currently displayed story list**.
 > * The **STORIES** panel remains unchanged. If the selected story has no assigned contacts, the contact list becomes empty.
 > * The contact panel header filter badge updates dynamically (e.g. `[All]` or `[Filtered by story: "..."]`).
@@ -314,7 +315,7 @@ This command does not accept parameters. Any extraneous characters will result i
 <img src="images/findcontacts-example.png" alt="Finding contacts" width="726" height="593">
 
 #### Usage / Command Format
-`findcontact KEYWORD [MORE_KEYWORDS]`
+`findcontacts KEYWORD [MORE_KEYWORDS]...`
 
 #### Parameters & Constraints
 | Parameter       | Type   | Description                                        |
@@ -337,11 +338,11 @@ This command does not accept parameters. Any extraneous characters will result i
   * **Expected Outcome:** Displays all contacts with `John` as a word in their name. A message in the console indicates the number of matches found. Matches `john` and `John Doe`.
 
 * **Example 2:** Multiple keywords search
-  * **Input / Action:** `findstories alex david`
+  * **Input / Action:** `findcontacts alex david`
   * **Expected Outcome:** Displays all contacts whose names contain either `alex` or `david`. A message in the console indicates the number of matches found. Matches `Alex Yeoh` and `David Li`.
 
 * **Example 3:** Search with no matches
-  * **Input / Action:** `findstories nameDoesNotExist` when there is no contact whose name contains `nameDoesNotExist`
+  * **Input / Action:** `findcontacts nameDoesNotExist` when there is no contact whose name contains `nameDoesNotExist`
   * **Expected Outcome:** The contact panel displays no contacts. A message in the console indicates that no matches were found.
 
 #### Common Errors & Troubleshooting
@@ -382,7 +383,7 @@ This command does not accept parameters. Any extraneous characters will result i
     - **Expected Outcome:** The second displayed contact is deleted from PressMemo. Their associated story assignments and follow-ups are also removed, and a success message displays the deleted contact's details.
 
 - **Example 2: Deleting a contact from a filtered list**
-    - **Input / Action:** `findcontact Bernice` followed by `deletecontact 1`
+    - **Input / Action:** `findcontacts Bernice` followed by `deletecontact 1`
     - **Expected Outcome:** The first displayed contact in the filtered results is deleted from PressMemo, along with their associated story assignments and follow-ups.
 
 ### Adding a story: `addstory`
@@ -837,16 +838,17 @@ This command does not accept parameters. Any extraneous characters will result i
 
 #### Parameters & Constraints
 
-| Parameter      | Type     | Description                            | Examples |
-|:---------------|:---------|:---------------------------------------|:---------|
-| `SHORTCUT`     | `word`   | The alias created for the command word | ls       |
-| `COMMAND_WORD` | `word`   | The original command word in PressMemo | list     |
+| Parameter        | Type   | Description                            | Examples |
+|:-----------------|:-------|:---------------------------------------|:---------|
+| `s/SHORTCUT`     | `word` | The alias created for the command word | `ls`     |
+| `c/COMMAND_WORD` | `word` | The built-in command word to alias     | `list`   |
 
 > **Tip / Note:**
 > * Use `shortcut` without arguments to list the existing shortcuts.
 > * Use `shortcut s/SHORTCUT c/COMMAND_WORD` to assign an alias to a command word.
+> * `SHORTCUT` and `COMMAND_WORD` must each be a word that does not contain forward slashes (`/`).
 > * Default built-in command words cannot be reused as shortcut names. For example, `list` cannot be used as a shortcut for `listcontacts`.
-> * `shortcut` and `unshortcut` command cannot be assigned shortcuts.
+> * All built-in commands except `shortcut` and `unshortcut` can be assigned shortcuts.
 > * Each command can have at most one shortcut, and each shortcut can refer to one command. Reassigning a shortcut or command replaces conflicting assignments.
 > * Once assigned, type the shortcut in place of the command word and keep any required arguments.
 > * Shortcuts are saved in `preferences.json` and remain available after restarting the app.
@@ -859,14 +861,14 @@ This command does not accept parameters. Any extraneous characters will result i
 * **Example 2:** Add a shortcut assignment
   * **Input / Action:** `shortcut s/a c/addcontact` 
   * **Expected Outcome:** Assigns `a` as a shortcut for `addcontact`. You can then enter `a John Tan p/91234567 e/john@example.com a/Singapore` to add a contact.
-  
+
 #### Common Errors & Troubleshooting
 
-| Error Message / Symptom                                             | Cause                                                 | How to Fix                                                   |
-|:--------------------------------------------------------------------|:------------------------------------------------------|:-------------------------------------------------------------|
-| `{xxx} is a built-in command word and cannot beused as a shortcut.` | The shortcut matches a built-in command word.         | Choose a shortcut alias that is not a built-in command word. |
-| `The shortcut {xxx} cannot contain whitespace or forward slashes.`  | The shortcut contains spaces or forward slashes.      | Choose a shotcut alias that does not contain spaces or `/`.  |
-| `{xxx} is not a command that can be assgined a shortcut.`           | The command word is not recognized or not assignable. | Provide a valid assignable PressMemo command word.           |
+| Error Message / Symptom                                              | Cause                                                 | How to Fix                                                   |
+|:---------------------------------------------------------------------|:------------------------------------------------------|:-------------------------------------------------------------|
+| `{xxx} is a built-in command word and cannot be used as a shortcut.` | The shortcut matches a built-in command word.         | Choose a shortcut alias that is not a built-in command word. |
+| `The shortcut {xxx} cannot contain whitespace or forward slashes.`   | The shortcut contains spaces or forward slashes.      | Choose a shortcut alias that does not contain spaces or `/`. |
+| `{xxx} is not a command that can be assigned a shortcut.`            | The command word is not recognized or not assignable. | Provide a valid assignable PressMemo command word.           |
 
 ### Removing a command shortcut: `unshortcut`
 
@@ -881,7 +883,7 @@ This command does not accept parameters. Any extraneous characters will result i
 
 | Parameter  | Type          | Description                                    | Examples |
 | :--------- | :------------ | :--------------------------------------------- | :------- |
-| `SHORTCUT` | `user-string` | Existing shortcut alias to remove from PressMemo | `ls`     |
+| `SHORTCUT` | `word` | Existing shortcut alias to remove from PressMemo | `ls`     |
 
 > **Tip / Note:**
 > * `SHORTCUT` must match an existing assigned shortcut alias.
@@ -891,13 +893,13 @@ This command does not accept parameters. Any extraneous characters will result i
 
 * **Example 1: Remove an assigned shortcut**
   * **Input / Action:** `unshortcut ls`
-  * **Expected Outcome:** Displays `Removed shortcut: ls -> list`. Typing `ls` will now report an unknown command.
+  * **Expected Outcome:** Displays `Shortcut 'ls' removed.` Typing `ls` will now report an unknown command.
 
 #### Common Errors & Troubleshooting
 
 | Error Message / Symptom | Cause | How to Fix |
 | :--- | :--- | :--- |
-| `The shortcut "ls" is not assigned to any command.` | The specified shortcut does not exist. | Run `shortcut` to view all active shortcuts, then verify the shortcut name. |
+| `Shortcut 'ls' does not exist.` | The specified shortcut does not exist. | Run `shortcut` to view all active shortcuts, then verify the shortcut name. |
 
 ### Clearing all entries: `clear`
 
@@ -945,16 +947,16 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 ## Common Issues and Troubleshooting
 
 | Error Messages / Symptoms                                                                                                                                                                        | Causes                                                                                                                                                                 | How to Fix                                                                                                                                                       |
-| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | <br>`The story index 100 is invalid for the displayed list of 9 story(ies).`<br>                                                                                                                 | The Contact Index, Story Index, or Followup Index provided is greater than the number of items currently displayed in the corresponding panel (or the panel is empty). | Check the index numbers displayed in the corresponding panel (Contacts, Stories, or Follow-ups). Run `list`, to show all items, if the item you need is missing. |
 | `Index must be a positive integer.`                                                                                                                                                              | The Contact Index, Story Index, or Followup Index is not a positive integer.                                                                                           | Ensure the index is a positive integer with no signs, decimals, or letters.                                                                                      |
-| `Unrecognised prefix or unescaped forward slash in "a/b". To use a forward slash as text, escape it with a backslash, e.g. "\/".`<br><br>`The following prefix(es) should not be duplicated: n/` | The provided text contains an unrecognised prefix or unescaped forward slash.                                                                                          | Only use supported prefixes, and escape forwad slashes intended to be part of a `user-string` (using \\/)                                                        |
+| `Unrecognised prefix or unescaped forward slash in "a/b". To use a forward slash as text, escape it with a backslash, e.g. "\/".`<br><br>`The following prefix(es) should not be duplicated: n/` | The provided text contains an unrecognised prefix or unescaped forward slash.                                                                                          | Only use supported prefixes, and escape forward slashes intended to be part of a `user-string` (using \\/)                                                       |
 | `This command does not accept parameters.`                                                                                                                                                       | Unexpected text was entered after the command word (and before any prefixes).                                                                                          | Remove the extraneous text after the command word (and before any prefixes).                                                                                     |
 | `Missing required input: STORY_NAME.`                                                                                                                                                            | The command expects text input after the command word (and before any prefixes), but none was entered.                                                                 | Provide the required preamble text immediately after the command word (and before any prefixes).                                                                 |
 | `The following prefix(es) should not be duplicated: n/`                                                                                                                                          | A prefix was provided multiple times in the same command, even though at most one is supported.                                                                        | Remove duplicate prefixes.                                                                                                                                       |
 | `Missing required input: ci/.`                                                                                                             | One or more compulsory prefixes were omitted                                                                                                                           | Include all mandatory prefixes and their values as indicated in the command usage message.                                                                       |
-| `Unknown command: womp.`                                                                                                                                                                         | The `command-word` was mistyped, or uses incorrect casing.<br>`command-word`a are case-sensitive.                                                                      | Enter a valid `command-word` or shortcut.<br><br>Type `help` to view all available commands.<br><br>Type `shortcut` to view all available shortcuts.             |
-| `Data file at data\addressbook.json could not be loaded. Will be starting with an empty PressMemo.                                                                                               | The data file's contents are corrupted, or PressMemo does not have permission to read the file.                                                                        | Avoid editing the data file directly unless you know what you are doing.<br><br>Make sure you give PressMemo permissions to read and write the data file.<br>    |
+| `Unknown command: womp.`                                                                                                                                                                         | The `command-word` was mistyped, or uses incorrect casing.<br>`command-word` is case-sensitive.                                                                        | Enter a valid `command-word` or shortcut.<br><br>Type `help` to view all available commands.<br><br>Type `shortcut` to view all available shortcuts.             |
+| `Data file at data\addressbook.json could not be loaded. Will be starting with an empty PressMemo.`                                                                                               | The data file's contents are corrupted, or PressMemo does not have permission to read the file.                                                                        | Avoid editing the data file directly unless you know what you are doing.<br><br>Make sure you give PressMemo permissions to read and write the data file.<br>    |
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -968,8 +970,7 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 ## Known issues
 
 1. **When using multiple screens**, if you move the application to a secondary screen, and later switch to using only the primary screen, the GUI will open off-screen. The remedy is to delete the `preferences.json` file created by the application before running the application again.
-2. **If you minimize the Help Window** and then run the `help` command (or use the `Help` menu) again, the original Help Window will remain minimized, and no new Help Window will appear. The remedy is to manually restore the minimized Help Window.
-3. **Editing Contact Tags Overwrites Existing Tags**: In `editcontact`, specifying `t/TAG` replaces all existing tags on the contact rather than appending new tags. For example, if a contact has tags `friends` and `owesMoney`, running `editcontact 1 t/source` removes both existing tags and leaves only `source`. If you wish to preserve existing tags when adding a new one, you must re-enter all existing tags alongside the new one (e.g. `editcontact 1 t/friends t/owesMoney t/source`). We plan to provide an explicit distinction between adding and replacing tags in a future update.
+2. **Editing Contact Tags Overwrites Existing Tags**: In `editcontact`, specifying `t/TAG` replaces all existing tags on the contact rather than appending new tags. For example, if a contact has tags `friends` and `owesMoney`, running `editcontact 1 t/source` removes both existing tags and leaves only `source`. If you wish to preserve existing tags when adding a new one, you must re-enter all existing tags alongside the new one (e.g. `editcontact 1 t/friends t/owesMoney t/source`). We plan to provide an explicit distinction between adding and replacing tags in a future update.
 
 --------------------------------------------------------------------------------------------------------------------
 
@@ -977,7 +978,7 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 
 | Action                            | Format, Examples                                                                                                                                                                    |
 | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Add**                           | `addcontact n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `addcontact n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague` |
+| **Add**                           | `addcontact NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `addcontact James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague` |
 | **Add follow-up**                 | `addfollowup DESCRIPTION ci/CONTACT_INDEX`<br> e.g., `addfollowup Interview prep ci/1`                                                                                              |
 | **Add story**                     | `addstory STORY_NAME`<br> e.g., `addstory Housing Investigation`                                                                                                                    |
 | **Assign**                        | `assign ci/CONTACT_INDEX si/STORY_INDEX`<br> e.g., `assign ci/1 si/2`                                                                                                               |
@@ -988,10 +989,10 @@ Furthermore, certain edits can cause PressMemo to behave in unexpected ways (e.g
 | **Edit**                          | `editcontact INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g., `editcontact 2 n/James Lee e/jameslee@example.com`                                          |
 | **Edit follow-up**                | `editfollowup INDEX [d/DESCRIPTION] [ci/CONTACT_INDEX]`<br> e.g., `editfollowup 1 d/Call tomorrow ci/2`                                                                             |
 | **Edit story**                    | `editstory INDEX [n/STORY_NAME] [t/TAG]…​`<br> e.g., `editstory 1 n/Election investigation t/urgent`                                                                            |
-| **Find**                          | `findcontact KEYWORD [MORE_KEYWORDS]`<br> e.g., `findcontact James Jake`                                                                                                            |
+| **Find contacts**                 | `findcontacts KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findcontacts James Jake`                                                                                                       |
 | **Find follow-ups**               | `findfollowups KEYWORD [MORE_KEYWORDS]...`<br> e.g., `findfollowups interview meeting`                                                                                              |
 | **Find stories**                  | `findstories STORY_NAME [MORE_KEYWORDS]...`<br> e.g., `findstories Housing Investigation`                                                                                           |
-| **List all contacts and stories** | `list` (clears both filters)                                                                                                                                                        |
+| **List all entries**              | `list` (clears the contact, story, and follow-up filters)                                                                                                                           |
 | **List contacts**                 | `listcontacts [si/STORY_INDEX]`<br> e.g., `listcontacts` (all contacts only) or `listcontacts si/1` (contacts assigned to displayed story 1)                                        |
 | **List follow-ups**               | `listfollowups [ci/CONTACT_INDEX]`<br> e.g., `listfollowups` (all follow-ups) or `listfollowups ci/1` (follow-ups for contact 1)                   |
 | **List stories**                  | `liststories [ci/CONTACT_INDEX]`<br> e.g., `liststories` (all stories only) or `liststories ci/1` (stories assigned to displayed contact 1)                                         |
