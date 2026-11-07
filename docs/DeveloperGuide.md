@@ -24,6 +24,24 @@ title: Developer Guide
 	* [Jackson](https://github.com/FasterXML/jackson) for JSON data storage serialization and deserialization.
 	* [JUnit 5](https://junit.org/junit5/) for automated testing.
 
+### AI use declaration
+
+The following table declares the team's use of AI tools during the project:
+
+| Name | AI tool used | Purpose | Scope (time) | Scope (repository) |
+|------|--------------|---------|--------------|--------------------|
+| Pu Yu | Codex (GPT-6 Astra) | Standardise terminology and formatting in line with the glossary | Weeks 11–12 | User Guide and Developer Guide |
+| Pu Yu | Antigravity (Gemini Flash 3.8) | Update test cases for changed feature behaviours and command/message formats | Weeks 11–12 | Logic component unit tests |
+| Pu Yu | Antigravity (Gemini Flash 3.8) | Adapt the basic CRUD model for persons from AB3 to create a working skeleton for follow-ups | Week 10 | Model component functional code |
+| Krithic | Antigravity (Gemini Flash 3.8) | Perform preliminary checks for feature-specific alpha bugs | Week 10 | Functional code |
+| Krithic | Antigravity (Gemini Flash 3.8) | Draft a preliminary plan for feature implementation | Week 9 | Model and Logic components |
+| Krithic | Antigravity (Gemini Flash 3.8) | Rectify Javadoc comments | Week 10 | Functional code |
+| Nithesh | ChatGPT (GPT-6) | Preliminarily identify potential alpha bugs in existing features | Week 11 | Functional code |
+| Nithesh | ChatGPT (GPT-6) | Refine documentation for clarity, consistency, and completeness | Week 12 | User Guide and Developer Guide |
+| Nithesh | ChatGPT (GPT-6) | Suggest relevant coding and testing best practices | Weeks 9–10 | Logic component and unit tests |
+| Zheng Yong | ChatGPT (GPT-5.6 Sol) | Create initial versions of test cases for components as they were built | Weeks 10–12 | Unit tests |
+| Zheng Yong | ChatGPT (GPT-5.6 Sol) | Identify potential documentation and functional code bugs | Weeks 11–12 | Functional code, Developer Guide, and User Guide |
+| Zheng Yong | ChatGPT (GPT-5.6 Sol) | Develop preliminary ideas for the Shortcut Command implementation | Week 10 | Shortcut and Unshortcut Commands |
 --------------------------------------------------------------------------------------------------------------------
 
 ## **Setting up, getting started**
